@@ -5,14 +5,13 @@ paths = {
     src: [
         'src/**/*.purs',
         'bower_components/purescript-*/src/**/*.purs'
-    ],
-    dest: 'js'
+    ]
 }
 
 options = {
     compile: {
         main: 'SlamData',
-        noOpts: true
+        output: 'js/slamdata.js'
     }
 }
 
@@ -25,8 +24,7 @@ gulp.task('compile', function() {
         psc.end();
     });
     return gulp.src(paths.src)
-        .pipe(psc)
-        .pipe(gulp.dest(paths.dest));
+        .pipe(psc);
 });
 
 gulp.task('watch', function() {

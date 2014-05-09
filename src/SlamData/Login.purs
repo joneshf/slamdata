@@ -1,4 +1,4 @@
-module SlamData.Login where
+module SlamData.Login (loginForm) where
 
   import Control.Monad.Eff
 
@@ -12,7 +12,7 @@ module SlamData.Login where
     state <- readState
     pure $ form {}
       [ fieldset {}
-          [ legend {} [ text "Login to Labcoat" ]
+          [ legend {} [ text "Login to SlamData" ]
           , row [ large6 $ newOrExisting { newAccount: state.newAccount
                                          , onChangeNew: handle changeNew
                                          }
