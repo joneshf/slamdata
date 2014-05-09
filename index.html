@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Labcoat</title>
+    <link rel="stylesheet" type="text/css" href="bower_components/foundation/css/foundation.css" />
+    <script src="bower_components/react/react.js"></script>
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/foundation/js/foundation/foundation.js"></script>
+    <script src="bower_components/foundation/js/foundation/foundation.reveal.js"></script>
+</head>
+<body>
+    <div id="loginModal" class="reveal-modal small" data-reveal></div>
+    <script src="js/psc.js"></script>
+    <script type="text/javascript">
+        // Kick off the login.
+        $(document).foundation();
+        $("#loginModal").foundation('reveal', 'open');
+    </script>
+</body>
+</html>
