@@ -8,7 +8,22 @@ module SlamData.Login (loginForm) where
   import React
   import React.DOM
 
-  loginForm = mkUI spec {getInitialState = pure { newAccount: false }} do
+  -- | Something to tell us if we've got a new user or an existing user.
+  data NewOrExisting = New | Existing
+
+  instance eqNewOrExisting :: Eq NewOrExisting where
+    (==) New      New      = true
+    (==) Existing Existing = true
+    (==) _        _        = false
+
+    (/=) noe      noe'     = not (noe == noe')
+
+  instance showNewOrExisting :: Show NewOrExisting where
+    show New      = "NewAccount"
+    show Existing = "ExistingAccount"
+
+  loginForm :: {} -> UI
+  loginForm = mkUI spec {getInitialState = pure { newAccount: Existing }} do
     state <- readState
     pure $ form {}
       [ fieldset {}
@@ -25,50 +40,45 @@ module SlamData.Login (loginForm) where
           ]
       ]
 
+  newOrExisting :: forall e. { newAccount :: NewOrExisting , onChangeNew :: e } -> UI
   newOrExisting = mkUI spec do
     props <- getProps
+    let radioWithLabel {labelText = l, value = v} =
+        p {} [ input { attrType: "radio"
+                     , checked: props.newAccount == v
+                     , id: show v
+                     , name: "new-or-existing"
+                     , onChange: handle $ newAccountChanged v
+                     }
+                     []
+             , label { htmlFor: show v }
+                     [ text l ]
+             ]
     pure $ div {}
-      [ p {} [ input { attrType: "radio"
-                       -- I have no idea why this doesn't typecheck as
-                       -- not props.newAccount
-                     , checked: if props.newAccount then false else true
-                     , id: "existing-account"
-                     , onChange: handle newAccountChanged
-                     , name: "new-or-existing"
-                     , ref: "existing"
-                     }
-                     []
-             , label { htmlFor: "existing-account" }
-                     [ text "I have an existing account." ]
-             ]
-      , p {} [ input { attrType: "radio"
-                     , checked: props.newAccount
-                     , id: "new-account"
-                     , onChange: handle newAccountChanged
-                     , name: "new-or-existing"
-                     , ref: "new"
-                     }
-                     []
-             , label { htmlFor: "new-account" }
-                     [ text "I need to create a new account." ]
-             ]
+      [ radioWithLabel { labelText: "I have an existing account."
+                       , value: Existing
+                       }
+      , radioWithLabel { labelText: "I need to create a new account."
+                       , value: New
+                       }
       ]
     where
-      newAccountChanged = do
-        refs <- getRefs
+      newAccountChanged val = do
         props <- getProps
-        let newAccount' = (getDOMNode refs.new).checked
-        pure $ props.onChangeNew { newAccount: newAccount'}
+        pure $ props.onChangeNew { newAccount: val }
 
+  demo :: UI
   demo =
     button { className: "right secondary" }
       [ text "Try Demo!" ]
 
+  information :: { newAccount :: NewOrExisting } -> UI
   information = mkUI spec do
     props <- getProps
-    let info = if props.newAccount then [alwaysInfo, newInfo] else [alwaysInfo]
+    let info = if isNew props.newAccount then [alwaysInfo, newInfo] else [alwaysInfo]
     pure $ div {} info
 
+  alwaysInfo :: UI
   alwaysInfo =
     div {}
       [ row $ large6 <$> [ validationText { label: "Email" }
@@ -76,6 +86,7 @@ module SlamData.Login (loginForm) where
                          ]
       ]
 
+  newInfo :: UI
   newInfo =
     div {}
       [ row $ large6 <$> [ validationText { label: "Name" }
@@ -85,6 +96,7 @@ module SlamData.Login (loginForm) where
                          ]
       ]
 
+  validationText :: { label :: String } -> UI
   validationText = mkUI spec do
     props <- getProps
     pure $ div {}
@@ -96,20 +108,31 @@ module SlamData.Login (loginForm) where
               []
       ]
 
+  createOrLogin :: { newAccount :: NewOrExisting } -> UI
   createOrLogin = mkUI spec do
     props <- getProps
-    let buttonText = if props.newAccount then "Create Account" else "Login"
+    let buttonText = if isNew props.newAccount then "Create Account" else "Login"
     pure $ div {}
       [ div {} []
       , button { className: "right" }
                [ text buttonText ]
       ]
 
+  -- | Helper functions.
+
+  row :: [UI] -> UI
   row uis = div { className: "row" } uis
+
+  large6 :: UI -> UI
   large6 ui = div { className: "large-6 columns" } [ ui ]
+
+  isNew :: NewOrExisting -> Boolean
+  isNew New = true
+  isNew _   = false
 
   -- We have to cheat for now with the type,
   -- otherwise we don't get the correct context in jsland.
+  -- This is something that needs to be fixed in purescript-react
   foreign import changeNew
     "function changeNew(state) {\
     \  React.writeState(state);\
