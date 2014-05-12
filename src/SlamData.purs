@@ -2,6 +2,6 @@ module SlamData where
 
   import React
 
-  import SlamData.Login
+  import SlamData.App
 
-  main = renderToElementById "loginModal" (loginForm {})
+  main = renderToElementById "content" app

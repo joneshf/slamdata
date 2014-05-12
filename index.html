@@ -3,18 +3,19 @@
 <head>
     <title>SlamData</title>
     <link rel="stylesheet" type="text/css" href="bower_components/foundation/css/foundation.css" />
-    <script src="bower_components/react/react.js"></script>
-    <script src="bower_components/jquery/dist/jquery.js"></script>
-    <script src="bower_components/foundation/js/foundation/foundation.js"></script>
-    <script src="bower_components/foundation/js/foundation/foundation.reveal.js"></script>
+    <script src="bower_components/modernizr/modernizr.js"></script>
 </head>
 <body>
-    <div id="loginModal" class="reveal-modal small" data-reveal></div>
+    <div id="content"></div>
+
+    <script src="bower_components/react/react.js"></script>
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/fastclick/lib/fastclick.js"></script>
+    <script src="bower_components/foundation/js/foundation.min.js"></script>
     <script src="js/slamdata.js"></script>
     <script type="text/javascript">
-        // Kick off the login.
+        // We have to initialize any foundation stuff last.
         $(document).foundation();
-        $("#loginModal").foundation('reveal', 'open');
     </script>
 </body>
 </html>
