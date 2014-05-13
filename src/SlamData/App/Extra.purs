@@ -11,14 +11,18 @@ module SlamData.App.Extra (extra) where
   extra = exPanel
 
   exPanel :: UI
-  exPanel = panel { widgets: [ widget { name: "Tasks"
-                                      , content: "This is some content like crazy."
-                                      }
-                             , widget { name: "Sharing"
-                                      , content: "This is some content like crazy."
-                                      }
-                             , widget { name: "Chat"
-                                      , content: "This is some content like crazy."
-                                      }
-                             ]
-                  }
+  exPanel =
+    panel { widgets: [ widget { name: "Tasks"
+                              , content: "This is some content like crazy."
+                              , active: true
+                              }
+                     , widget { name: "Sharing"
+                              , content: "This is some content like crazy."
+                              , active: false
+                              }
+                     , widget { name: "Chat"
+                              , content: "This is some content like crazy."
+                              , active: false
+                              }
+                     ]
+          }

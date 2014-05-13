@@ -1,11 +1,15 @@
 var gulp = require('gulp')
-  , purescript = require('gulp-purescript');
+  , clean = require('gulp-clean')
+  , purescript = require('gulp-purescript')
+  , sass = require('gulp-sass');
 
 paths = {
     src: [
         'src/**/*.purs',
         'bower_components/purescript-*/src/**/*.purs'
-    ]
+    ],
+    style: 'style/**/*.scss',
+    css: 'css'
 }
 
 options = {
@@ -27,8 +31,27 @@ gulp.task('compile', function() {
         .pipe(psc);
 });
 
-gulp.task('watch', function() {
-    gulp.watch(paths.src, ['compile']);
+gulp.task('clean-sass', function() {
+    return gulp.src(paths.css)
+      .pipe(clean());
 });
 
-gulp.task('default', ['compile', 'watch']);
+gulp.task('sass', ['clean-sass'], function() {
+    var scss = sass();
+    scss.on('error', function(e) {
+        console.error(e.message);
+        scss.end();
+    });
+    // There's something wonky going on with gulp-sass.
+    // Removing the return allows things to operate more fluidly.
+    gulp.src(paths.style)
+        .pipe(scss)
+        .pipe(gulp.dest(paths.css));
+});
+
+gulp.task('watch', function() {
+    gulp.watch(paths.src, ['compile']);
+    gulp.watch(paths.style, ['sass']);
+});
+
+gulp.task('default', ['compile', 'sass', 'watch']);

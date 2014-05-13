@@ -1,26 +1,37 @@
 module SlamData.App.Panel.Widget (widget, Widget()) where
 
   import Data.String
+  import Data.Tuple
 
   import React
 
   import qualified React.DOM as D
 
-  type Widget = UI
+  type Widget = Tuple UI UI
 
-  widget :: { name :: String, content :: String } -> Widget
-  widget = mkUI spec do
-    props <- getProps
-    pure $ D.dd {}
-      [ D.a { href: "#" ++ widgetizeName props.name } [ D.text props.name ]
-      , D.div { className: "content"
-              , id: widgetizeName props.name
-              }
-              [ D.text props.content ]
-      ]
+  widget :: { name :: String, content :: String, active :: Boolean } -> Widget
+  widget props = Tuple tab cont
+    where
+      tab = makeTab props
+      cont = makeCont props
+
+  makeTab :: { name :: String, content :: String, active :: Boolean } -> UI
+  makeTab props =
+    D.dd { className: activate "" props.active }
+         [ D.a { href: "#" ++ widgetizeName props.name } [ D.text props.name ] ]
+  makeCont :: { name :: String, content :: String, active :: Boolean } -> UI
+  makeCont props =
+    D.div { className: activate "content" props.active
+          , id: widgetizeName props.name
+          }
+          [ D.text props.content ]
+
+  activate :: String -> Boolean -> String
+  activate s true  = s ++ " active"
+  activate s false = s
 
   widgetizeName :: String -> String
-  widgetizeName = ((++) "widget-") <<< unwords <<< words
+  widgetizeName = ((++) "widget-") <<< replace " " ""
     where
       words = split " "
       unwords = joinWith ""

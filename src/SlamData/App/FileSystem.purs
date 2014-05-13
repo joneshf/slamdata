@@ -8,8 +8,10 @@ module SlamData.App.FileSystem (filesystem) where
   import qualified React.DOM as D
 
   filesystem :: UI
-  filesystem = panel { widgets: [ widget { name: "File System"
-                                         , content: "This is some content like crazy."
-                                         }
-                                ]
-                     }
+  filesystem =
+    panel { widgets: [ widget { name: "File System"
+                              , content: "This is some content like crazy."
+                              , active: true
+                              }
+                     ]
+          }

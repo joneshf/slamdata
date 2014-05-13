@@ -8,6 +8,8 @@ module SlamData.Login (loginForm) where
   import React
   import React.DOM
 
+  import SlamData.Helpers
+
   -- | Something to tell us if we've got a new user or an existing user.
   data NewOrExisting = New | Existing
 
@@ -28,14 +30,14 @@ module SlamData.Login (loginForm) where
     pure $ form {}
       [ fieldset {}
           [ legend {} [ text "Login to SlamData" ]
-          , row [ large6 $ newOrExisting { newAccount: state.newAccount
+          , row [ large "6" $ newOrExisting { newAccount: state.newAccount
                                          , onChangeNew: handle changeNew
                                          }
-                , large6 demo
+                , large "6" demo
                 ]
           , information { newAccount: state.newAccount }
-          , row [ large6 $ div {} []
-                , large6 $ createOrLogin { newAccount: state.newAccount }
+          , row [ large "6" $ div {} []
+                , large "6" $ createOrLogin { newAccount: state.newAccount }
                 ]
           ]
       ]
@@ -81,7 +83,7 @@ module SlamData.Login (loginForm) where
   alwaysInfo :: UI
   alwaysInfo =
     div {}
-      [ row $ large6 <$> [ validationText { label: "Email" }
+      [ row $ large "6" <$> [ validationText { label: "Email" }
                          , validationText { label: "Password" }
                          ]
       ]
@@ -89,7 +91,7 @@ module SlamData.Login (loginForm) where
   newInfo :: UI
   newInfo =
     div {}
-      [ row $ large6 <$> [ validationText { label: "Name" }
+      [ row $ large "6" <$> [ validationText { label: "Name" }
                          , validationText { label: "Confirm Password" }
                          , validationText { label: "Company" }
                          , validationText { label: "Title" }
@@ -119,12 +121,6 @@ module SlamData.Login (loginForm) where
       ]
 
   -- | Helper functions.
-
-  row :: [UI] -> UI
-  row uis = div { className: "row" } uis
-
-  large6 :: UI -> UI
-  large6 ui = div { className: "large-6 columns" } [ ui ]
 
   isNew :: NewOrExisting -> Boolean
   isNew New = true

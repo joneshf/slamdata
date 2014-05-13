@@ -11,8 +11,10 @@ module SlamData.App.Notebook (notebook) where
   notebook = nbPanel
 
   nbPanel :: UI
-  nbPanel = panel { widgets: [ widget { name: "untitled"
-                                      , content: "This is some content like crazy."
-                                      }
-                             ]
-                  }
+  nbPanel =
+    panel { widgets: [ widget { name: "Untitled Notebook"
+                              , content: "This is some content like crazy."
+                              , active: true
+                              }
+                     ]
+          }

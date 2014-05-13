@@ -1,0 +1,69 @@
+@import "bower_components/foundation/scss/foundation.scss";
+
+$workspace-extra-height: 200px;
+
+
+html, body {
+    background-color: #f9f9f9;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.row {
+    max-width: 100%;
+}
+
+.column, .columns {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.tabs dd.active a {
+    background-color: #DDD;
+}
+
+#content {
+    height: 100%;
+}
+
+#workspace {
+    bottom: 0;
+    position: absolute;
+    top: $topbar-height;
+    width: 100%;
+}
+
+#main-row {
+    background-color: white;
+    bottom: $workspace-extra-height + 10px;
+    margin: 10px;
+    position: absolute;
+    top: 0;
+    & > .column, & > .columns {
+        border: 1px solid #d3d3d3;
+    }
+    & > div {
+        height: 100%;
+    }
+}
+
+#extra-row {
+    background-color: white;
+    bottom: 0;
+    height: $workspace-extra-height;
+    margin: 10px;
+    position: absolute;
+    & > .column, & > .columns {
+        border: 1px solid #d3d3d3;
+    }
+    & > div {
+        height: 100%;
+    }
+}
+
+.slamdata-panel {
+    bottom: $workspace-extra-height;
+    height: 100%;
+    overflow: auto;
+}

@@ -23,6 +23,8 @@
   "homepage": "https://github.com/slamdata/slamdata",
   "devDependencies": {
     "gulp": "^3.6.2",
-    "gulp-purescript": "0.0.4"
+    "gulp-clean": "^0.2.4",
+    "gulp-purescript": "0.0.4",
+    "gulp-sass": "^0.7.1"
   }
 }
