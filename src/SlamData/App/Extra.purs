@@ -13,15 +13,15 @@ module SlamData.App.Extra (extra) where
   exPanel :: UI
   exPanel =
     panel { widgets: [ widget { name: "Tasks"
-                              , content: "This is some content like crazy."
+                              , content: D.text "Do some tasks."
                               , active: true
                               }
                      , widget { name: "Sharing"
-                              , content: "This is some content like crazy."
+                              , content: D.text "Show your friends."
                               , active: false
                               }
                      , widget { name: "Chat"
-                              , content: "This is some content like crazy."
+                              , content: D.text "Guess what he/she said."
                               , active: false
                               }
                      ]

@@ -27,6 +27,8 @@
     "purescript-strings": "~0.1.3",
     "foundation": "~5.2.2",
     "purescript-arrays": "~0.1.4",
-    "purescript-tuples": "~0.1.1"
+    "purescript-tuples": "~0.1.1",
+    "purescript-showdown": "https://github.com/joneshf/purescript-showdown.git",
+    "showdown": "~0.3.1"
   }
 }

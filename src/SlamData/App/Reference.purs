@@ -13,19 +13,19 @@ module SlamData.App.Reference (reference) where
   refPanel :: UI
   refPanel =
     panel { widgets: [ widget { name: "Tutorial"
-                              , content: "This is some content like crazy."
+                              , content: D.text "Here's some tutorial things."
                               , active: true
                               }
                      , widget { name: "References"
-                              , content: "This is some content like crazy."
+                              , content: D.text "Look at all this reference stuff."
                               , active: false
                               }
                      , widget { name: "Examples"
-                              , content: "This is some content like crazy."
+                              , content: D.text "Wow, examples!"
                               , active: false
                               }
                      , widget { name: "Notes"
-                              , content: "This is some content like crazy."
+                              , content: D.text "Knowtes."
                               , active: false
                               }
                      ]

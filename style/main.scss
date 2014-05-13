@@ -1,17 +1,20 @@
+// Foundation stuff.
+
+// Import the functions first so we can use them to override defaults.
+@import "bower_components/foundation/scss/foundation/functions.scss";
+// Override any defaults.
+$tabs-navigation-padding: rem-calc(10);
+
+// Import the rest of foundation so we can use variables defined in it.
 @import "bower_components/foundation/scss/foundation.scss";
 
 $workspace-extra-height: 200px;
-
 
 html, body {
     background-color: #f9f9f9;
     height: 100%;
     margin: 0;
     padding: 0;
-}
-
-.row {
-    max-width: 100%;
 }
 
 .column, .columns {
@@ -38,6 +41,7 @@ html, body {
     background-color: white;
     bottom: $workspace-extra-height + 10px;
     margin: 10px;
+    max-width: 100%;
     position: absolute;
     top: 0;
     & > .column, & > .columns {
@@ -53,6 +57,7 @@ html, body {
     bottom: 0;
     height: $workspace-extra-height;
     margin: 10px;
+    max-width: 100%;
     position: absolute;
     & > .column, & > .columns {
         border: 1px solid #d3d3d3;

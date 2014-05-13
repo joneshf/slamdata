@@ -3362,7 +3362,7 @@ table {
       display: block;
       background: #efefef;
       color: #222;
-      padding: 1rem 2rem;
+      padding: 0.625rem 1.25rem;
       font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
       font-size: 1rem; }
       .tabs dd > a:hover {
@@ -4743,9 +4743,6 @@ html, body {
   margin: 0;
   padding: 0; }
 
-.row {
-  max-width: 100%; }
-
 .column, .columns {
   padding-left: 0;
   padding-right: 0; }
@@ -4766,6 +4763,7 @@ html, body {
   background-color: white;
   bottom: 210px;
   margin: 10px;
+  max-width: 100%;
   position: absolute;
   top: 0; }
   #main-row > .column, #main-row > .columns {
@@ -4778,6 +4776,7 @@ html, body {
   bottom: 0;
   height: 200px;
   margin: 10px;
+  max-width: 100%;
   position: absolute; }
   #extra-row > .column, #extra-row > .columns {
     border: 1px solid #d3d3d3; }

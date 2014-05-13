@@ -2,6 +2,7 @@ module SlamData.App.Notebook (notebook) where
 
   import React
 
+  import SlamData.App.Notebook.Block
   import SlamData.App.Panel
   import SlamData.App.Panel.Widget
 
@@ -13,8 +14,11 @@ module SlamData.App.Notebook (notebook) where
   nbPanel :: UI
   nbPanel =
     panel { widgets: [ widget { name: "Untitled Notebook"
-                              , content: "This is some content like crazy."
+                              , content: markdown {content: "### wat"}
                               , active: true
                               }
                      ]
           }
+
+
+

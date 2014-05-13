@@ -10,7 +10,7 @@ module SlamData.App.FileSystem (filesystem) where
   filesystem :: UI
   filesystem =
     panel { widgets: [ widget { name: "File System"
-                              , content: "This is some content like crazy."
+                              , content: D.text "The filesystem tree should be here."
                               , active: true
                               }
                      ]

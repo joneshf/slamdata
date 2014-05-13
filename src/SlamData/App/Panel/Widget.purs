@@ -9,22 +9,22 @@ module SlamData.App.Panel.Widget (widget, Widget()) where
 
   type Widget = Tuple UI UI
 
-  widget :: { name :: String, content :: String, active :: Boolean } -> Widget
+  widget :: { name :: String, content :: UI, active :: Boolean } -> Widget
   widget props = Tuple tab cont
     where
       tab = makeTab props
       cont = makeCont props
 
-  makeTab :: { name :: String, content :: String, active :: Boolean } -> UI
+  makeTab :: { name :: String, content :: UI, active :: Boolean } -> UI
   makeTab props =
     D.dd { className: activate "" props.active }
          [ D.a { href: "#" ++ widgetizeName props.name } [ D.text props.name ] ]
-  makeCont :: { name :: String, content :: String, active :: Boolean } -> UI
+  makeCont :: { name :: String, content :: UI, active :: Boolean } -> UI
   makeCont props =
     D.div { className: activate "content" props.active
           , id: widgetizeName props.name
           }
-          [ D.text props.content ]
+          [ props.content ]
 
   activate :: String -> Boolean -> String
   activate s true  = s ++ " active"
