@@ -1,5 +1,7 @@
 module SlamData.App.Notebook (notebook) where
 
+  import Control.Monad.Eff
+
   import React
 
   import SlamData.Helpers
@@ -10,14 +12,27 @@ module SlamData.App.Notebook (notebook) where
   import qualified React.DOM as D
 
   notebook :: UI
-  notebook = nbPanel
+  notebook = nbPanel {}
 
-  nbPanel :: UI
-  nbPanel =
-    panel [ tab { name: "Untitled Notebook"
-                , content: []
+  nbPanel :: {} -> UI
+  nbPanel = mkUI spec { getInitialState = pure { content: [] } } do
+    state <- readState
+    pure $ panel [ tab { name: "Untitled Notebook"
+                , content: state.content
                 , external: [ action "Save", action "Publish" ]
-                , internal: [ action "Markdown", action "SQL" ]
+                , internal: [ D.li {}
+                                [ D.button { className: "tiny secondary button"
+                                      , onClick: handle $ addBlock Markdown
+                                      }
+                                  [ D.text "Markdown" ]
+                                ]
+                            , D.li {}
+                                [ D.button { className: "tiny secondary button"
+                                      , onClick: handle $ addBlock SQL
+                                      }
+                                  [ D.text "SQL" ]
+                                ]
+                            ]
                 , active: true
                 }
           , tab { name: "+"
@@ -27,3 +42,7 @@ module SlamData.App.Notebook (notebook) where
                 , active: false
                 }
           ]
+    where
+      addBlock ty = do
+        state <- readState
+        pure $ writeState {content: (block {blockType: ty}):state.content}

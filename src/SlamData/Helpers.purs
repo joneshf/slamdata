@@ -12,7 +12,7 @@ module SlamData.Helpers where
     div { className: "large-" ++ size ++ " columns" } [ ui ]
 
   action :: String -> UI
-  action name =  li {}
+  action name = li {}
     [ a { className: "tiny secondary button" }
           [ text name ]
     ]

@@ -1,6 +1,6 @@
 module SlamData.App.Notebook.Block
   ( block
-  , BlockType()
+  , BlockType(..)
   , markdown
   ) where
 
