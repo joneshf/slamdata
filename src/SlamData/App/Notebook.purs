@@ -19,19 +19,11 @@ module SlamData.App.Notebook (notebook) where
     state <- readState
     pure $ panel [ tab { name: "Untitled Notebook"
                 , content: state.content
-                , external: [ action "Save", action "Publish" ]
-                , internal: [ D.li {}
-                                [ D.button { className: "tiny secondary button"
-                                      , onClick: handle $ addBlock Markdown
-                                      }
-                                  [ D.text "Markdown" ]
-                                ]
-                            , D.li {}
-                                [ D.button { className: "tiny secondary button"
-                                      , onClick: handle $ addBlock SQL
-                                      }
-                                  [ D.text "SQL" ]
-                                ]
+                , external: [ action "Save"
+                            , action "Publish"
+                            ]
+                , internal: [ actionBlock Markdown
+                            , actionBlock SQL
                             ]
                 , active: true
                 }
@@ -43,6 +35,12 @@ module SlamData.App.Notebook (notebook) where
                 }
           ]
     where
+      actionBlock ty = D.li {}
+        [ D.button { className: "tiny secondary button"
+              , onClick: handle $ addBlock ty
+              }
+          [ D.text $ show ty ]
+        ]
       addBlock ty = do
         state <- readState
         pure $ writeState {content: (block {blockType: ty}):state.content}

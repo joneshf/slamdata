@@ -2,6 +2,7 @@ module SlamData.App.Notebook.Block
   ( block
   , BlockType(..)
   , markdown
+  , sql
   ) where
 
   import Data.Tuple
@@ -54,3 +55,6 @@ module SlamData.App.Notebook.Block
 
   markdown :: UI
   markdown = block { blockType: Markdown }
+
+  sql :: UI
+  sql = block { blockType: SQL }
