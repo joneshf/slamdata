@@ -85,15 +85,16 @@ html, body {
 }
 
 .tabs-content {
+    border-top: 1px solid $slamdata-border-color;
+    margin-top: -1px;
+    padding: 10px 5px;
     .content {
+        margin-top: 10px;
+        border-top: 1px solid $slamdata-border-color;
         padding: 15px;
     }
 }
 .toolbar {
-    border-top: 1px solid $slamdata-border-color;
-    border-bottom: 1px solid $slamdata-border-color;
-    margin-top: -1px;
-    padding: 10px 5px;
     .button {
         margin-bottom: 0;
     }

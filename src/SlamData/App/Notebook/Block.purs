@@ -11,7 +11,7 @@ module SlamData.App.Notebook.Block
 
   import SlamData.Helpers
   import SlamData.App.Panel
-  import SlamData.App.Panel.Widget
+  import SlamData.App.Panel.Tab
 
   import qualified React.DOM as D
 

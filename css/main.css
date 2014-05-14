@@ -4793,16 +4793,17 @@ html, body {
 .tabs dd:not(.active) > a {
   border-bottom: 1px solid #d3d3d3; }
 
-.tabs-content .content {
-  padding: 15px; }
-
-.toolbar {
+.tabs-content {
   border-top: 1px solid #d3d3d3;
-  border-bottom: 1px solid #d3d3d3;
   margin-top: -1px;
   padding: 10px 5px; }
-  .toolbar .button {
-    margin-bottom: 0; }
+  .tabs-content .content {
+    margin-top: 10px;
+    border-top: 1px solid #d3d3d3;
+    padding: 15px; }
+
+.toolbar .button {
+  margin-bottom: 0; }
 
 .button-group:last-of-type {
   margin-right: 0; }

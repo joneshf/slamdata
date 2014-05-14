@@ -3,7 +3,7 @@ module SlamData.App.Extra (extra) where
   import React
 
   import SlamData.App.Panel
-  import SlamData.App.Panel.Widget
+  import SlamData.App.Panel.Tab
 
   import qualified React.DOM as D
 
@@ -12,18 +12,22 @@ module SlamData.App.Extra (extra) where
 
   exPanel :: UI
   exPanel =
-    panel { widgets: [ widget { name: "Tasks"
-                              , content: D.text "Do some tasks."
-                              , active: true
-                              }
-                     , widget { name: "Sharing"
-                              , content: D.text "Show your friends."
-                              , active: false
-                              }
-                     , widget { name: "Chat"
-                              , content: D.text "Guess what he/she said."
-                              , active: false
-                              }
-                     ]
-          , actions: { external: [], internal: [] }
-          }
+    panel [ tab { name: "Tasks"
+                , content: [ D.text "Do some tasks." ]
+                , external: []
+                , internal: []
+                , active: true
+                }
+          , tab { name: "Sharing"
+                , content: [ D.text "Show your friends." ]
+                , external: []
+                , internal: []
+                , active: false
+                }
+          , tab { name: "Chat"
+                , content: [ D.text "Guess what he/she said." ]
+                , external: []
+                , internal: []
+                , active: false
+                }
+          ]

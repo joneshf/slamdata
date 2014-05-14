@@ -2,17 +2,21 @@ module SlamData.App.FileSystem (filesystem) where
 
   import React
 
+  import SlamData.Helpers
   import SlamData.App.Panel
-  import SlamData.App.Panel.Widget
+  import SlamData.App.Panel.Tab
 
   import qualified React.DOM as D
 
   filesystem :: UI
   filesystem =
-    panel { widgets: [ widget { name: "File System"
-                              , content: D.text "The filesystem tree should be here."
-                              , active: true
-                              }
-                     ]
-          , actions: { external: [], internal: [] }
-          }
+    panel [ tab { name: "File System"
+                , content: [ D.text "The filesystem tree should be here." ]
+                , active: true
+                , external: []
+                , internal: [ action "New"
+                            , action "Open"
+                            , action "Delete"
+                            ]
+                }
+          ]
