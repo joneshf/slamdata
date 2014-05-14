@@ -29,4 +29,5 @@ module SlamData.App.Reference (reference) where
                               , active: false
                               }
                      ]
+          , actions: { external: [], internal: [] }
           }

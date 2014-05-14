@@ -4793,11 +4793,25 @@ html, body {
 .tabs dd:not(.active) > a {
   border-bottom: 1px solid #d3d3d3; }
 
-.tabs-content {
+.tabs-content .content {
+  padding: 15px; }
+
+.toolbar {
   border-top: 1px solid #d3d3d3;
-  margin-top: -1px; }
-  .tabs-content .content {
-    padding: 15px; }
+  border-bottom: 1px solid #d3d3d3;
+  margin-top: -1px;
+  padding: 10px 5px; }
+  .toolbar .button {
+    margin-bottom: 0; }
+
+.button-group:last-of-type {
+  margin-right: 0; }
+
+.block-toolbar div {
+  position: relative; }
+.block-toolbar .block-type {
+  bottom: 0;
+  position: absolute; }
 
 .block-editor {
   min-height: 150px; }

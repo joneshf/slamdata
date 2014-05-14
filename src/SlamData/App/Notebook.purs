@@ -2,6 +2,7 @@ module SlamData.App.Notebook (notebook) where
 
   import React
 
+  import SlamData.Helpers
   import SlamData.App.Notebook.Block
   import SlamData.App.Panel
   import SlamData.App.Panel.Widget
@@ -14,7 +15,7 @@ module SlamData.App.Notebook (notebook) where
   nbPanel :: UI
   nbPanel =
     panel { widgets: [ widget { name: "Untitled Notebook"
-                              , content: block
+                              , content: markdown
                               , active: true
                               }
                      , widget { name: "+"
@@ -22,6 +23,9 @@ module SlamData.App.Notebook (notebook) where
                               , active: false
                               }
                      ]
+          , actions: { external: [ action "Save", action "Publish" ]
+                     , internal: [ action "Markdown", action "SQL" ]
+                     }
           }
 
 

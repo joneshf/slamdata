@@ -14,4 +14,5 @@ module SlamData.App.FileSystem (filesystem) where
                               , active: true
                               }
                      ]
+          , actions: { external: [], internal: [] }
           }

@@ -85,10 +85,31 @@ html, body {
 }
 
 .tabs-content {
-    border-top: 1px solid $slamdata-border-color;
-    margin-top: -1px;
     .content {
         padding: 15px;
+    }
+}
+.toolbar {
+    border-top: 1px solid $slamdata-border-color;
+    border-bottom: 1px solid $slamdata-border-color;
+    margin-top: -1px;
+    padding: 10px 5px;
+    .button {
+        margin-bottom: 0;
+    }
+}
+
+.button-group:last-of-type {
+    margin-right: 0;
+}
+
+.block-toolbar {
+    div {
+        position: relative;
+    }
+    .block-type {
+        bottom: 0;
+        position: absolute;
     }
 }
 

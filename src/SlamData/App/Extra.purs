@@ -25,4 +25,5 @@ module SlamData.App.Extra (extra) where
                               , active: false
                               }
                      ]
+          , actions: { external: [], internal: [] }
           }

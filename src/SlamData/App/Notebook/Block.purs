@@ -1,4 +1,8 @@
-module SlamData.App.Notebook.Block (block) where
+module SlamData.App.Notebook.Block
+  ( block
+  , BlockType()
+  , markdown
+  ) where
 
   import Data.Tuple
 
@@ -11,32 +15,26 @@ module SlamData.App.Notebook.Block (block) where
 
   import qualified React.DOM as D
 
-  block :: UI
-  block = D.div {}
-    [ D.div {}
-        [ large "2" selectType
-        , large "10" toolbar
-        ]
-    , blockEditor
-    ]
+  data BlockType = Markdown | SQL
 
-  selectType :: UI
-  selectType = D.div {}
-    [ D.a { className: "tiny secondary button"
-          , "data-dropdown": "blockType"
-          }
-          [ D.text "Choose type..." ]
-    , D.ul { id: "blockType"
-           , className: "f-dropdown"
-           , "data-dropdown-content": true
-           }
-           [ D.li {}
-              [ D.a {} [ D.text "markdown" ]
-              ]
-           , D.li {}
-              [ D.a {} [ D.text "SQL" ]
-              ]
-           ]
+  instance showBlockType :: Show BlockType where
+    show Markdown = "Markdown"
+    show SQL = "SQL"
+
+  block :: { blockType :: BlockType } -> UI
+  block = mkUI spec do
+    props <- getProps
+    pure $ D.div {}
+      [ D.div { className: "block-toolbar" }
+          [ large "1" (blockType props.blockType)
+          , large "11" toolbar
+          ]
+      , blockEditor
+      ]
+
+  blockType :: BlockType -> UI
+  blockType ty = D.h3 {}
+    [ D.small {} [ D.text $ show ty ]
     ]
 
   toolbar :: UI
@@ -49,13 +47,10 @@ module SlamData.App.Notebook.Block (block) where
         ]
     ]
 
-  action :: String -> UI
-  action name =  D.li {}
-    [ D.a { className: "tiny secondary button" }
-          [ D.text name ]
-    ]
-
   blockEditor :: UI
   blockEditor = D.div {}
     [ D.textarea { className: "block-editor" } []
     ]
+
+  markdown :: UI
+  markdown = block { blockType: Markdown }
