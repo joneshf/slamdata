@@ -1,25 +1,40 @@
 module SlamData.App.Menu (menu) where
 
+  import Data.Array
+
   import React
 
   import qualified React.DOM as D
 
   menu :: UI
   menu = D.nav { className: "top-bar"
-               , "data-options": "is_hover: false"
                }
     [ D.section { className: "top-bar-section" }
-        [ D.ul { className: "left" }
-            [ menuButton { name: "File" }
-            , menuButton { name: "Edit" }
-            , menuButton { name: "Code" }
-            , menuButton { name: "Collaborate" }
-            , menuButton { name: "Help" }
+        [ D.ul { className: "title-area" }
+            [ D.li {} [] ]
+        , D.ul { className: "left" }
+            [ fileMenu
+            , command "Edit"
+            , command "Code"
+            , command "Collaborate"
+            , command "Help"
             ]
         ]
     ]
 
-  menuButton :: {name :: String} -> UI
-  menuButton = mkUI spec do
-    props <- getProps
-    pure $ D.li {} [ D.a {} [ D.text props.name ] ]
+  fileMenu :: UI
+  fileMenu = D.li { className: "has-dropdown" }
+    [ D.a {} [ D.text "File" ]
+    , D.ul { className: "dropdown" } $
+        command <$> [ "New"
+                    , "Open..."
+                    , "Open recent"
+                    , "Revert to..."
+                    , "Browse history..."
+                    ]
+    ]
+
+  command :: String -> UI
+  command name = D.li {}
+    [ D.a {} [ D.text name ]
+    ]

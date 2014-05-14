@@ -17,8 +17,8 @@ module SlamData.App.Workspace (workspace) where
             , id: "main-row"
             , "data-equalizer": true
             }
-            [ large "3" filesystem
-            , large "6" notebook
+            [ large "2" filesystem
+            , large "7" notebook
             , large "3" reference
             ]
     , D.div { className: "row"

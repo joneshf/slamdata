@@ -1,3 +1,4 @@
+/* TODO: This needs to be re-factored into more manageable pieces. */
 meta.foundation-version {
   font-family: "/5.2.2/"; }
 
@@ -4747,9 +4748,6 @@ html, body {
   padding-left: 0;
   padding-right: 0; }
 
-.tabs dd.active a {
-  background-color: #DDD; }
-
 #content {
   height: 100%; }
 
@@ -4787,3 +4785,19 @@ html, body {
   bottom: 200px;
   height: 100%;
   overflow: auto; }
+
+.tabs dd > a {
+  border: 1px solid #d3d3d3;
+  border-bottom: 1px solid white;
+  margin-right: -1px; }
+.tabs dd:not(.active) > a {
+  border-bottom: 1px solid #d3d3d3; }
+
+.tabs-content {
+  border-top: 1px solid #d3d3d3;
+  margin-top: -1px; }
+  .tabs-content .content {
+    padding: 15px; }
+
+.block-editor {
+  min-height: 150px; }

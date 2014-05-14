@@ -1,3 +1,5 @@
+/* TODO: This needs to be re-factored into more manageable pieces. */
+
 // Foundation stuff.
 
 // Import the functions first so we can use them to override defaults.
@@ -9,6 +11,7 @@ $tabs-navigation-padding: rem-calc(10);
 @import "bower_components/foundation/scss/foundation.scss";
 
 $workspace-extra-height: 200px;
+$slamdata-border-color: #d3d3d3;
 
 html, body {
     background-color: #f9f9f9;
@@ -20,10 +23,6 @@ html, body {
 .column, .columns {
     padding-left: 0;
     padding-right: 0;
-}
-
-.tabs dd.active a {
-    background-color: #DDD;
 }
 
 #content {
@@ -45,7 +44,7 @@ html, body {
     position: absolute;
     top: 0;
     & > .column, & > .columns {
-        border: 1px solid #d3d3d3;
+        border: 1px solid $slamdata-border-color;
     }
     & > div {
         height: 100%;
@@ -60,7 +59,7 @@ html, body {
     max-width: 100%;
     position: absolute;
     & > .column, & > .columns {
-        border: 1px solid #d3d3d3;
+        border: 1px solid $slamdata-border-color;
     }
     & > div {
         height: 100%;
@@ -71,4 +70,28 @@ html, body {
     bottom: $workspace-extra-height;
     height: 100%;
     overflow: auto;
+}
+
+// Add borders to Foundation 5's tabs.
+.tabs {
+    dd > a {
+        border: 1px solid $slamdata-border-color;
+        border-bottom: 1px solid white;
+        margin-right: -1px;
+    }
+    dd:not(.active) > a {
+        border-bottom: 1px solid $slamdata-border-color;
+    }
+}
+
+.tabs-content {
+    border-top: 1px solid $slamdata-border-color;
+    margin-top: -1px;
+    .content {
+        padding: 15px;
+    }
+}
+
+.block-editor {
+    min-height: 150px;
 }
