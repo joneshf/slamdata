@@ -7,6 +7,8 @@ module SlamData.App.Panel.Widget (widget, Widget()) where
 
   import qualified React.DOM as D
 
+  -- This is a widget in the sense of a placeholder name, not a UI Widget
+  -- It should probably be changed at some point.
   type Widget = Tuple UI UI
 
   widget :: { name :: String, content :: UI, active :: Boolean } -> Widget
