@@ -27,16 +27,16 @@ module SlamData.Login (loginForm) where
   loginForm :: {} -> UI
   loginForm = mkUI spec {getInitialState = pure { newAccount: Existing }} do
     state <- readState
-    pure $ form {}
-      [ fieldset {}
-          [ legend {} [ text "Login to SlamData" ]
+    pure $ form []
+      [ fieldset []
+          [ legend [] [ text "Login to SlamData" ]
           , row [ large "6" $ newOrExisting { newAccount: state.newAccount
                                          , onChangeNew: handle changeNew
                                          }
                 , large "6" demo
                 ]
           , information { newAccount: state.newAccount }
-          , row [ large "6" $ div {} []
+          , row [ large "6" $ div [] []
                 , large "6" $ createOrLogin { newAccount: state.newAccount }
                 ]
           ]
@@ -46,17 +46,17 @@ module SlamData.Login (loginForm) where
   newOrExisting = mkUI spec do
     props <- getProps
     let radioWithLabel {labelText = l, value = v} =
-        p {} [ input { attrType: "radio"
-                     , checked: props.newAccount == v
-                     , id: show v
-                     , name: "new-or-existing"
-                     , onChange: handle $ newAccountChanged v
-                     }
+        p [] [ input [ typeProp "radio"
+                     , checked $ show $ props.newAccount == v
+                     , idProp $ show v
+                     , name "new-or-existing"
+                     , onChange $ newAccountChanged v
+                     ]
                      []
-             , label { htmlFor: show v }
+             , label [ htmlFor $ show v ]
                      [ text l ]
              ]
-    pure $ div {}
+    pure $ div []
       [ radioWithLabel { labelText: "I have an existing account."
                        , value: Existing
                        }
@@ -65,24 +65,24 @@ module SlamData.Login (loginForm) where
                        }
       ]
     where
-      newAccountChanged val = do
+      newAccountChanged val _ = do
         props <- getProps
         pure $ props.onChangeNew { newAccount: val }
 
   demo :: UI
   demo =
-    button { className: "right secondary" }
+    button [ className "right secondary" ]
       [ text "Try Demo!" ]
 
   information :: { newAccount :: NewOrExisting } -> UI
   information = mkUI spec do
     props <- getProps
     let info = if isNew props.newAccount then [alwaysInfo, newInfo] else [alwaysInfo]
-    pure $ div {} info
+    pure $ div [] info
 
   alwaysInfo :: UI
   alwaysInfo =
-    div {}
+    div []
       [ row $ large "6" <$> [ validationText { label: "Email" }
                          , validationText { label: "Password" }
                          ]
@@ -90,7 +90,7 @@ module SlamData.Login (loginForm) where
 
   newInfo :: UI
   newInfo =
-    div {}
+    div []
       [ row $ large "6" <$> [ validationText { label: "Name" }
                          , validationText { label: "Confirm Password" }
                          , validationText { label: "Company" }
@@ -101,12 +101,12 @@ module SlamData.Login (loginForm) where
   validationText :: { label :: String } -> UI
   validationText = mkUI spec do
     props <- getProps
-    pure $ div {}
-      [ label { htmlFor: toLower props.label }
+    pure $ div []
+      [ label [ htmlFor $ toLower props.label ]
               [ text props.label ]
-      , input { attrType: "text"
-              , id: toLower props.label
-              }
+      , input [ typeProp "text"
+              , idProp $ toLower props.label
+              ]
               []
       ]
 
@@ -114,9 +114,9 @@ module SlamData.Login (loginForm) where
   createOrLogin = mkUI spec do
     props <- getProps
     let buttonText = if isNew props.newAccount then "Create Account" else "Login"
-    pure $ div {}
-      [ div {} []
-      , button { className: "right" }
+    pure $ div []
+      [ div [] []
+      , button [ className "right" ]
                [ text buttonText ]
       ]
 
@@ -132,7 +132,7 @@ module SlamData.Login (loginForm) where
   foreign import changeNew
     "function changeNew(state) {\
     \  React.writeState(state);\
-    \}" :: forall a eff. Eff eff a
+    \}" :: forall a e eff. e -> Eff eff a
 
   -- This should be in `React`
   foreign import getDOMNode

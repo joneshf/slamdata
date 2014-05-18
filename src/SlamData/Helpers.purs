@@ -5,14 +5,13 @@ module SlamData.Helpers where
 
   -- | Foundation stuff.
   row :: [UI] -> UI
-  row uis = div { className: "row" } uis
+  row uis = div [ClassName "row" ] uis
 
   large :: String -> UI -> UI
   large size ui =
-    div { className: "large-" ++ size ++ " columns" } [ ui ]
+    div [ClassName $ "large-" ++ size ++ " columns" ] [ ui ]
 
-  action :: String -> UI
-  action name = li {}
-    [ a { className: "tiny secondary button" }
-          [ text name ]
+  actionButton :: String -> UI
+  actionButton name = li []
+    [ a [ClassName "tiny secondary button" ] [text name]
     ]

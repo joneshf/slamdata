@@ -25,8 +25,8 @@ module SlamData.App.Notebook.Block
   block :: { blockType :: BlockType } -> UI
   block = mkUI spec do
     props <- getProps
-    pure $ D.div {}
-      [ D.div { className: "block-toolbar" }
+    pure $ D.div []
+      [ D.div [ D.className "block-toolbar" ]
           [ large "1" (blockType props.blockType)
           , large "11" toolbar
           ]
@@ -34,23 +34,23 @@ module SlamData.App.Notebook.Block
       ]
 
   blockType :: BlockType -> UI
-  blockType ty = D.h3 {}
-    [ D.small {} [ D.text $ show ty ]
+  blockType ty = D.h3 []
+    [ D.small [] [ D.text $ show ty ]
     ]
 
   toolbar :: UI
-  toolbar = D.div { className: "button-bar" }
-    [ D.ul { className: "left button-group" }
-        [ action "Preview"
+  toolbar = D.div [ D.className "button-bar" ]
+    [ D.ul [ D.className "left button-group" ]
+        [ actionButton "Preview"
         ]
-    , D.ul { className: "right button-group" }
-        [ action "X"
+    , D.ul [ D.className "right button-group" ]
+        [ actionButton "X"
         ]
     ]
 
   blockEditor :: UI
-  blockEditor = D.div {}
-    [ D.textarea { className: "block-editor" } []
+  blockEditor = D.div []
+    [ D.textarea [ D.className "block-editor" ] []
     ]
 
   markdown :: UI

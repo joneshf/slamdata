@@ -8,7 +8,7 @@ module SlamData.App (app) where
   import qualified React.DOM as D
 
   app :: UI
-  app = D.div {}
+  app = D.div'
     [ menu
     , workspace
     ]

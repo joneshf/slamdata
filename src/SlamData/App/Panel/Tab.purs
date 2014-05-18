@@ -37,13 +37,13 @@ module SlamData.App.Panel.Tab
 
   makeTabName :: forall p. { name :: String, content :: [UI], active :: Boolean | p } -> UI
   makeTabName props =
-    D.dd { className: activate "" props.active }
-         [ D.a { href: "#" ++ tabizeName props.name } [ D.text props.name ] ]
+    D.dd [D.ClassName $ activate "" props.active ]
+         [ D.a [D.Href $ "#" ++ tabizeName props.name ] [ D.text props.name ] ]
   makeCont :: forall p. { name :: String, content :: [UI], active :: Boolean | p } -> UI
   makeCont props =
-    D.div { className: activate "content" props.active
-          , id: tabizeName props.name
-          }
+    D.div [D.ClassName $ activate "content" props.active
+          , D.Id $ tabizeName props.name
+          ]
           props.content
 
   activate :: String -> Boolean -> String

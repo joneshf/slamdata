@@ -1,5 +1,7 @@
 module SlamData.App.Workspace (workspace) where
 
+  import Data.Array
+
   import React
 
   import SlamData.App.Extra
@@ -12,17 +14,17 @@ module SlamData.App.Workspace (workspace) where
   import qualified React.DOM as D
 
   workspace :: UI
-  workspace = D.div { id: "workspace" }
-    [ D.div { className: "row"
-            , id: "main-row"
-            , "data-equalizer": true
-            }
+  workspace = D.div [ D.idProp "workspace" ] $
+    [ D.div [ D.className "row"
+            , D.idProp "main-row"
+            , D.dataProp {"equalizer": true}
+            ]
             [ large "2" filesystem
             , large "7" notebook
             , large "3" reference
             ]
-    , D.div { className: "row"
-            , id: "extra-row"
-            }
+    , D.div [ D.className "row"
+            , D.idProp "extra-row"
+            ]
             [ large "12" extra ]
     ]
