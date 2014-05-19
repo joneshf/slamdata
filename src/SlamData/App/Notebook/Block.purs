@@ -40,18 +40,18 @@ module SlamData.App.Notebook.Block
     props <- getProps
     let ty = props.blockType
     let cont = props.content
-    if state.edit == Edit then
-      pure $ [ D.div [ D.className "block-toolbar" ] $
-                 [ D.div [ D.className "large-1 columns" ] [blockType ty]
-                 , D.div [ D.className "large-11 columns" ]
-                         [ toolbar ty
-                         ]
-                 ]
-             , blockEditor ty cont
-             ]
+    pure $ if state.edit == Edit
+      then D.div'
+        [ D.div [ D.className "block-toolbar" ] $
+            [ D.div [ D.className "large-1 columns" ] [blockType ty]
+            , D.div [ D.className "large-11 columns" ]
+                    [ toolbar ty
+                    ]
+            ]
+        , blockEditor ty cont
+        ]
       else
-    -- block {blockType = Markdown, content = cont} =
-        pure $ D.div [D.dangerouslySetInnerHTML $ makeHtml cont] []
+        D.div [D.dangerouslySetInnerHTML $ makeHtml cont] []
 
   blockType :: BlockType -> UI
   blockType ty = D.h3'
@@ -65,8 +65,11 @@ module SlamData.App.Notebook.Block
     ]
     where
       standardButtons = [ actionButton {name: "X", click: pure {}} ]
-      specificButtons Markdown = [ actionButton {name: "Preview", click: pure {}} ]
-      specificButtons SQL      = [ actionButton {name: "Run", click: pure {}} ]
+      specificButtons Markdown = [ actionButton {name: "Preview", click: eval} ]
+      specificButtons SQL      = [ actionButton {name: "Run", click: eval} ]
+  eval = do
+    state <- readState
+    pure $ writeState {edit: Eval}
 
   blockEditor :: BlockType -> String -> UI
   blockEditor _ content = D.div'
