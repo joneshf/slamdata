@@ -2,4 +2,5 @@
 .vagrant
 bower_components
 js
+css
 node_modules
