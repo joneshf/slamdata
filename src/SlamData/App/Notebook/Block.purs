@@ -1,8 +1,9 @@
 module SlamData.App.Notebook.Block
   ( block
-  , Block()
   , BlockType(..)
   ) where
+
+  import Control.Monad.Eff
 
   import Data.Tuple
 
@@ -15,12 +16,10 @@ module SlamData.App.Notebook.Block
 
   import qualified React.DOM as D
 
-  type Block = { blockType :: BlockType
-               , content :: String
-               , editor :: Editor
-               }
   data BlockType = Markdown | SQL
   data Editor = Edit | Eval
+
+  type BlockState = { edit :: Editor, content :: String }
 
   instance eqEditor :: Eq Editor where
     (==) Edit Edit = true
@@ -33,16 +32,15 @@ module SlamData.App.Notebook.Block
     show Markdown = "Markdown"
     show SQL = "SQL"
 
-  -- block :: forall props. {| props} -> UI
-  -- block {blockType = ty, content = cont} = D.div'
-  block = mkUI spec {getInitialState = pure {edit: Edit}} do
+  block :: {blockType :: BlockType} -> UI
+  block = mkUI spec {getInitialState = pure {edit: Edit, content: ""}} do
     state <- readState
     props <- getProps
     let ty = props.blockType
-    let cont = props.content
+    let cont = state.content
     pure $ if state.edit == Edit
       then D.div'
-        [ D.div [ D.className "block-toolbar" ] $
+        [ D.div [ D.className "block-toolbar" ]
             [ D.div [ D.className "large-1 columns" ] [blockType ty]
             , D.div [ D.className "large-11 columns" ]
                     [ toolbar ty
@@ -51,7 +49,7 @@ module SlamData.App.Notebook.Block
         , blockEditor ty cont
         ]
       else
-        D.div [D.dangerouslySetInnerHTML $ makeHtml cont] []
+        evalMarkdown cont
 
   blockType :: BlockType -> UI
   blockType ty = D.h3'
@@ -67,11 +65,24 @@ module SlamData.App.Notebook.Block
       standardButtons = [ actionButton {name: "X", click: pure {}} ]
       specificButtons Markdown = [ actionButton {name: "Preview", click: eval} ]
       specificButtons SQL      = [ actionButton {name: "Run", click: eval} ]
+
+  eval ::forall attrs.
+    EventHandlerContext (f :: ReadRefsEff { editor :: Component attrs {value :: String} })
+                        {}
+                        BlockState
+                        (ReactStateRW BlockState BlockState)
   eval = do
-    state <- readState
-    pure $ writeState {edit: Eval}
+    refs <- getRefs
+    pure $ writeState {edit: Eval, content: (getDOMNode refs.editor).value}
 
   blockEditor :: BlockType -> String -> UI
   blockEditor _ content = D.div'
-    [ D.textarea [ D.className "block-editor" ] [D.text content]
+    [ D.textarea [ D.className "block-editor"
+                 , D.ref "editor"
+                 ]
+                 [D.text content]
     ]
+
+  evalMarkdown :: String -> UI
+  evalMarkdown content =
+    D.span [D.dangerouslySetInnerHTML $ makeHtml content] []

@@ -133,9 +133,3 @@ module SlamData.Login (loginForm) where
     "function changeNew(state) {\
     \  React.writeState(state);\
     \}" :: forall a e eff. e -> Eff eff a
-
-  -- This should be in `React`
-  foreign import getDOMNode
-    "function getDOMNode(x) {\
-    \  return x.getDOMNode();\
-    \}" :: forall a b. a -> b
