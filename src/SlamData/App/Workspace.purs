@@ -17,7 +17,7 @@ module SlamData.App.Workspace (workspace) where
   workspace = D.div [ D.idProp "workspace" ] $
     [ D.div [ D.className "row"
             , D.idProp "main-row"
-            , D.dataProp {"equalizer": true}
+            , D.dataSet {"equalizer": true}
             ]
             [ large "2" filesystem
             , large "7" notebook

@@ -10,7 +10,7 @@ module SlamData.App.Menu (menu) where
   menu = D.nav [D.ClassName "top-bar"]
     [ D.section [D.ClassName "top-bar-section"]
         [ D.ul [D.ClassName "title-area"]
-            [ D.li [] [] ]
+            [ D.li' [] ]
         , D.ul [D.ClassName "left"]
             [ fileMenu
             , command "Edit"
@@ -23,7 +23,7 @@ module SlamData.App.Menu (menu) where
 
   fileMenu :: UI
   fileMenu = D.li [D.ClassName "has-dropdown"]
-    [ D.a [] [ D.text "File" ]
+    [ D.a' [ D.text "File" ]
     , D.ul [D.ClassName "dropdown"] $
         command <$> [ "New"
                     , "Open..."
@@ -34,6 +34,6 @@ module SlamData.App.Menu (menu) where
     ]
 
   command :: String -> UI
-  command name = D.li []
-    [ D.a [] [ D.text name ]
+  command name = D.li'
+    [ D.a' [ D.text name ]
     ]

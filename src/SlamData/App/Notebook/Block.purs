@@ -27,10 +27,10 @@ module SlamData.App.Notebook.Block
     [ D.div [ D.className "block-toolbar" ]
         [ D.div [ D.className "large-1 columns" ] [blockType ty]
         , D.div [ D.className "large-11 columns" ]
-                [ toolbar {}
+                [ toolbar ty
                 ]
         ]
-    , blockEditor {}
+    , blockEditor ty
     ]
 
   blockType :: BlockType -> UI
@@ -38,25 +38,17 @@ module SlamData.App.Notebook.Block
     [ D.small' [ D.text $ show ty ]
     ]
 
-  -- TODO: purescript-react should take care of this better,
-  -- We have to ensure we're not creating a "var" in jsland,
-  -- otherwise the component gets reused and we start violating invariants
-  -- in React.
-  toolbar :: {} -> UI
-  toolbar _ = D.div [ D.className "button-bar" ]
-    [ D.ul [ D.className "left button-group" ]
-        [ actionButton "Preview"
-        ]
-    , D.ul [ D.className "right button-group" ]
-        [ actionButton "X"
-        ]
+  toolbar :: BlockType -> UI
+  toolbar ty = D.div [ D.className "button-bar" ]
+    [ D.ul [ D.className "left button-group" ] (specificButtons ty)
+    , D.ul [ D.className "right button-group" ] standardButtons
     ]
+      where
+        standardButtons = [ actionButton "X" ]
+        specificButtons Markdown = [ actionButton "Preview" ]
+        specificButtons SQL      = [ actionButton "Run" ]
 
-  -- TODO: purescript-react should take care of this better,
-  -- We have to ensure we're not creating a "var" in jsland,
-  -- otherwise the component gets reused and we start violating invariants
-  -- in React.
-  blockEditor :: {} -> UI
+  blockEditor :: BlockType -> UI
   blockEditor _ = D.div'
     [ D.textarea [ D.className "block-editor" ] []
     ]
