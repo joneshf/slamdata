@@ -1,5 +1,6 @@
 var gulp = require('gulp')
   , clean = require('gulp-clean')
+  , concat = require('gulp-concat')
   , purescript = require('gulp-purescript')
   , sass = require('gulp-sass');
 
@@ -9,13 +10,31 @@ paths = {
         'bower_components/purescript-*/src/**/*.purs'
     ],
     style: 'style/**/*.scss',
-    css: 'css'
+    css: 'css',
+    build: {
+        js: 'bin/js',
+        css: 'bin/css',
+        index: 'bin/index.html'
+    },
+    concat: [
+        'bower_components/modernizr/modernizr.js',
+        'bower_components/showdown/src/showdown.js',
+        'bower_components/react/react-with-addons.js',
+        'bower_components/jquery/dist/jquery.js',
+        'bower_components/fastclick/lib/fastclick.js',
+        'bower_components/foundation/js/foundation.js',
+        'js/slamdata.js'
+    ]
 }
 
 options = {
     compile: {
         main: 'SlamData',
         output: 'js/slamdata.js'
+    },
+    build: {
+        main: 'SlamData',
+        output: 'slamdata.js'
     }
 }
 
@@ -54,4 +73,24 @@ gulp.task('watch', function() {
     gulp.watch(paths.style, ['sass']);
 });
 
+gulp.task('sass-build', function() {
+    var scss = sass();
+    scss.on('error', function(e) {
+        console.error(e.message);
+        scss.end();
+    });
+    // There's something wonky going on with gulp-sass.
+    // Removing the return allows things to operate more fluidly.
+    gulp.src(paths.style)
+        .pipe(scss)
+        .pipe(gulp.dest(paths.build.css));
+});
+
+gulp.task('concat', function() {
+    return gulp.src(paths.concat)
+      .pipe(concat(options.build.output))
+      .pipe(gulp.dest(paths.build.js));
+});
+
 gulp.task('default', ['compile', 'sass', 'watch']);
+gulp.task('build', ['compile', 'sass-build', 'concat']);
