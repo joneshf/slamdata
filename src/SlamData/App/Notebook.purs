@@ -15,12 +15,12 @@ module SlamData.App.Notebook (notebook) where
   notebook = nbPanel {}
 
   nbPanel :: {} -> UI
-  nbPanel = mkUI spec { getInitialState = pure { content: [] } } do
+  nbPanel = mkUI spec { getInitialState = pure { content: [{blockType: Markdown, content: "### Wat\n1. Does this work?\n1. Sure"}] } } do
     state <- readState
     pure $ panel [ tab { name: "Untitled Notebook"
-                       , content: (\ty -> block {blockType: ty}) <$> state.content
-                       , external: [ actionButton "Save"
-                                   , actionButton "Publish"
+                       , content: renderBlock <$> state.content
+                       , external: [ actionButton {name: "Save", click: pure {}}
+                                   , actionButton {name: "Publish", click: pure {}}
                                    ]
                        , internal: [ actionBlock Markdown
                                    , actionBlock SQL
@@ -43,4 +43,6 @@ module SlamData.App.Notebook (notebook) where
         ]
       addBlock ty = do
         state <- readState
-        pure $ writeState {content: ty:state.content}
+        pure $ writeState {content: {blockType: ty, content: ""}:state.content}
+      renderBlock {blockType = ty, content = c} =
+        block {blockType: ty, content: c}

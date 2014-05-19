@@ -11,7 +11,9 @@ module SlamData.Helpers where
   large size ui =
     div [ClassName $ "large-" ++ size ++ " columns" ] [ ui ]
 
-  actionButton :: String -> UI
-  actionButton name = li'
-    [ a [ClassName "tiny secondary button" ] [text name]
+  -- actionButton :: {name :: String, click :: EventHandler} -> UI
+  actionButton props = li'
+    [ a [ ClassName "tiny secondary button"
+        , onClick $ \_ -> props.click
+        ] [text props.name]
     ]
