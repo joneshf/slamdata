@@ -35,7 +35,7 @@ module SlamData.App.Panel.Tab
       tabName = makeTabName props
       cont = makeCont props
 
-  makeTabName :: forall p. { name :: String, content :: [UI], active :: Boolean | p } -> UI
+  makeTabName :: forall p. { name :: String, active :: Boolean | p } -> UI
   makeTabName props =
     D.dd [D.ClassName $ activate "" props.active ]
          [ D.a [D.Href $ "#" ++ tabizeName props.name ] [ D.text props.name ] ]

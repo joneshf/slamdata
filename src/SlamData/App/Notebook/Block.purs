@@ -23,23 +23,27 @@ module SlamData.App.Notebook.Block
     show SQL = "SQL"
 
   block :: { blockType :: BlockType } -> UI
-  block = mkUI spec do
-    props <- getProps
-    pure $ D.div []
-      [ D.div [ D.className "block-toolbar" ]
-          [ large "1" (blockType props.blockType)
-          , large "11" toolbar
-          ]
-      , blockEditor
-      ]
-
-  blockType :: BlockType -> UI
-  blockType ty = D.h3 []
-    [ D.small [] [ D.text $ show ty ]
+  block {blockType = ty} = D.div'
+    [ D.div [ D.className "block-toolbar" ]
+        [ D.div [ D.className "large-1 columns" ] [blockType ty]
+        , D.div [ D.className "large-11 columns" ]
+                [ toolbar {}
+                ]
+        ]
+    , blockEditor {}
     ]
 
-  toolbar :: UI
-  toolbar = D.div [ D.className "button-bar" ]
+  blockType :: BlockType -> UI
+  blockType ty = D.h3'
+    [ D.small' [ D.text $ show ty ]
+    ]
+
+  -- TODO: purescript-react should take care of this better,
+  -- We have to ensure we're not creating a "var" in jsland,
+  -- otherwise the component gets reused and we start violating invariants
+  -- in React.
+  toolbar :: {} -> UI
+  toolbar _ = D.div [ D.className "button-bar" ]
     [ D.ul [ D.className "left button-group" ]
         [ actionButton "Preview"
         ]
@@ -48,8 +52,12 @@ module SlamData.App.Notebook.Block
         ]
     ]
 
-  blockEditor :: UI
-  blockEditor = D.div []
+  -- TODO: purescript-react should take care of this better,
+  -- We have to ensure we're not creating a "var" in jsland,
+  -- otherwise the component gets reused and we start violating invariants
+  -- in React.
+  blockEditor :: {} -> UI
+  blockEditor _ = D.div'
     [ D.textarea [ D.className "block-editor" ] []
     ]
 

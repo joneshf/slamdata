@@ -12,6 +12,6 @@ module SlamData.Helpers where
     div [ClassName $ "large-" ++ size ++ " columns" ] [ ui ]
 
   actionButton :: String -> UI
-  actionButton name = li []
+  actionButton name = li'
     [ a [ClassName "tiny secondary button" ] [text name]
     ]
