@@ -1,6 +1,8 @@
 module SlamData.App.Notebook.Block
   ( block
   , BlockType(..)
+  , BlockProps(..)
+  , BlockState(..)
   ) where
 
   import Control.Monad.Eff
@@ -20,6 +22,11 @@ module SlamData.App.Notebook.Block
   data Editor = Edit | Eval
 
   type BlockState = { edit :: Editor, content :: String }
+  type BlockProps eff state result =
+    { blockType :: BlockType
+    , index :: Number
+    , close :: EventHandlerContext eff {} state result
+    }
 
   instance eqEditor :: Eq Editor where
     (==) Edit Edit = true
@@ -32,13 +39,19 @@ module SlamData.App.Notebook.Block
     show Markdown = "Markdown"
     show SQL = "SQL"
 
-  block :: forall eff state result.
-    { blockType :: BlockType
-    , index :: Number
-    , close :: EventHandlerContext eff {} state result
-    }
-    -> UI
-  block = mkUI spec {getInitialState = pure {edit: Edit, content: ""}} do
+  didMount :: forall eff props attrs state result.
+    ReadWriteState (BlockProps eff state result)
+                   {editor :: Component attrs {focus :: {}}}
+                   BlockState
+                   {}
+  didMount = do
+    refs <- getRefs
+    pure $ focus $ getDOMNode refs.editor
+
+  block :: forall eff state result. BlockProps eff state result -> UI
+  block = mkUI spec { getInitialState = pure {edit: Edit, content: ""}
+                    , componentDidMount = didMount
+                    } do
     state <- readState
     props <- getProps
     let ty = props.blockType
@@ -46,10 +59,8 @@ module SlamData.App.Notebook.Block
     pure $ if state.edit == Edit
       then D.div'
         [ D.div [ D.className "block-toolbar" ]
-            [ D.div [ D.className "large-1 columns" ] [blockType ty]
-            , D.div [ D.className "large-11 columns" ]
-                    [ toolbar props
-                    ]
+            [ D.div [ D.className "large-1  columns" ] [blockType ty]
+            , D.div [ D.className "large-11 columns" ] [toolbar props]
             ]
         , blockEditor cont
         ]
@@ -61,12 +72,7 @@ module SlamData.App.Notebook.Block
     [ D.small' [ D.text $ show ty ]
     ]
 
-  toolbar :: forall eff state result.
-    { blockType :: BlockType
-    , index :: Number
-    , close :: EventHandlerContext eff {} state result
-    }
-    -> UI
+  toolbar :: forall eff state result. BlockProps eff state result -> UI
   toolbar = mkUI spec do
     props <- getProps
     pure $ D.div [ D.className "button-bar" ]
@@ -75,7 +81,6 @@ module SlamData.App.Notebook.Block
              [ actionButton {name: "X", click: props.close} ]
       ]
       where
-        -- standardButtons = [ actionButton {name: "X", click: props.close } ]
         specificButtons Markdown = [ actionButton {name: "Preview", click: eval} ]
         specificButtons SQL      = [ actionButton {name: "Run", click: eval} ]
 
@@ -122,3 +127,8 @@ module SlamData.App.Notebook.Block
     if (k.ctrlKey && k.keyCode == 13) || k.keyCode == 10
       then eval
       else edit
+
+  foreign import focus
+    "function focus(x) {\
+    \  return x.focus();\
+    \}" :: forall a b. a -> b

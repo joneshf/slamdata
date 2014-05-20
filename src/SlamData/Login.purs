@@ -31,8 +31,8 @@ module SlamData.Login (loginForm) where
       [ fieldset []
           [ legend [] [ text "Login to SlamData" ]
           , row [ large "6" $ newOrExisting { newAccount: state.newAccount
-                                         , onChangeNew: handle changeNew
-                                         }
+                                            , onChangeNew: handle changeNew
+                                            }
                 , large "6" demo
                 ]
           , information { newAccount: state.newAccount }
@@ -84,18 +84,18 @@ module SlamData.Login (loginForm) where
   alwaysInfo =
     div []
       [ row $ large "6" <$> [ validationText { label: "Email" }
-                         , validationText { label: "Password" }
-                         ]
+                            , validationText { label: "Password" }
+                            ]
       ]
 
   newInfo :: UI
   newInfo =
     div []
       [ row $ large "6" <$> [ validationText { label: "Name" }
-                         , validationText { label: "Confirm Password" }
-                         , validationText { label: "Company" }
-                         , validationText { label: "Title" }
-                         ]
+                            , validationText { label: "Confirm Password" }
+                            , validationText { label: "Company" }
+                            , validationText { label: "Title" }
+                            ]
       ]
 
   validationText :: { label :: String } -> UI
