@@ -1,0 +1,30 @@
+{
+  "name": "slamdata",
+  "version": "0.0.0",
+  "description": "Front end for slamengine",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm install && bower install && gulp test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:slamdata/slamdata.git"
+  },
+  "keywords": [
+    "slamdata",
+    "slamengine",
+    "nosql"
+  ],
+  "author": "Hardy Jones <hardy@slamdata.com>",
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/slamdata/slamdata/issues"
+  },
+  "homepage": "https://github.com/slamdata/slamdata",
+  "devDependencies": {
+    "gulp": "^3.6.2",
+    "gulp-clean": "^0.2.4",
+    "gulp-purescript": "0.0.7",
+    "gulp-sass": "^0.7.1"
+  }
+}

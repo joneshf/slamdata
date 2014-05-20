@@ -1,0 +1,6 @@
+.psci_modules
+.vagrant
+bower_components
+js
+css
+node_modules

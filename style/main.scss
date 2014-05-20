@@ -1,0 +1,119 @@
+/* TODO: This needs to be re-factored into more manageable pieces. */
+
+// Foundation stuff.
+
+// Import the functions first so we can use them to override defaults.
+@import "bower_components/foundation/scss/foundation/functions.scss";
+// Override any defaults.
+$tabs-navigation-padding: rem-calc(10);
+
+// Import the rest of foundation so we can use variables defined in it.
+@import "bower_components/foundation/scss/foundation.scss";
+
+$workspace-extra-height: 200px;
+$slamdata-border-color: #d3d3d3;
+
+html, body {
+    background-color: #f9f9f9;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.column, .columns {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+#content {
+    height: 100%;
+}
+
+#workspace {
+    bottom: 0;
+    position: absolute;
+    top: $topbar-height;
+    width: 100%;
+}
+
+#main-row {
+    background-color: white;
+    bottom: $workspace-extra-height + 10px;
+    margin: 10px;
+    max-width: 100%;
+    position: absolute;
+    top: 0;
+    & > .column, & > .columns {
+        border: 1px solid $slamdata-border-color;
+    }
+    & > div {
+        height: 100%;
+    }
+}
+
+#extra-row {
+    background-color: white;
+    bottom: 0;
+    height: $workspace-extra-height;
+    margin: 10px;
+    max-width: 100%;
+    position: absolute;
+    & > .column, & > .columns {
+        border: 1px solid $slamdata-border-color;
+    }
+    & > div {
+        height: 100%;
+    }
+}
+
+.slamdata-panel {
+    bottom: $workspace-extra-height;
+    height: 100%;
+    overflow: auto;
+}
+
+// Add borders to Foundation 5's tabs.
+.tabs {
+    dd > a {
+        border: 1px solid $slamdata-border-color;
+        border-bottom: 1px solid white;
+        margin-right: -1px;
+    }
+    dd:not(.active) > a {
+        border-bottom: 1px solid $slamdata-border-color;
+    }
+}
+
+.tabs-content {
+    border-top: 1px solid $slamdata-border-color;
+    margin-top: -1px;
+    padding: 10px 5px;
+    .content {
+        margin-top: 10px;
+        border-top: 1px solid $slamdata-border-color;
+        padding: 15px;
+    }
+}
+.toolbar {
+    .button {
+        margin-bottom: 0;
+    }
+}
+
+.button-group:last-of-type {
+    margin-right: 0;
+}
+
+.block-toolbar {
+    div {
+        position: relative;
+    }
+    .block-type {
+        bottom: 0;
+        position: absolute;
+    }
+}
+
+.block-editor {
+    min-height: 150px;
+}
