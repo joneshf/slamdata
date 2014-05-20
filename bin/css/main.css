@@ -4816,3 +4816,26 @@ html, body {
 
 .block-editor {
   min-height: 150px; }
+
+.evaled-block {
+  border: 1px solid transparent;
+  padding: 1.25rem; }
+  .evaled-block:hover {
+    border-style: solid;
+    border-width: 1px;
+    border-color: #cdcdcd;
+    margin-bottom: 1.25rem;
+    padding: 1.25rem;
+    background: #e6e6e6;
+    margin: 0; }
+    .evaled-block:hover > :first-child {
+      margin-top: 0; }
+    .evaled-block:hover > :last-child {
+      margin-bottom: 0; }
+    .evaled-block:hover h1, .evaled-block:hover h2, .evaled-block:hover h3, .evaled-block:hover h4, .evaled-block:hover h5, .evaled-block:hover h6, .evaled-block:hover p {
+      color: #333; }
+    .evaled-block:hover h1, .evaled-block:hover h2, .evaled-block:hover h3, .evaled-block:hover h4, .evaled-block:hover h5, .evaled-block:hover h6 {
+      line-height: 1;
+      margin-bottom: 0.625rem; }
+      .evaled-block:hover h1.subheader, .evaled-block:hover h2.subheader, .evaled-block:hover h3.subheader, .evaled-block:hover h4.subheader, .evaled-block:hover h5.subheader, .evaled-block:hover h6.subheader {
+        line-height: 1.4; }

@@ -1,5 +1,5 @@
 /*!
- * Modernizr v2.8.1
+ * Modernizr v2.8.2
  * www.modernizr.com
  *
  * Copyright (c) Faruk Ates, Paul Irish, Alex Sexton
@@ -24,7 +24,7 @@
 
 window.Modernizr = (function( window, document, undefined ) {
 
-    var version = '2.8.1',
+    var version = '2.8.2',
 
     Modernizr = {},
 
@@ -37703,6 +37703,22 @@ PS.Showdown = (function () {
     };
 })();
 var PS = PS || {};
+PS.Global = (function () {
+    "use strict";
+    var nan = NaN;;
+    var infinity = Infinity;;
+    function readInt(radix) {  return function(n) {    return parseInt(n, radix);  };};
+    var readFloat = parseFloat;;
+    return {
+        readFloat: readFloat, 
+        readInt: readInt, 
+        isFinite: isFinite, 
+        infinity: infinity, 
+        isNaN: isNaN, 
+        nan: nan
+    };
+})();
+var PS = PS || {};
 PS.Data_String_Regex = (function () {
     "use strict";
     function regex(s1) {  return function(s2) {    return new RegExp(s1, s2);  };};
@@ -38015,6 +38031,33 @@ PS.Data_Eq = (function () {
     };
 })();
 var PS = PS || {};
+PS.Data_Enum = (function () {
+    "use strict";
+    var Prelude = PS.Prelude;
+    function toEnum(dict) {
+        return dict["toEnum"];
+    };
+    function fromEnum(dict) {
+        return dict["fromEnum"];
+    };
+    var succ = function (__dict_Enum_15) {
+        return function (x) {
+            return toEnum(__dict_Enum_15)(fromEnum(__dict_Enum_15)(x) + 1);
+        };
+    };
+    var pred = function (__dict_Enum_16) {
+        return function (x) {
+            return toEnum(__dict_Enum_16)(fromEnum(__dict_Enum_16)(x) - 1);
+        };
+    };
+    return {
+        pred: pred, 
+        succ: succ, 
+        fromEnum: fromEnum, 
+        toEnum: toEnum
+    };
+})();
+var PS = PS || {};
 PS.Data_Array_Unsafe = (function () {
     "use strict";
     var tail = function (_1) {
@@ -38098,9 +38141,9 @@ PS.Data_Array = (function () {
             return sortJS(comp$prime)(xs);
         };
     };
-    var sort = function (__dict_Ord_15) {
+    var sort = function (__dict_Ord_17) {
         return function (xs) {
-            return sortBy(Prelude.compare(__dict_Ord_15))(xs);
+            return sortBy(Prelude.compare(__dict_Ord_17))(xs);
         };
     };
     var singleton = function (a) {
@@ -38132,8 +38175,8 @@ PS.Data_Array = (function () {
             throw "Failed pattern match";
         };
     };
-    var nub = function (__dict_Eq_16) {
-        return nubBy(Prelude["=="](__dict_Eq_16));
+    var nub = function (__dict_Eq_18) {
+        return nubBy(Prelude["=="](__dict_Eq_18));
     };
     var mapMaybe = function (f) {
         return concatMap(Prelude["<<<"](Prelude.semigroupoidArr({}))(Data_Maybe.maybe([  ])(singleton))(f));
@@ -38173,14 +38216,14 @@ PS.Data_Array = (function () {
             "<$>": map
         };
     };
-    var elemLastIndex = function (__dict_Eq_17) {
+    var elemLastIndex = function (__dict_Eq_19) {
         return function (x) {
-            return findLastIndex(Prelude["=="](__dict_Eq_17)(x));
+            return findLastIndex(Prelude["=="](__dict_Eq_19)(x));
         };
     };
-    var elemIndex = function (__dict_Eq_18) {
+    var elemIndex = function (__dict_Eq_20) {
         return function (x) {
-            return findIndex(Prelude["=="](__dict_Eq_18)(x));
+            return findIndex(Prelude["=="](__dict_Eq_20)(x));
         };
     };
     var applicativeArray = function (_) {
@@ -38448,20 +38491,20 @@ PS.Data_Monoid_Dual = (function () {
             values: [ value0 ]
         };
     };
-    var showDual = function (__dict_Show_19) {
+    var showDual = function (__dict_Show_21) {
         return {
             "__superclasses": {}, 
             show: function (_1) {
-                return "Dual " + Prelude.show(__dict_Show_19)(_1.values[0]);
+                return "Dual " + Prelude.show(__dict_Show_21)(_1.values[0]);
             }
         };
     };
-    var semigroupDual = function (__dict_Semigroup_20) {
+    var semigroupDual = function (__dict_Semigroup_22) {
         return {
             "__superclasses": {}, 
             "<>": function (_1) {
                 return function (_2) {
-                    return Dual(Prelude["<>"](__dict_Semigroup_20)(_2.values[0])(_1.values[0]));
+                    return Dual(Prelude["<>"](__dict_Semigroup_22)(_2.values[0])(_1.values[0]));
                 };
             }
         };
@@ -38469,41 +38512,41 @@ PS.Data_Monoid_Dual = (function () {
     var runDual = function (_1) {
         return _1.values[0];
     };
-    var monoidDual = function (__dict_Monoid_22) {
+    var monoidDual = function (__dict_Monoid_24) {
         return {
             "__superclasses": {
                 "Prelude.Semigroup_0": function (_) {
-                    return semigroupDual(__dict_Monoid_22["__superclasses"]["Prelude.Semigroup_0"]({}));
+                    return semigroupDual(__dict_Monoid_24["__superclasses"]["Prelude.Semigroup_0"]({}));
                 }
             }, 
-            mempty: Dual(Data_Monoid.mempty(__dict_Monoid_22))
+            mempty: Dual(Data_Monoid.mempty(__dict_Monoid_24))
         };
     };
-    var eqDual = function (__dict_Eq_23) {
+    var eqDual = function (__dict_Eq_25) {
         return {
             "__superclasses": {}, 
             "==": function (_1) {
                 return function (_2) {
-                    return Prelude["=="](__dict_Eq_23)(_1.values[0])(_2.values[0]);
+                    return Prelude["=="](__dict_Eq_25)(_1.values[0])(_2.values[0]);
                 };
             }, 
             "/=": function (_1) {
                 return function (_2) {
-                    return Prelude["/="](__dict_Eq_23)(_1.values[0])(_2.values[0]);
+                    return Prelude["/="](__dict_Eq_25)(_1.values[0])(_2.values[0]);
                 };
             }
         };
     };
-    var ordDual = function (__dict_Ord_21) {
+    var ordDual = function (__dict_Ord_23) {
         return {
             "__superclasses": {
                 "Prelude.Eq_0": function (_) {
-                    return eqDual(__dict_Ord_21["__superclasses"]["Prelude.Eq_0"]({}));
+                    return eqDual(__dict_Ord_23["__superclasses"]["Prelude.Eq_0"]({}));
                 }
             }, 
             compare: function (_1) {
                 return function (_2) {
-                    return Prelude.compare(__dict_Ord_21)(_1.values[0])(_2.values[0]);
+                    return Prelude.compare(__dict_Ord_23)(_1.values[0])(_2.values[0]);
                 };
             }
         };
@@ -38569,11 +38612,11 @@ PS.Data_Monoid_First = (function () {
             values: [ value0 ]
         };
     };
-    var showFirst = function (__dict_Show_24) {
+    var showFirst = function (__dict_Show_26) {
         return {
             "__superclasses": {}, 
             show: function (_1) {
-                return "First (" + Prelude.show(Data_Maybe.showMaybe(__dict_Show_24))(_1.values[0]) + ")";
+                return "First (" + Prelude.show(Data_Maybe.showMaybe(__dict_Show_26))(_1.values[0]) + ")";
             }
         };
     };
@@ -38603,31 +38646,31 @@ PS.Data_Monoid_First = (function () {
             mempty: First(Data_Maybe.Nothing)
         };
     };
-    var eqFirst = function (__dict_Eq_26) {
+    var eqFirst = function (__dict_Eq_28) {
         return {
             "__superclasses": {}, 
             "==": function (_1) {
                 return function (_2) {
-                    return Prelude["=="](Data_Maybe.eqMaybe(__dict_Eq_26))(_1.values[0])(_2.values[0]);
+                    return Prelude["=="](Data_Maybe.eqMaybe(__dict_Eq_28))(_1.values[0])(_2.values[0]);
                 };
             }, 
             "/=": function (_1) {
                 return function (_2) {
-                    return Prelude["/="](Data_Maybe.eqMaybe(__dict_Eq_26))(_1.values[0])(_2.values[0]);
+                    return Prelude["/="](Data_Maybe.eqMaybe(__dict_Eq_28))(_1.values[0])(_2.values[0]);
                 };
             }
         };
     };
-    var ordFirst = function (__dict_Ord_25) {
+    var ordFirst = function (__dict_Ord_27) {
         return {
             "__superclasses": {
                 "Prelude.Eq_0": function (_) {
-                    return eqFirst(__dict_Ord_25["__superclasses"]["Prelude.Eq_0"]({}));
+                    return eqFirst(__dict_Ord_27["__superclasses"]["Prelude.Eq_0"]({}));
                 }
             }, 
             compare: function (_1) {
                 return function (_2) {
-                    return Prelude.compare(Data_Maybe.ordMaybe(__dict_Ord_25))(_1.values[0])(_2.values[0]);
+                    return Prelude.compare(Data_Maybe.ordMaybe(__dict_Ord_27))(_1.values[0])(_2.values[0]);
                 };
             }
         };
@@ -38653,11 +38696,11 @@ PS.Data_Monoid_Last = (function () {
             values: [ value0 ]
         };
     };
-    var showLast = function (__dict_Show_27) {
+    var showLast = function (__dict_Show_29) {
         return {
             "__superclasses": {}, 
             show: function (_1) {
-                return "Last (" + Prelude.show(Data_Maybe.showMaybe(__dict_Show_27))(_1.values[0]) + ")";
+                return "Last (" + Prelude.show(Data_Maybe.showMaybe(__dict_Show_29))(_1.values[0]) + ")";
             }
         };
     };
@@ -38690,31 +38733,31 @@ PS.Data_Monoid_Last = (function () {
             mempty: Last(Data_Maybe.Nothing)
         };
     };
-    var eqLast = function (__dict_Eq_29) {
+    var eqLast = function (__dict_Eq_31) {
         return {
             "__superclasses": {}, 
             "==": function (_1) {
                 return function (_2) {
-                    return Prelude["=="](Data_Maybe.eqMaybe(__dict_Eq_29))(_1.values[0])(_2.values[0]);
+                    return Prelude["=="](Data_Maybe.eqMaybe(__dict_Eq_31))(_1.values[0])(_2.values[0]);
                 };
             }, 
             "/=": function (_1) {
                 return function (_2) {
-                    return Prelude["/="](Data_Maybe.eqMaybe(__dict_Eq_29))(_1.values[0])(_2.values[0]);
+                    return Prelude["/="](Data_Maybe.eqMaybe(__dict_Eq_31))(_1.values[0])(_2.values[0]);
                 };
             }
         };
     };
-    var ordLast = function (__dict_Ord_28) {
+    var ordLast = function (__dict_Ord_30) {
         return {
             "__superclasses": {
                 "Prelude.Eq_0": function (_) {
-                    return eqLast(__dict_Ord_28["__superclasses"]["Prelude.Eq_0"]({}));
+                    return eqLast(__dict_Ord_30["__superclasses"]["Prelude.Eq_0"]({}));
                 }
             }, 
             compare: function (_1) {
                 return function (_2) {
-                    return Prelude.compare(Data_Maybe.ordMaybe(__dict_Ord_28))(_1.values[0])(_2.values[0]);
+                    return Prelude.compare(Data_Maybe.ordMaybe(__dict_Ord_30))(_1.values[0])(_2.values[0]);
                 };
             }
         };
@@ -38929,12 +38972,12 @@ PS.Data_Tuple = (function () {
     var snd = function (_1) {
         return _1.values[1];
     };
-    var showTuple = function (__dict_Show_30) {
-        return function (__dict_Show_31) {
+    var showTuple = function (__dict_Show_32) {
+        return function (__dict_Show_33) {
             return {
                 "__superclasses": {}, 
                 show: function (_1) {
-                    return "Tuple(" + Prelude.show(__dict_Show_30)(_1.values[0]) + ", " + Prelude.show(__dict_Show_31)(_1.values[1]) + ")";
+                    return "Tuple(" + Prelude.show(__dict_Show_32)(_1.values[0]) + ", " + Prelude.show(__dict_Show_33)(_1.values[1]) + ")";
                 }
             };
         };
@@ -38952,29 +38995,29 @@ PS.Data_Tuple = (function () {
     var fst = function (_1) {
         return _1.values[0];
     };
-    var eqTuple = function (__dict_Eq_35) {
-        return function (__dict_Eq_36) {
+    var eqTuple = function (__dict_Eq_37) {
+        return function (__dict_Eq_38) {
             return {
                 "__superclasses": {}, 
                 "==": function (_1) {
                     return function (_2) {
-                        return Prelude["=="](__dict_Eq_35)(_1.values[0])(_2.values[0]) && Prelude["=="](__dict_Eq_36)(_1.values[1])(_2.values[1]);
+                        return Prelude["=="](__dict_Eq_37)(_1.values[0])(_2.values[0]) && Prelude["=="](__dict_Eq_38)(_1.values[1])(_2.values[1]);
                     };
                 }, 
                 "/=": function (t1) {
                     return function (t2) {
-                        return !Prelude["=="](eqTuple(__dict_Eq_35)(__dict_Eq_36))(t1)(t2);
+                        return !Prelude["=="](eqTuple(__dict_Eq_37)(__dict_Eq_38))(t1)(t2);
                     };
                 }
             };
         };
     };
-    var ordTuple = function (__dict_Ord_32) {
-        return function (__dict_Ord_33) {
+    var ordTuple = function (__dict_Ord_34) {
+        return function (__dict_Ord_35) {
             return {
                 "__superclasses": {
                     "Prelude.Eq_0": function (_) {
-                        return eqTuple(__dict_Ord_32["__superclasses"]["Prelude.Eq_0"]({}))(__dict_Ord_33["__superclasses"]["Prelude.Eq_0"]({}));
+                        return eqTuple(__dict_Ord_34["__superclasses"]["Prelude.Eq_0"]({}))(__dict_Ord_35["__superclasses"]["Prelude.Eq_0"]({}));
                     }
                 }, 
                 compare: function (_1) {
@@ -38982,10 +39025,10 @@ PS.Data_Tuple = (function () {
                         return (function (_3, _4) {
                             return (function (_1) {
                                 if (_1.ctor === "Prelude.EQ") {
-                                    return Prelude.compare(__dict_Ord_33)(_3.values[1])(_4.values[1]);
+                                    return Prelude.compare(__dict_Ord_35)(_3.values[1])(_4.values[1]);
                                 };
                                 return _1;
-                            })(Prelude.compare(__dict_Ord_32)(_3.values[0])(_4.values[0]));
+                            })(Prelude.compare(__dict_Ord_34)(_3.values[0])(_4.values[0]));
                         })(_1, _2);
                     };
                 }
@@ -38999,7 +39042,7 @@ PS.Data_Tuple = (function () {
             };
         };
     };
-    var applyTuple = function (__dict_Semigroup_38) {
+    var applyTuple = function (__dict_Semigroup_40) {
         return {
             "__superclasses": {
                 "Prelude.Functor_0": function (_) {
@@ -39008,47 +39051,47 @@ PS.Data_Tuple = (function () {
             }, 
             "<*>": function (_1) {
                 return function (_2) {
-                    return Tuple(Prelude["<>"](__dict_Semigroup_38)(_1.values[0])(_2.values[0]))(_1.values[1](_2.values[1]));
+                    return Tuple(Prelude["<>"](__dict_Semigroup_40)(_1.values[0])(_2.values[0]))(_1.values[1](_2.values[1]));
                 };
             }
         };
     };
-    var bindTuple = function (__dict_Semigroup_37) {
+    var bindTuple = function (__dict_Semigroup_39) {
         return {
             "__superclasses": {
                 "Prelude.Apply_0": function (_) {
-                    return applyTuple(__dict_Semigroup_37);
+                    return applyTuple(__dict_Semigroup_39);
                 }
             }, 
             ">>=": function (_1) {
                 return function (_2) {
                     return (function (_3, _4) {
                         return (function (_1) {
-                            return Tuple(Prelude["<>"](__dict_Semigroup_37)(_3.values[0])(_1.values[0]))(_1.values[1]);
+                            return Tuple(Prelude["<>"](__dict_Semigroup_39)(_3.values[0])(_1.values[0]))(_1.values[1]);
                         })(_4(_3.values[1]));
                     })(_1, _2);
                 };
             }
         };
     };
-    var applicativeTuple = function (__dict_Monoid_39) {
+    var applicativeTuple = function (__dict_Monoid_41) {
         return {
             "__superclasses": {
                 "Prelude.Apply_0": function (_) {
-                    return applyTuple(__dict_Monoid_39["__superclasses"]["Prelude.Semigroup_0"]({}));
+                    return applyTuple(__dict_Monoid_41["__superclasses"]["Prelude.Semigroup_0"]({}));
                 }
             }, 
-            pure: Tuple(Data_Monoid.mempty(__dict_Monoid_39))
+            pure: Tuple(Data_Monoid.mempty(__dict_Monoid_41))
         };
     };
-    var monadTuple = function (__dict_Monoid_34) {
+    var monadTuple = function (__dict_Monoid_36) {
         return {
             "__superclasses": {
                 "Prelude.Applicative_0": function (_) {
-                    return applicativeTuple(__dict_Monoid_34);
+                    return applicativeTuple(__dict_Monoid_36);
                 }, 
                 "Prelude.Bind_1": function (_) {
-                    return bindTuple(__dict_Monoid_34["__superclasses"]["Prelude.Semigroup_0"]({}));
+                    return bindTuple(__dict_Monoid_36["__superclasses"]["Prelude.Semigroup_0"]({}));
                 }
             }
         };
@@ -39179,13 +39222,459 @@ PS.Control_Monad_ST = (function () {
     };
 })();
 var PS = PS || {};
+PS.Data_Date = (function () {
+    "use strict";
+    var Prelude = PS.Prelude;
+    var Global = PS.Global;
+    var Data_Maybe = PS.Data_Maybe;
+    var Data_Enum = PS.Data_Enum;
+    var January = {
+        ctor: "Data.Date.January", 
+        values: [  ]
+    };
+    var February = {
+        ctor: "Data.Date.February", 
+        values: [  ]
+    };
+    var March = {
+        ctor: "Data.Date.March", 
+        values: [  ]
+    };
+    var April = {
+        ctor: "Data.Date.April", 
+        values: [  ]
+    };
+    var May = {
+        ctor: "Data.Date.May", 
+        values: [  ]
+    };
+    var June = {
+        ctor: "Data.Date.June", 
+        values: [  ]
+    };
+    var July = {
+        ctor: "Data.Date.July", 
+        values: [  ]
+    };
+    var August = {
+        ctor: "Data.Date.August", 
+        values: [  ]
+    };
+    var September = {
+        ctor: "Data.Date.September", 
+        values: [  ]
+    };
+    var October = {
+        ctor: "Data.Date.October", 
+        values: [  ]
+    };
+    var November = {
+        ctor: "Data.Date.November", 
+        values: [  ]
+    };
+    var December = {
+        ctor: "Data.Date.December", 
+        values: [  ]
+    };
+    var Sunday = {
+        ctor: "Data.Date.Sunday", 
+        values: [  ]
+    };
+    var Monday = {
+        ctor: "Data.Date.Monday", 
+        values: [  ]
+    };
+    var Tuesday = {
+        ctor: "Data.Date.Tuesday", 
+        values: [  ]
+    };
+    var Wednesday = {
+        ctor: "Data.Date.Wednesday", 
+        values: [  ]
+    };
+    var Thursday = {
+        ctor: "Data.Date.Thursday", 
+        values: [  ]
+    };
+    var Friday = {
+        ctor: "Data.Date.Friday", 
+        values: [  ]
+    };
+    var Saturday = {
+        ctor: "Data.Date.Saturday", 
+        values: [  ]
+    };
+    var DateTime = function (value0) {
+        return {
+            ctor: "Data.Date.DateTime", 
+            values: [ value0 ]
+        };
+    };
+    function jsDateMethod(method) {   return function(date) {     return date[method]();   }; };
+    function jsDateConstructor(x) {   return new Date(x); };
+    function jsDateFromRecord(r) {  return new Date(r.year, r.month, r.day, r.hours, r.minutes, r.seconds, r.milliseconds); };
+    function now() {   return DateTime(new Date()); };
+    var unsafeFromJust = function (_1) {
+        if (_1.ctor === "Data.Maybe.Just") {
+            return _1.values[0];
+        };
+        throw "Failed pattern match";
+    };
+    var toJSDate = function (_1) {
+        return _1.values[0];
+    };
+    var showMonth = function (_) {
+        return {
+            "__superclasses": {}, 
+            show: function (_1) {
+                if (_1.ctor === "Data.Date.January") {
+                    return "January";
+                };
+                if (_1.ctor === "Data.Date.February") {
+                    return "February";
+                };
+                if (_1.ctor === "Data.Date.March") {
+                    return "March";
+                };
+                if (_1.ctor === "Data.Date.April") {
+                    return "April";
+                };
+                if (_1.ctor === "Data.Date.May") {
+                    return "May";
+                };
+                if (_1.ctor === "Data.Date.June") {
+                    return "June";
+                };
+                if (_1.ctor === "Data.Date.July") {
+                    return "July";
+                };
+                if (_1.ctor === "Data.Date.August") {
+                    return "August";
+                };
+                if (_1.ctor === "Data.Date.September") {
+                    return "September";
+                };
+                if (_1.ctor === "Data.Date.October") {
+                    return "October";
+                };
+                if (_1.ctor === "Data.Date.November") {
+                    return "November";
+                };
+                if (_1.ctor === "Data.Date.December") {
+                    return "December";
+                };
+                throw "Failed pattern match";
+            }
+        };
+    };
+    var showDayOfWeek = function (_) {
+        return {
+            "__superclasses": {}, 
+            show: function (_1) {
+                if (_1.ctor === "Data.Date.Sunday") {
+                    return "Sunday";
+                };
+                if (_1.ctor === "Data.Date.Monday") {
+                    return "Monday";
+                };
+                if (_1.ctor === "Data.Date.Tuesday") {
+                    return "Tuesday";
+                };
+                if (_1.ctor === "Data.Date.Wednesday") {
+                    return "Wednesday";
+                };
+                if (_1.ctor === "Data.Date.Thursday") {
+                    return "Thursday";
+                };
+                if (_1.ctor === "Data.Date.Friday") {
+                    return "Friday";
+                };
+                if (_1.ctor === "Data.Date.Saturday") {
+                    return "Saturday";
+                };
+                throw "Failed pattern match";
+            }
+        };
+    };
+    var liftDate = function (_1) {
+        return function (_2) {
+            return _1(_2.values[0]);
+        };
+    };
+    var millisecond = liftDate(jsDateMethod("getMilliseconds"));
+    var millisecondUTC = liftDate(jsDateMethod("getUTCMilliseconds"));
+    var minute = liftDate(jsDateMethod("getMinutes"));
+    var minuteUTC = liftDate(jsDateMethod("getUTCMinutes"));
+    var second = liftDate(jsDateMethod("getSeconds"));
+    var secondUTC = liftDate(jsDateMethod("getUTCSeconds"));
+    var showDate = function (_) {
+        return {
+            "__superclasses": {}, 
+            show: liftDate(jsDateMethod("toString"))
+        };
+    };
+    var timezoneOffset = liftDate(jsDateMethod("getTimezoneOffset"));
+    var toEpochMilliseconds = liftDate(jsDateMethod("getTime"));
+    var liftOp = function (op) {
+        return function (x) {
+            return function (y) {
+                return op(toEpochMilliseconds(x))(toEpochMilliseconds(y));
+            };
+        };
+    };
+    var year = liftDate(jsDateMethod("getFullYear"));
+    var yearUTC = liftDate(jsDateMethod("getUTCFullYear"));
+    var hourUTC = liftDate(jsDateMethod("getUTCHours"));
+    var hour = liftDate(jsDateMethod("getHours"));
+    var fromJSDate = function (d) {
+        return Global.isNaN(jsDateMethod("getTime")(d)) ? Data_Maybe.Nothing : Data_Maybe.Just(DateTime(d));
+    };
+    var fromString = Prelude["<<<"](Prelude.semigroupoidArr({}))(fromJSDate)(jsDateConstructor);
+    var fromEpochMilliseconds = Prelude["<<<"](Prelude.semigroupoidArr({}))(fromJSDate)(jsDateConstructor);
+    var eqDate = function (_) {
+        return {
+            "__superclasses": {}, 
+            "==": liftOp(Prelude["=="](Prelude.eqNumber({}))), 
+            "/=": liftOp(Prelude["/="](Prelude.eqNumber({})))
+        };
+    };
+    var ordDate = function (_) {
+        return {
+            "__superclasses": {
+                "Prelude.Eq_0": function (_) {
+                    return eqDate({});
+                }
+            }, 
+            compare: liftOp(Prelude.compare(Prelude.ordNumber({})))
+        };
+    };
+    var enumMonth = function (_) {
+        return {
+            "__superclasses": {}, 
+            toEnum: function (_1) {
+                if (_1 === 0) {
+                    return Data_Maybe.Just(January);
+                };
+                if (_1 === 1) {
+                    return Data_Maybe.Just(February);
+                };
+                if (_1 === 2) {
+                    return Data_Maybe.Just(March);
+                };
+                if (_1 === 3) {
+                    return Data_Maybe.Just(April);
+                };
+                if (_1 === 4) {
+                    return Data_Maybe.Just(May);
+                };
+                if (_1 === 5) {
+                    return Data_Maybe.Just(June);
+                };
+                if (_1 === 6) {
+                    return Data_Maybe.Just(July);
+                };
+                if (_1 === 7) {
+                    return Data_Maybe.Just(August);
+                };
+                if (_1 === 8) {
+                    return Data_Maybe.Just(September);
+                };
+                if (_1 === 8) {
+                    return Data_Maybe.Just(October);
+                };
+                if (_1 === 10) {
+                    return Data_Maybe.Just(November);
+                };
+                if (_1 === 11) {
+                    return Data_Maybe.Just(December);
+                };
+                return Data_Maybe.Nothing;
+            }, 
+            fromEnum: function (_1) {
+                if (_1.ctor === "Data.Date.January") {
+                    return 0;
+                };
+                if (_1.ctor === "Data.Date.February") {
+                    return 1;
+                };
+                if (_1.ctor === "Data.Date.March") {
+                    return 2;
+                };
+                if (_1.ctor === "Data.Date.April") {
+                    return 3;
+                };
+                if (_1.ctor === "Data.Date.May") {
+                    return 4;
+                };
+                if (_1.ctor === "Data.Date.June") {
+                    return 5;
+                };
+                if (_1.ctor === "Data.Date.July") {
+                    return 6;
+                };
+                if (_1.ctor === "Data.Date.August") {
+                    return 7;
+                };
+                if (_1.ctor === "Data.Date.September") {
+                    return 8;
+                };
+                if (_1.ctor === "Data.Date.October") {
+                    return 9;
+                };
+                if (_1.ctor === "Data.Date.November") {
+                    return 10;
+                };
+                if (_1.ctor === "Data.Date.December") {
+                    return 11;
+                };
+                throw "Failed pattern match";
+            }
+        };
+    };
+    var month = Prelude["<<<"](Prelude.semigroupoidArr({}))(unsafeFromJust)(Prelude["<<<"](Prelude.semigroupoidArr({}))(Data_Enum.toEnum(enumMonth({})))(liftDate(jsDateMethod("getMonth"))));
+    var monthUTC = Prelude["<<<"](Prelude.semigroupoidArr({}))(unsafeFromJust)(Prelude["<<<"](Prelude.semigroupoidArr({}))(Data_Enum.toEnum(enumMonth({})))(liftDate(jsDateMethod("getUTCMonth"))));
+    var enumDayOfWeek = function (_) {
+        return {
+            "__superclasses": {}, 
+            toEnum: function (_1) {
+                if (_1 === 0) {
+                    return Data_Maybe.Just(Sunday);
+                };
+                if (_1 === 1) {
+                    return Data_Maybe.Just(Monday);
+                };
+                if (_1 === 2) {
+                    return Data_Maybe.Just(Tuesday);
+                };
+                if (_1 === 3) {
+                    return Data_Maybe.Just(Wednesday);
+                };
+                if (_1 === 4) {
+                    return Data_Maybe.Just(Thursday);
+                };
+                if (_1 === 5) {
+                    return Data_Maybe.Just(Friday);
+                };
+                if (_1 === 6) {
+                    return Data_Maybe.Just(Saturday);
+                };
+                return Data_Maybe.Nothing;
+            }, 
+            fromEnum: function (_1) {
+                if (_1.ctor === "Data.Date.Sunday") {
+                    return 0;
+                };
+                if (_1.ctor === "Data.Date.Monday") {
+                    return 1;
+                };
+                if (_1.ctor === "Data.Date.Tuesday") {
+                    return 2;
+                };
+                if (_1.ctor === "Data.Date.Wednesday") {
+                    return 3;
+                };
+                if (_1.ctor === "Data.Date.Thursday") {
+                    return 4;
+                };
+                if (_1.ctor === "Data.Date.Friday") {
+                    return 5;
+                };
+                if (_1.ctor === "Data.Date.Saturday") {
+                    return 6;
+                };
+                throw "Failed pattern match";
+            }
+        };
+    };
+    var dayUTC = liftDate(jsDateMethod("getUTCDate"));
+    var dayOfWeekUTC = Prelude["<<<"](Prelude.semigroupoidArr({}))(unsafeFromJust)(Prelude["<<<"](Prelude.semigroupoidArr({}))(Data_Enum.toEnum(enumDayOfWeek({})))(liftDate(jsDateMethod("getUTCDay"))));
+    var dayOfWeek = Prelude["<<<"](Prelude.semigroupoidArr({}))(unsafeFromJust)(Prelude["<<<"](Prelude.semigroupoidArr({}))(Data_Enum.toEnum(enumDayOfWeek({})))(liftDate(jsDateMethod("getDay"))));
+    var day = liftDate(jsDateMethod("getDate"));
+    var dateTime = function (y) {
+        return function (m) {
+            return function (d) {
+                return function (h) {
+                    return function (n) {
+                        return function (s) {
+                            return function (ms) {
+                                return fromJSDate(jsDateFromRecord({
+                                    year: y, 
+                                    month: Data_Enum.fromEnum(enumMonth({}))(m), 
+                                    day: d, 
+                                    hours: h, 
+                                    minutes: n, 
+                                    seconds: s, 
+                                    milliseconds: ms
+                                }));
+                            };
+                        };
+                    };
+                };
+            };
+        };
+    };
+    var date = function (y) {
+        return function (m) {
+            return function (d) {
+                return dateTime(y)(m)(d)(0)(0)(0)(0);
+            };
+        };
+    };
+    return {
+        January: January, 
+        February: February, 
+        March: March, 
+        April: April, 
+        May: May, 
+        June: June, 
+        July: July, 
+        August: August, 
+        September: September, 
+        October: October, 
+        November: November, 
+        December: December, 
+        fromString: fromString, 
+        fromEpochMilliseconds: fromEpochMilliseconds, 
+        toEpochMilliseconds: toEpochMilliseconds, 
+        timezoneOffset: timezoneOffset, 
+        millisecondUTC: millisecondUTC, 
+        millisecond: millisecond, 
+        secondUTC: secondUTC, 
+        second: second, 
+        minuteUTC: minuteUTC, 
+        minute: minute, 
+        hourUTC: hourUTC, 
+        hour: hour, 
+        dayOfWeekUTC: dayOfWeekUTC, 
+        dayOfWeek: dayOfWeek, 
+        dayUTC: dayUTC, 
+        day: day, 
+        monthUTC: monthUTC, 
+        month: month, 
+        yearUTC: yearUTC, 
+        year: year, 
+        date: date, 
+        dateTime: dateTime, 
+        now: now, 
+        toJSDate: toJSDate, 
+        fromJSDate: fromJSDate, 
+        eqDate: eqDate, 
+        ordDate: ordDate, 
+        enumMonth: enumMonth, 
+        showMonth: showMonth, 
+        enumDayOfWeek: enumDayOfWeek, 
+        showDayOfWeek: showDayOfWeek, 
+        showDate: showDate
+    };
+})();
+var PS = PS || {};
 PS.Debug_Trace = (function () {
     "use strict";
     var Prelude = PS.Prelude;
     function trace(s) {  return function() {    console.log(s);    return {};  };};
-    var print = function (__dict_Show_40) {
+    var print = function (__dict_Show_42) {
         return function (o) {
-            return trace(Prelude.show(__dict_Show_40)(o));
+            return trace(Prelude.show(__dict_Show_42)(o));
         };
     };
     return {
@@ -39202,6 +39691,7 @@ PS.React = (function () {
     var noop1 = noop0;
     var noop2 = noop0;
      function getProps() {        return __current.props;  };
+     function getRefs() {        return __current.refs;  };
      function writeState(state) {                      __current.replaceState({state: state});         return function() { return state; }           };
      function readState() {             return __current.state.state;  };
      function getSelf() {    return __current;   };
@@ -39211,6 +39701,7 @@ PS.React = (function () {
     var renderToString = React.renderComponentToString;
      function renderToBody(component) {                             return function() {                                            return React.renderComponent(component, document.body);    }                                                          };
      function renderToElementById(id) {                                             return function(component) {                                                   return function() {                                                            return React.renderComponent(component, document.getElementById(id));      }                                                                          }                                                                          };
+    function deferred(action) {  var component = __current;  return function() {    __current = component;    try {      return action();    } finally {      __current = null;    }  };};
     var spec = (function () {
         var updateAlways = function (props) {
             return function (state) {
@@ -39229,6 +39720,7 @@ PS.React = (function () {
         };
     })();
     return {
+        deferred: deferred, 
         renderToElementById: renderToElementById, 
         renderToBody: renderToBody, 
         renderToString: renderToString, 
@@ -39238,6 +39730,7 @@ PS.React = (function () {
         getSelf: getSelf, 
         readState: readState, 
         writeState: writeState, 
+        getRefs: getRefs, 
         getProps: getProps, 
         spec: spec, 
         noop2: noop2, 
@@ -41083,6 +41576,7 @@ PS.SlamData_Helpers = (function () {
     "use strict";
     var React_DOM = PS.React_DOM;
     var Prelude = PS.Prelude;
+    function getDOMNode(x) {  return x.getDOMNode();};
     var row = function (uis) {
         return React_DOM.div([ React_DOM.ClassName("row") ])(uis);
     };
@@ -41091,13 +41585,16 @@ PS.SlamData_Helpers = (function () {
             return React_DOM.div([ React_DOM.ClassName("large-" + size + " columns") ])([ ui ]);
         };
     };
-    var actionButton = function (name) {
-        return React_DOM["li'"]([ React_DOM.a([ React_DOM.ClassName("tiny secondary button") ])([ React_DOM.text(name) ]) ]);
+    var actionButton = function (props) {
+        return React_DOM["li'"]([ React_DOM.a([ React_DOM.ClassName("tiny secondary button"), React_DOM.onClick(function (_) {
+            return props.click;
+        }) ])([ React_DOM.text(props.name) ]) ]);
     };
     return {
-        actionButton: actionButton, 
+        getDOMNode: getDOMNode, 
         large: large, 
-        row: row
+        row: row, 
+        actionButton: actionButton
     };
 })();
 var PS = PS || {};
@@ -41160,12 +41657,23 @@ PS.SlamData_App_FileSystem = (function () {
     var SlamData_App_Panel_Tab = PS.SlamData_App_Panel_Tab;
     var React_DOM = PS.React_DOM;
     var SlamData_Helpers = PS.SlamData_Helpers;
+    var Prelude = PS.Prelude;
+    var Control_Monad_Eff = PS.Control_Monad_Eff;
     var filesystem = SlamData_App_Panel.panel([ SlamData_App_Panel_Tab.tab({
         name: "File System", 
         content: [ React_DOM.text("The filesystem tree should be here.") ], 
         active: true, 
         external: [  ], 
-        internal: [ SlamData_Helpers.actionButton("New"), SlamData_Helpers.actionButton("Open"), SlamData_Helpers.actionButton("Delete") ]
+        internal: [ SlamData_Helpers.actionButton({
+            name: "New", 
+            click: Prelude.pure(Control_Monad_Eff.applicativeEff({}))({})
+        }), SlamData_Helpers.actionButton({
+            name: "Open", 
+            click: Prelude.pure(Control_Monad_Eff.applicativeEff({}))({})
+        }), SlamData_Helpers.actionButton({
+            name: "Delete", 
+            click: Prelude.pure(Control_Monad_Eff.applicativeEff({}))({})
+        }) ]
     }) ]);
     return {
         filesystem: filesystem
@@ -41174,9 +41682,20 @@ PS.SlamData_App_FileSystem = (function () {
 var PS = PS || {};
 PS.SlamData_App_Notebook_Block = (function () {
     "use strict";
+    var Prelude = PS.Prelude;
+    var Control_Monad_Eff = PS.Control_Monad_Eff;
+    var React = PS.React;
     var SlamData_Helpers = PS.SlamData_Helpers;
     var React_DOM = PS.React_DOM;
-    var Prelude = PS.Prelude;
+    var Showdown = PS.Showdown;
+    var Edit = {
+        ctor: "SlamData.App.Notebook.Block.Edit", 
+        values: [  ]
+    };
+    var Eval = {
+        ctor: "SlamData.App.Notebook.Block.Eval", 
+        values: [  ]
+    };
     var Markdown = {
         ctor: "SlamData.App.Notebook.Block.Markdown", 
         values: [  ]
@@ -41185,19 +41704,7 @@ PS.SlamData_App_Notebook_Block = (function () {
         ctor: "SlamData.App.Notebook.Block.SQL", 
         values: [  ]
     };
-    var toolbar = function (ty) {
-        var standardButtons = [ SlamData_Helpers.actionButton("X") ];
-        var specificButtons = function (_1) {
-            if (_1.ctor === "SlamData.App.Notebook.Block.Markdown") {
-                return [ SlamData_Helpers.actionButton("Preview") ];
-            };
-            if (_1.ctor === "SlamData.App.Notebook.Block.SQL") {
-                return [ SlamData_Helpers.actionButton("Run") ];
-            };
-            throw "Failed pattern match";
-        };
-        return React_DOM.div([ React_DOM.className("button-bar") ])([ React_DOM.ul([ React_DOM.className("left button-group") ])(specificButtons(ty)), React_DOM.ul([ React_DOM.className("right button-group") ])(standardButtons) ]);
-    };
+    function focus(x) {  return x.focus();};
     var showBlockType = function (_) {
         return {
             "__superclasses": {}, 
@@ -41212,28 +41719,211 @@ PS.SlamData_App_Notebook_Block = (function () {
             }
         };
     };
+    var $$eval = function __do() {
+        var _1 = React.getRefs();
+        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState({
+            edit: Eval, 
+            content: (SlamData_Helpers.getDOMNode(_1.editor)).value
+        }))();
+    };
+    var toolbar = (function () {
+        var specificButtons = function (_1) {
+            if (_1.ctor === "SlamData.App.Notebook.Block.Markdown") {
+                return [ SlamData_Helpers.actionButton({
+                    name: "Preview", 
+                    click: $$eval
+                }) ];
+            };
+            if (_1.ctor === "SlamData.App.Notebook.Block.SQL") {
+                return [ SlamData_Helpers.actionButton({
+                    name: "Run", 
+                    click: $$eval
+                }) ];
+            };
+            throw "Failed pattern match";
+        };
+        return React.mkUI(React.spec)(function __do() {
+            var _1 = React.getProps();
+            return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div([ React_DOM.className("button-bar") ])([ React_DOM.ul([ React_DOM.className("left button-group") ])(specificButtons(_1.blockType)), React_DOM.ul([ React_DOM.className("right button-group") ])([ SlamData_Helpers.actionButton({
+                name: "X", 
+                click: _1.close
+            }) ]) ]))();
+        });
+    })();
+    var eqEditor = function (_) {
+        return {
+            "__superclasses": {}, 
+            "==": function (_1) {
+                return function (_2) {
+                    if (_1.ctor === "SlamData.App.Notebook.Block.Edit") {
+                        if (_2.ctor === "SlamData.App.Notebook.Block.Edit") {
+                            return true;
+                        };
+                    };
+                    if (_1.ctor === "SlamData.App.Notebook.Block.Eval") {
+                        if (_2.ctor === "SlamData.App.Notebook.Block.Eval") {
+                            return true;
+                        };
+                    };
+                    return false;
+                };
+            }, 
+            "/=": function (e) {
+                return function (e$prime) {
+                    return !Prelude["=="](eqEditor({}))(e)(e$prime);
+                };
+            }
+        };
+    };
+    var edit = function __do() {
+        var _1 = React.readState();
+        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState({
+            edit: Edit, 
+            content: _1.content
+        }))();
+    };
+    var evalMarkdown = function (content) {
+        return React_DOM.div([ React_DOM.className("evaled-block"), React_DOM.onClick(function (_) {
+            return edit;
+        }) ])([ React_DOM.span([ React_DOM.dangerouslySetInnerHTML(Showdown.makeHtml(content)) ])([  ]) ]);
+    };
+    var handleKeyPress = function (k) {
+        return (k.ctrlKey && k.keyCode === 13 || k.keyCode === 10) ? $$eval : edit;
+    };
+    var didMount = function __do() {
+        var _1 = React.getRefs();
+        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(focus(SlamData_Helpers.getDOMNode(_1.editor)))();
+    };
     var blockType = function (ty) {
         return React_DOM["h3'"]([ React_DOM["small'"]([ React_DOM.text(Prelude.show(showBlockType({}))(ty)) ]) ]);
     };
-    var blockEditor = function (_1) {
-        return React_DOM["div'"]([ React_DOM.textarea([ React_DOM.className("block-editor") ])([  ]) ]);
+    var blockEditor = function (content) {
+        return React_DOM["div'"]([ React_DOM.textarea([ React_DOM.className("block-editor"), React_DOM.onBlur(function (_) {
+            return $$eval;
+        }), React_DOM.onKeyPress(handleKeyPress), React_DOM.ref("editor"), React_DOM.onChange(function (e) {
+            return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState({
+                edit: Edit, 
+                content: e.target.value
+            }));
+        }), React_DOM.value(content) ])([  ]) ]);
     };
-    var block = function (_1) {
-        return React_DOM["div'"]([ React_DOM.div([ React_DOM.className("block-toolbar") ])([ React_DOM.div([ React_DOM.className("large-1 columns") ])([ blockType(_1.blockType) ]), React_DOM.div([ React_DOM.className("large-11 columns") ])([ toolbar(_1.blockType) ]) ]), blockEditor(_1.blockType) ]);
-    };
-    var markdown = block({
-        blockType: Markdown
-    });
-    var sql = block({
-        blockType: SQL
+    var block = React.mkUI((function () {
+        var _1 = {};
+        for (var _2 in React.spec) {
+            if (React.spec.hasOwnProperty(_2)) {
+                _1[_2] = React.spec[_2];
+            };
+        };
+        _1.getInitialState = Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
+            edit: Edit, 
+            content: ""
+        });
+        _1.componentDidMount = didMount;
+        return _1;
+    })())(function __do() {
+        var _1 = React.readState();
+        return (function (_2) {
+            return function __do() {
+                var _1 = React.getProps();
+                return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(Prelude["=="](eqEditor({}))(_2.edit)(Edit) ? React_DOM["div'"]([ React_DOM.div([ React_DOM.className("block-toolbar") ])([ React_DOM.div([ React_DOM.className("large-1  columns") ])([ blockType(_1.blockType) ]), React_DOM.div([ React_DOM.className("large-11 columns") ])([ toolbar(_1) ]) ]), blockEditor(_2.content) ]) : evalMarkdown(_2.content))();
+            };
+        })(_1)();
     });
     return {
         Markdown: Markdown, 
         SQL: SQL, 
-        sql: sql, 
-        markdown: markdown, 
         block: block, 
+        eqEditor: eqEditor, 
         showBlockType: showBlockType
+    };
+})();
+var PS = PS || {};
+PS.SlamData_App_Notebook = (function () {
+    "use strict";
+    var Prelude = PS.Prelude;
+    var Control_Monad_Eff = PS.Control_Monad_Eff;
+    var React = PS.React;
+    var Data_Array = PS.Data_Array;
+    var SlamData_App_Notebook_Block = PS.SlamData_App_Notebook_Block;
+    var SlamData_App_Panel = PS.SlamData_App_Panel;
+    var SlamData_App_Panel_Tab = PS.SlamData_App_Panel_Tab;
+    var SlamData_Helpers = PS.SlamData_Helpers;
+    var removeBlock = function (index) {
+        return function __do() {
+            var _1 = React.readState();
+            return (function () {
+                var newContent = Data_Array.filter(Prelude["<<<"](Prelude.semigroupoidArr({}))(Prelude["/="](Prelude.eqNumber({}))(index))(function (b) {
+                    return b.index;
+                }))(_1.blocks);
+                return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState({
+                    blocks: newContent
+                }));
+            })()();
+        };
+    };
+    var createBlock = function (_1) {
+        return SlamData_App_Notebook_Block.block({
+            blockType: _1.blockType, 
+            index: _1.index, 
+            close: React.deferred(removeBlock(_1.index))
+        });
+    };
+    var addBlock = function (ty) {
+        return function __do() {
+            var _1 = React.readState();
+            return (function () {
+                var newBlock = [ {
+                    blockType: ty, 
+                    index: Data_Array.length(_1.blocks) + 1
+                } ];
+                return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState({
+                    blocks: Prelude["++"](Data_Array.semigroupArray({}))(_1.blocks)(newBlock)
+                }));
+            })()();
+        };
+    };
+    var nbPanel = React.mkUI((function () {
+        var _1 = {};
+        for (var _2 in React.spec) {
+            if (React.spec.hasOwnProperty(_2)) {
+                _1[_2] = React.spec[_2];
+            };
+        };
+        _1.getInitialState = Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
+            blocks: [  ]
+        });
+        return _1;
+    })())(function __do() {
+        var _1 = React.readState();
+        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_App_Panel.panel([ SlamData_App_Panel_Tab.tab({
+            name: "Untitled Notebook", 
+            content: Prelude["<$>"](Data_Array.functorArray({}))(createBlock)(_1.blocks), 
+            external: [ SlamData_Helpers.actionButton({
+                name: "Save", 
+                click: Prelude.pure(Control_Monad_Eff.applicativeEff({}))({})
+            }), SlamData_Helpers.actionButton({
+                name: "Publish", 
+                click: Prelude.pure(Control_Monad_Eff.applicativeEff({}))({})
+            }) ], 
+            internal: [ SlamData_Helpers.actionButton({
+                name: Prelude.show(SlamData_App_Notebook_Block.showBlockType({}))(SlamData_App_Notebook_Block.Markdown), 
+                click: addBlock(SlamData_App_Notebook_Block.Markdown)
+            }), SlamData_Helpers.actionButton({
+                name: Prelude.show(SlamData_App_Notebook_Block.showBlockType({}))(SlamData_App_Notebook_Block.SQL), 
+                click: addBlock(SlamData_App_Notebook_Block.SQL)
+            }) ], 
+            active: true
+        }), SlamData_App_Panel_Tab.tab({
+            name: "+", 
+            content: [  ], 
+            external: [  ], 
+            internal: [  ], 
+            active: false
+        }) ]))();
+    });
+    var notebook = nbPanel({});
+    return {
+        notebook: notebook
     };
 })();
 var PS = PS || {};
@@ -41270,69 +41960,6 @@ PS.SlamData_App_Reference = (function () {
     var reference = refPanel;
     return {
         reference: reference
-    };
-})();
-var PS = PS || {};
-PS.SlamData_App_Notebook = (function () {
-    "use strict";
-    var Prelude = PS.Prelude;
-    var Control_Monad_Eff = PS.Control_Monad_Eff;
-    var React = PS.React;
-    var React_DOM = PS.React_DOM;
-    var SlamData_App_Notebook_Block = PS.SlamData_App_Notebook_Block;
-    var SlamData_App_Panel = PS.SlamData_App_Panel;
-    var SlamData_App_Panel_Tab = PS.SlamData_App_Panel_Tab;
-    var Data_Array = PS.Data_Array;
-    var SlamData_Helpers = PS.SlamData_Helpers;
-    var nbPanel = (function () {
-        var addBlock = function (ty) {
-            return function __do() {
-                var _1 = React.readState();
-                return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState({
-                    content: Prelude[":"](ty)(_1.content)
-                }))();
-            };
-        };
-        var actionBlock = function (ty) {
-            return React_DOM["li'"]([ React_DOM.button([ React_DOM.className("tiny secondary button"), React_DOM.onClick(function (_) {
-                return addBlock(ty);
-            }) ])([ React_DOM.text(Prelude.show(SlamData_App_Notebook_Block.showBlockType({}))(ty)) ]) ]);
-        };
-        return React.mkUI((function () {
-            var _1 = {};
-            for (var _2 in React.spec) {
-                if (React.spec.hasOwnProperty(_2)) {
-                    _1[_2] = React.spec[_2];
-                };
-            };
-            _1.getInitialState = Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
-                content: [  ]
-            });
-            return _1;
-        })())(function __do() {
-            var _1 = React.readState();
-            return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_App_Panel.panel([ SlamData_App_Panel_Tab.tab({
-                name: "Untitled Notebook", 
-                content: Prelude["<$>"](Data_Array.functorArray({}))(function (ty) {
-                    return SlamData_App_Notebook_Block.block({
-                        blockType: ty
-                    });
-                })(_1.content), 
-                external: [ SlamData_Helpers.actionButton("Save"), SlamData_Helpers.actionButton("Publish") ], 
-                internal: [ actionBlock(SlamData_App_Notebook_Block.Markdown), actionBlock(SlamData_App_Notebook_Block.SQL) ], 
-                active: true
-            }), SlamData_App_Panel_Tab.tab({
-                name: "+", 
-                content: [  ], 
-                external: [  ], 
-                internal: [  ], 
-                active: false
-            }) ]))();
-        });
-    })();
-    var notebook = nbPanel({});
-    return {
-        notebook: notebook
     };
 })();
 var PS = PS || {};
@@ -41392,7 +42019,6 @@ PS.SlamData_Login = (function () {
         values: [  ]
     };
     function changeNew(state) {  React.writeState(state);};
-    function getDOMNode(x) {  return x.getDOMNode();};
     var validationText = React.mkUI(React.spec)(function __do() {
         var _1 = React.getProps();
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div([  ])([ React_DOM.label([ React_DOM.htmlFor(Data_String.toLower(_1.label)) ])([ React_DOM.text(_1.label) ]), React_DOM.input([ React_DOM.typeProp("text"), React_DOM.idProp(Data_String.toLower(_1.label)) ])([  ]) ]))();
