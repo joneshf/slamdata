@@ -75,8 +75,8 @@ module SlamData.App.Notebook.Block
     refs <- getRefs
     pure $ writeState {edit: Eval, content: (getDOMNode refs.editor).value}
 
-  edit ::forall attrs eff.
-    EventHandlerContext eff
+  edit ::forall attrs.
+    EventHandlerContext (f :: ReadRefsEff { editor :: Component attrs {value :: String} }) -- Not sure why psc can't infer this with a type variable.
                         {}
                         BlockState
                         (ReactStateRW BlockState BlockState)
@@ -87,6 +87,7 @@ module SlamData.App.Notebook.Block
   blockEditor :: BlockType -> String -> UI
   blockEditor _ content = D.div'
     [ D.textarea [ D.className "block-editor"
+                 , D.onKeyPress handleKeyPress
                  , D.ref "editor"
                  ]
                  [D.text content]
@@ -99,3 +100,8 @@ module SlamData.App.Notebook.Block
     ]
     [ D.span [D.dangerouslySetInnerHTML $ makeHtml content] []
     ]
+
+  handleKeyPress k = do
+    if (k.ctrlKey && k.keyCode == 13) || k.keyCode == 10
+      then eval
+      else edit
