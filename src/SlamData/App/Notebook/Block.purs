@@ -32,7 +32,12 @@ module SlamData.App.Notebook.Block
     show Markdown = "Markdown"
     show SQL = "SQL"
 
-  block :: forall eff props state result . {blockType :: BlockType, index :: Number, close :: Number -> EventHandlerContext eff props state result} -> UI
+  block :: forall eff state result.
+    { blockType :: BlockType
+    , index :: Number
+    , close :: EventHandlerContext eff {} state result
+    }
+    -> UI
   block = mkUI spec {getInitialState = pure {edit: Edit, content: ""}} do
     state <- readState
     props <- getProps
@@ -46,7 +51,7 @@ module SlamData.App.Notebook.Block
                     [ toolbar props
                     ]
             ]
-        , blockEditor ty cont
+        , blockEditor cont
         ]
       else
         evalMarkdown cont
@@ -56,13 +61,18 @@ module SlamData.App.Notebook.Block
     [ D.small' [ D.text $ show ty ]
     ]
 
-  toolbar :: forall eff props state result . {blockType :: BlockType, index :: Number, close :: Number -> EventHandlerContext eff props state result} -> UI
+  toolbar :: forall eff state result.
+    { blockType :: BlockType
+    , index :: Number
+    , close :: EventHandlerContext eff {} state result
+    }
+    -> UI
   toolbar = mkUI spec do
     props <- getProps
     pure $ D.div [ D.className "button-bar" ]
       [ D.ul [ D.className "left button-group" ] (specificButtons props.blockType)
       , D.ul [ D.className "right button-group" ]
-             [ actionButton {name: "X", click: props.close props.index} ]
+             [ actionButton {name: "X", click: props.close} ]
       ]
       where
         -- standardButtons = [ actionButton {name: "X", click: props.close } ]
@@ -87,14 +97,17 @@ module SlamData.App.Notebook.Block
     state <- readState
     pure $ writeState {edit: Edit, content: state.content}
 
-  blockEditor :: BlockType -> String -> UI
-  blockEditor _ content = D.div'
+  blockEditor :: String -> UI
+  blockEditor content = D.div'
     [ D.textarea [ D.className "block-editor"
                  , D.onBlur \_ -> eval
                  , D.onKeyPress handleKeyPress
                  , D.ref "editor"
+                 , D.onChange $ \e ->
+                    pure $ writeState {edit: Edit, content: e.target.value}
+                 , D.value content
                  ]
-                 [D.text content]
+                 []
     ]
 
   evalMarkdown :: String -> UI

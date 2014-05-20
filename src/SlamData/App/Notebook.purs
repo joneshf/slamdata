@@ -26,8 +26,12 @@ module SlamData.App.Notebook (notebook) where
                        , external: [ actionButton {name: "Save", click: pure {}}
                                    , actionButton {name: "Publish", click: pure {}}
                                    ]
-                       , internal: [ actionButton {name: show Markdown, click: addBlock {blockType: Markdown, index: length state.content + 1}}
-                                   , actionButton {name: show SQL,      click: addBlock {blockType: SQL,      index: length state.content + 1}}
+                       , internal: [ actionButton { name: show Markdown
+                                                  , click: addBlock Markdown
+                                                  }
+                                   , actionButton { name: show SQL
+                                                  , click: addBlock SQL
+                                                  }
                                    ]
                        , active: true
                        }
@@ -40,14 +44,19 @@ module SlamData.App.Notebook (notebook) where
                  ]
 
   addBlock :: forall eff.
-    {blockType :: BlockType, index :: Number}
+    BlockType
     -> EventHandlerContext eff {} ContentState (ReactStateRW ContentState ContentState)
-  addBlock b = do
+  addBlock ty = do
     state <- readState
-    pure $ writeState {content: state.content ++ [b]}
-  removeBlock :: forall eff. Number -> EventHandlerContext eff {} ContentState (ReactStateRW ContentState ContentState)
+    let content = state.content
+    let newBlock = [{blockType: ty, index: length content + 1}]
+    pure $ writeState {content: content ++ newBlock}
+  removeBlock :: forall eff.
+    Number
+    -> EventHandlerContext eff {} ContentState (ReactStateRW ContentState ContentState)
   removeBlock index = do
     state <- readState
     let newContent = filter ((/=) index <<< \b -> b.index) state.content
     pure $ writeState {content: newContent}
-  createBlock {blockType = ty, index = n} = block {blockType: ty, index: n, close: removeBlock}
+  createBlock {blockType = ty, index = n} =
+    block {blockType: ty, index: n, close: deferred $ removeBlock n}
