@@ -2,6 +2,8 @@ module SlamData.App.Notebook (notebook) where
 
   import Control.Monad.Eff
 
+  import Data.Array
+
   import React
 
   import SlamData.Helpers
@@ -11,7 +13,7 @@ module SlamData.App.Notebook (notebook) where
 
   import qualified React.DOM as D
 
-  type ContentState = { content :: [{blockType :: BlockType}] }
+  type ContentState = { content :: [{blockType :: BlockType, index :: Number}] }
 
   notebook :: UI
   notebook = nbPanel {}
@@ -20,12 +22,12 @@ module SlamData.App.Notebook (notebook) where
   nbPanel = mkUI spec { getInitialState = pure { content: [] } } do
     state <- readState
     pure $ panel [ tab { name: "Untitled Notebook"
-                       , content: block <$> state.content
+                       , content: createBlock <$> state.content
                        , external: [ actionButton {name: "Save", click: pure {}}
                                    , actionButton {name: "Publish", click: pure {}}
                                    ]
-                       , internal: [ actionButton {name: show Markdown, click: addBlock Markdown}
-                                   , actionButton {name: show SQL,      click: addBlock SQL}
+                       , internal: [ actionButton {name: show Markdown, click: addBlock {blockType: Markdown, index: length state.content + 1}}
+                                   , actionButton {name: show SQL,      click: addBlock {blockType: SQL,      index: length state.content + 1}}
                                    ]
                        , active: true
                        }
@@ -38,8 +40,14 @@ module SlamData.App.Notebook (notebook) where
                  ]
 
   addBlock :: forall eff.
-    BlockType
+    {blockType :: BlockType, index :: Number}
     -> EventHandlerContext eff {} ContentState (ReactStateRW ContentState ContentState)
-  addBlock ty = do
+  addBlock b = do
     state <- readState
-    pure $ writeState {content: state.content ++ [{blockType: ty}]}
+    pure $ writeState {content: state.content ++ [b]}
+  removeBlock :: forall eff. Number -> EventHandlerContext eff {} ContentState (ReactStateRW ContentState ContentState)
+  removeBlock index = do
+    state <- readState
+    let newContent = filter ((/=) index <<< \b -> b.index) state.content
+    pure $ writeState {content: newContent}
+  createBlock {blockType = ty, index = n} = block {blockType: ty, index: n, close: removeBlock}

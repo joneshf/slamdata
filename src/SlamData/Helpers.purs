@@ -11,7 +11,7 @@ module SlamData.Helpers where
     } -> UI
   actionButton props = li'
     [ a [ ClassName "tiny secondary button"
-        , onClick $ \_ -> props.click
+        , onClick \_ -> props.click
         ] [text props.name]
     ]
 

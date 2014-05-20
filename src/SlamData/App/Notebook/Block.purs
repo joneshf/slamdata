@@ -32,7 +32,7 @@ module SlamData.App.Notebook.Block
     show Markdown = "Markdown"
     show SQL = "SQL"
 
-  block :: {blockType :: BlockType} -> UI
+  block :: forall eff props state result . {blockType :: BlockType, index :: Number, close :: Number -> EventHandlerContext eff props state result} -> UI
   block = mkUI spec {getInitialState = pure {edit: Edit, content: ""}} do
     state <- readState
     props <- getProps
@@ -43,7 +43,7 @@ module SlamData.App.Notebook.Block
         [ D.div [ D.className "block-toolbar" ]
             [ D.div [ D.className "large-1 columns" ] [blockType ty]
             , D.div [ D.className "large-11 columns" ]
-                    [ toolbar ty
+                    [ toolbar props
                     ]
             ]
         , blockEditor ty cont
@@ -56,15 +56,18 @@ module SlamData.App.Notebook.Block
     [ D.small' [ D.text $ show ty ]
     ]
 
-  toolbar :: BlockType -> UI
-  toolbar ty = D.div [ D.className "button-bar" ]
-    [ D.ul [ D.className "left button-group" ] (specificButtons ty)
-    , D.ul [ D.className "right button-group" ] standardButtons
-    ]
-    where
-      standardButtons = [ actionButton {name: "X", click: pure {}} ]
-      specificButtons Markdown = [ actionButton {name: "Preview", click: eval} ]
-      specificButtons SQL      = [ actionButton {name: "Run", click: eval} ]
+  toolbar :: forall eff props state result . {blockType :: BlockType, index :: Number, close :: Number -> EventHandlerContext eff props state result} -> UI
+  toolbar = mkUI spec do
+    props <- getProps
+    pure $ D.div [ D.className "button-bar" ]
+      [ D.ul [ D.className "left button-group" ] (specificButtons props.blockType)
+      , D.ul [ D.className "right button-group" ]
+             [ actionButton {name: "X", click: props.close props.index} ]
+      ]
+      where
+        -- standardButtons = [ actionButton {name: "X", click: props.close } ]
+        specificButtons Markdown = [ actionButton {name: "Preview", click: eval} ]
+        specificButtons SQL      = [ actionButton {name: "Run", click: eval} ]
 
   eval ::forall attrs.
     EventHandlerContext (f :: ReadRefsEff { editor :: Component attrs {value :: String} })
@@ -87,6 +90,7 @@ module SlamData.App.Notebook.Block
   blockEditor :: BlockType -> String -> UI
   blockEditor _ content = D.div'
     [ D.textarea [ D.className "block-editor"
+                 , D.onBlur \_ -> eval
                  , D.onKeyPress handleKeyPress
                  , D.ref "editor"
                  ]
@@ -96,7 +100,7 @@ module SlamData.App.Notebook.Block
   evalMarkdown :: String -> UI
   evalMarkdown content = D.div
     [ D.className "evaled-block"
-    , D.onClick $ \_ -> edit
+    , D.onClick \_ -> edit
     ]
     [ D.span [D.dangerouslySetInnerHTML $ makeHtml content] []
     ]
