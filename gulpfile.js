@@ -9,6 +9,7 @@ paths = {
         'src/**/*.purs',
         'bower_components/purescript-*/src/**/*.purs'
     ],
+    dest: 'js',
     style: 'style/**/*.scss',
     css: 'css',
     build: {
@@ -30,7 +31,7 @@ paths = {
 options = {
     compile: {
         main: 'SlamData',
-        output: 'js/slamdata.js'
+        output: 'slamdata.js'
     },
     build: {
         main: 'SlamData',
@@ -47,7 +48,8 @@ gulp.task('compile', function() {
         psc.end();
     });
     return gulp.src(paths.src)
-        .pipe(psc);
+        .pipe(psc)
+        .pipe(gulp.dest(paths.dest));
 });
 
 gulp.task('clean-sass', function() {
