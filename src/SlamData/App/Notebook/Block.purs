@@ -75,6 +75,15 @@ module SlamData.App.Notebook.Block
     refs <- getRefs
     pure $ writeState {edit: Eval, content: (getDOMNode refs.editor).value}
 
+  edit ::forall attrs eff.
+    EventHandlerContext eff
+                        {}
+                        BlockState
+                        (ReactStateRW BlockState BlockState)
+  edit = do
+    state <- readState
+    pure $ writeState {edit: Edit, content: state.content}
+
   blockEditor :: BlockType -> String -> UI
   blockEditor _ content = D.div'
     [ D.textarea [ D.className "block-editor"
@@ -84,5 +93,9 @@ module SlamData.App.Notebook.Block
     ]
 
   evalMarkdown :: String -> UI
-  evalMarkdown content =
-    D.span [D.dangerouslySetInnerHTML $ makeHtml content] []
+  evalMarkdown content = D.div
+    [ D.className "evaled-block"
+    , D.onClick $ \_ -> edit
+    ]
+    [ D.span [D.dangerouslySetInnerHTML $ makeHtml content] []
+    ]

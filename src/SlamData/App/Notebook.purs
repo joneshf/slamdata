@@ -42,4 +42,4 @@ module SlamData.App.Notebook (notebook) where
     -> EventHandlerContext eff {} ContentState (ReactStateRW ContentState ContentState)
   addBlock ty = do
     state <- readState
-    pure $ writeState {content: {blockType: ty}:state.content}
+    pure $ writeState {content: state.content ++ [{blockType: ty}]}

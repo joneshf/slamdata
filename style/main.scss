@@ -117,3 +117,12 @@ html, body {
 .block-editor {
     min-height: 150px;
 }
+
+.evaled-block {
+     border: 1px solid transparent;
+    padding: rem-calc(20);
+    &:hover {
+        @include panel($bg: #e6e6e6);
+        margin: 0;
+    }
+}
