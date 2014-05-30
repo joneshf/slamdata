@@ -58,7 +58,7 @@ module SlamData.App.Notebook.Block
     let cont = state.content
     pure $ if state.edit == Edit
       then D.div'
-        [ D.div [ D.className "block-toolbar" ]
+        [ D.div [ D.className "block-toolbar row" ]
             [ D.div [ D.className "large-1  columns" ] [blockType ty]
             , D.div [ D.className "large-11 columns" ] [toolbar props]
             ]
