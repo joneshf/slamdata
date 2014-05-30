@@ -10,8 +10,8 @@ $tabs-navigation-padding: rem-calc(10);
 // Import the rest of foundation so we can use variables defined in it.
 @import "bower_components/foundation/scss/foundation.scss";
 
-$workspace-extra-height: 200px;
 $slamdata-border-color: #d3d3d3;
+$workspace-extra-height: 200px;
 
 html, body {
     background-color: #f9f9f9;
@@ -36,13 +36,11 @@ html, body {
     width: 100%;
 }
 
-#main-row {
+@mixin workspace-row {
     background-color: white;
-    bottom: $workspace-extra-height + 10px;
-    margin: 10px;
     max-width: 100%;
+    padding: 10px;
     position: absolute;
-    top: 0;
     & > .column, & > .columns {
         border: 1px solid $slamdata-border-color;
     }
@@ -51,25 +49,26 @@ html, body {
     }
 }
 
+#main-row {
+    @include workspace-row;
+    bottom: $workspace-extra-height;
+    padding-bottom: 0;
+    top: 0;
+}
+
 #extra-row {
-    background-color: white;
+    @include workspace-row;
     bottom: 0;
     height: $workspace-extra-height;
-    margin: 10px;
-    max-width: 100%;
-    position: absolute;
-    & > .column, & > .columns {
-        border: 1px solid $slamdata-border-color;
-    }
-    & > div {
-        height: 100%;
-    }
 }
 
 .slamdata-panel {
     bottom: $workspace-extra-height;
     height: 100%;
     overflow: auto;
+    .row {
+        margin: 0 auto;
+    }
 }
 
 // Add borders to Foundation 5's tabs.
