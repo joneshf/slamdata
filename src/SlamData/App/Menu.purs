@@ -6,6 +6,8 @@ module SlamData.App.Menu (menu) where
 
   import qualified React.DOM as D
 
+  type Command = String
+
   menu :: UI
   menu =
     D.nav [ D.ClassName "top-bar"
@@ -16,27 +18,100 @@ module SlamData.App.Menu (menu) where
           , D.section [D.ClassName "top-bar-section"]
               [ D.ul [D.ClassName "left"]
                   [ fileMenu
-                  , command "Edit"
-                  , command "Code"
-                  , command "Collaborate"
-                  , command "Help"
+                  , command "divider"
+                  , editMenu
+                  , command "divider"
+                  , codeMenu
+                  , command "divider"
+                  , collaborateMenu
+                  , command "divider"
+                  , helpMenu
+                  , command "divider"
                   ]
               ]
           ]
 
   fileMenu :: UI
-  fileMenu = D.li [D.ClassName "has-dropdown"]
-    [ D.a' [ D.text "File" ]
-    , D.ul [D.ClassName "dropdown"] $
-        command <$> [ "New"
-                    , "Open..."
-                    , "Open recent"
-                    , "Revert to..."
-                    , "Browse history..."
-                    ]
+  fileMenu = menuButton "File"
+    [ "New"
+    , "Open..."
+    , "Open recent"
+    , "Revert to..."
+    , "Browse history..."
+    , "divider"
+    , "Import..."
+    , "Export..."
+    , "divider"
+    , "Close"
+    , "Save as..."
+    , "Save a copy as..."
+    , "divider"
+    , "Print"
+    ]
+
+  editMenu :: UI
+  editMenu = menuButton "Edit"
+    [ "Undo"
+    , "Redo"
+    , "divider"
+    , "Copy"
+    , "Cut"
+    , "Paste"
+    , "Paste as data"
+    , "Paste and indent"
+    , "divider"
+    , "Find and replace..."
+    , "Find in folders..."
+    ]
+
+  codeMenu :: UI
+  codeMenu = menuButton "Code"
+    [ "Rename..."
+    , "Inline"
+    , "Extract"
+    , "divider"
+    , "Comment"
+    , "Uncomment"
+    , "Auto-Complete"
+    , "Go to Declaration"
+    , "divider"
+    , "Format pretty"
+    , "Format compact"
+    , "divider"
+    , "Insert Function"
+    , "divider"
+    , "Run Accurate"
+    , "Run Fast"
+    ]
+
+  collaborateMenu :: UI
+  collaborateMenu = menuButton "Collaborate"
+    [ "SlamData channel"
+    , "Create channel"
+    , "Join channel"
+    , "divider"
+    , "Share file..."
+    , "Manage saring..."
+    , "divider"
+    , "Add comment..."
+    ]
+
+  helpMenu :: UI
+  helpMenu = menuButton "Help"
+    [ "Lookup symbol..."
+    , "divider"
+    , "Support forum"
+    , "Support email"
+    ]
+
+  menuButton :: String -> [Command] -> UI
+  menuButton name commands = D.li [D.ClassName "has-dropdown"]
+    [ D.a' [ D.text name ]
+    , D.ul [D.ClassName "dropdown"] (command <$> commands)
     ]
 
   command :: String -> UI
+  command "divider" = D.li [D.ClassName "divider"] []
   command name = D.li'
     [ D.a' [ D.text name ]
     ]

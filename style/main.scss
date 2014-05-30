@@ -6,6 +6,8 @@
 @import "bower_components/foundation/scss/foundation/functions.scss";
 // Override any defaults.
 $tabs-navigation-padding: rem-calc(10);
+$topbar-arrows: false;
+$topbar-divider-border-top: solid 1px scale-color(white, $lightness: -50%);
 
 // Import the rest of foundation so we can use variables defined in it.
 @import "bower_components/foundation/scss/foundation.scss";
