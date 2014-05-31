@@ -13,7 +13,7 @@ $topbar-divider-border-top: solid 1px scale-color(white, $lightness: -50%);
 @import "bower_components/foundation/scss/foundation.scss";
 
 $slamdata-border-color: #d3d3d3;
-$workspace-extra-height: 200px;
+$workspace-extra-height: 0;
 
 html, body {
     background-color: #f9f9f9;
@@ -54,7 +54,6 @@ html, body {
 #main-row {
     @include workspace-row;
     bottom: $workspace-extra-height;
-    padding-bottom: 0;
     top: 0;
 }
 

@@ -20,11 +20,11 @@ module SlamData.App.Workspace (workspace) where
             , D.dataSet {"equalizer": true}
             ]
             [ large "2" filesystem
-            , large "7" notebook
-            , large "3" reference
+            , large "10" notebook
+            -- , large "3" reference
             ]
-    , D.div [ D.className "row"
-            , D.idProp "extra-row"
-            ]
-            [ large "12" extra ]
+    -- , D.div [ D.className "row"
+    --         , D.idProp "extra-row"
+    --         ]
+    --         [ large "12" extra ]
     ]
