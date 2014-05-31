@@ -54,18 +54,16 @@ module SlamData.App.Notebook.Block
                     } do
     state <- readState
     props <- getProps
-    let ty = props.blockType
-    let cont = state.content
-    pure $ if state.edit == Edit
-      then D.div'
-        [ D.div [ D.className "block-toolbar row" ]
-            [ D.div [ D.className "large-1  columns" ] [blockType ty]
-            , D.div [ D.className "large-11 columns" ] [toolbar props]
-            ]
-        , blockEditor cont
-        ]
-      else
-        evalMarkdown cont
+    pure $ D.div' $
+      [ blockRow "block-toolbar" [blockType props.blockType] [toolbar props]
+      , blockRow "" [] [evalOrEdit state.edit $ state.content]
+      ]
+
+  blockRow :: String -> [UI] -> [UI] -> UI
+  blockRow styles firstCol secondCol = D.div [D.className $ styles ++ " row"]
+    [ D.div [D.className "large-1  columns"] firstCol
+    , D.div [D.className "large-11 columns"] secondCol
+    ]
 
   blockType :: BlockType -> UI
   blockType ty = D.h3'
@@ -81,8 +79,8 @@ module SlamData.App.Notebook.Block
              [ actionButton {name: "X", click: props.close} ]
       ]
       where
-        specificButtons Markdown = [ actionButton {name: "Preview", click: eval} ]
-        specificButtons SQL      = [ actionButton {name: "Run", click: eval} ]
+        specificButtons Markdown = []
+        specificButtons SQL      = []
 
   eval ::forall attrs.
     EventHandlerContext (f :: ReadRefsEff { editor :: Component attrs {value :: String} })
@@ -101,6 +99,10 @@ module SlamData.App.Notebook.Block
   edit = do
     state <- readState
     pure $ writeState {edit: Edit, content: state.content}
+
+  evalOrEdit :: Editor -> (String -> UI)
+  evalOrEdit Edit = blockEditor
+  evalOrEdit Eval = evalMarkdown
 
   blockEditor :: String -> UI
   blockEditor content = D.div'
