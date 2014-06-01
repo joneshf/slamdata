@@ -39,19 +39,8 @@ module SlamData.App.Notebook.Block
     show Markdown = "Markdown"
     show SQL = "SQL"
 
-  didMount :: forall eff props attrs state result.
-    ReadWriteState (BlockProps eff state result)
-                   {editor :: Component attrs {focus :: {}}}
-                   BlockState
-                   {}
-  didMount = do
-    refs <- getRefs
-    pure $ focus $ getDOMNode refs.editor
-
   block :: forall eff state result. BlockProps eff state result -> UI
-  block = mkUI spec { getInitialState = pure {edit: Edit, content: ""}
-                    , componentDidMount = didMount
-                    } do
+  block = mkUI spec { getInitialState = pure {edit: Edit, content: ""} } do
     state <- readState
     props <- getProps
     pure $ D.div' $
@@ -106,12 +95,13 @@ module SlamData.App.Notebook.Block
 
   blockEditor :: String -> UI
   blockEditor content = D.div'
-    [ D.textarea [ D.className "block-editor"
+    [ D.textarea [ D.autoFocus "true"
+                 , D.className "block-editor"
                  , D.onBlur \_ -> eval
-                 , D.onKeyPress handleKeyPress
-                 , D.ref "editor"
                  , D.onChange $ \e ->
                     pure $ writeState {edit: Edit, content: e.target.value}
+                 , D.onKeyPress handleKeyPress
+                 , D.ref "editor"
                  , D.value content
                  ]
                  []
