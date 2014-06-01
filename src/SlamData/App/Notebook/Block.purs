@@ -43,20 +43,22 @@ module SlamData.App.Notebook.Block
   block = mkUI spec { getInitialState = pure {edit: Edit, content: ""} } do
     state <- readState
     props <- getProps
-    pure $ D.div' $
+    pure $ D.div [D.className "block"] $
       [ blockRow "block-toolbar" [blockType props.blockType] [toolbar props]
-      , blockRow "" [] [evalOrEdit state.edit $ state.content]
+      , blockRow "block-content" [] [evalOrEdit state.edit $ state.content]
       ]
 
   blockRow :: String -> [UI] -> [UI] -> UI
-  blockRow styles firstCol secondCol = D.div [D.className $ styles ++ " row"]
-    [ D.div [D.className "large-1  columns"] firstCol
-    , D.div [D.className "large-11 columns"] secondCol
-    ]
+  blockRow styles firstCol secondCol =
+    D.div [D.className $ styles ++ " row"]
+          [ D.div [D.className "large-1  columns"] firstCol
+          , D.div [D.className "large-11 columns right-side"] secondCol
+          ]
 
   blockType :: BlockType -> UI
-  blockType ty = D.h3'
-    [ D.small' [ D.text $ show ty ]
+  blockType ty = D.div [D.className "block-type"]
+    [ D.span [D.className ""]
+        [D.text $ show ty]
     ]
 
   toolbar :: forall eff state result. BlockProps eff state result -> UI
@@ -65,7 +67,11 @@ module SlamData.App.Notebook.Block
     pure $ D.div [ D.className "button-bar" ]
       [ D.ul [ D.className "left button-group" ] (specificButtons props.blockType)
       , D.ul [ D.className "right button-group" ]
-             [ actionButton {name: "X", click: props.close} ]
+             [ actionButton { tooltip: "Close"
+                            , icon: closeIcon {}
+                            , click: props.close
+                            }
+             ]
       ]
       where
         specificButtons Markdown = []

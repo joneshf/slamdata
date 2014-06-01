@@ -12,10 +12,10 @@ module SlamData.App.Panel (panel) where
 
   panel :: [Tab] -> UI
   panel tabs = D.div [ D.ClassName "slamdata-panel"
-                     , D.dataSet {"equalizer-watch": true}
+                     , D.dataSet {"equalizer-watch": ""}
                      ]
     [ D.dl [D.ClassName "tabs"
-           , D.dataSet {"tab": true}
+           , D.dataSet {tab: ""}
            ]
            (tabName <$> tabs)
     , D.div [D.ClassName "tabs-content"] (concatMap tabToolCont tabs)

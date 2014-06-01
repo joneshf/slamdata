@@ -25,13 +25,21 @@ module SlamData.App.Notebook (notebook) where
     state <- readState
     pure $ panel [ tab { name: "Untitled Notebook"
                        , content: createBlock <$> state.blocks
-                       , external: [ actionButton {name: "Save", click: pure {}}
-                                   , actionButton {name: "Publish", click: pure {}}
+                       , external: [ actionButton { tooltip: "Save"
+                                                  , icon: saveIcon {}
+                                                  , click: pure {}
+                                                  }
+                                   , actionButton { tooltip: "Publish"
+                                                  , icon: publishIcon {}
+                                                  , click: pure {}
+                                                  }
                                    ]
-                       , internal: [ actionButton { name: show Markdown
+                       , internal: [ actionButton { tooltip: show Markdown
+                                                  , icon: markdownIcon {}
                                                   , click: addBlock Markdown
                                                   }
-                                   , actionButton { name: show SQL
+                                   , actionButton { tooltip: show SQL
+                                                  , icon: sqlIcon {}
                                                   , click: addBlock SQL
                                                   }
                                    ]
