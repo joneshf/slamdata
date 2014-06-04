@@ -2,7 +2,9 @@ var gulp = require('gulp')
   , clean = require('gulp-clean')
   , concat = require('gulp-concat')
   , purescript = require('gulp-purescript')
-  , sass = require('gulp-sass');
+  , sass = require('gulp-sass')
+  , es = require('event-stream')
+  ;
 
 paths = {
     src: [
@@ -13,9 +15,10 @@ paths = {
     style: 'style/**/*.scss',
     css: 'css',
     build: {
-        js: 'bin/js',
         css: 'bin/css',
-        index: 'bin/index.html'
+        fonts: 'bin/fonts',
+        index: 'bin',
+        js: 'bin/js'
     },
     concat: [
         'bower_components/modernizr/modernizr.js',
@@ -25,17 +28,23 @@ paths = {
         'bower_components/fastclick/lib/fastclick.js',
         'bower_components/foundation/js/foundation.js',
         'js/slamdata.js'
-    ]
+    ],
+    fontawesome: {
+        css: 'bower_components/fontawesome/css/font-awesome.css',
+        fonts: 'bower_components/fontawesome/fonts/*'
+    }
 }
 
 options = {
     compile: {
         main: 'SlamData',
-        output: 'slamdata.js'
+        js: 'slamdata.js'
     },
     build: {
         main: 'SlamData',
-        output: 'slamdata.js'
+        css: 'slamdata.css',
+        index: 'index.html',
+        js: 'slamdata.js'
     }
 }
 
@@ -75,24 +84,28 @@ gulp.task('watch', function() {
     gulp.watch(paths.style, ['sass']);
 });
 
-gulp.task('sass-build', function() {
-    var scss = sass();
-    scss.on('error', function(e) {
-        console.error(e.message);
-        scss.end();
-    });
-    // There's something wonky going on with gulp-sass.
-    // Removing the return allows things to operate more fluidly.
-    gulp.src(paths.style)
-        .pipe(scss)
-        .pipe(gulp.dest(paths.build.css));
-});
 
-gulp.task('concat', function() {
+gulp.task('concat-js', function() {
     return gulp.src(paths.concat)
-      .pipe(concat(options.build.output))
+      .pipe(concat(options.build.js))
       .pipe(gulp.dest(paths.build.js));
 });
 
+gulp.task('concat-css', function(){
+    var fa = gulp.src(paths.fontawesome.css);
+    var styles = gulp.src(paths.style)
+        .pipe(sass());
+
+    return es.concat(fa, styles)
+        .pipe(concat(options.build.css))
+        .pipe(gulp.dest(paths.build.css));
+});
+
+gulp.task('fonts', function() {
+    return gulp.src(paths.fontawesome.fonts)
+      .pipe(gulp.dest(paths.build.fonts));
+});
+
+gulp.task('build', ['compile', 'concat', 'fonts']);
+gulp.task('concat', ['concat-js', 'concat-css']);
 gulp.task('default', ['compile', 'sass', 'watch']);
-gulp.task('build', ['compile', 'sass-build', 'concat']);
