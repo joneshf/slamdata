@@ -152,5 +152,9 @@ html, body {
     &:hover {
         @include panel($bg: #e6e6e6);
         margin: 0;
+        h1, h2, h3, h4, h5, h6 {
+            line-height: $header-line-height;
+            margin-bottom: $header-bottom-margin;
+        }
     }
 }
