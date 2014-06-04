@@ -8,6 +8,7 @@ module SlamData.App.Notebook (notebook) where
 
   import SlamData.Helpers
   import SlamData.App.Notebook.Block
+  import SlamData.App.Notebook.Block.Common
   import SlamData.App.Panel
   import SlamData.App.Panel.Tab
 

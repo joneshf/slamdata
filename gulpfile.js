@@ -38,7 +38,7 @@ paths = {
 options = {
     compile: {
         main: 'SlamData',
-        js: 'slamdata.js'
+        output: 'slamdata.js'
     },
     build: {
         main: 'SlamData',

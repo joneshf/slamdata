@@ -67,3 +67,8 @@ module SlamData.Helpers where
     "function getDOMNode(x) {\
     \  return x.getDOMNode();\
     \}" :: forall attrs values. Component attrs values -> values
+
+  foreign import focus
+    "function focus(x) {\
+    \  return x.focus();\
+    \}" :: forall a b. a -> b
