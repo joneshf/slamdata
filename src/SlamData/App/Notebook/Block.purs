@@ -24,7 +24,7 @@ module SlamData.App.Notebook.Block
     props <- getProps
     let ty = props.blockType
     pure $ D.div [D.className "block"] $
-      [ blockRow "block-toolbar" [blockType ty] [toolbar props]
+      [ blockRow "block-toolbar toolbar" [blockType ty] [toolbar props]
       , blockRow "block-content" [] [evalOrEdit state.edit ty state.content]
       ]
 
@@ -36,7 +36,7 @@ module SlamData.App.Notebook.Block
           ]
 
   blockType :: BlockType -> UI
-  blockType ty = D.div [D.className "block-type"]
+  blockType ty = D.div [D.className "block-type text-center"]
     [ D.span [D.className ""]
         [D.text $ show ty]
     ]
