@@ -14,9 +14,8 @@ module SlamData.App.FileSystem (filesystem) where
                 , content: [ D.text "The filesystem tree should be here." ]
                 , active: true
                 , external: []
-                , internal: [ actionButton {name: "New", click: pure {}}
-                            , actionButton {name: "Open", click: pure {}}
-                            , actionButton {name: "Delete", click: pure {}}
+                , internal: [ actionButton {tooltip: "New", icon: newIcon {}, click: pure {}}
+                            , actionButton {tooltip: "Open", icon: openIcon {}, click: pure {}}
                             ]
                 }
           ]

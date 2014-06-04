@@ -17,14 +17,14 @@ module SlamData.App.Workspace (workspace) where
   workspace = D.div [ D.idProp "workspace" ] $
     [ D.div [ D.className "row"
             , D.idProp "main-row"
-            , D.dataSet {"equalizer": true}
+            , D.dataSet {equalizer: ""}
             ]
             [ large "2" filesystem
-            , large "7" notebook
-            , large "3" reference
+            , large "10" notebook
+            -- , large "3" reference
             ]
-    , D.div [ D.className "row"
-            , D.idProp "extra-row"
-            ]
-            [ large "12" extra ]
+    -- , D.div [ D.className "row"
+    --         , D.idProp "extra-row"
+    --         ]
+    --         [ large "12" extra ]
     ]

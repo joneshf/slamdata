@@ -30938,7 +30938,7 @@ return jQuery;
 /**
  * @preserve FastClick: polyfill to remove click delays on browsers with touch UIs.
  *
- * @version 1.0.1
+ * @version 1.0.2
  * @codingstandard ftlabs-jsv2
  * @copyright The Financial Times Limited [All Rights Reserved]
  * @license MIT License (see LICENSE.txt)
@@ -30949,7 +30949,7 @@ return jQuery;
 
 
 /**
- * Instantiate fast-clicking listeners on the specificed layer.
+ * Instantiate fast-clicking listeners on the specified layer.
  *
  * @constructor
  * @param {Element} layer The layer to listen on
@@ -31680,7 +31680,7 @@ FastClick.notNeeded = function(layer) {
 					return true;
 				}
 				// Chrome 32 and above with width=device-width or less don't need FastClick
-				if (chromeVersion > 31 && window.innerWidth <= window.screen.width) {
+				if (chromeVersion > 31 && document.documentElement.scrollWidth <= window.outerWidth) {
 					return true;
 				}
 			}
@@ -31712,7 +31712,7 @@ FastClick.attach = function(layer, options) {
 };
 
 
-if (typeof define !== 'undefined' && define.amd) {
+if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) {
 
 	// AMD. Register as an anonymous module.
 	define(function() {
@@ -31743,7 +31743,7 @@ if (typeof define !== 'undefined' && define.amd) {
 
     while (i--) {
       if(head.has('.' + class_array[i]).length === 0) {
-          head.append('<meta class="' + class_array[i] + '" />');
+        head.append('<meta class="' + class_array[i] + '" />');
       }
     }
   };
@@ -31877,7 +31877,7 @@ if (typeof define !== 'undefined' && define.amd) {
       bindLoad.call(image);
     }
   };
-  
+
   /*
     https://github.com/paulirish/matchMedia.js
   */
@@ -31941,14 +31941,14 @@ if (typeof define !== 'undefined' && define.amd) {
   for (; lastTime < vendors.length && !requestAnimationFrame; lastTime++) {
     requestAnimationFrame = window[ vendors[lastTime] + "RequestAnimationFrame" ];
     cancelAnimationFrame = cancelAnimationFrame ||
-      window[ vendors[lastTime] + "CancelAnimationFrame" ] || 
+      window[ vendors[lastTime] + "CancelAnimationFrame" ] ||
       window[ vendors[lastTime] + "CancelRequestAnimationFrame" ];
   }
 
   function raf() {
     if (animating) {
       requestAnimationFrame(raf);
-      
+
       if (jqueryFxAvailable) {
         jQuery.fx.tick();
       }
@@ -31959,7 +31959,7 @@ if (typeof define !== 'undefined' && define.amd) {
     // use rAF
     window.requestAnimationFrame = requestAnimationFrame;
     window.cancelAnimationFrame = cancelAnimationFrame;
-    
+
     if (jqueryFxAvailable) {
       jQuery.fx.timer = function (timer) {
         if (timer() && jQuery.timers.push(timer) && !animating) {
@@ -32004,7 +32004,7 @@ if (typeof define !== 'undefined' && define.amd) {
   window.Foundation = {
     name : 'Foundation',
 
-    version : '5.2.2',
+    version : '5.2.3',
 
     media_queries : {
       small : S('.foundation-mq-small').css('font-family').replace(/^[\/\\'"]+|(;\s?})+|[\/\\'"]+$/g, ''),
@@ -32094,18 +32094,18 @@ if (typeof define !== 'undefined' && define.amd) {
       //    Don't bother reading the namespace out of the meta tag
       //    if the namespace has been set globally in javascript
       //
-      // Example: 
+      // Example:
       //    Foundation.global.namespace = 'my-namespace';
       // or make it an empty string:
       //    Foundation.global.namespace = '';
       //
       //
 
-      // If the namespace has not been set (is undefined), try to read it out of the meta element. 
+      // If the namespace has not been set (is undefined), try to read it out of the meta element.
       // Otherwise use the globally defined namespace, even if it's empty ('')
       var namespace = ( this.global.namespace === undefined ) ? $('.foundation-data-attribute-namespace').css('font-family') : this.global.namespace;
-      
-      // Finally, if the namsepace is either undefined or false, set it to an empty string. 
+
+      // Finally, if the namsepace is either undefined or false, set it to an empty string.
       // Otherwise use the namespace value.
       this.global.namespace = ( namespace === undefined || /false/i.test(namespace) ) ? '' : namespace;
     },
@@ -32116,23 +32116,23 @@ if (typeof define !== 'undefined' && define.amd) {
     utils : {
 
       // Description:
-      //    Fast Selector wrapper returns jQuery object. Only use where getElementById 
+      //    Fast Selector wrapper returns jQuery object. Only use where getElementById
       //    is not available.
       //
       // Arguments:
-      //    Selector (String): CSS selector describing the element(s) to be 
+      //    Selector (String): CSS selector describing the element(s) to be
       //    returned as a jQuery object.
       //
-      //    Scope (String): CSS selector describing the area to be searched. Default 
+      //    Scope (String): CSS selector describing the area to be searched. Default
       //    is document.
       //
       // Returns:
-      //    Element (jQuery Object): jQuery object containing elements matching the 
+      //    Element (jQuery Object): jQuery object containing elements matching the
       //    selector within the scope.
       S : S,
 
       // Description:
-      //    Executes a function a max of once every n milliseconds 
+      //    Executes a function a max of once every n milliseconds
       //
       // Arguments:
       //    Func (Function): Function to be throttled.
@@ -32164,8 +32164,8 @@ if (typeof define !== 'undefined' && define.amd) {
       //    Func (Function): Function to be debounced.
       //
       //    Delay (Integer): Function execution threshold in milliseconds.
-      // 
-      //    Immediate (Bool): Whether the function should be called at the beginning 
+      //
+      //    Immediate (Bool): Whether the function should be called at the beginning
       //    of the delay instead of the end. Default is false.
       //
       // Returns:
@@ -32193,18 +32193,19 @@ if (typeof define !== 'undefined' && define.amd) {
       //    El (jQuery Object): Element to be parsed.
       //
       // Returns:
-      //    Options (Javascript Object): Contents of the element's data-options 
+      //    Options (Javascript Object): Contents of the element's data-options
       //    attribute.
-      data_options : function (el) {
+      data_options : function (el, data_attr_name) {
+        data_attr_name = data_attr_name || 'options';
         var opts = {}, ii, p, opts_arr,
             data_options = function (el) {
               var namespace = Foundation.global.namespace;
 
               if (namespace.length > 0) {
-                return el.data(namespace + '-options');
+                return el.data(namespace + '-' + data_attr_name);
               }
 
-              return el.data('options');
+              return el.data(data_attr_name);
             };
 
         var cached_options = data_options(el);
@@ -32227,6 +32228,7 @@ if (typeof define !== 'undefined' && define.amd) {
 
         while (ii--) {
           p = opts_arr[ii].split(':');
+          p = [p[0], p.slice(1).join(':')];
 
           if (/true/i.test(p[1])) p[1] = true;
           if (/false/i.test(p[1])) p[1] = false;
@@ -32250,7 +32252,7 @@ if (typeof define !== 'undefined' && define.amd) {
       //    Adds JS-recognizable media queries
       //
       // Arguments:
-      //    Media (String): Key string for the media query to be stored as in 
+      //    Media (String): Key string for the media query to be stored as in
       //    Foundation.media_queries
       //
       //    Class (String): Class name for the generated <meta> tag
@@ -32267,16 +32269,16 @@ if (typeof define !== 'undefined' && define.amd) {
       // Arguments:
       //    Rule (String): CSS rule to be appended to the document.
       //
-      //    Media (String): Optional media query string for the CSS rule to be 
+      //    Media (String): Optional media query string for the CSS rule to be
       //    nested under.
       add_custom_rule : function (rule, media) {
-        if (media === undefined) {
+        if (media === undefined && Foundation.stylesheet) {
           Foundation.stylesheet.insertRule(rule, Foundation.stylesheet.cssRules.length);
         } else {
           var query = Foundation.media_queries[media];
 
           if (query !== undefined) {
-            Foundation.stylesheet.insertRule('@media ' + 
+            Foundation.stylesheet.insertRule('@media ' +
               Foundation.media_queries[media] + '{ ' + rule + ' }');
           }
         }
@@ -32288,7 +32290,7 @@ if (typeof define !== 'undefined' && define.amd) {
       // Arguments:
       //    Image (jQuery Object): Image(s) to check if loaded.
       //
-      //    Callback (Function): Fundation to execute when image is fully loaded.
+      //    Callback (Function): Function to execute when image is fully loaded.
       image_loaded : function (images, callback) {
         var self = this,
             unloaded = images.length;
@@ -32311,7 +32313,7 @@ if (typeof define !== 'undefined' && define.amd) {
       //    Returns a random, alphanumeric string
       //
       // Arguments:
-      //    Length (Integer): Length of string to be generated. Defaults to random 
+      //    Length (Integer): Length of string to be generated. Defaults to random
       //    integer.
       //
       // Returns:
@@ -32334,7 +32336,7 @@ if (typeof define !== 'undefined' && define.amd) {
     });
   };
 
-}(jQuery, this, this.document));
+}(jQuery, window, window.document));
 
 ;(function ($, window, document, undefined) {
   'use strict';
@@ -32342,7 +32344,7 @@ if (typeof define !== 'undefined' && define.amd) {
   Foundation.libs.abide = {
     name : 'abide',
 
-    version : '5.2.2',
+    version : '5.2.3',
 
     settings : {
       live_validate : true,
@@ -32373,7 +32375,7 @@ if (typeof define !== 'undefined' && define.amd) {
         time : /^(0[0-9]|1[0-9]|2[0-3])(:[0-5][0-9]){2}$/,
         dateISO: /^\d{4}[\/\-]\d{1,2}[\/\-]\d{1,2}$/,
         // MM/DD/YYYY
-        month_day_year : /^(0[1-9]|1[012])[- \/.](0[1-9]|[12][0-9]|3[01])[- \/.](19|20)\d\d$/,
+        month_day_year : /^(0[1-9]|1[012])[- \/.](0[1-9]|[12][0-9]|3[01])[- \/.]\d{4}$/,
 
         // #FFF or #FFFFFF
         color: /^#?([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/
@@ -32502,7 +32504,7 @@ if (typeof define !== 'undefined' && define.amd) {
       while (i--) {
         var el = el_patterns[i][0],
             required = el_patterns[i][2],
-            value = el.value,
+            value = el.value.trim(),
             direct_parent = this.S(el).parent(),
             validator = el.getAttribute(this.add_namespace('data-abide-validator')),
             is_radio = el.type === "radio",
@@ -32576,7 +32578,7 @@ if (typeof define !== 'undefined' && define.amd) {
 
     valid_radio : function (el, required) {
       var name = el.getAttribute('name'),
-          group = this.S(el).closest('[data-' + this.attr_name(true) + ']').find("[name="+name+"]"),
+          group = this.S(el).closest('[data-' + this.attr_name(true) + ']').find("[name='"+name+"']"),
           count = group.length,
           valid = false;
 
@@ -32634,7 +32636,7 @@ if (typeof define !== 'undefined' && define.amd) {
       return valid;
     }
   };
-}(jQuery, this, this.document));
+}(jQuery, window, window.document));
 
 ;(function ($, window, document, undefined) {
   'use strict';
@@ -32642,12 +32644,13 @@ if (typeof define !== 'undefined' && define.amd) {
   Foundation.libs.accordion = {
     name : 'accordion',
 
-    version : '5.2.2',
+    version : '5.2.3',
 
     settings : {
       active_class: 'active',
       multi_expand: false,
-      toggleable: true
+      toggleable: true,
+      callback : function () {}
     },
 
     init : function (scope, method, options) {
@@ -32659,20 +32662,23 @@ if (typeof define !== 'undefined' && define.amd) {
       var S = this.S;
       S(this.scope)
       .off('.fndtn.accordion')
-      .on('click.fndtn.accordion', '[' + this.attr_name() + '] dd > a', function (e) {
+      .on('click.fndtn.accordion', '[' + this.attr_name() + '] > dd > a', function (e) {
         var accordion = S(this).closest('[' + self.attr_name() + ']'),
             target = S('#' + this.href.split('#')[1]),
             siblings = S('dd > .content', accordion),
             aunts = $('dd', accordion),
+            groupSelector = self.attr_name() + '=' + accordion.attr(self.attr_name()),
             settings = accordion.data(self.attr_name(true) + '-init'),
-            active_content = S('dd > .content.' + settings.active_class, accordion),
-            active_parent = S('dd.' + settings.active_class, accordion);
+            active_content = S('dd > .content.' + settings.active_class, accordion);
         e.preventDefault();
 
-        if (! S(this).closest('dl').is(accordion)) { return; }
+        if (accordion.attr(self.attr_name())) {
+          siblings = siblings.add('[' + groupSelector + '] dd > .content');
+          aunts = aunts.add('[' + groupSelector + '] dd');
+        }
 
         if (settings.toggleable && target.is(active_content)) {
-          active_parent.toggleClass(settings.active_class, false);
+          target.parent('dd').toggleClass(settings.active_class, false);
           return target.toggleClass(settings.active_class, false);
         }
 
@@ -32682,6 +32688,7 @@ if (typeof define !== 'undefined' && define.amd) {
         }
 
         target.addClass(settings.active_class).parent().addClass(settings.active_class);
+        settings.callback(target);
       });
     },
 
@@ -32689,7 +32696,7 @@ if (typeof define !== 'undefined' && define.amd) {
 
     reflow : function () {}
   };
-}(jQuery, this, this.document));
+}(jQuery, window, window.document));
 
 ;(function ($, window, document, undefined) {
   'use strict';
@@ -32697,7 +32704,7 @@ if (typeof define !== 'undefined' && define.amd) {
   Foundation.libs.alert = {
     name : 'alert',
 
-    version : '5.2.2',
+    version : '5.2.3',
 
     settings : {
       callback: function (){}
@@ -32733,7 +32740,7 @@ if (typeof define !== 'undefined' && define.amd) {
 
     reflow : function () {}
   };
-}(jQuery, this, this.document));
+}(jQuery, window, window.document));
 
 ;(function ($, window, document, undefined) {
   'use strict';
@@ -32741,7 +32748,7 @@ if (typeof define !== 'undefined' && define.amd) {
   Foundation.libs.clearing = {
     name : 'clearing',
 
-    version: '5.2.2',
+    version: '5.2.3',
 
     settings : {
       templates : {
@@ -32779,10 +32786,11 @@ if (typeof define !== 'undefined' && define.amd) {
 
     events : function (scope) {
       var self = this,
-      S = self.S;
+          S = self.S,
+          $scroll_container = $('.scroll-container');
 
-      if ($('.scroll-container').length > 0) {
-        this.scope = $('.scroll-container');
+      if ($scroll_container.length > 0) {
+        this.scope = $scroll_container;
       }
 
       S(this.scope)
@@ -32886,19 +32894,20 @@ if (typeof define !== 'undefined' && define.amd) {
       if ($el.parent().hasClass('carousel')) {
         return;
       }
-      
+
       $el.after('<div id="foundationClearingHolder"></div>');
-      var grid = $el.detach();
-      var grid_outerHTML = '';
+
+      var grid = $el.detach(),
+          grid_outerHTML = '';
+
       if (grid[0] == null) {
         return;
       } else {
         grid_outerHTML = grid[0].outerHTML;
       }
-      
+
       var holder = this.S('#foundationClearingHolder'),
           settings = $el.data(this.attr_name(true) + '-init'),
-          grid = $el.detach(),
           data = {
             grid: '<div class="carousel">' + grid_outerHTML + '</div>',
             viewing: settings.templates.viewing
@@ -32942,7 +32951,7 @@ if (typeof define !== 'undefined' && define.amd) {
 
       function cb (image) {
         var $image = $(image);
-        image.css('visibility', 'visible');
+        $image.css('visibility', 'visible');
         // toggle the gallery
         body.css('overflow', 'hidden');
         root.addClass('clearing-blackout');
@@ -32955,16 +32964,17 @@ if (typeof define !== 'undefined' && define.amd) {
             target.siblings().removeClass('visible');
             target.addClass('visible');
           });
+        visible_image.trigger('opened.fndtn.clearing')
       }
 
       if (!this.locked()) {
+        visible_image.trigger('open.fndtn.clearing');
         // set the image to the selected thumbnail
         image
           .attr('src', this.load($image))
           .css('visibility', 'hidden');
 
         startLoad.call(this);
-
       }
     },
 
@@ -32984,12 +32994,14 @@ if (typeof define !== 'undefined' && define.amd) {
         body.css('overflow', '');
         container = $('div', root).first();
         visible_image = $('.visible-img', container);
+        visible_image.trigger('close.fndtn.clearing');
         this.settings.prev_index = 0;
         $('ul[' + this.attr_name() + ']', root)
           .attr('style', '').closest('.clearing-blackout')
           .removeClass('clearing-blackout');
         container.removeClass('clearing-container');
         visible_image.hide();
+        visible_image.trigger('closed.fndtn.clearing');
       }
 
       return false;
@@ -33023,6 +33035,7 @@ if (typeof define !== 'undefined' && define.amd) {
 
       if (image.length) {
         this.center_and_label(image, label);
+        image.trigger('resized.fndtn.clearing')
       }
     },
 
@@ -33032,15 +33045,15 @@ if (typeof define !== 'undefined' && define.amd) {
           self = this;
 
       lis.each(function () {
-          var li = self.S(this),
-              image = li.find('img');
+        var li = self.S(this),
+            image = li.find('img');
 
-          if (li.height() > image.outerHeight()) {
-            li.addClass('fix-height');
-          }
-        })
-        .closest('ul')
-        .width(lis.length * 100 + '%');
+        if (li.height() > image.outerHeight()) {
+          li.addClass('fix-height');
+        }
+      })
+      .closest('ul')
+      .width(lis.length * 100 + '%');
 
       return this;
     },
@@ -33051,19 +33064,15 @@ if (typeof define !== 'undefined' && define.amd) {
         .siblings('.visible-img');
 
       if (target.next().length > 0) {
-        this.S('.clearing-main-next', visible_image)
-          .removeClass('disabled');
+        this.S('.clearing-main-next', visible_image).removeClass('disabled');
       } else {
-        this.S('.clearing-main-next', visible_image)
-          .addClass('disabled');
+        this.S('.clearing-main-next', visible_image).addClass('disabled');
       }
 
       if (target.prev().length > 0) {
-        this.S('.clearing-main-prev', visible_image)
-          .removeClass('disabled');
+        this.S('.clearing-main-prev', visible_image).removeClass('disabled');
       } else {
-        this.S('.clearing-main-prev', visible_image)
-          .addClass('disabled');
+        this.S('.clearing-main-prev', visible_image).addClass('disabled');
       }
     },
 
@@ -33103,10 +33112,12 @@ if (typeof define !== 'undefined' && define.amd) {
     // image loading and preloading
 
     load : function ($image) {
+      var href;
+
       if ($image[0].nodeName === "A") {
-        var href = $image.attr('href');
+        href = $image.attr('href');
       } else {
-        var href = $image.parent().attr('href');
+        href = $image.parent().attr('href');
       }
 
       this.preload($image);
@@ -33160,7 +33171,8 @@ if (typeof define !== 'undefined' && define.amd) {
 
       if (target.length) {
         this.S('img', target)
-          .trigger('click', [current, target]);
+          .trigger('click', [current, target])
+          .trigger('change.fndtn.clearing');
       }
     },
 
@@ -33216,11 +33228,9 @@ if (typeof define !== 'undefined' && define.amd) {
       this.settings.up_count = up_count;
 
       if (this.adjacent(this.settings.prev_index, target_index)) {
-        if ((target_index > up_count)
-          && target_index > this.settings.prev_index) {
+        if ((target_index > up_count) && target_index > this.settings.prev_index) {
           response = 'right';
-        } else if ((target_index > up_count - 1)
-          && target_index <= this.settings.prev_index) {
+        } else if ((target_index > up_count - 1) && target_index <= this.settings.prev_index) {
           response = 'left';
         } else {
           response = false;
@@ -33265,7 +33275,7 @@ if (typeof define !== 'undefined' && define.amd) {
     }
   };
 
-}(jQuery, this, this.document));
+}(jQuery, window, window.document));
 
 ;(function ($, window, document, undefined) {
   'use strict';
@@ -33273,7 +33283,7 @@ if (typeof define !== 'undefined' && define.amd) {
   Foundation.libs.dropdown = {
     name : 'dropdown',
 
-    version : '5.2.2',
+    version : '5.2.3',
 
     settings : {
       active_class: 'open',
@@ -33303,23 +33313,26 @@ if (typeof define !== 'undefined' && define.amd) {
           }
         })
         .on('mouseenter.fndtn.dropdown', '[' + this.attr_name() + '], [' + this.attr_name() + '-content]', function (e) {
-          var $this = S(this);
+          var $this = S(this),
+              dropdown,
+              target;
+
           clearTimeout(self.timeout);
 
           if ($this.data(self.data_attr())) {
-            var dropdown = S('#' + $this.data(self.data_attr())),
-                target = $this;
+            dropdown = S('#' + $this.data(self.data_attr()));
+            target = $this;
           } else {
-            var dropdown = $this;
-                target = S("[" + self.attr_name() + "='" + dropdown.attr('id') + "']");
+            dropdown = $this;
+            target = S("[" + self.attr_name() + "='" + dropdown.attr('id') + "']");
           }
 
           var settings = target.data(self.attr_name(true) + '-init') || self.settings;
-          
+
           if(S(e.target).data(self.data_attr()) && settings.is_hover) {
             self.closeall.call(self);
           }
-          
+
           if (settings.is_hover) self.open.apply(self, [dropdown, target]);
         })
         .on('mouseleave.fndtn.dropdown', '[' + this.attr_name() + '], [' + this.attr_name() + '-content]', function (e) {
@@ -33341,8 +33354,8 @@ if (typeof define !== 'undefined' && define.amd) {
           if (S(e.target).data(self.data_attr()) || S(e.target).parent().data(self.data_attr())) {
             return;
           }
-          if (!(S(e.target).data('revealId')) && 
-            (parent.length > 0 && (S(e.target).is('[' + self.attr_name() + '-content]') || 
+          if (!(S(e.target).data('revealId')) &&
+            (parent.length > 0 && (S(e.target).is('[' + self.attr_name() + '-content]') ||
               $.contains(parent.first()[0], e.target)))) {
             e.stopPropagation();
             return;
@@ -33374,7 +33387,8 @@ if (typeof define !== 'undefined' && define.amd) {
             .css(Foundation.rtl ? 'right':'left', '-99999px')
             .removeClass(self.settings.active_class)
             .prev('[' + self.attr_name() + ']')
-            .removeClass(self.settings.active_class);
+            .removeClass(self.settings.active_class)
+            .removeData('target');
 
           self.S(this).trigger('closed', [dropdown]);
         }
@@ -33393,7 +33407,7 @@ if (typeof define !== 'undefined' && define.amd) {
           .css(dropdown
             .addClass(this.settings.active_class), target);
         dropdown.prev('[' + this.attr_name() + ']').addClass(this.settings.active_class);
-        dropdown.trigger('opened', [dropdown, target]);
+        dropdown.data('target', target.get(0)).trigger('opened', [dropdown, target]);
     },
 
     data_attr: function () {
@@ -33415,8 +33429,9 @@ if (typeof define !== 'undefined' && define.amd) {
 
       if (dropdown.hasClass(this.settings.active_class)) {
         this.close.call(this, dropdown);
+        if (dropdown.data('target') !== target.get(0))
+          this.open.call(this, dropdown, target);
       } else {
-        this.close.call(this, this.S('[' + this.attr_name() + '-content]'))
         this.open.call(this, dropdown, target);
       }
     },
@@ -33454,7 +33469,7 @@ if (typeof define !== 'undefined' && define.amd) {
     },
 
     style : function (dropdown, target, settings) {
-      var css = $.extend({position: 'absolute'}, 
+      var css = $.extend({position: 'absolute'},
         this.dirs[settings.align].call(dropdown, target, settings));
 
       dropdown.attr('style', '').css(css);
@@ -33486,7 +33501,7 @@ if (typeof define !== 'undefined' && define.amd) {
         }
 
         if (Foundation.rtl) {
-          return {left: p.left - this.outerWidth() + t.outerWidth(), 
+          return {left: p.left - this.outerWidth() + t.outerWidth(),
             top: p.top - this.outerHeight()};
         }
 
@@ -33572,7 +33587,7 @@ if (typeof define !== 'undefined' && define.amd) {
 
     reflow : function () {}
   };
-}(jQuery, this, this.document));
+}(jQuery, window, window.document));
 
 ;(function ($, window, document, undefined) {
   'use strict';
@@ -33580,12 +33595,13 @@ if (typeof define !== 'undefined' && define.amd) {
   Foundation.libs.equalizer = {
     name : 'equalizer',
 
-    version : '5.2.2',
+    version : '5.2.3',
 
     settings : {
       use_tallest: true,
       before_height_change: $.noop,
-      after_height_change: $.noop
+      after_height_change: $.noop,
+      equalize_on_stack: false
     },
 
     init : function (scope, method, options) {
@@ -33603,10 +33619,10 @@ if (typeof define !== 'undefined' && define.amd) {
     equalize: function(equalizer) {
       var isStacked = false,
           vals = equalizer.find('[' + this.attr_name() + '-watch]:visible'),
-          firstTopOffset = vals.first().offset().top,
           settings = equalizer.data(this.attr_name(true)+'-init');
 
       if (vals.length === 0) return;
+      var firstTopOffset = vals.first().offset().top;
       settings.before_height_change();
       equalizer.trigger('before-height-change');
       vals.height('inherit');
@@ -33616,9 +33632,13 @@ if (typeof define !== 'undefined' && define.amd) {
           isStacked = true;
         }
       });
-      if (isStacked) return;
 
-      var heights = vals.map(function(){ return $(this).outerHeight() }).get();
+      if (settings.equalize_on_stack === false) {
+        if (isStacked) return;
+      };
+
+      var heights = vals.map(function(){ return $(this).outerHeight(false) }).get();
+
       if (settings.use_tallest) {
         var max = Math.max.apply(null, heights);
         vals.css('height', max);
@@ -33641,14 +33661,16 @@ if (typeof define !== 'undefined' && define.amd) {
       });
     }
   };
-}(jQuery, this, this.document));
+})(jQuery, window, window.document);
+
+
 ;(function ($, window, document, undefined) {
   'use strict';
 
   Foundation.libs.interchange = {
     name : 'interchange',
 
-    version : '5.2.2',
+    version : '5.2.3',
 
     cache : {},
 
@@ -33766,9 +33788,9 @@ if (typeof define !== 'undefined' && define.amd) {
           if (passed) {
             this.settings.directives[passed
               .scenario[1]].call(this, passed.el, passed.scenario[0], function () {
-                if (arguments[0] instanceof Array) { 
+                if (arguments[0] instanceof Array) {
                   var args = arguments[0];
-                } else { 
+                } else {
                   var args = Array.prototype.slice.call(arguments, 0);
                 }
 
@@ -33895,7 +33917,7 @@ if (typeof define !== 'undefined' && define.amd) {
 
     object : function(el) {
       var raw_arr = this.parse_data_attr(el),
-          scenarios = [], 
+          scenarios = [],
           i = raw_arr.length;
 
       if (i > 0) {
@@ -33903,7 +33925,7 @@ if (typeof define !== 'undefined' && define.amd) {
           var split = raw_arr[i].split(/\((.*?)(\))$/);
 
           if (split.length > 1) {
-            var cached_split = split[0].split(','),
+            var cached_split = split[0].split(/\, /),
                 params = this.parse_params(cached_split[0],
                   cached_split[1], split[1]);
 
@@ -33953,7 +33975,7 @@ if (typeof define !== 'undefined' && define.amd) {
 
     parse_data_attr : function (el) {
       var raw = el.attr(this.attr_name()).split(/\[(.*?)\]/),
-          i = raw.length, 
+          i = raw.length,
           output = [];
 
       while (i--) {
@@ -33972,7 +33994,7 @@ if (typeof define !== 'undefined' && define.amd) {
 
   };
 
-}(jQuery, this, this.document));
+}(jQuery, window, window.document));
 
 ;(function ($, window, document, undefined) {
   'use strict';
@@ -33982,7 +34004,7 @@ if (typeof define !== 'undefined' && define.amd) {
   Foundation.libs.joyride = {
     name : 'joyride',
 
-    version : '5.2.2',
+    version : '5.2.3',
 
     defaults : {
       expose                   : false,     // turn on or off the expose feature
@@ -34081,7 +34103,7 @@ if (typeof define !== 'undefined' && define.amd) {
             if (self.is_phone()) {
               self.pos_phone();
             } else {
-              self.pos_default(false, true);
+              self.pos_default(false);
             }
           }
         }, 100));
@@ -34116,7 +34138,7 @@ if (typeof define !== 'undefined' && define.amd) {
       if (!this.settings.cookie_monster || this.settings.cookie_monster && !$.cookie(this.settings.cookie_name)) {
         this.settings.$tip_content.each(function (index) {
           var $this = $(this);
-          this.settings = $.extend({}, self.defaults, self.data_options($this))
+          this.settings = $.extend({}, self.defaults, self.data_options($this));
 
           // Make sure that settings parsed from data_options are integers where necessary
           var i = int_settings_count;
@@ -34182,7 +34204,7 @@ if (typeof define !== 'undefined' && define.amd) {
     },
 
     create : function (opts) {
-      var buttonText = opts.$li.attr(this.add_namespace('data-button')) 
+      var buttonText = opts.$li.attr(this.add_namespace('data-button'))
         || opts.$li.attr(this.add_namespace('data-text')),
         tipClass = opts.$li.attr('class'),
         $tip_content = $(this.tip_template({
@@ -34278,7 +34300,7 @@ if (typeof define !== 'undefined' && define.amd) {
                 $timer.animate({
                   width: $timer.parent().width()
                 }, this.settings.timer, 'linear');
-              }.bind(this), this.settings.tip_animation_fadeSpeed);
+              }.bind(this), this.settings.tip_animation_fade_speed);
 
             } else {
               this.settings.$next_tip.fadeIn(this.settings.tip_animation_fade_speed);
@@ -34370,7 +34392,7 @@ if (typeof define !== 'undefined' && define.amd) {
       tipOffset = Math.ceil(this.settings.$target.offset().top - window_half + this.settings.$next_tip.outerHeight());
 
       if (tipOffset != 0) {
-        $('html, body').animate({
+        $('html, body').stop().animate({
           scrollTop: tipOffset
         }, this.settings.scroll_speed, 'swing');
       }
@@ -34386,10 +34408,8 @@ if (typeof define !== 'undefined' && define.amd) {
       this.show('init');
     },
 
-    pos_default : function (init, resizing) {
-      var half_fold = Math.ceil($(window).height() / 2),
-          tip_position = this.settings.$next_tip.offset(),
-          $nub = this.settings.$next_tip.find('.joyride-nub'),
+    pos_default : function (init) {
+      var $nub = this.settings.$next_tip.find('.joyride-nub'),
           nub_width = Math.ceil($nub.outerWidth() / 2),
           nub_height = Math.ceil($nub.outerHeight() / 2),
           toggle = init || false;
@@ -34398,10 +34418,6 @@ if (typeof define !== 'undefined' && define.amd) {
       if (toggle) {
         this.settings.$next_tip.css('visibility', 'hidden');
         this.settings.$next_tip.show();
-      }
-
-      if (typeof resizing === 'undefined') {
-        resizing = false;
       }
 
       if (!/body/i.test(this.settings.$target.selector)) {
@@ -34803,7 +34819,7 @@ if (typeof define !== 'undefined' && define.amd) {
       $('.joyride-modal-bg').hide();
       this.settings.$current_tip.hide();
 
-      if (typeof abort === 'undefined') {
+      if (typeof abort === 'undefined' || abort === false) {
         this.settings.post_step_callback(this.settings.$li.index(), this.settings.$current_tip);
         this.settings.post_ride_callback(this.settings.$li.index(), this.settings.$current_tip);
       }
@@ -34822,7 +34838,7 @@ if (typeof define !== 'undefined' && define.amd) {
 
     reflow : function () {}
   };
-}(jQuery, this, this.document));
+}(jQuery, window, window.document));
 
 ;(function ($, window, document, undefined) {
   'use strict';
@@ -34830,14 +34846,15 @@ if (typeof define !== 'undefined' && define.amd) {
   Foundation.libs['magellan-expedition'] = {
     name : 'magellan-expedition',
 
-    version : '5.2.2',
+    version : '5.2.3',
 
     settings : {
       active_class: 'active',
       threshold: 0, // pixels from the top of the expedition for it to become fixes
       destination_threshold: 20, // pixels from the top of destination for it to be considered active
-      throttle_delay: 30 // calculation throttling to increase framerate
-    }, 
+      throttle_delay: 30, // calculation throttling to increase framerate
+      fixed_top: 0 // top distance in pixels assigend to the fixed element on scroll
+    },
 
     init : function (scope, method, options) {
       Foundation.inherit(this, 'throttle');
@@ -34855,31 +34872,35 @@ if (typeof define !== 'undefined' && define.amd) {
       S(self.scope)
         .off('.magellan')
         .on('click.fndtn.magellan', '[' + self.add_namespace('data-magellan-arrival') + '] a[href^="#"]', function (e) {
-            e.preventDefault();
-            var expedition = $(this).closest('[' + self.attr_name() + ']'),
-                settings = expedition.data('magellan-expedition-init');
+          e.preventDefault();
+          var expedition = $(this).closest('[' + self.attr_name() + ']'),
+              settings = expedition.data('magellan-expedition-init'),
+              hash = this.hash.split('#').join(''),
+              target = $("a[name='"+hash+"']");
 
-            var hash = this.hash.split('#').join(''),
-                target = $("a[name='"+hash+"']");
-            if (target.length === 0) target = $('#'+hash);
+          if (target.length === 0) {
+            target = $('#'+hash);
+          }
 
-            // Account for expedition height if fixed position
-            var scroll_top = target.offset().top;
-            scroll_top = scroll_top - expedition.outerHeight();
+          // Account for expedition height if fixed position
+          var scroll_top = target.offset().top;
+          scroll_top = scroll_top - expedition.outerHeight();
 
-            $('html, body').stop().animate({
-                'scrollTop': scroll_top
-            }, 700, 'swing', function () {
-                if(history.pushState) {
-                    history.pushState(null, null, '#'+hash);
-                }
-                else {
-                    location.hash = '#'+hash;
-                }
-            });
+          $('html, body').stop().animate({
+            'scrollTop': scroll_top
+          }, 700, 'swing', function () {
+            if(history.pushState) {
+              history.pushState(null, null, '#'+hash);
+            }
+            else {
+              location.hash = '#'+hash;
+            }
+          });
         })
-        .on('scroll.fndtn.magellan', self.throttle(this.check_for_arrivals.bind(this), settings.throttle_delay))
-        $(window).on('resize.fndtn.magellan', self.throttle(this.set_expedition_position.bind(this), settings.throttle_delay));
+        .on('scroll.fndtn.magellan', self.throttle(this.check_for_arrivals.bind(this), settings.throttle_delay));
+
+      $(window)
+        .on('resize.fndtn.magellan', self.throttle(this.set_expedition_position.bind(this), settings.throttle_delay));
     },
 
     check_for_arrivals : function() {
@@ -34896,7 +34917,7 @@ if (typeof define !== 'undefined' && define.amd) {
             top_offset;
 
         expedition.attr('style', '');
-        top_offset = expedition.offset().top;
+        top_offset = expedition.offset().top + self.settings.threshold;
 
         expedition.data(self.data_attr('magellan-top-offset'), top_offset);
         expedition.attr('style', styles);
@@ -34921,10 +34942,10 @@ if (typeof define !== 'undefined' && define.amd) {
             placeholder.attr(self.add_namespace('data-magellan-expedition-clone'),'');
             expedition.before(placeholder);
           }
-          expedition.css({position:'fixed', top: 0});
+          expedition.css({position:'fixed', top: self.settings.fixed_top});
         } else {
           expedition.prev('[' + self.add_namespace('data-magellan-expedition-clone') + ']').remove();
-          expedition.attr('style','');
+          expedition.attr('style','').removeClass('fixed');
         }
       });
     },
@@ -34935,7 +34956,7 @@ if (typeof define !== 'undefined' && define.amd) {
 
       $('[' + this.attr_name() + ']', self.scope).each(function() {
         var expedition = $(this),
-            settings = settings = expedition.data(self.attr_name(true) + '-init'),
+            settings = expedition.data(self.attr_name(true) + '-init'),
             offsets = self.offsets(expedition, window_top_offset),
             arrivals = expedition.find('[' + self.add_namespace('data-magellan-arrival') + ']'),
             active_item = false;
@@ -34996,7 +35017,7 @@ if (typeof define !== 'undefined' && define.amd) {
       $('[' + self.add_namespace('data-magellan-expedition-clone') + ']', self.scope).remove();
     }
   };
-}(jQuery, this, this.document));
+}(jQuery, window, window.document));
 
 ;(function ($, window, document, undefined) {
   'use strict';
@@ -35004,50 +35025,108 @@ if (typeof define !== 'undefined' && define.amd) {
   Foundation.libs.offcanvas = {
     name : 'offcanvas',
 
-    version : '5.2.2',
+    version : '5.2.3',
 
-    settings : {},
+    settings : {
+      open_method: 'move',
+      close_on_click: true
+    },
 
     init : function (scope, method, options) {
-      this.events();
+      this.bindings(method, options);
     },
 
     events : function () {
       var self = this,
-          S = self.S;
+          S = self.S,
+          move_class = '',
+          right_postfix = '',
+          left_postfix = '';
+
+      if (this.settings.open_method === 'move') {
+        move_class = 'move-';
+        right_postfix = 'right';
+        left_postfix = 'left';
+      } else if (this.settings.open_method === 'overlap') {
+        move_class = 'offcanvas-overlap';
+      }
 
       S(this.scope).off('.offcanvas')
         .on('click.fndtn.offcanvas', '.left-off-canvas-toggle', function (e) {
-          self.click_toggle_class(e, 'move-right');
+          self.click_toggle_class(e, move_class + right_postfix);
         })
         .on('click.fndtn.offcanvas', '.left-off-canvas-menu a', function (e) {
-          S(".off-canvas-wrap").removeClass("move-right");
+          var settings = self.get_settings(e);
+          if (settings.close_on_click) {
+            self.hide.call(self, move_class + right_postfix, self.get_wrapper(e));
+          }
         })
         .on('click.fndtn.offcanvas', '.right-off-canvas-toggle', function (e) {
-          self.click_toggle_class(e, 'move-left');
+          self.click_toggle_class(e, move_class + left_postfix);
         })
         .on('click.fndtn.offcanvas', '.right-off-canvas-menu a', function (e) {
-          S(".off-canvas-wrap").removeClass("move-left");
+          var settings = self.get_settings(e);
+          if (settings.close_on_click) {
+            self.hide.call(self, move_class + left_postfix, self.get_wrapper(e));
+          }
         })
         .on('click.fndtn.offcanvas', '.exit-off-canvas', function (e) {
-          self.click_remove_class(e, 'move-left');
-          self.click_remove_class(e, 'move-right');
-        })
+          self.click_remove_class(e, move_class + left_postfix);
+          if (right_postfix) self.click_remove_class(e, move_class + right_postfix);
+        });
+
+    },
+
+    toggle: function(class_name, $off_canvas) {
+      $off_canvas = $off_canvas || this.get_wrapper();
+      if ($off_canvas.is('.' + class_name)) {
+        this.hide(class_name, $off_canvas);
+      } else {
+        this.show(class_name, $off_canvas);
+      }
+    },
+
+    show: function(class_name, $off_canvas) {
+      $off_canvas = $off_canvas || this.get_wrapper();
+      $off_canvas.trigger('open');
+      $off_canvas.addClass(class_name);
+    },
+
+    hide: function(class_name, $off_canvas) {
+      $off_canvas = $off_canvas || this.get_wrapper();
+      $off_canvas.trigger('close');
+      $off_canvas.removeClass(class_name);
     },
 
     click_toggle_class: function(e, class_name) {
       e.preventDefault();
-      this.S(e.target).closest('.off-canvas-wrap').toggleClass(class_name);
+      var $off_canvas = this.get_wrapper(e);
+      this.toggle(class_name, $off_canvas);
     },
 
     click_remove_class: function(e, class_name) {
       e.preventDefault();
-      this.S('.off-canvas-wrap').removeClass(class_name);
+      var $off_canvas = this.get_wrapper(e);
+      this.hide(class_name, $off_canvas);
+    },
+
+    get_settings: function(e) {
+      var offcanvas  = this.S(e.target).closest('[' + this.attr_name() + ']');
+      return offcanvas.data(this.attr_name(true) + '-init') || this.settings;
+    },
+
+    get_wrapper: function(e) {
+      var $off_canvas = this.S(e ? e.target : this.scope).closest('.off-canvas-wrap');
+
+      if ($off_canvas.length === 0) {
+        $off_canvas = this.S('.off-canvas-wrap');
+      }
+      return $off_canvas;
     },
 
     reflow : function () {}
   };
-}(jQuery, this, this.document));
+}(jQuery, window, window.document));
 
 ;(function ($, window, document, undefined) {
   'use strict';
@@ -35101,7 +35180,7 @@ if (typeof define !== 'undefined' && define.amd) {
       container = slides_container.parent();
       slides_container.addClass(settings.slides_container_class);
       slides_container.addClass(settings.animation);
-      
+
       if (settings.stack_on_small) {
         container.addClass(settings.stack_on_small_class);
       }
@@ -35132,7 +35211,8 @@ if (typeof define !== 'undefined' && define.amd) {
         container.append(bullets_container);
         bullets_container.wrap('<div class="orbit-bullets-container"></div>');
         self.slides().each(function(idx, el) {
-          var bullet = $('<li>').attr('data-orbit-slide', idx);
+          var bullet = $('<li>').attr('data-orbit-slide', idx)
+            .on('click', self.link_bullet);
           bullets_container.append(bullet);
         });
       }
@@ -35142,15 +35222,15 @@ if (typeof define !== 'undefined' && define.amd) {
     self._prepare_direction = function(next_idx, current_direction) {
       var dir = 'next';
       if (next_idx <= idx) { dir = 'prev'; }
-      
-      if (settings.animation === 'slide') {    
+
+      if (settings.animation === 'slide') {
         setTimeout(function(){
           slides_container.removeClass("swipe-prev swipe-next");
           if (dir === 'next') {slides_container.addClass("swipe-next");}
           else if (dir === 'prev') {slides_container.addClass("swipe-prev");}
         },0);
       }
-      
+
       var slides = self.slides();
       if (next_idx >= slides.length) {
         if (!settings.circular) return false;
@@ -35161,7 +35241,7 @@ if (typeof define !== 'undefined' && define.amd) {
       }
       var current = $(slides.get(idx))
         , next = $(slides.get(next_idx));
-      
+
       return [dir, current, next, next_idx];
     };
 
@@ -35170,7 +35250,7 @@ if (typeof define !== 'undefined' && define.amd) {
       if (self.cache.animating) {return false;}
       if (next_idx === idx) {return false;}
       if (typeof self.cache.timer === 'object') {self.cache.timer.restart();}
-      
+
       var slides = self.slides();
       self.cache.animating = true;
       var res = self._prepare_direction(next_idx)
@@ -35188,11 +35268,13 @@ if (typeof define !== 'undefined' && define.amd) {
 
       current.css("transitionDuration", settings.animation_speed+"ms");
       next.css("transitionDuration", settings.animation_speed+"ms");
-      
+
       var callback = function() {
         var unlock = function() {
           if (start_timer === true) {self.cache.timer.restart();}
           self.update_slide_number(idx);
+          // Remove "animate-in" class as late as possible to avoid "flickering" (especially with variable_height).
+          next.removeClass("animate-in");
           next.addClass(settings.active_slide_class);
           self.update_active_link(next_idx);
           slides_container.trigger('after-slide-change.fndtn.orbit',[{slide_number: idx, total_slides: slides.length}]);
@@ -35200,10 +35282,10 @@ if (typeof define !== 'undefined' && define.amd) {
           setTimeout(function(){
             self.cache.animating = false;
           }, 100);
-          
+
         };
         if (slides_container.height() != next.height() && settings.variable_height) {
-          slides_container.animate({'height': next.height()}, 250, 'linear', unlock);
+          slides_container.animate({'min-height': next.height()}, 250, 'linear', unlock);
         } else {
           unlock();
         }
@@ -35213,16 +35295,16 @@ if (typeof define !== 'undefined' && define.amd) {
 
       var start_animation = function() {
         if (dir === 'next') {animate.next(current, next, callback);}
-        if (dir === 'prev') {animate.prev(current, next, callback);}        
+        if (dir === 'prev') {animate.prev(current, next, callback);}
       };
 
       if (next.height() > slides_container.height() && settings.variable_height) {
-        slides_container.animate({'height': next.height()}, 250, 'linear', start_animation);
+        slides_container.animate({'min-height': next.height()}, 250, 'linear', start_animation);
       } else {
         start_animation();
       }
     };
-    
+
     self.next = function(e) {
       e.stopImmediatePropagation();
       e.preventDefault();
@@ -35231,7 +35313,7 @@ if (typeof define !== 'undefined' && define.amd) {
         self._goto(idx + 1);
     }, 100);
     };
-    
+
     self.prev = function(e) {
       e.stopImmediatePropagation();
       e.preventDefault();
@@ -35254,32 +35336,36 @@ if (typeof define !== 'undefined' && define.amd) {
       }
     };
 
-    self.link_bullet = function(e) {    
+    // Click handler for slides and bullets.
+    self.link_bullet = function(e) {
       var index = $(this).attr('data-orbit-slide');
       if ((typeof index === 'string') && (index = $.trim(index)) != "") {
         if(isNaN(parseInt(index)))
         {
           var slide = container.find('[data-orbit-slide='+index+']');
           if (slide.index() != -1) {
+            index = slide.index() + 1;
+            self._prepare_direction(index);
             setTimeout(function(){
-              self._goto(slide.index() + 1);
+              self._goto(index);
             },100);
           }
         }
         else
         {
+          index = parseInt(index);
+          self._prepare_direction(index);
           setTimeout(function(){
-            self._goto(parseInt(index));
+            self._goto(index);
           },100);
         }
       }
-
     }
 
     self.timer_callback = function() {
       self._goto(idx + 1, true);
     }
-    
+
     self.compute_dimensions = function() {
       var current = $(self.slides().get(idx));
       var h = current.height();
@@ -35288,13 +35374,13 @@ if (typeof define !== 'undefined' && define.amd) {
           if ($(this).height() > h) { h = $(this).height(); }
         });
       }
-      slides_container.height(h);
+      slides_container.css('minHeight', String(h)+'px');
     };
 
     self.create_timer = function() {
       var t = new Timer(
-        container.find('.'+settings.timer_container_class), 
-        settings, 
+        container.find('.'+settings.timer_container_class),
+        settings,
         self.timer_callback
       );
       return t;
@@ -35308,7 +35394,7 @@ if (typeof define !== 'undefined' && define.amd) {
       var t = container.find('.'+settings.timer_container_class);
       if (t.hasClass(settings.timer_paused_class)) {
         if (typeof self.cache.timer === 'undefined') {self.cache.timer = self.create_timer();}
-        self.cache.timer.start();     
+        self.cache.timer.start();
       }
       else {
         if (typeof self.cache.timer === 'object') {self.cache.timer.stop();}
@@ -35318,10 +35404,10 @@ if (typeof define !== 'undefined' && define.amd) {
     self.init = function() {
       self.build_markup();
       if (settings.timer) {
-        self.cache.timer = self.create_timer(); 
-        Foundation.utils.image_loaded(this.slides().children('img'), self.cache.timer.start);
+        self.cache.timer = self.create_timer();
+        Foundation.utils.image_loaded(this.slides().find('img'), self.cache.timer.start);
       }
-      
+
       animate = new CSSAnimation(settings, slides_container);
 
       if (has_init_active) {
@@ -35337,9 +35423,9 @@ if (typeof define !== 'undefined' && define.amd) {
       container.on('click', '.'+settings.prev_class, self.prev);
 
       if (settings.next_on_click) {
-        container.on('click', '[data-orbit-slide]', self.link_bullet);
+        container.on('click', '.'+settings.slides_container_class+' [data-orbit-slide]', self.link_bullet);
       }
-      
+
       container.on('click', self.toggle_timer);
       if (settings.swipe) {
         slides_container.on('touchstart.fndtn.orbit',function(e) {
@@ -35354,8 +35440,8 @@ if (typeof define !== 'undefined' && define.amd) {
           self.cache.delta_x = 0;
           self.cache.is_scrolling = null;
           self.cache.direction = null;
-          
-          self.stop_timer(); // does not appear to prevent callback from occurring          
+
+          self.stop_timer(); // does not appear to prevent callback from occurring
         })
         .on('touchmove.fndtn.orbit',function(e) {
           if (Math.abs(self.cache.delta_x) > 5) {
@@ -35363,7 +35449,7 @@ if (typeof define !== 'undefined' && define.amd) {
             e.stopPropagation();
           }
 
-          if (self.cache.animating) {return;}          
+          if (self.cache.animating) {return;}
           requestAnimationFrame(function(){
             if (!e.touches) { e = e.originalEvent; }
 
@@ -35379,7 +35465,7 @@ if (typeof define !== 'undefined' && define.amd) {
             if (self.cache.is_scrolling) {
               return;
             }
-            
+
             var direction = (self.cache.delta_x < 0) ? (idx+1) : (idx-1);
             if (self.cache.direction !== direction) {
               var res = self._prepare_direction(direction);
@@ -35391,7 +35477,7 @@ if (typeof define !== 'undefined' && define.amd) {
 
             if (settings.animation === 'slide') {
               var offset, next_offset;
-              
+
               offset = (self.cache.delta_x / container.width()) * 100;
               if (offset >= 0) {next_offset = -(100 - offset);}
               else {next_offset = 100 + offset;}
@@ -35420,7 +35506,7 @@ if (typeof define !== 'undefined' && define.amd) {
           self.cache.timer.start();
         }
       });
-      
+
       $(document).on('click', '[data-orbit-link]', self.link_custom);
       $(window).on('load resize', self.compute_dimensions);
       var children = this.slides().find('img');
@@ -35441,7 +35527,7 @@ if (typeof define !== 'undefined' && define.amd) {
         duration = settings.timer_speed,
         progress = el.find('.'+settings.timer_progress_class),
         do_progress = progress && progress.css('display') != 'none',
-        start, 
+        start,
         timeout,
         left = -1;
 
@@ -35498,7 +35584,6 @@ if (typeof define !== 'undefined' && define.amd) {
         next.on(animation_end, function(e){
           next.unbind(animation_end);
           current.removeClass("active animate-out");
-          next.removeClass("animate-in");
           container.children().css({
             "transform":"",
             "-ms-transform":"",
@@ -35512,7 +35597,6 @@ if (typeof define !== 'undefined' && define.amd) {
       } else {
         setTimeout(function(){
           current.removeClass("active animate-out");
-          next.removeClass("animate-in");
           container.children().css({
             "transform":"",
             "-ms-transform":"",
@@ -35541,7 +35625,6 @@ if (typeof define !== 'undefined' && define.amd) {
         prev.on(animation_end, function(e){
           prev.unbind(animation_end);
           current.removeClass("active animate-out");
-          prev.removeClass("animate-in");
           container.children().css({
             "transform":"",
             "-ms-transform":"",
@@ -35555,7 +35638,6 @@ if (typeof define !== 'undefined' && define.amd) {
       } else {
         setTimeout(function(){
           current.removeClass("active animate-out");
-          prev.removeClass("animate-in");
           container.children().css({
             "transform":"",
             "-ms-transform":"",
@@ -35586,7 +35668,7 @@ if (typeof define !== 'undefined' && define.amd) {
   Foundation.libs.orbit = {
     name: 'orbit',
 
-    version: '5.2.2',
+    version: '5.2.3',
 
     settings: {
       animation: 'slide',
@@ -35631,6 +35713,7 @@ if (typeof define !== 'undefined' && define.amd) {
     },
 
     events : function (instance) {
+      var self = this;
       var orbit_instance = new Orbit(this.S(instance), this.S(instance).data('orbit-init'));
       this.S(instance).data(self.name + '-instance', orbit_instance);
     },
@@ -35653,8 +35736,8 @@ if (typeof define !== 'undefined' && define.amd) {
     }
   };
 
-    
-}(jQuery, this, this.document));
+
+}(jQuery, window, window.document));
 
 ;(function ($, window, document, undefined) {
   'use strict';
@@ -35662,7 +35745,7 @@ if (typeof define !== 'undefined' && define.amd) {
   Foundation.libs.reveal = {
     name : 'reveal',
 
-    version : '5.2.2',
+    version : '5.2.3',
 
     locked : false,
 
@@ -35792,20 +35875,24 @@ if (typeof define !== 'undefined' && define.amd) {
     },
 
     open : function (target, ajax_settings) {
-      var self = this;
+      var self = this,
+          modal;
+
       if (target) {
         if (typeof target.selector !== 'undefined') {
-          var modal = self.S('#' + target.data(self.data_attr('reveal-id')));
+          // Find the named node; only use the first one found, since the rest of the code assumes there's only one node
+          modal = self.S('#' + target.data(self.data_attr('reveal-id'))).first();
         } else {
-          var modal = self.S(this.scope);
+          modal = self.S(this.scope);
 
           ajax_settings = target;
         }
       } else {
-        var modal = self.S(this.scope);
+        modal = self.S(this.scope);
       }
 
       var settings = modal.data(self.attr_name(true) + '-init');
+      settings = settings || this.settings;
 
       if (!modal.hasClass('open')) {
         var open_modal = self.S('[' + self.attr_name() + '].open');
@@ -35819,7 +35906,7 @@ if (typeof define !== 'undefined' && define.amd) {
         modal.trigger('open');
 
         if (open_modal.length < 1) {
-          this.toggle_bg(modal);
+          this.toggle_bg(modal, true);
         }
 
         if (typeof ajax_settings === 'string') {
@@ -35845,6 +35932,7 @@ if (typeof define !== 'undefined' && define.amd) {
 
               modal.html(data);
               self.S(modal).foundation('section', 'reflow');
+              self.S(modal).children().foundation();
 
               if (open_modal.length > 0) {
                 self.hide(open_modal, settings.css.close);
@@ -35861,13 +35949,13 @@ if (typeof define !== 'undefined' && define.amd) {
     close : function (modal) {
       var modal = modal && modal.length ? modal : this.S(this.scope),
           open_modals = this.S('[' + this.attr_name() + '].open'),
-          settings = modal.data(this.attr_name(true) + '-init');
+          settings = modal.data(this.attr_name(true) + '-init') || this.settings;
 
       if (open_modals.length > 0) {
         this.locked = true;
         this.key_up_off(modal);   // PATCH #3: turning on key up capture only when a reveal window is open
         modal.trigger('close');
-        this.toggle_bg(modal);
+        this.toggle_bg(modal, false);
         this.hide(open_modals, settings.css.close, settings);
       }
     },
@@ -35882,18 +35970,19 @@ if (typeof define !== 'undefined' && define.amd) {
       return base;
     },
 
-    toggle_bg : function (modal) {
-      var settings = modal.data(this.attr_name(true));
-
+    toggle_bg : function (modal, state) {
       if (this.S('.' + this.settings.bg_class).length === 0) {
         this.settings.bg = $('<div />', {'class': this.settings.bg_class})
           .appendTo('body').hide();
       }
 
-      if (this.settings.bg.filter(':visible').length > 0) {
-        this.hide(this.settings.bg);
-      } else {
-        this.show(this.settings.bg);
+      var visible = this.settings.bg.filter(':visible').length > 0;
+      if ( state != visible ) {
+        if ( state == undefined ? visible : !state ) {
+          this.hide(this.settings.bg);
+        } else {
+          this.show(this.settings.bg);
+        }
       }
     },
 
@@ -35901,6 +35990,8 @@ if (typeof define !== 'undefined' && define.amd) {
       // is modal
       if (css) {
         var settings = el.data(this.attr_name(true) + '-init');
+        settings = settings || this.settings;
+
         if (el.parent('body').length === 0) {
           var placeholder = el.wrap('<div style="display: none;" />').parent(),
               rootElement = this.settings.rootElement || 'body';
@@ -35969,6 +36060,8 @@ if (typeof define !== 'undefined' && define.amd) {
       // is modal
       if (css) {
         var settings = el.data(this.attr_name(true) + '-init');
+        settings = settings || this.settings;
+
         var animData = getAnimationData(settings.animation);
         if (!animData.animate) {
           this.locked = false;
@@ -36082,7 +36175,7 @@ if (typeof define !== 'undefined' && define.amd) {
       fade: fade
     };
   }
-}(jQuery, this, this.document));
+}(jQuery, window, window.document));
 
 ;(function ($, window, document, undefined) {
   'use strict';
@@ -36090,7 +36183,7 @@ if (typeof define !== 'undefined' && define.amd) {
   Foundation.libs.slider = {
     name : 'slider',
 
-    version : '5.2.2',
+    version : '5.2.3',
 
     settings: {
       start: 0,
@@ -36209,7 +36302,6 @@ if (typeof define !== 'undefined' && define.amd) {
 
     normalized_value : function(val, start, end, step) {
       var range = end - start,
-          step = step,
           point = val*range,
           mod = (point-(point%step)) / step,
           rem = point % step,
@@ -36283,16 +36375,15 @@ if (typeof define !== 'undefined' && define.amd) {
 
   };
 
-}(jQuery, this, this.document));
+}(jQuery, window, window.document));
 
-/*jslint unparam: true, browser: true, indent: 2 */
 ;(function ($, window, document, undefined) {
   'use strict';
 
   Foundation.libs.tab = {
     name : 'tab',
 
-    version : '5.2.2',
+    version : '5.2.3',
 
     settings : {
       active_class: 'active',
@@ -36314,7 +36405,7 @@ if (typeof define !== 'undefined' && define.amd) {
       // Store the default active tabs which will be referenced when the
       // location hash is absent, as in the case of navigating the tabs and
       // returning to the first viewing via the browser Back button.
-      S('[' + this.attr_name() + '] > dd.active > a', this.scope).each(function () {
+      S('[' + this.attr_name() + '] > .active > a', this.scope).each(function () {
         self.default_tab_hashes.push(this.hash);
       });
     },
@@ -36326,7 +36417,7 @@ if (typeof define !== 'undefined' && define.amd) {
       S(this.scope)
         .off('.tab')
         // Click event: tab title
-        .on('click.fndtn.tab', '[' + this.attr_name() + '] > dd > a', function (e) {
+        .on('click.fndtn.tab', '[' + this.attr_name() + '] > * > a', function (e) {
           var settings = S(this).closest('[' + self.attr_name() +']').data(self.attr_name(true) + '-init');
           if (!settings.is_hover || Modernizr.touch) {
             e.preventDefault();
@@ -36335,7 +36426,7 @@ if (typeof define !== 'undefined' && define.amd) {
           }
         })
         // Hover event: tab title
-        .on('mouseenter.fndtn.tab', '[' + this.attr_name() + '] > dd > a', function (e) {
+        .on('mouseenter.fndtn.tab', '[' + this.attr_name() + '] > * > a', function (e) {
           var settings = S(this).closest('[' + self.attr_name() +']').data(self.attr_name(true) + '-init');
           if (settings.is_hover) self.toggle_active_tab(S(this).parent());
         });
@@ -36362,19 +36453,19 @@ if (typeof define !== 'undefined' && define.amd) {
             var hash_element = S(hash);
             if (hash_element.hasClass('content') && hash_element.parent().hasClass('tab-content')) {
               // Tab content div
-              self.toggle_active_tab($('[' + self.attr_name() + '] > dd > a[href=' + hash + ']').parent());
+              self.toggle_active_tab($('[' + self.attr_name() + '] > * > a[href=' + hash + ']').parent());
             } else {
               // Not the tab content div. If inside the tab content, find the
               // containing tab and toggle it as active.
               var hash_tab_container_id = hash_element.closest('.content').attr('id');
               if (hash_tab_container_id != undefined) {
-                self.toggle_active_tab($('[' + self.attr_name() + '] > dd > a[href=#' + hash_tab_container_id + ']').parent(), hash);
+                self.toggle_active_tab($('[' + self.attr_name() + '] > * > a[href=#' + hash_tab_container_id + ']').parent(), hash);
               }
             }
           } else {
             // Reference the default tab hashes which were initialized in the init function
             for (var ind in self.default_tab_hashes) {
-              self.toggle_active_tab($('[' + self.attr_name() + '] > dd > a[href=' + self.default_tab_hashes[ind] + ']').parent());
+              self.toggle_active_tab($('[' + self.attr_name() + '] > * > a[href=' + self.default_tab_hashes[ind] + ']').parent());
             }
           }
         }
@@ -36452,7 +36543,7 @@ if (typeof define !== 'undefined' && define.amd) {
 
     reflow : function () {}
   };
-}(jQuery, this, this.document));
+}(jQuery, window, window.document));
 
 ;(function ($, window, document, undefined) {
   'use strict';
@@ -36460,7 +36551,7 @@ if (typeof define !== 'undefined' && define.amd) {
   Foundation.libs.tooltip = {
     name : 'tooltip',
 
-    version : '5.2.2',
+    version : '5.2.3',
 
     settings : {
       additional_inheritable_classes : [],
@@ -36469,6 +36560,7 @@ if (typeof define !== 'undefined' && define.amd) {
       touch_close_text: 'Tap To Close',
       disable_for_touch: false,
       hover_delay: 200,
+      show_on : 'all',
       tip_template : function (selector, content) {
         return '<span data-selector="' + selector + '" class="'
           + Foundation.libs.tooltip.settings.tooltip_class.substring(1)
@@ -36481,6 +36573,29 @@ if (typeof define !== 'undefined' && define.amd) {
     init : function (scope, method, options) {
       Foundation.inherit(this, 'random_str');
       this.bindings(method, options);
+    },
+
+    should_show: function (target, tip) {
+      var settings = $.extend({}, this.settings, this.data_options(target));
+
+      if (settings.show_on === 'all') {
+        return true;
+      } else if (this.small() && settings.show_on === 'small') {
+        return true;
+      } else if (this.medium() && settings.show_on === 'medium') {
+        return true;
+      } else if (this.large() && settings.show_on === 'large') {
+        return true;
+      }
+      return false;
+    },
+
+    medium : function () {
+      return matchMedia(Foundation.media_queries['medium']).matches;
+    },
+
+    large : function () {
+      return matchMedia(Foundation.media_queries['large']).matches;
     },
 
     events : function (instance) {
@@ -36551,8 +36666,10 @@ if (typeof define !== 'undefined' && define.amd) {
 
     showTip : function ($target) {
       var $tip = this.getTip($target);
-
+      if (this.should_show($target, $tip)){
         return this.show($target);
+      }
+      return;
     },
 
     getTip : function ($target) {
@@ -36624,7 +36741,7 @@ if (typeof define !== 'undefined' && define.amd) {
           'top' : (top) ? top : 'auto',
           'bottom' : (bottom) ? bottom : 'auto',
           'left' : (left) ? left : 'auto',
-          'right' : (right) ? right : 'auto',
+          'right' : (right) ? right : 'auto'
         }).end();
       };
 
@@ -36725,7 +36842,7 @@ if (typeof define !== 'undefined' && define.amd) {
 
     reflow : function () {}
   };
-}(jQuery, this, this.document));
+}(jQuery, window, window.document));
 
 ;(function ($, window, document, undefined) {
   'use strict';
@@ -36733,7 +36850,7 @@ if (typeof define !== 'undefined' && define.amd) {
   Foundation.libs.topbar = {
     name : 'topbar',
 
-    version: '5.2.2',
+    version: '5.2.3',
 
     settings : {
       index : 0,
@@ -36757,11 +36874,10 @@ if (typeof define !== 'undefined' && define.amd) {
       self.S('[' + this.attr_name() + ']', this.scope).each(function () {
         var topbar = $(this),
             settings = topbar.data(self.attr_name(true) + '-init'),
-            section = self.S('section', this),
-            titlebar = topbar.children().filter('ul').first();
+            section = self.S('section', this);
         topbar.data('index', 0);
         var topbarContainer = topbar.parent();
-        if(topbarContainer.hasClass('fixed') || self.is_sticky(topbar, topbarContainer, settings) ) {
+        if (topbarContainer.hasClass('fixed') || self.is_sticky(topbar, topbarContainer, settings) ) {
           self.settings.sticky_class = settings.sticky_class;
           self.settings.sticky_topbar = topbar;
           topbar.data('height', topbarContainer.outerHeight());
@@ -36770,7 +36886,9 @@ if (typeof define !== 'undefined' && define.amd) {
           topbar.data('height', topbar.outerHeight());
         }
 
-        if (!settings.assembled) self.assemble(topbar);
+        if (!settings.assembled) {
+          self.assemble(topbar);
+        }
 
         if (settings.is_hover) {
           self.S('.has-dropdown', topbar).addClass('not-click');
@@ -36805,12 +36923,13 @@ if (typeof define !== 'undefined' && define.amd) {
     },
 
     toggle: function (toggleEl) {
-      var self = this;
+      var self = this,
+          topbar;
 
       if (toggleEl) {
-        var topbar = self.S(toggleEl).closest('[' + this.attr_name() + ']');
+        topbar = self.S(toggleEl).closest('[' + this.attr_name() + ']');
       } else {
-        var topbar = self.S('[' + this.attr_name() + ']');
+        topbar = self.S('[' + this.attr_name() + ']');
       }
 
       var settings = topbar.data(this.attr_name(true) + '-init');
@@ -36849,15 +36968,15 @@ if (typeof define !== 'undefined' && define.amd) {
 
             window.scrollTo(0,0);
           } else {
-              topbar.parent().removeClass('expanded');
+            topbar.parent().removeClass('expanded');
           }
         }
       } else {
-        if(self.is_sticky(topbar, topbar.parent(), settings)) {
+        if (self.is_sticky(topbar, topbar.parent(), settings)) {
           topbar.parent().addClass('fixed');
         }
 
-        if(topbar.parent().hasClass('fixed')) {
+        if (topbar.parent().hasClass('fixed')) {
           if (!topbar.hasClass('expanded')) {
             topbar.removeClass('fixed');
             topbar.parent().removeClass('expanded');
@@ -36949,7 +37068,7 @@ if (typeof define !== 'undefined' && define.amd) {
             topbar.css('height', $this.siblings('ul').outerHeight(true) + topbar.data('height'));
           }
         });
-      
+
       S(window).off('.topbar').on('resize.fndtn.topbar', self.throttle(function () {
         self.resize.call(self);
       }, 50)).trigger('resize');
@@ -37059,8 +37178,7 @@ if (typeof define !== 'undefined' && define.amd) {
     assemble : function (topbar) {
       var self = this,
           settings = topbar.data(this.attr_name(true) + '-init'),
-          section = self.S('section', topbar),
-          titlebar = $(this).children().filter('ul').first();
+          section = self.S('section', topbar);
 
       // Pull element out of the DOM for manipulation
       section.detach();
@@ -37068,15 +37186,16 @@ if (typeof define !== 'undefined' && define.amd) {
       self.S('.has-dropdown>a', section).each(function () {
         var $link = self.S(this),
             $dropdown = $link.siblings('.dropdown'),
-            url = $link.attr('href');
+            url = $link.attr('href'),
+            $titleLi;
 
         if (!$dropdown.find('.title.back').length) {
           if (settings.mobile_show_parent_link && url && url.length > 1) {
-            var $titleLi = $('<li class="title back js-generated"><h5><a href="javascript:void(0)"></a></h5></li><li><a class="parent-link js-generated" href="' + url + '">' + $link.text() +'</a></li>');
+            $titleLi = $('<li class="title back js-generated"><h5><a href="javascript:void(0)"></a></h5></li><li><a class="parent-link js-generated" href="' + url + '">' + $link.text() +'</a></li>');
           } else {
-            var $titleLi = $('<li class="title back js-generated"><h5><a href="javascript:void(0)"></a></h5></li>');
+            $titleLi = $('<li class="title back js-generated"><h5><a href="javascript:void(0)"></a></h5></li>');
           }
-  
+
           // Copy link to subnav
           if (settings.custom_back_text == true) {
             $('h5>a', $titleLi).html(settings.back_text);
@@ -37104,14 +37223,15 @@ if (typeof define !== 'undefined' && define.amd) {
       var total = 0,
           self = this;
 
-      $('> li', ul).each(function () { total += self.S(this).outerHeight(true); });
+      $('> li', ul).each(function () {
+        total += self.S(this).outerHeight(true);
+      });
 
       return total;
     },
 
     sticky : function () {
-      var $window = this.S(window),
-          self = this;
+      var self = this;
 
       this.S(window).on('scroll', function() {
         self.update_sticky_positioning();
@@ -37120,7 +37240,7 @@ if (typeof define !== 'undefined' && define.amd) {
 
     update_sticky_positioning: function() {
       var klass = '.' + this.settings.sticky_class,
-          $window = this.S(window), 
+          $window = this.S(window),
           self = this;
 
       if (self.settings.sticky_topbar && self.is_sticky(this.settings.sticky_topbar,this.settings.sticky_topbar.parent(), this.settings)) {
@@ -37695,7 +37815,7 @@ PS.Prelude_Unsafe = (function () {
 var PS = PS || {};
 PS.Showdown = (function () {
     "use strict";
-    function converter(options) {  return function(markdown) {    var converter = new Showdown.converter(options);    return converter.makeHtml(markdown);  }};
+    function converter(options) {  return function(markdown) {    var converter = new Showdown.converter(options);    return converter.makeHtml(markdown);  };};
     var makeHtml = converter({});
     return {
         converter: converter, 
@@ -37709,13 +37829,21 @@ PS.Global = (function () {
     var infinity = Infinity;;
     function readInt(radix) {  return function(n) {    return parseInt(n, radix);  };};
     var readFloat = parseFloat;;
+    function showErrorImpl(err) {  return err.stack ? err.stack : err.toString();};
+    var showError = function (_) {
+        return {
+            "__superclasses": {}, 
+            show: showErrorImpl
+        };
+    };
     return {
         readFloat: readFloat, 
         readInt: readInt, 
         isFinite: isFinite, 
         infinity: infinity, 
         isNaN: isNaN, 
-        nan: nan
+        nan: nan, 
+        showError: showError
     };
 })();
 var PS = PS || {};
@@ -37795,7 +37923,7 @@ PS.Data_Maybe = (function () {
             "__superclasses": {}, 
             show: function (_1) {
                 if (_1.ctor === "Data.Maybe.Just") {
-                    return "Just " + Prelude.show(__dict_Show_12)(_1.values[0]);
+                    return "Just (" + Prelude.show(__dict_Show_12)(_1.values[0]) + ")";
                 };
                 if (_1.ctor === "Data.Maybe.Nothing") {
                     return "Nothing";
@@ -37985,6 +38113,19 @@ PS.Data_Maybe = (function () {
     };
 })();
 var PS = PS || {};
+PS.Data_Maybe_Unsafe = (function () {
+    "use strict";
+    var fromJust = function (_1) {
+        if (_1.ctor === "Data.Maybe.Just") {
+            return _1.values[0];
+        };
+        throw "Failed pattern match";
+    };
+    return {
+        fromJust: fromJust
+    };
+})();
+var PS = PS || {};
 PS.Data_Function = (function () {
     "use strict";
     var on = function (f) {
@@ -38058,27 +38199,6 @@ PS.Data_Enum = (function () {
     };
 })();
 var PS = PS || {};
-PS.Data_Array_Unsafe = (function () {
-    "use strict";
-    var tail = function (_1) {
-        if (_1.length > 0) {
-            var _4 = _1.slice(1);
-            return _4;
-        };
-        throw "Failed pattern match";
-    };
-    var head = function (_1) {
-        if (_1.length > 0) {
-            return _1[0];
-        };
-        throw "Failed pattern match";
-    };
-    return {
-        tail: tail, 
-        head: head
-    };
-})();
-var PS = PS || {};
 PS.Data_Array = (function () {
     "use strict";
     var Prelude = PS.Prelude;
@@ -38120,6 +38240,36 @@ PS.Data_Array = (function () {
         };
         return Data_Maybe.Nothing;
     };
+    var span = (function () {
+        var go = function (__copy__1) {
+            return function (__copy__2) {
+                return function (__copy__3) {
+                    var _1 = __copy__1;
+                    var _2 = __copy__2;
+                    var _3 = __copy__3;
+                    tco: while (true) {
+                        var acc = _1;
+                        if (_3.length > 0) {
+                            var _8 = _3.slice(1);
+                            if (_2(_3[0])) {
+                                var __tco__1 = Prelude[":"](_3[0])(acc);
+                                var __tco__2 = _2;
+                                _1 = __tco__1;
+                                _2 = __tco__2;
+                                _3 = _8;
+                                continue tco;
+                            };
+                        };
+                        return {
+                            init: reverse(_1), 
+                            rest: _3
+                        };
+                    };
+                };
+            };
+        };
+        return go([  ]);
+    })();
     var sortBy = function (comp) {
         return function (xs) {
             var comp$prime = function (x) {
@@ -38198,6 +38348,27 @@ PS.Data_Array = (function () {
             return Data_Maybe.Nothing;
         };
     };
+    var intersectBy = function (_1) {
+        return function (_2) {
+            return function (_3) {
+                if (_2.length === 0) {
+                    return [  ];
+                };
+                if (_3.length === 0) {
+                    return [  ];
+                };
+                return (function () {
+                    var el = function (x) {
+                        return findIndex(_1(x))(_3) >= 0;
+                    };
+                    return filter(el)(_2);
+                })();
+            };
+        };
+    };
+    var intersect = function (__dict_Eq_19) {
+        return intersectBy(Prelude["=="](__dict_Eq_19));
+    };
     var init = function (_1) {
         if (_1.length === 0) {
             return Data_Maybe.Nothing;
@@ -38210,22 +38381,100 @@ PS.Data_Array = (function () {
         };
         return Data_Maybe.Nothing;
     };
+    var groupBy = (function () {
+        var go = function (_1) {
+            return function (_2) {
+                return function (_3) {
+                    if (_3.length === 0) {
+                        return reverse(_1);
+                    };
+                    if (_3.length > 0) {
+                        var _8 = _3.slice(1);
+                        return (function () {
+                            var sp = span(_2(_3[0]))(_8);
+                            return go(Prelude[":"](Prelude[":"](_3[0])(sp.init))(_1))(_2)(sp.rest);
+                        })();
+                    };
+                    throw "Failed pattern match";
+                };
+            };
+        };
+        return go([  ]);
+    })();
+    var group = function (__dict_Eq_20) {
+        return function (xs) {
+            return groupBy(Prelude["=="](__dict_Eq_20))(xs);
+        };
+    };
+    var group$prime = function (__dict_Ord_21) {
+        return Prelude["<<<"](Prelude.semigroupoidArr({}))(group(__dict_Ord_21["__superclasses"]["Prelude.Eq_0"]({})))(sort(__dict_Ord_21));
+    };
     var functorArray = function (_) {
         return {
             "__superclasses": {}, 
             "<$>": map
         };
     };
-    var elemLastIndex = function (__dict_Eq_19) {
+    var elemLastIndex = function (__dict_Eq_22) {
         return function (x) {
-            return findLastIndex(Prelude["=="](__dict_Eq_19)(x));
+            return findLastIndex(Prelude["=="](__dict_Eq_22)(x));
         };
     };
-    var elemIndex = function (__dict_Eq_20) {
+    var elemIndex = function (__dict_Eq_23) {
         return function (x) {
-            return findIndex(Prelude["=="](__dict_Eq_20)(x));
+            return findIndex(Prelude["=="](__dict_Eq_23)(x));
         };
     };
+    var deleteBy = function (_1) {
+        return function (_2) {
+            return function (_3) {
+                return (function (_4, _5, _6) {
+                    if (_6.length === 0) {
+                        return [  ];
+                    };
+                    return (function (_1) {
+                        if (_1 < 0) {
+                            return _6;
+                        };
+                        return deleteAt(_1)(1)(_6);
+                    })(findIndex(_4(_5))(_6));
+                })(_1, _2, _3);
+            };
+        };
+    };
+    var $$delete = function (__dict_Eq_24) {
+        return deleteBy(Prelude["=="](__dict_Eq_24));
+    };
+    var $bslash$bslash = function (__dict_Eq_25) {
+        return function (xs) {
+            return function (ys) {
+                var go = function (__copy__1) {
+                    return function (__copy__2) {
+                        var _1 = __copy__1;
+                        var _2 = __copy__2;
+                        tco: while (true) {
+                            if (_1.length === 0) {
+                                return _2;
+                            };
+                            if (_2.length === 0) {
+                                return [  ];
+                            };
+                            if (_1.length > 0) {
+                                var _6 = _1.slice(1);
+                                var __tco__2 = $$delete(__dict_Eq_25)(_1[0])(_2);
+                                _1 = _6;
+                                _2 = __tco__2;
+                                continue tco;
+                            };
+                            throw "Failed pattern match";
+                        };
+                    };
+                };
+                return go(xs)(ys);
+            };
+        };
+    };
+    var catMaybes = concatMap(Data_Maybe.maybe([  ])(singleton));
     var applicativeArray = function (_) {
         return {
             "__superclasses": {
@@ -38276,6 +38525,10 @@ PS.Data_Array = (function () {
         };
     };
     return {
+        span: span, 
+        groupBy: groupBy, 
+        "group'": group$prime, 
+        group: group, 
         sortBy: sortBy, 
         sort: sort, 
         nubBy: nubBy, 
@@ -38284,6 +38537,11 @@ PS.Data_Array = (function () {
         range: range, 
         filter: filter, 
         concatMap: concatMap, 
+        intersect: intersect, 
+        intersectBy: intersectBy, 
+        "\\\\": $bslash$bslash, 
+        "delete": $$delete, 
+        deleteBy: deleteBy, 
         updateAt: updateAt, 
         deleteAt: deleteAt, 
         insertAt: insertAt, 
@@ -38297,6 +38555,7 @@ PS.Data_Array = (function () {
         findLastIndex: findLastIndex, 
         findIndex: findIndex, 
         length: length, 
+        catMaybes: catMaybes, 
         mapMaybe: mapMaybe, 
         map: map, 
         "null": $$null, 
@@ -38314,6 +38573,37 @@ PS.Data_Array = (function () {
         monadArray: monadArray, 
         semigroupArray: semigroupArray, 
         alternativeArray: alternativeArray
+    };
+})();
+var PS = PS || {};
+PS.Data_Array_Unsafe = (function () {
+    "use strict";
+    var Prelude_Unsafe = PS.Prelude_Unsafe;
+    var Prelude = PS.Prelude;
+    var Data_Array = PS.Data_Array;
+    var Data_Maybe_Unsafe = PS.Data_Maybe_Unsafe;
+    var tail = function (_1) {
+        if (_1.length > 0) {
+            var _4 = _1.slice(1);
+            return _4;
+        };
+        throw "Failed pattern match";
+    };
+    var last = function (xs) {
+        return xs[Data_Array.length(xs) - 1];
+    };
+    var init = Prelude["<<<"](Prelude.semigroupoidArr({}))(Data_Maybe_Unsafe.fromJust)(Data_Array.init);
+    var head = function (_1) {
+        if (_1.length > 0) {
+            return _1[0];
+        };
+        throw "Failed pattern match";
+    };
+    return {
+        init: init, 
+        last: last, 
+        tail: tail, 
+        head: head
     };
 })();
 var PS = PS || {};
@@ -38491,20 +38781,20 @@ PS.Data_Monoid_Dual = (function () {
             values: [ value0 ]
         };
     };
-    var showDual = function (__dict_Show_21) {
+    var showDual = function (__dict_Show_26) {
         return {
             "__superclasses": {}, 
             show: function (_1) {
-                return "Dual " + Prelude.show(__dict_Show_21)(_1.values[0]);
+                return "Dual " + Prelude.show(__dict_Show_26)(_1.values[0]);
             }
         };
     };
-    var semigroupDual = function (__dict_Semigroup_22) {
+    var semigroupDual = function (__dict_Semigroup_27) {
         return {
             "__superclasses": {}, 
             "<>": function (_1) {
                 return function (_2) {
-                    return Dual(Prelude["<>"](__dict_Semigroup_22)(_2.values[0])(_1.values[0]));
+                    return Dual(Prelude["<>"](__dict_Semigroup_27)(_2.values[0])(_1.values[0]));
                 };
             }
         };
@@ -38512,41 +38802,41 @@ PS.Data_Monoid_Dual = (function () {
     var runDual = function (_1) {
         return _1.values[0];
     };
-    var monoidDual = function (__dict_Monoid_24) {
+    var monoidDual = function (__dict_Monoid_29) {
         return {
             "__superclasses": {
                 "Prelude.Semigroup_0": function (_) {
-                    return semigroupDual(__dict_Monoid_24["__superclasses"]["Prelude.Semigroup_0"]({}));
+                    return semigroupDual(__dict_Monoid_29["__superclasses"]["Prelude.Semigroup_0"]({}));
                 }
             }, 
-            mempty: Dual(Data_Monoid.mempty(__dict_Monoid_24))
+            mempty: Dual(Data_Monoid.mempty(__dict_Monoid_29))
         };
     };
-    var eqDual = function (__dict_Eq_25) {
+    var eqDual = function (__dict_Eq_30) {
         return {
             "__superclasses": {}, 
             "==": function (_1) {
                 return function (_2) {
-                    return Prelude["=="](__dict_Eq_25)(_1.values[0])(_2.values[0]);
+                    return Prelude["=="](__dict_Eq_30)(_1.values[0])(_2.values[0]);
                 };
             }, 
             "/=": function (_1) {
                 return function (_2) {
-                    return Prelude["/="](__dict_Eq_25)(_1.values[0])(_2.values[0]);
+                    return Prelude["/="](__dict_Eq_30)(_1.values[0])(_2.values[0]);
                 };
             }
         };
     };
-    var ordDual = function (__dict_Ord_23) {
+    var ordDual = function (__dict_Ord_28) {
         return {
             "__superclasses": {
                 "Prelude.Eq_0": function (_) {
-                    return eqDual(__dict_Ord_23["__superclasses"]["Prelude.Eq_0"]({}));
+                    return eqDual(__dict_Ord_28["__superclasses"]["Prelude.Eq_0"]({}));
                 }
             }, 
             compare: function (_1) {
                 return function (_2) {
-                    return Prelude.compare(__dict_Ord_23)(_1.values[0])(_2.values[0]);
+                    return Prelude.compare(__dict_Ord_28)(_1.values[0])(_2.values[0]);
                 };
             }
         };
@@ -38612,11 +38902,11 @@ PS.Data_Monoid_First = (function () {
             values: [ value0 ]
         };
     };
-    var showFirst = function (__dict_Show_26) {
+    var showFirst = function (__dict_Show_31) {
         return {
             "__superclasses": {}, 
             show: function (_1) {
-                return "First (" + Prelude.show(Data_Maybe.showMaybe(__dict_Show_26))(_1.values[0]) + ")";
+                return "First (" + Prelude.show(Data_Maybe.showMaybe(__dict_Show_31))(_1.values[0]) + ")";
             }
         };
     };
@@ -38646,31 +38936,31 @@ PS.Data_Monoid_First = (function () {
             mempty: First(Data_Maybe.Nothing)
         };
     };
-    var eqFirst = function (__dict_Eq_28) {
+    var eqFirst = function (__dict_Eq_33) {
         return {
             "__superclasses": {}, 
             "==": function (_1) {
                 return function (_2) {
-                    return Prelude["=="](Data_Maybe.eqMaybe(__dict_Eq_28))(_1.values[0])(_2.values[0]);
+                    return Prelude["=="](Data_Maybe.eqMaybe(__dict_Eq_33))(_1.values[0])(_2.values[0]);
                 };
             }, 
             "/=": function (_1) {
                 return function (_2) {
-                    return Prelude["/="](Data_Maybe.eqMaybe(__dict_Eq_28))(_1.values[0])(_2.values[0]);
+                    return Prelude["/="](Data_Maybe.eqMaybe(__dict_Eq_33))(_1.values[0])(_2.values[0]);
                 };
             }
         };
     };
-    var ordFirst = function (__dict_Ord_27) {
+    var ordFirst = function (__dict_Ord_32) {
         return {
             "__superclasses": {
                 "Prelude.Eq_0": function (_) {
-                    return eqFirst(__dict_Ord_27["__superclasses"]["Prelude.Eq_0"]({}));
+                    return eqFirst(__dict_Ord_32["__superclasses"]["Prelude.Eq_0"]({}));
                 }
             }, 
             compare: function (_1) {
                 return function (_2) {
-                    return Prelude.compare(Data_Maybe.ordMaybe(__dict_Ord_27))(_1.values[0])(_2.values[0]);
+                    return Prelude.compare(Data_Maybe.ordMaybe(__dict_Ord_32))(_1.values[0])(_2.values[0]);
                 };
             }
         };
@@ -38696,11 +38986,11 @@ PS.Data_Monoid_Last = (function () {
             values: [ value0 ]
         };
     };
-    var showLast = function (__dict_Show_29) {
+    var showLast = function (__dict_Show_34) {
         return {
             "__superclasses": {}, 
             show: function (_1) {
-                return "Last (" + Prelude.show(Data_Maybe.showMaybe(__dict_Show_29))(_1.values[0]) + ")";
+                return "Last (" + Prelude.show(Data_Maybe.showMaybe(__dict_Show_34))(_1.values[0]) + ")";
             }
         };
     };
@@ -38733,31 +39023,31 @@ PS.Data_Monoid_Last = (function () {
             mempty: Last(Data_Maybe.Nothing)
         };
     };
-    var eqLast = function (__dict_Eq_31) {
+    var eqLast = function (__dict_Eq_36) {
         return {
             "__superclasses": {}, 
             "==": function (_1) {
                 return function (_2) {
-                    return Prelude["=="](Data_Maybe.eqMaybe(__dict_Eq_31))(_1.values[0])(_2.values[0]);
+                    return Prelude["=="](Data_Maybe.eqMaybe(__dict_Eq_36))(_1.values[0])(_2.values[0]);
                 };
             }, 
             "/=": function (_1) {
                 return function (_2) {
-                    return Prelude["/="](Data_Maybe.eqMaybe(__dict_Eq_31))(_1.values[0])(_2.values[0]);
+                    return Prelude["/="](Data_Maybe.eqMaybe(__dict_Eq_36))(_1.values[0])(_2.values[0]);
                 };
             }
         };
     };
-    var ordLast = function (__dict_Ord_30) {
+    var ordLast = function (__dict_Ord_35) {
         return {
             "__superclasses": {
                 "Prelude.Eq_0": function (_) {
-                    return eqLast(__dict_Ord_30["__superclasses"]["Prelude.Eq_0"]({}));
+                    return eqLast(__dict_Ord_35["__superclasses"]["Prelude.Eq_0"]({}));
                 }
             }, 
             compare: function (_1) {
                 return function (_2) {
-                    return Prelude.compare(Data_Maybe.ordMaybe(__dict_Ord_30))(_1.values[0])(_2.values[0]);
+                    return Prelude.compare(Data_Maybe.ordMaybe(__dict_Ord_35))(_1.values[0])(_2.values[0]);
                 };
             }
         };
@@ -38972,12 +39262,12 @@ PS.Data_Tuple = (function () {
     var snd = function (_1) {
         return _1.values[1];
     };
-    var showTuple = function (__dict_Show_32) {
-        return function (__dict_Show_33) {
+    var showTuple = function (__dict_Show_37) {
+        return function (__dict_Show_38) {
             return {
                 "__superclasses": {}, 
                 show: function (_1) {
-                    return "Tuple(" + Prelude.show(__dict_Show_32)(_1.values[0]) + ", " + Prelude.show(__dict_Show_33)(_1.values[1]) + ")";
+                    return "Tuple(" + Prelude.show(__dict_Show_37)(_1.values[0]) + ", " + Prelude.show(__dict_Show_38)(_1.values[1]) + ")";
                 }
             };
         };
@@ -38995,29 +39285,29 @@ PS.Data_Tuple = (function () {
     var fst = function (_1) {
         return _1.values[0];
     };
-    var eqTuple = function (__dict_Eq_37) {
-        return function (__dict_Eq_38) {
+    var eqTuple = function (__dict_Eq_42) {
+        return function (__dict_Eq_43) {
             return {
                 "__superclasses": {}, 
                 "==": function (_1) {
                     return function (_2) {
-                        return Prelude["=="](__dict_Eq_37)(_1.values[0])(_2.values[0]) && Prelude["=="](__dict_Eq_38)(_1.values[1])(_2.values[1]);
+                        return Prelude["=="](__dict_Eq_42)(_1.values[0])(_2.values[0]) && Prelude["=="](__dict_Eq_43)(_1.values[1])(_2.values[1]);
                     };
                 }, 
                 "/=": function (t1) {
                     return function (t2) {
-                        return !Prelude["=="](eqTuple(__dict_Eq_37)(__dict_Eq_38))(t1)(t2);
+                        return !Prelude["=="](eqTuple(__dict_Eq_42)(__dict_Eq_43))(t1)(t2);
                     };
                 }
             };
         };
     };
-    var ordTuple = function (__dict_Ord_34) {
-        return function (__dict_Ord_35) {
+    var ordTuple = function (__dict_Ord_39) {
+        return function (__dict_Ord_40) {
             return {
                 "__superclasses": {
                     "Prelude.Eq_0": function (_) {
-                        return eqTuple(__dict_Ord_34["__superclasses"]["Prelude.Eq_0"]({}))(__dict_Ord_35["__superclasses"]["Prelude.Eq_0"]({}));
+                        return eqTuple(__dict_Ord_39["__superclasses"]["Prelude.Eq_0"]({}))(__dict_Ord_40["__superclasses"]["Prelude.Eq_0"]({}));
                     }
                 }, 
                 compare: function (_1) {
@@ -39025,10 +39315,10 @@ PS.Data_Tuple = (function () {
                         return (function (_3, _4) {
                             return (function (_1) {
                                 if (_1.ctor === "Prelude.EQ") {
-                                    return Prelude.compare(__dict_Ord_35)(_3.values[1])(_4.values[1]);
+                                    return Prelude.compare(__dict_Ord_40)(_3.values[1])(_4.values[1]);
                                 };
                                 return _1;
-                            })(Prelude.compare(__dict_Ord_34)(_3.values[0])(_4.values[0]));
+                            })(Prelude.compare(__dict_Ord_39)(_3.values[0])(_4.values[0]));
                         })(_1, _2);
                     };
                 }
@@ -39042,7 +39332,7 @@ PS.Data_Tuple = (function () {
             };
         };
     };
-    var applyTuple = function (__dict_Semigroup_40) {
+    var applyTuple = function (__dict_Semigroup_45) {
         return {
             "__superclasses": {
                 "Prelude.Functor_0": function (_) {
@@ -39051,47 +39341,47 @@ PS.Data_Tuple = (function () {
             }, 
             "<*>": function (_1) {
                 return function (_2) {
-                    return Tuple(Prelude["<>"](__dict_Semigroup_40)(_1.values[0])(_2.values[0]))(_1.values[1](_2.values[1]));
+                    return Tuple(Prelude["<>"](__dict_Semigroup_45)(_1.values[0])(_2.values[0]))(_1.values[1](_2.values[1]));
                 };
             }
         };
     };
-    var bindTuple = function (__dict_Semigroup_39) {
+    var bindTuple = function (__dict_Semigroup_44) {
         return {
             "__superclasses": {
                 "Prelude.Apply_0": function (_) {
-                    return applyTuple(__dict_Semigroup_39);
+                    return applyTuple(__dict_Semigroup_44);
                 }
             }, 
             ">>=": function (_1) {
                 return function (_2) {
                     return (function (_3, _4) {
                         return (function (_1) {
-                            return Tuple(Prelude["<>"](__dict_Semigroup_39)(_3.values[0])(_1.values[0]))(_1.values[1]);
+                            return Tuple(Prelude["<>"](__dict_Semigroup_44)(_3.values[0])(_1.values[0]))(_1.values[1]);
                         })(_4(_3.values[1]));
                     })(_1, _2);
                 };
             }
         };
     };
-    var applicativeTuple = function (__dict_Monoid_41) {
+    var applicativeTuple = function (__dict_Monoid_46) {
         return {
             "__superclasses": {
                 "Prelude.Apply_0": function (_) {
-                    return applyTuple(__dict_Monoid_41["__superclasses"]["Prelude.Semigroup_0"]({}));
+                    return applyTuple(__dict_Monoid_46["__superclasses"]["Prelude.Semigroup_0"]({}));
                 }
             }, 
-            pure: Tuple(Data_Monoid.mempty(__dict_Monoid_41))
+            pure: Tuple(Data_Monoid.mempty(__dict_Monoid_46))
         };
     };
-    var monadTuple = function (__dict_Monoid_36) {
+    var monadTuple = function (__dict_Monoid_41) {
         return {
             "__superclasses": {
                 "Prelude.Applicative_0": function (_) {
-                    return applicativeTuple(__dict_Monoid_36);
+                    return applicativeTuple(__dict_Monoid_41);
                 }, 
                 "Prelude.Bind_1": function (_) {
-                    return bindTuple(__dict_Monoid_36["__superclasses"]["Prelude.Semigroup_0"]({}));
+                    return bindTuple(__dict_Monoid_41["__superclasses"]["Prelude.Semigroup_0"]({}));
                 }
             }
         };
@@ -39672,9 +39962,9 @@ PS.Debug_Trace = (function () {
     "use strict";
     var Prelude = PS.Prelude;
     function trace(s) {  return function() {    console.log(s);    return {};  };};
-    var print = function (__dict_Show_42) {
+    var print = function (__dict_Show_47) {
         return function (o) {
-            return trace(Prelude.show(__dict_Show_42)(o));
+            return trace(Prelude.show(__dict_Show_47)(o));
         };
     };
     return {
@@ -41515,11 +41805,26 @@ PS.SlamData_App_Menu = (function () {
     var React_DOM = PS.React_DOM;
     var Prelude = PS.Prelude;
     var Data_Array = PS.Data_Array;
-    var command = function (name) {
-        return React_DOM["li'"]([ React_DOM["a'"]([ React_DOM.text(name) ]) ]);
+    var command = function (_1) {
+        if (_1 === "divider") {
+            return React_DOM.li([ React_DOM.ClassName("divider") ])([  ]);
+        };
+        return React_DOM["li'"]([ React_DOM["a'"]([ React_DOM.text(_1) ]) ]);
     };
-    var fileMenu = React_DOM.li([ React_DOM.ClassName("has-dropdown") ])([ React_DOM["a'"]([ React_DOM.text("File") ]), React_DOM.ul([ React_DOM.ClassName("dropdown") ])(Prelude["<$>"](Data_Array.functorArray({}))(command)([ "New", "Open...", "Open recent", "Revert to...", "Browse history..." ])) ]);
-    var menu = React_DOM.nav([ React_DOM.ClassName("top-bar") ])([ React_DOM.section([ React_DOM.ClassName("top-bar-section") ])([ React_DOM.ul([ React_DOM.ClassName("title-area") ])([ React_DOM["li'"]([  ]) ]), React_DOM.ul([ React_DOM.ClassName("left") ])([ fileMenu, command("Edit"), command("Code"), command("Collaborate"), command("Help") ]) ]) ]);
+    var menuButton = function (name) {
+        return function (commands) {
+            return React_DOM.li([ React_DOM.ClassName("has-dropdown") ])([ React_DOM["a'"]([ React_DOM.text(name) ]), React_DOM.ul([ React_DOM.ClassName("dropdown") ])(Prelude["<$>"](Data_Array.functorArray({}))(command)(commands)) ]);
+        };
+    };
+    var editMenu = menuButton("Edit")([ "Undo", "Redo", "divider", "Copy", "Cut", "Paste", "Paste as data", "Paste and indent", "divider", "Find and replace...", "Find in folders..." ]);
+    var fileMenu = menuButton("File")([ "New", "Open...", "Open recent", "Revert to...", "Browse history...", "divider", "Import...", "Export...", "divider", "Close", "Save as...", "Save a copy as...", "divider", "Print" ]);
+    var helpMenu = menuButton("Help")([ "Lookup symbol...", "divider", "Support forum", "Support email" ]);
+    var collaborateMenu = menuButton("Collaborate")([ "SlamData channel", "Create channel", "Join channel", "divider", "Share file...", "Manage saring...", "divider", "Add comment..." ]);
+    var codeMenu = menuButton("Code")([ "Rename...", "Inline", "Extract", "divider", "Comment", "Uncomment", "Auto-Complete", "Go to Declaration", "divider", "Format pretty", "Format compact", "divider", "Insert Function", "divider", "Run Accurate", "Run Fast" ]);
+    var menu = React_DOM.nav([ React_DOM.ClassName("top-bar"), React_DOM.Data({
+        options: "is_hover: false", 
+        topbar: true
+    }) ])([ React_DOM.ul([ React_DOM.ClassName("title-area") ])([ React_DOM["li'"]([  ]) ]), React_DOM.section([ React_DOM.ClassName("top-bar-section") ])([ React_DOM.ul([ React_DOM.ClassName("left") ])([ fileMenu, command("divider"), editMenu, command("divider"), codeMenu, command("divider"), collaborateMenu, command("divider"), helpMenu, command("divider") ]) ]) ]);
     return {
         menu: menu
     };
@@ -41576,6 +41881,15 @@ PS.SlamData_Helpers = (function () {
     "use strict";
     var React_DOM = PS.React_DOM;
     var Prelude = PS.Prelude;
+    var FAIcon = function (value0) {
+        return {
+            ctor: "SlamData.Helpers.FAIcon", 
+            values: [ value0 ]
+        };
+    };
+    function toUI(dict) {
+        return dict["toUI"];
+    };
     function getDOMNode(x) {  return x.getDOMNode();};
     var row = function (uis) {
         return React_DOM.div([ React_DOM.ClassName("row") ])(uis);
@@ -41585,16 +41899,63 @@ PS.SlamData_Helpers = (function () {
             return React_DOM.div([ React_DOM.ClassName("large-" + size + " columns") ])([ ui ]);
         };
     };
-    var actionButton = function (props) {
-        return React_DOM["li'"]([ React_DOM.a([ React_DOM.ClassName("tiny secondary button"), React_DOM.onClick(function (_) {
-            return props.click;
-        }) ])([ React_DOM.text(props.name) ]) ]);
+    var iconFA = function (_) {
+        return {
+            "__superclasses": {}, 
+            toUI: function (_1) {
+                return _1.values[0];
+            }
+        };
+    };
+    var faIcon = function (name) {
+        return FAIcon(React_DOM.i([ React_DOM.className(name) ])([  ]));
+    };
+    var markdownIcon = function (_1) {
+        return faIcon("fa fa-file-text");
+    };
+    var newIcon = function (_1) {
+        return faIcon("fa fa-file");
+    };
+    var openIcon = function (_1) {
+        return faIcon("fa fa-folder-open");
+    };
+    var publishIcon = function (_1) {
+        return faIcon("fa fa-book");
+    };
+    var saveIcon = function (_1) {
+        return faIcon("fa fa-save");
+    };
+    var sqlIcon = function (_1) {
+        return faIcon("fa fa-database");
+    };
+    var closeIcon = function (_1) {
+        return faIcon("fa fa-times");
+    };
+    var actionButton = function (__dict_Icon_48) {
+        return function (props) {
+            return React_DOM["li'"]([ React_DOM.a([ React_DOM.ClassName("tiny secondary button has-tooltip"), React_DOM.onClick(function (_) {
+                return props.click;
+            }), React_DOM.titleProp(props.tooltip), React_DOM.dataSet({
+                tooltip: ""
+            }) ])([ toUI(__dict_Icon_48)(props.icon) ]) ]);
+        };
     };
     return {
+        FAIcon: FAIcon, 
         getDOMNode: getDOMNode, 
+        sqlIcon: sqlIcon, 
+        markdownIcon: markdownIcon, 
+        publishIcon: publishIcon, 
+        saveIcon: saveIcon, 
+        openIcon: openIcon, 
+        newIcon: newIcon, 
+        closeIcon: closeIcon, 
+        faIcon: faIcon, 
+        toUI: toUI, 
         large: large, 
         row: row, 
-        actionButton: actionButton
+        actionButton: actionButton, 
+        iconFA: iconFA
     };
 })();
 var PS = PS || {};
@@ -41611,9 +41972,9 @@ PS.SlamData_App_Panel = (function () {
     };
     var panel = function (tabs) {
         return React_DOM.div([ React_DOM.ClassName("slamdata-panel"), React_DOM.dataSet({
-            "equalizer-watch": true
+            "equalizer-watch": ""
         }) ])([ React_DOM.dl([ React_DOM.ClassName("tabs"), React_DOM.dataSet({
-            tab: true
+            tab: ""
         }) ])(Prelude["<$>"](Data_Array.functorArray({}))(tabName)(tabs)), React_DOM.div([ React_DOM.ClassName("tabs-content") ])(Data_Array.concatMap(tabToolCont)(tabs)) ]);
     };
     return {
@@ -41664,14 +42025,13 @@ PS.SlamData_App_FileSystem = (function () {
         content: [ React_DOM.text("The filesystem tree should be here.") ], 
         active: true, 
         external: [  ], 
-        internal: [ SlamData_Helpers.actionButton({
-            name: "New", 
+        internal: [ SlamData_Helpers.actionButton(SlamData_Helpers.iconFA({}))({
+            tooltip: "New", 
+            icon: SlamData_Helpers.newIcon({}), 
             click: Prelude.pure(Control_Monad_Eff.applicativeEff({}))({})
-        }), SlamData_Helpers.actionButton({
-            name: "Open", 
-            click: Prelude.pure(Control_Monad_Eff.applicativeEff({}))({})
-        }), SlamData_Helpers.actionButton({
-            name: "Delete", 
+        }), SlamData_Helpers.actionButton(SlamData_Helpers.iconFA({}))({
+            tooltip: "Open", 
+            icon: SlamData_Helpers.openIcon({}), 
             click: Prelude.pure(Control_Monad_Eff.applicativeEff({}))({})
         }) ]
     }) ]);
@@ -41682,11 +42042,11 @@ PS.SlamData_App_FileSystem = (function () {
 var PS = PS || {};
 PS.SlamData_App_Notebook_Block = (function () {
     "use strict";
+    var React = PS.React;
     var Prelude = PS.Prelude;
     var Control_Monad_Eff = PS.Control_Monad_Eff;
-    var React = PS.React;
-    var SlamData_Helpers = PS.SlamData_Helpers;
     var React_DOM = PS.React_DOM;
+    var SlamData_Helpers = PS.SlamData_Helpers;
     var Showdown = PS.Showdown;
     var Edit = {
         ctor: "SlamData.App.Notebook.Block.Edit", 
@@ -41705,6 +42065,25 @@ PS.SlamData_App_Notebook_Block = (function () {
         values: [  ]
     };
     function focus(x) {  return x.focus();};
+    var toolbar = (function () {
+        var specificButtons = function (_1) {
+            if (_1.ctor === "SlamData.App.Notebook.Block.Markdown") {
+                return [  ];
+            };
+            if (_1.ctor === "SlamData.App.Notebook.Block.SQL") {
+                return [  ];
+            };
+            throw "Failed pattern match";
+        };
+        return React.mkUI(React.spec)(function __do() {
+            var _1 = React.getProps();
+            return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div([ React_DOM.className("button-bar") ])([ React_DOM.ul([ React_DOM.className("left button-group") ])(specificButtons(_1.blockType)), React_DOM.ul([ React_DOM.className("right button-group") ])([ SlamData_Helpers.actionButton(SlamData_Helpers.iconFA({}))({
+                tooltip: "Close", 
+                icon: SlamData_Helpers.closeIcon({}), 
+                click: _1.close
+            }) ]) ]))();
+        });
+    })();
     var showBlockType = function (_) {
         return {
             "__superclasses": {}, 
@@ -41726,30 +42105,6 @@ PS.SlamData_App_Notebook_Block = (function () {
             content: (SlamData_Helpers.getDOMNode(_1.editor)).value
         }))();
     };
-    var toolbar = (function () {
-        var specificButtons = function (_1) {
-            if (_1.ctor === "SlamData.App.Notebook.Block.Markdown") {
-                return [ SlamData_Helpers.actionButton({
-                    name: "Preview", 
-                    click: $$eval
-                }) ];
-            };
-            if (_1.ctor === "SlamData.App.Notebook.Block.SQL") {
-                return [ SlamData_Helpers.actionButton({
-                    name: "Run", 
-                    click: $$eval
-                }) ];
-            };
-            throw "Failed pattern match";
-        };
-        return React.mkUI(React.spec)(function __do() {
-            var _1 = React.getProps();
-            return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div([ React_DOM.className("button-bar") ])([ React_DOM.ul([ React_DOM.className("left button-group") ])(specificButtons(_1.blockType)), React_DOM.ul([ React_DOM.className("right button-group") ])([ SlamData_Helpers.actionButton({
-                name: "X", 
-                click: _1.close
-            }) ]) ]))();
-        });
-    })();
     var eqEditor = function (_) {
         return {
             "__superclasses": {}, 
@@ -41790,22 +42145,34 @@ PS.SlamData_App_Notebook_Block = (function () {
     var handleKeyPress = function (k) {
         return (k.ctrlKey && k.keyCode === 13 || k.keyCode === 10) ? $$eval : edit;
     };
-    var didMount = function __do() {
-        var _1 = React.getRefs();
-        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(focus(SlamData_Helpers.getDOMNode(_1.editor)))();
-    };
     var blockType = function (ty) {
-        return React_DOM["h3'"]([ React_DOM["small'"]([ React_DOM.text(Prelude.show(showBlockType({}))(ty)) ]) ]);
+        return React_DOM.div([ React_DOM.className("block-type") ])([ React_DOM.span([ React_DOM.className("") ])([ React_DOM.text(Prelude.show(showBlockType({}))(ty)) ]) ]);
+    };
+    var blockRow = function (styles) {
+        return function (firstCol) {
+            return function (secondCol) {
+                return React_DOM.div([ React_DOM.className(styles + " row") ])([ React_DOM.div([ React_DOM.className("large-1  columns") ])(firstCol), React_DOM.div([ React_DOM.className("large-11 columns right-side") ])(secondCol) ]);
+            };
+        };
     };
     var blockEditor = function (content) {
-        return React_DOM["div'"]([ React_DOM.textarea([ React_DOM.className("block-editor"), React_DOM.onBlur(function (_) {
+        return React_DOM["div'"]([ React_DOM.textarea([ React_DOM.autoFocus("true"), React_DOM.className("block-editor"), React_DOM.onBlur(function (_) {
             return $$eval;
-        }), React_DOM.onKeyPress(handleKeyPress), React_DOM.ref("editor"), React_DOM.onChange(function (e) {
+        }), React_DOM.onChange(function (e) {
             return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState({
                 edit: Edit, 
                 content: e.target.value
             }));
-        }), React_DOM.value(content) ])([  ]) ]);
+        }), React_DOM.onKeyPress(handleKeyPress), React_DOM.ref("editor"), React_DOM.value(content) ])([  ]) ]);
+    };
+    var evalOrEdit = function (_1) {
+        if (_1.ctor === "SlamData.App.Notebook.Block.Edit") {
+            return blockEditor;
+        };
+        if (_1.ctor === "SlamData.App.Notebook.Block.Eval") {
+            return evalMarkdown;
+        };
+        throw "Failed pattern match";
     };
     var block = React.mkUI((function () {
         var _1 = {};
@@ -41818,14 +42185,13 @@ PS.SlamData_App_Notebook_Block = (function () {
             edit: Edit, 
             content: ""
         });
-        _1.componentDidMount = didMount;
         return _1;
     })())(function __do() {
         var _1 = React.readState();
         return (function (_2) {
             return function __do() {
                 var _1 = React.getProps();
-                return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(Prelude["=="](eqEditor({}))(_2.edit)(Edit) ? React_DOM["div'"]([ React_DOM.div([ React_DOM.className("block-toolbar") ])([ React_DOM.div([ React_DOM.className("large-1  columns") ])([ blockType(_1.blockType) ]), React_DOM.div([ React_DOM.className("large-11 columns") ])([ toolbar(_1) ]) ]), blockEditor(_2.content) ]) : evalMarkdown(_2.content))();
+                return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div([ React_DOM.className("block") ])([ blockRow("block-toolbar")([ blockType(_1.blockType) ])([ toolbar(_1) ]), blockRow("block-content")([  ])([ evalOrEdit(_2.edit)(_2.content) ]) ]))();
             };
         })(_1)();
     });
@@ -41898,18 +42264,22 @@ PS.SlamData_App_Notebook = (function () {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_App_Panel.panel([ SlamData_App_Panel_Tab.tab({
             name: "Untitled Notebook", 
             content: Prelude["<$>"](Data_Array.functorArray({}))(createBlock)(_1.blocks), 
-            external: [ SlamData_Helpers.actionButton({
-                name: "Save", 
+            external: [ SlamData_Helpers.actionButton(SlamData_Helpers.iconFA({}))({
+                tooltip: "Save", 
+                icon: SlamData_Helpers.saveIcon({}), 
                 click: Prelude.pure(Control_Monad_Eff.applicativeEff({}))({})
-            }), SlamData_Helpers.actionButton({
-                name: "Publish", 
+            }), SlamData_Helpers.actionButton(SlamData_Helpers.iconFA({}))({
+                tooltip: "Publish", 
+                icon: SlamData_Helpers.publishIcon({}), 
                 click: Prelude.pure(Control_Monad_Eff.applicativeEff({}))({})
             }) ], 
-            internal: [ SlamData_Helpers.actionButton({
-                name: Prelude.show(SlamData_App_Notebook_Block.showBlockType({}))(SlamData_App_Notebook_Block.Markdown), 
+            internal: [ SlamData_Helpers.actionButton(SlamData_Helpers.iconFA({}))({
+                tooltip: Prelude.show(SlamData_App_Notebook_Block.showBlockType({}))(SlamData_App_Notebook_Block.Markdown), 
+                icon: SlamData_Helpers.markdownIcon({}), 
                 click: addBlock(SlamData_App_Notebook_Block.Markdown)
-            }), SlamData_Helpers.actionButton({
-                name: Prelude.show(SlamData_App_Notebook_Block.showBlockType({}))(SlamData_App_Notebook_Block.SQL), 
+            }), SlamData_Helpers.actionButton(SlamData_Helpers.iconFA({}))({
+                tooltip: Prelude.show(SlamData_App_Notebook_Block.showBlockType({}))(SlamData_App_Notebook_Block.SQL), 
+                icon: SlamData_Helpers.sqlIcon({}), 
                 click: addBlock(SlamData_App_Notebook_Block.SQL)
             }) ], 
             active: true
@@ -41970,11 +42340,9 @@ PS.SlamData_App_Workspace = (function () {
     var SlamData_Helpers = PS.SlamData_Helpers;
     var SlamData_App_FileSystem = PS.SlamData_App_FileSystem;
     var SlamData_App_Notebook = PS.SlamData_App_Notebook;
-    var SlamData_App_Reference = PS.SlamData_App_Reference;
-    var SlamData_App_Extra = PS.SlamData_App_Extra;
     var workspace = React_DOM.div([ React_DOM.idProp("workspace") ])([ React_DOM.div([ React_DOM.className("row"), React_DOM.idProp("main-row"), React_DOM.dataSet({
-        equalizer: true
-    }) ])([ SlamData_Helpers.large("2")(SlamData_App_FileSystem.filesystem), SlamData_Helpers.large("7")(SlamData_App_Notebook.notebook), SlamData_Helpers.large("3")(SlamData_App_Reference.reference) ]), React_DOM.div([ React_DOM.className("row"), React_DOM.idProp("extra-row") ])([ SlamData_Helpers.large("12")(SlamData_App_Extra.extra) ]) ]);
+        equalizer: ""
+    }) ])([ SlamData_Helpers.large("2")(SlamData_App_FileSystem.filesystem), SlamData_Helpers.large("10")(SlamData_App_Notebook.notebook) ]) ]);
     return {
         workspace: workspace
     };

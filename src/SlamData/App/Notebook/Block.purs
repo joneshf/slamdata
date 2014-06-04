@@ -39,37 +39,26 @@ module SlamData.App.Notebook.Block
     show Markdown = "Markdown"
     show SQL = "SQL"
 
-  didMount :: forall eff props attrs state result.
-    ReadWriteState (BlockProps eff state result)
-                   {editor :: Component attrs {focus :: {}}}
-                   BlockState
-                   {}
-  didMount = do
-    refs <- getRefs
-    pure $ focus $ getDOMNode refs.editor
-
   block :: forall eff state result. BlockProps eff state result -> UI
-  block = mkUI spec { getInitialState = pure {edit: Edit, content: ""}
-                    , componentDidMount = didMount
-                    } do
+  block = mkUI spec { getInitialState = pure {edit: Edit, content: ""} } do
     state <- readState
     props <- getProps
-    let ty = props.blockType
-    let cont = state.content
-    pure $ if state.edit == Edit
-      then D.div'
-        [ D.div [ D.className "block-toolbar row" ]
-            [ D.div [ D.className "large-1  columns" ] [blockType ty]
-            , D.div [ D.className "large-11 columns" ] [toolbar props]
-            ]
-        , blockEditor cont
-        ]
-      else
-        evalMarkdown cont
+    pure $ D.div [D.className "block"] $
+      [ blockRow "block-toolbar" [blockType props.blockType] [toolbar props]
+      , blockRow "block-content" [] [evalOrEdit state.edit $ state.content]
+      ]
+
+  blockRow :: String -> [UI] -> [UI] -> UI
+  blockRow styles firstCol secondCol =
+    D.div [D.className $ styles ++ " row"]
+          [ D.div [D.className "large-1  columns"] firstCol
+          , D.div [D.className "large-11 columns right-side"] secondCol
+          ]
 
   blockType :: BlockType -> UI
-  blockType ty = D.h3'
-    [ D.small' [ D.text $ show ty ]
+  blockType ty = D.div [D.className "block-type"]
+    [ D.span [D.className ""]
+        [D.text $ show ty]
     ]
 
   toolbar :: forall eff state result. BlockProps eff state result -> UI
@@ -78,11 +67,15 @@ module SlamData.App.Notebook.Block
     pure $ D.div [ D.className "button-bar" ]
       [ D.ul [ D.className "left button-group" ] (specificButtons props.blockType)
       , D.ul [ D.className "right button-group" ]
-             [ actionButton {name: "X", click: props.close} ]
+             [ actionButton { tooltip: "Close"
+                            , icon: closeIcon {}
+                            , click: props.close
+                            }
+             ]
       ]
       where
-        specificButtons Markdown = [ actionButton {name: "Preview", click: eval} ]
-        specificButtons SQL      = [ actionButton {name: "Run", click: eval} ]
+        specificButtons Markdown = []
+        specificButtons SQL      = []
 
   eval ::forall attrs.
     EventHandlerContext (f :: ReadRefsEff { editor :: Component attrs {value :: String} })
@@ -102,14 +95,19 @@ module SlamData.App.Notebook.Block
     state <- readState
     pure $ writeState {edit: Edit, content: state.content}
 
+  evalOrEdit :: Editor -> (String -> UI)
+  evalOrEdit Edit = blockEditor
+  evalOrEdit Eval = evalMarkdown
+
   blockEditor :: String -> UI
   blockEditor content = D.div'
-    [ D.textarea [ D.className "block-editor"
+    [ D.textarea [ D.autoFocus "true"
+                 , D.className "block-editor"
                  , D.onBlur \_ -> eval
-                 , D.onKeyPress handleKeyPress
-                 , D.ref "editor"
                  , D.onChange $ \e ->
                     pure $ writeState {edit: Edit, content: e.target.value}
+                 , D.onKeyPress handleKeyPress
+                 , D.ref "editor"
                  , D.value content
                  ]
                  []
