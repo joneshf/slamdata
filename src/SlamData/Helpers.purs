@@ -55,6 +55,12 @@ module SlamData.Helpers where
   markdownIcon {} = faIcon "fa fa-file-text"
   sqlIcon :: {} -> FAIcon
   sqlIcon {} = faIcon "fa fa-database"
+  dirOpenIcon :: {} -> FAIcon
+  dirOpenIcon {} = faIcon "fa fa-folder-open-o"
+  dirClosedIcon :: {} -> FAIcon
+  dirClosedIcon {} = faIcon "fa fa-folder-o"
+  fileIcon :: {} -> FAIcon
+  fileIcon {} = faIcon "fa fa-file-o"
 
   -- TODO: Move these to purescript-react.
 

@@ -19,8 +19,14 @@ module SlamData.App.Workspace (workspace) where
             , D.idProp "main-row"
             , D.dataSet {equalizer: ""}
             ]
-            [ large "2" filesystem
-            , large "10" notebook
+            [ D.div [ D.className $ "large-2 columns"
+                    , D.idProp "filesystem"
+                    ]
+                [filesystem]
+            , D.div [ D.className $ "large-10 columns"
+                    , D.idProp "notebook"
+                    ]
+                [notebook]
             -- , large "3" reference
             ]
     -- , D.div [ D.className "row"
