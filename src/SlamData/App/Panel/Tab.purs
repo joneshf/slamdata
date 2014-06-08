@@ -39,12 +39,15 @@ module SlamData.App.Panel.Tab
   makeTabName props =
     D.dd [D.ClassName $ activate "" props.active ]
          [ D.a [D.Href $ "#" ++ tabizeName props.name ] [ D.text props.name ] ]
-  makeCont :: forall p. { name :: String, content :: [UI], active :: Boolean | p } -> UI
-  makeCont props =
-    D.div [D.ClassName $ activate "content" props.active
-          , D.Id $ tabizeName props.name
-          ]
-          props.content
+  makeCont :: forall p. { name :: String, content :: [UI], active :: Boolean, external :: [Action], internal :: [Action] | p } -> UI
+  makeCont props = D.div
+    [ D.ClassName $ activate "content" props.active
+    , D.Id $ tabizeName props.name
+    ]
+    ((D.div [D.className "toolbar button-bar"]
+            [ D.ul [D.className "button-group"] props.external
+            , D.ul [D.className "button-group"] props.internal
+            ]) : props.content)
 
   activate :: String -> Boolean -> String
   activate s true  = s ++ " active"
@@ -52,6 +55,3 @@ module SlamData.App.Panel.Tab
 
   tabizeName :: String -> String
   tabizeName = ((++) "tab-") <<< replace " " ""
-    where
-      words = split " "
-      unwords = joinWith ""

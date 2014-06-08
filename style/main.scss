@@ -174,21 +174,21 @@ html, body {
 #tab-FileSystem {
     & > ul {
         margin-left: 0;
-    }
-    ul {
-        list-style-type: none;
-        margin-bottom: 0;
-        li {
-            margin-left: 15px;
+        i {
+            padding-left: 10px;
         }
-    }
-    i {
-        padding-left: 10px;
-    }
-    span {
-        padding: 5px;
-    }
-    .selected i, .selected span {
-        font-weight: bold;
+        span {
+            padding: 5px;
+        }
+        .selected i, .selected span {
+            font-weight: bold;
+        }
+        &, ul {
+            list-style-type: none;
+            margin-bottom: 0;
+            li {
+                margin-left: 15px;
+            }
+        }
     }
 }

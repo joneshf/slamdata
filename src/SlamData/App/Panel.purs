@@ -11,14 +11,14 @@ module SlamData.App.Panel (panel) where
   import qualified React.DOM as D
 
   panel :: [Tab] -> UI
-  panel tabs = D.div [ D.ClassName "slamdata-panel"
+  panel tabs = D.div [ D.className "slamdata-panel"
                      , D.dataSet {"equalizer-watch": ""}
                      ]
-    [ D.dl [D.ClassName "tabs"
+    [ D.dl [ D.className "tabs"
            , D.dataSet {tab: ""}
            ]
            (tabName <$> tabs)
-    , D.div [D.ClassName "tabs-content"] (concatMap tabToolCont tabs)
+    , D.div [D.className "tabs-content"] ((\(Tab t) -> t.content) <$> tabs)
     ]
 
   tabName :: Tab -> UI
@@ -26,9 +26,9 @@ module SlamData.App.Panel (panel) where
 
   tabToolCont :: Tab -> [UI]
   tabToolCont (Tab {content = c, toolbar = t}) =
-    [ D.div [D.ClassName "toolbar button-bar" ]
-        [ D.ul [D.ClassName "button-group" ] t.external
-        , D.ul [D.ClassName "button-group" ] t.internal
+    [ D.div [D.className "toolbar button-bar"]
+        [ D.ul [D.className "button-group"] t.external
+        , D.ul [D.className "button-group"] t.internal
         ]
     , c
     ]
