@@ -3,6 +3,7 @@ module SlamData.App.Notebook (notebook) where
   import Control.Monad.Eff
 
   import Data.Array
+  import Data.Maybe
 
   import React
 
@@ -22,7 +23,7 @@ module SlamData.App.Notebook (notebook) where
   -- Since this is not backed by an actual resource, we don't have real models.
   -- So the insertion/deletion behavior is a bit buggy.
   nbPanel :: {} -> UI
-  nbPanel = mkUI spec { getInitialState = pure { blocks: [] } } do
+  nbPanel = mkUI spec { getInitialState = pure { blocks: testBlocks } } do
     state <- readState
     pure $ panel [ tab { name: "Untitled Notebook"
                        , content: createBlock <$> state.blocks
@@ -46,11 +47,9 @@ module SlamData.App.Notebook (notebook) where
                                    ]
                        , active: true
                        }
-                 , tab { name: "+"
-                       , content: []
-                       , external: []
-                       , internal: []
-                       , active: false
+                 , Tab { name: addNotebook
+                       , toolbar: {external: [], internal: []}
+                       , content: D.text ""
                        }
                  ]
 
@@ -71,6 +70,28 @@ module SlamData.App.Notebook (notebook) where
     let newContent = filter ((/=) index <<< \b -> b.index) state.blocks
     pure $ writeState {blocks: newContent}
 
-  createBlock :: {blockType :: BlockType, index :: Number} -> UI
-  createBlock {blockType = ty, index = n} =
-    block {blockType: ty, index: n, close: deferred $ removeBlock n}
+  createBlock :: {blockType :: BlockType, index :: Number, content :: Maybe String} -> UI
+  createBlock {blockType = ty, index = n, content = c} =
+    block {blockType: ty, index: n, close: deferred $ removeBlock n, content: c}
+
+  testBlocks =
+    [ { blockType: Markdown
+      , content: Just "##Experiments\nWe found many interesting things happened:\n\n1. There was a strong correlation between subjects exposed to the medication and their overall happiness\n1. Any amount of dosage caused an effect.\n1. Men were more susceptible to the medication than women."
+      , index: 1
+      }
+    , { blockType: SQL
+      , content: Just "SELECT happiness FROM subjects;"
+      , index: 2
+      }
+    ]
+
+  addNotebook :: UI
+  addNotebook = D.dd'
+    [ D.div'
+      [ D.a
+          [ D.onClick $ \_ -> Debug.Trace.print "wat"
+          , D.idProp "add-notebook"
+          ]
+          [toUI $ newNotebookIcon {}]
+      ]
+    ]

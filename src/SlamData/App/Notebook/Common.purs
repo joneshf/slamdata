@@ -1,5 +1,7 @@
 module SlamData.App.Notebook.Block.Common where
 
+  import Data.Maybe
+
   import React
 
   import SlamData.Helpers
@@ -14,6 +16,7 @@ module SlamData.App.Notebook.Block.Common where
     { blockType :: BlockType
     , index :: Number
     , close :: EventHandlerContext eff {} state result
+    , content :: Maybe String
     }
 
   instance eqEditor :: Eq Editor where

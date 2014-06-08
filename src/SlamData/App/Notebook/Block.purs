@@ -4,6 +4,7 @@ module SlamData.App.Notebook.Block
 
   import Control.Monad.Eff
 
+  import Data.Maybe
   import Data.Tuple
 
   import React
@@ -22,10 +23,11 @@ module SlamData.App.Notebook.Block
   block = mkUI spec { getInitialState = pure {edit: Edit, content: ""} } do
     state <- readState
     props <- getProps
+    let content = maybe state.content id props.content
     let ty = props.blockType
     pure $ D.div [D.className "block"] $
       [ blockRow "block-toolbar toolbar" [blockType ty] [toolbar props]
-      , blockRow "block-content" [] [evalOrEdit state.edit ty state.content]
+      , blockRow "block-content" [] [evalOrEdit state.edit ty content]
       ]
 
   blockRow :: String -> [UI] -> [UI] -> UI

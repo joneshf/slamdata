@@ -61,6 +61,8 @@ module SlamData.Helpers where
   dirClosedIcon {} = faIcon "fa fa-folder-o"
   fileIcon :: {} -> FAIcon
   fileIcon {} = faIcon "fa fa-file-o"
+  newNotebookIcon :: {} -> FAIcon
+  newNotebookIcon {} = faIcon "fa fa-plus"
 
   -- TODO: Move these to purescript-react.
 
