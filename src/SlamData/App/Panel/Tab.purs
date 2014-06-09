@@ -35,19 +35,33 @@ module SlamData.App.Panel.Tab
       tabName = makeTabName props
       cont = makeCont props
 
-  makeTabName :: forall p. { name :: String, active :: Boolean | p } -> UI
+  makeTabName :: forall p. { name :: String
+                           , active :: Boolean
+                           | p
+                           }
+              -> UI
   makeTabName props =
-    D.dd [D.ClassName $ activate "" props.active ]
-         [ D.a [D.Href $ "#" ++ tabizeName props.name ] [ D.text props.name ] ]
-  makeCont :: forall p. { name :: String, content :: [UI], active :: Boolean, external :: [Action], internal :: [Action] | p } -> UI
+    D.dd [D.className $ activate "" props.active]
+         [D.a [D.href $ "#" ++ tabizeName props.name] [D.text props.name]]
+  makeCont :: forall p. { name :: String
+                        , content :: [UI]
+                        , active :: Boolean
+                        , external :: [Action]
+                        , internal :: [Action]
+                        | p
+                        }
+           -> UI
   makeCont props = D.div
-    [ D.ClassName $ activate "content" props.active
-    , D.Id $ tabizeName props.name
-    ]
-    ((D.div [D.className "toolbar button-bar"]
+    [ D.className $ activate "content" props.active
+    , D.idProp $ tabizeName props.name
+    ] $
+    [ D.div [D.className "toolbar button-bar"]
             [ D.ul [D.className "button-group"] props.external
             , D.ul [D.className "button-group"] props.internal
-            ]) : props.content)
+            ]
+    , D.hr' []
+    , D.div [D.className "actual-content"] props.content
+    ]
 
   activate :: String -> Boolean -> String
   activate s true  = s ++ " active"

@@ -98,11 +98,16 @@ html, body {
 .tabs-content {
     border-top: 1px solid $slamdata-border-color;
     margin-top: -1px;
-    padding: 10px 5px;
+    padding: 10px 0;
     .content {
-        margin-top: 10px;
-        border-top: 1px solid $slamdata-border-color;
-        padding: 15px;
+        padding: 0;
+        hr {
+            border-color: $slamdata-border-color;
+            margin: 10px 0;
+        }
+        .toolbar.button-bar, .actual-content {
+            margin-left: 10px;
+        }
     }
 }
 
@@ -172,7 +177,7 @@ html, body {
 }
 
 #tab-FileSystem {
-    & > ul {
+    .actual-content > ul {
         margin-left: 0;
         i {
             padding-left: 10px;
