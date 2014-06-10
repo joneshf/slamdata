@@ -18,24 +18,24 @@ module SlamData.App.Reference (reference) where
             , content: [ D.text "Here's some tutorial things." ]
             , external: []
             , internal: []
-            , ident: runv4 v4
+            , ident: runUUID v4
             }
           , { name: "References"
             , content: [ D.text "Look at all this reference stuff." ]
             , external: []
             , internal: []
-            , ident: runv4 v4
+            , ident: runUUID v4
             }
           , { name: "Examples"
             , content: [ D.text "Wow, examples!" ]
             , external: []
             , internal: []
-            , ident: runv4 v4
+            , ident: runUUID v4
             }
           , { name: "Notes"
             , content: [ D.text "Knowtes." ]
             , external: []
             , internal: []
-            , ident: runv4 v4
+            , ident: runUUID v4
             }
           ]

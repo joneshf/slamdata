@@ -22,7 +22,7 @@ module SlamData.App.FileSystem (filesystem) where
                    , internal: [ actionButton {tooltip: "New", icon: newIcon {}, click: pure {}}
                                , actionButton {tooltip: "Open", icon: openIcon {}, click: pure {}}
                                ]
-                   , ident: runv4 v4
+                   , ident: runUUID v4
                    }
                  ]
 

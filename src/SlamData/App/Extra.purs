@@ -18,18 +18,18 @@ module SlamData.App.Extra (extra) where
             , content: [ D.text "Do some tasks." ]
             , external: []
             , internal: []
-            , ident: runv4 v4
+            , ident: runUUID v4
             }
           , { name: "Sharing"
             , content: [ D.text "Show your friends." ]
             , external: []
             , internal: []
-            , ident: runv4 v4
+            , ident: runUUID v4
             }
           , { name: "Chat"
             , content: [ D.text "Guess what he/she said." ]
             , external: []
             , internal: []
-            , ident: runv4 v4
+            , ident: runUUID v4
             }
           ]

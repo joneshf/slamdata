@@ -3,6 +3,8 @@ module SlamData.App.Notebook (notebook) where
   import Control.Monad.Eff
 
   import Data.Array
+  import Data.Either
+  import Data.Foreign
   import Data.Maybe
   import Data.UUID
 
@@ -15,21 +17,29 @@ module SlamData.App.Notebook (notebook) where
   import SlamData.App.Panel.Tab
 
   import qualified React.DOM as D
+  import qualified Browser.WebStorage as WS
 
   data Notebook = Notebook { name :: String
-                           , blocks :: [ { blockType :: BlockType
-                                         , content :: Maybe String
-                                         , ident :: UUIDv4
-                                         }
-                                       ]
-                           , ident :: UUIDv4
+                           , blocks :: [BlockSpec]
+                           , ident :: UUID
                            }
-  type NotebookState = {notebooks :: [Notebook], activeBook :: Maybe UUIDv4}
+  data BlockSpec = BlockSpec { blockType :: BlockType
+                             , content :: Maybe String
+                             , ident :: UUID
+                             }
+  type NotebookState = {notebooks :: [Notebook]}
   type NotebookEvent eff =
     EventHandlerContext eff
                         {}
                         NotebookState
                         (ReactStateRW NotebookState NotebookState)
+
+  instance readBlockSpec :: ReadForeign BlockSpec where
+    read = do
+      ty <- prop "blockType"
+      c <- prop "content"
+      i <- prop "id"
+      pure $ BlockSpec {blockType: ty, content: c, ident: i}
 
   notebook :: UI
   notebook = nbPanel {}
@@ -39,21 +49,20 @@ module SlamData.App.Notebook (notebook) where
   nbPanel :: {} -> UI
   nbPanel = mkUI spec
       { getInitialState = pure { notebooks: [ Notebook { name: "Foo"
-                                                       , blocks: testBlocks {}
-                                                       , ident: runv4 v4
+                                                       , blocks: localBlocks
+                                                       , ident: runUUID v4
                                                        }
                                             , Notebook { name: "Bar"
                                                        , blocks: testBlocks {}
-                                                       , ident: runv4 v4
+                                                       , ident: runUUID v4
                                                        }
                                             ]
-                               , activeBook: Nothing :: Maybe UUIDv4
+                               , activeBook: Nothing :: Maybe UUID
                                }
       } do
     state <- readState
-    Debug.Trace.print state.activeBook
-    Debug.Trace.print ((\(Notebook nb) -> (\{ident=c} -> c) <$> nb.blocks) <$> state.notebooks)
-    pure $ panel $ (createNotebook state.activeBook <$> state.notebooks){- ++-}
+    -- Debug.Trace.print ((\(Notebook nb) -> (\(BlockSpec {blockType = b, content = c, ident = i}) -> [show i, show b, maybe "" id c]) <$> nb.blocks) <$> state.notebooks)
+    pure $ panel (createNotebook <$> state.notebooks){- ++-}
       -- TODO: This is far too fragile.
       -- We cannot factor out the "name", otherwise we lose the context.
       -- This React library is really getting on my nerves.
@@ -72,8 +81,8 @@ module SlamData.App.Notebook (notebook) where
       --       }
       -- ]
 
-  createNotebook :: Maybe UUIDv4 -> Notebook -> TabSpec
-  createNotebook mId (Notebook nb) =
+  createNotebook :: Notebook -> TabSpec
+  createNotebook (Notebook nb) =
     { name: nb.name
     , content: block2UI <$> nb.blocks
     , external: [ actionButton { tooltip: "Save"
@@ -102,39 +111,47 @@ module SlamData.App.Notebook (notebook) where
     state <- readState
     pure $ writeState state{notebooks = f <$> state.notebooks}
 
-  createBlock :: forall eff. UUIDv4 -> BlockType -> NotebookEvent eff
+  createBlock :: forall eff. UUID -> BlockType -> NotebookEvent eff
   createBlock ident ty = crudBlock \(Notebook nb) -> if nb.ident == ident
-    then Notebook nb{blocks = nb.blocks ++ [{ident: runv4 v4, blockType: ty, content: Nothing}]}
+    then Notebook nb{blocks = nb.blocks ++ [BlockSpec {ident: runUUID v4, blockType: ty, content: Nothing}]}
     else Notebook nb
 
-  removeBlock :: forall eff. UUIDv4 -> NotebookEvent eff
-  removeBlock ident = crudBlock \(Notebook nb) ->
-    Notebook nb{blocks = filter (\{ident = i} -> i /= ident) nb.blocks}
+  updateBlock :: forall eff. UUID -> Maybe String -> NotebookEvent eff
+  updateBlock ident c = crudBlock \(Notebook nb) ->
+    Notebook nb{blocks = (\(BlockSpec b) -> if b.ident == ident then BlockSpec b{content = c} else BlockSpec b) <$> nb.blocks}
 
-  block2UI :: {blockType :: BlockType, ident :: UUIDv4, content :: Maybe String}
-              -> UI
-  block2UI {blockType = ty, ident = n, content = c} =
-    block {blockType: ty, ident: n, close: deferred $ removeBlock n, content: c}
+  deleteBlock :: forall eff. UUID -> NotebookEvent eff
+  deleteBlock ident = crudBlock \(Notebook nb) ->
+    Notebook nb{blocks = filter (\(BlockSpec {ident = i}) -> i /= ident) nb.blocks}
+
+  block2UI :: BlockSpec -> UI
+  block2UI (BlockSpec {blockType = ty, ident = n, content = c}) =
+    block { blockType: ty
+          , ident: n
+          , close: deferred $ deleteBlock n
+          , content: c
+          }
 
   addNotebook :: forall eff. NotebookEvent eff
-  addNotebook  = do
+  addNotebook = do
     state <- readState
-    let deactivated = state.notebooks
-    let id = runv4 v4
-    pure $ writeState { notebooks: deactivated ++ [ Notebook { name: "Untitled"
-                                                             , blocks: []
-                                                             , ident: id
-                                                             }
-                                                  ]
-                      , activeBook: Just id
+    let notebooks' = state.notebooks
+    pure $ writeState { notebooks: snoc notebooks' $ Notebook { name: "Untitled"
+                                                              , blocks: []
+                                                              , ident: runUUID v4
+                                                              }
                       }
 
+  localBlocks :: [BlockSpec]
+  localBlocks =
+    maybe [] (parseJSON >>> either (const []) id) (WS.getItem WS.localStorage "blocks")
+
   testBlocks _ =
-    [ { ident: runv4 v4
+    [ BlockSpec { ident: runUUID v4
       , blockType: Markdown
       , content: Just "##Experiments\nWe found many interesting things happened:\n\n1. There was a strong correlation between subjects exposed to the medication and their overall happiness\n1. Any amount of dosage caused an effect.\n1. Men were more susceptible to the medication than women."
       }
-    , { ident: runv4 v4
+    , BlockSpec { ident: runUUID v4
       , blockType: SQL
       , content: Just "SELECT happiness FROM subjects;"
       }

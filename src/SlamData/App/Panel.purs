@@ -40,10 +40,10 @@ module SlamData.App.Panel (panel) where
   _content {content = c} = c
   _active :: forall r. {active :: Boolean | r} -> Boolean
   _active {active = a} = a
-  _ident :: forall r. {ident :: UUIDv4 | r} -> UUIDv4
+  _ident :: forall r. {ident :: UUID | r} -> UUID
   _ident {ident = a} = a
 
-  injectMakeActive :: forall eff a. Maybe UUIDv4 -> TabSpec -> UI
+  injectMakeActive :: forall eff a. Maybe UUID -> TabSpec -> UI
   injectMakeActive uuid {name=n, external=e, internal=i, content=c, ident=id} =
     makeTabName { name: n
                 , external: e

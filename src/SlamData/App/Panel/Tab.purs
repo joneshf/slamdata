@@ -29,7 +29,7 @@ module SlamData.App.Panel.Tab
     , external :: [Action]
     , internal :: [Action]
     , content :: [UI]
-    , ident :: UUIDv4
+    , ident :: UUID
     }
 
   -- tab :: TabSpec -> Tab
@@ -47,7 +47,7 @@ module SlamData.App.Panel.Tab
   makeTabName :: forall p eff state result.
     { name :: String
     , active :: Boolean
-    , ident :: UUIDv4
+    , ident :: UUID
     , activate :: EventHandlerContext eff {} state result
     | p
     }
@@ -63,7 +63,7 @@ module SlamData.App.Panel.Tab
                             , content :: [UI]
                             , external :: [Action]
                             , internal :: [Action]
-                            , ident :: UUIDv4
+                            , ident :: UUID
                             | p
                             }
            -> UI
@@ -84,7 +84,7 @@ module SlamData.App.Panel.Tab
   activate s true  = s ++ " active"
   activate s false = s
 
-  tabize :: UUIDv4 -> String
+  tabize :: UUID -> String
   tabize = show >>> removeDashes >>> ((++) "tab-")
 
   removeDashes :: String -> String
