@@ -1,5 +1,7 @@
 module SlamData.App.FileSystem (filesystem) where
 
+  import Data.UUID
+
   import React
 
   import SlamData.Helpers
@@ -14,14 +16,14 @@ module SlamData.App.FileSystem (filesystem) where
   fsPanel :: {} -> UI
   fsPanel = mkUI spec { getInitialState = pure { dirs: initialState } } do
     state <- readState
-    pure $ panel [ tab { name: "File System"
-                       , content: state.dirs
-                       , active: true
-                       , external: []
-                       , internal: [ actionButton {tooltip: "New", icon: newIcon {}, click: pure {}}
-                                   , actionButton {tooltip: "Open", icon: openIcon {}, click: pure {}}
-                                   ]
-                       }
+    pure $ panel [ { name: "File System"
+                   , content: state.dirs
+                   , external: []
+                   , internal: [ actionButton {tooltip: "New", icon: newIcon {}, click: pure {}}
+                               , actionButton {tooltip: "Open", icon: openIcon {}, click: pure {}}
+                               ]
+                   , ident: runv4 v4
+                   }
                  ]
 
   initialState :: [UI]

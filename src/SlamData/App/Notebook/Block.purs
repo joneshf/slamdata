@@ -69,7 +69,8 @@ module SlamData.App.Notebook.Block
     [ D.textarea [ D.autoFocus "true"
                  , D.className "block-editor"
                  , D.onBlur \_ -> eval
-                 , D.onChange $ \e ->
+                 , D.onChange $ \e -> do
+                    Debug.Trace.print "changed"
                     pure $ writeState {edit: Edit, content: e.target.value}
                  , D.onKeyPress handleKeyPress
                  , D.ref "editor"

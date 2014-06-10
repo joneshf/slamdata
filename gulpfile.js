@@ -9,7 +9,8 @@ var gulp = require('gulp')
 paths = {
     src: [
         'src/**/*.purs',
-        'bower_components/purescript-*/src/**/*.purs'
+        'bower_components/purescript-*/src/**/*.purs',
+        'bower_components/purescript-*/src/**/*.purs.hs'
     ],
     dest: 'js',
     style: 'style/**/*.scss',
