@@ -19,9 +19,9 @@ module SlamData.App.Notebook (notebook) where
   data Notebook = Notebook { name :: String
                            , blocks :: [ { blockType :: BlockType
                                          , content :: Maybe String
+                                         , ident :: UUIDv4
                                          }
                                        ]
-                           , active :: Boolean
                            , ident :: UUIDv4
                            }
   type NotebookState = {notebooks :: [Notebook], activeBook :: Maybe UUIDv4}
@@ -39,21 +39,20 @@ module SlamData.App.Notebook (notebook) where
   nbPanel :: {} -> UI
   nbPanel = mkUI spec
       { getInitialState = pure { notebooks: [ Notebook { name: "Foo"
-                                                       , blocks: testBlocks
-                                                       , active: true
-                                                       , ident: testId
+                                                       , blocks: testBlocks {}
+                                                       , ident: runv4 v4
                                                        }
                                             , Notebook { name: "Bar"
-                                                       , blocks: testBlocks
-                                                       , active: false
+                                                       , blocks: testBlocks {}
                                                        , ident: runv4 v4
                                                        }
                                             ]
-                               , activeBook: Just testId
+                               , activeBook: Nothing :: Maybe UUIDv4
                                }
       } do
     state <- readState
-    Debug.Trace.print ((\(Notebook nb) -> (\{content=c} -> c) <$> nb.blocks) <$> state.notebooks)
+    Debug.Trace.print state.activeBook
+    Debug.Trace.print ((\(Notebook nb) -> (\{ident=c} -> c) <$> nb.blocks) <$> state.notebooks)
     pure $ panel $ (createNotebook state.activeBook <$> state.notebooks){- ++-}
       -- TODO: This is far too fragile.
       -- We cannot factor out the "name", otherwise we lose the context.
@@ -76,7 +75,7 @@ module SlamData.App.Notebook (notebook) where
   createNotebook :: Maybe UUIDv4 -> Notebook -> TabSpec
   createNotebook mId (Notebook nb) =
     { name: nb.name
-    , content: block2UI <$> (zipWith insertIndex (range 1 (length nb.blocks)) nb.blocks)
+    , content: block2UI <$> nb.blocks
     , external: [ actionButton { tooltip: "Save"
                                , icon: saveIcon {}
                                , click: pure {}
@@ -88,11 +87,11 @@ module SlamData.App.Notebook (notebook) where
                 ]
     , internal: [ actionButton { tooltip: show Markdown
                                , icon: markdownIcon {}
-                               , click: createBlock Markdown
+                               , click: createBlock nb.ident Markdown
                                }
                 , actionButton { tooltip: show SQL
                                , icon: sqlIcon {}
-                               , click: createBlock SQL
+                               , click: createBlock nb.ident SQL
                                }
                 ]
     , ident: nb.ident
@@ -103,53 +102,40 @@ module SlamData.App.Notebook (notebook) where
     state <- readState
     pure $ writeState state{notebooks = f <$> state.notebooks}
 
-  createBlock :: forall eff. BlockType -> NotebookEvent eff
-  createBlock ty = crudBlock \(Notebook nb) ->
-    if nb.active
-    then Notebook nb{blocks = nb.blocks ++ [{blockType: ty, content: Nothing}]}
+  createBlock :: forall eff. UUIDv4 -> BlockType -> NotebookEvent eff
+  createBlock ident ty = crudBlock \(Notebook nb) -> if nb.ident == ident
+    then Notebook nb{blocks = nb.blocks ++ [{ident: runv4 v4, blockType: ty, content: Nothing}]}
     else Notebook nb
 
-  removeBlock :: forall eff. Number -> NotebookEvent eff
-  removeBlock index = crudBlock \(Notebook nb) ->
-    if nb.active
-    then Notebook nb{blocks = deleteAt (index - 1) 1 nb.blocks}
-    else Notebook nb
+  removeBlock :: forall eff. UUIDv4 -> NotebookEvent eff
+  removeBlock ident = crudBlock \(Notebook nb) ->
+    Notebook nb{blocks = filter (\{ident = i} -> i /= ident) nb.blocks}
 
-  block2UI :: {blockType :: BlockType, index :: Number, content :: Maybe String}
+  block2UI :: {blockType :: BlockType, ident :: UUIDv4, content :: Maybe String}
               -> UI
-  block2UI {blockType = ty, index = n, content = c} =
-    block {blockType: ty, index: n, close: deferred $ removeBlock n, content: c}
-
-  insertIndex :: Number
-              -> {blockType :: BlockType, content :: Maybe String}
-              -> {blockType :: BlockType, content :: Maybe String, index :: Number}
-  insertIndex n {blockType = ty, content = c} =
-    {blockType: ty, content: c, index: n}
+  block2UI {blockType = ty, ident = n, content = c} =
+    block {blockType: ty, ident: n, close: deferred $ removeBlock n, content: c}
 
   addNotebook :: forall eff. NotebookEvent eff
   addNotebook  = do
     state <- readState
-    let deactivated = deactivate <$> state.notebooks
+    let deactivated = state.notebooks
     let id = runv4 v4
     pure $ writeState { notebooks: deactivated ++ [ Notebook { name: "Untitled"
                                                              , blocks: []
-                                                             , active: false
                                                              , ident: id
                                                              }
                                                   ]
                       , activeBook: Just id
                       }
 
-  deactivate :: Notebook -> Notebook
-  deactivate (Notebook nb) = Notebook nb{active = false}
-
-  testBlocks =
-    [ { blockType: Markdown
+  testBlocks _ =
+    [ { ident: runv4 v4
+      , blockType: Markdown
       , content: Just "##Experiments\nWe found many interesting things happened:\n\n1. There was a strong correlation between subjects exposed to the medication and their overall happiness\n1. Any amount of dosage caused an effect.\n1. Men were more susceptible to the medication than women."
       }
-    , { blockType: SQL
+    , { ident: runv4 v4
+      , blockType: SQL
       , content: Just "SELECT happiness FROM subjects;"
       }
     ]
-
-  testId = runv4 v4

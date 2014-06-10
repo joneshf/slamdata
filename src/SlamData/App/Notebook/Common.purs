@@ -1,6 +1,7 @@
 module SlamData.App.Notebook.Block.Common where
 
   import Data.Maybe
+  import Data.UUID
 
   import React
 
@@ -14,7 +15,7 @@ module SlamData.App.Notebook.Block.Common where
   type BlockState = { edit :: Editor, content :: String }
   type BlockProps eff state result =
     { blockType :: BlockType
-    , index :: Number
+    , ident :: UUIDv4
     , close :: EventHandlerContext eff {} state result
     , content :: Maybe String
     }
@@ -37,7 +38,8 @@ module SlamData.App.Notebook.Block.Common where
                         (ReactStateRW BlockState BlockState)
   eval = do
     refs <- getRefs
-    pure $ writeState {edit: Eval, content: (getDOMNode refs.editor).value}
+    state <- readState
+    pure $ writeState state{edit = Eval, content = (getDOMNode refs.editor).value}
 
   edit ::forall attrs.
     EventHandlerContext (f :: ReadRefsEff { editor :: Component attrs {value :: String} }) -- Not sure why psc can't infer this with a type variable.
@@ -46,4 +48,4 @@ module SlamData.App.Notebook.Block.Common where
                         (ReactStateRW BlockState BlockState)
   edit = do
     state <- readState
-    pure $ writeState {edit: Edit, content: state.content}
+    pure $ writeState state{edit = Edit, content = state.content}

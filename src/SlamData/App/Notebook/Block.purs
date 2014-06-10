@@ -25,7 +25,8 @@ module SlamData.App.Notebook.Block
     props <- getProps
     let content = maybe state.content id props.content
     let ty = props.blockType
-    pure $ D.div [D.className "block"] $
+    pure $ D.div
+      [D.className "block"]
       [ blockRow "block-toolbar toolbar" [blockType ty] [toolbar props]
       , blockRow "block-content" [] [evalOrEdit state.edit ty content]
       ]
