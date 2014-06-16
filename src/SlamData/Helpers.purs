@@ -5,26 +5,29 @@ module SlamData.Helpers where
   import React
   import React.DOM
 
-  actionButton :: forall eff props state result i. (Icon i) =>
-    { click :: EventHandlerContext eff props state result
-    , icon :: i
-    , tooltip :: Prim.String
-    } -> UI
+  actionButton :: forall eff props state result i. (Icon i)
+               => { click :: EventHandlerContext eff props state result
+                  , icon :: i
+                  , tooltip :: Prim.String
+                  }
+               -> UI
   actionButton props = li'
-    [ a [ ClassName "tiny secondary button has-tooltip"
+    [a
+        [ className "tiny secondary button has-tooltip"
         , onClick \_ -> props.click
         , titleProp props.tooltip
         , dataSet {tooltip: ""}
-        ] [toUI props.icon]
+        ]
+        [toUI props.icon]
     ]
 
   -- | Foundation stuff.
   row :: [UI] -> UI
-  row uis = div [ClassName "row" ] uis
+  row uis = div [className "row"] uis
 
   large :: String -> UI -> UI
   large size ui =
-    div [ClassName $ "large-" ++ size ++ " columns" ] [ ui ]
+    div [className $ "large-" ++ size ++ " columns"] [ui]
 
   -- | FontAwesome stuff.
 

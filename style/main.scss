@@ -16,6 +16,7 @@ $button-tny: rem-calc(2);
 
 $slamdata-border-color: #d3d3d3;
 $workspace-extra-height: 0;
+$slamdata-orange: rgb(255, 128, 0);
 
 html, body {
     background-color: #f9f9f9;
@@ -76,12 +77,27 @@ html, body {
 
 // Add borders to Foundation 5's tabs.
 .tabs {
-    dd a {
+    .tab a {
         border: 1px solid $slamdata-border-color;
         border-bottom: 1px solid white;
         margin-right: -1px;
+        span + i {
+            margin: {
+                left: $tabs-navigation-padding;
+                right: 0;
+                top: 0;
+                bottom: 0;
+            }
+            text-align: center;
+            width: 18px;
+            &:hover {
+                @extend .label.alert;
+                @extend .label.round;
+                background-color: $slamdata-orange;
+            }
+        }
     }
-    dd:not(.active) a {
+    .tab:not(.active) a {
         border-bottom: 1px solid $slamdata-border-color;
     }
     #add-notebook {

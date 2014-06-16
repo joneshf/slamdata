@@ -54,7 +54,7 @@ module SlamData.App.Panel.Tab
     }
               -> UI
   makeTabName props =
-    D.dd [D.className $ activate "" props.active]
+    D.dd [D.className $ activate "tab" props.active]
          [D.a [ D.href $ "#" ++ (tabize props.ident)
               , D.onClick \_ -> props.activate
               ]

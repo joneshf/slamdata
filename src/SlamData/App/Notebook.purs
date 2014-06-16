@@ -57,8 +57,6 @@ module SlamData.App.Notebook (notebook) where
   notebook :: UI
   notebook = nbPanel {}
 
-  -- Since this is not backed by an actual resource, we don't have real models.
-  -- So the insertion/deletion behavior is a bit buggy.
   nbPanel :: {} -> UI
   nbPanel = mkUI spec{getInitialState = pure initialState} do
     state <- readState
@@ -70,11 +68,12 @@ module SlamData.App.Notebook (notebook) where
       -- This can't be abstracted out, we'll lose the context if we try.
       [ D.dl
           [D.className "tabs"]
-          ((makeNotebook active (deferred <<< activateTab) <$> notebooks) `snoc`
-            D.dd'
+          ((makeNotebook active (deferred <<< activateTab) (deferred <<< deleteNotebook) <$> notebooks) `snoc`
+            D.dd
+              [D.className "tab"]
               [ D.div'
                 [ D.a
-                    [ D.onClick \_ -> addNotebook
+                    [ D.onClick \_ -> createNotebook
                     , D.idProp "add-notebook"
                     ]
                     [toUI $ newNotebookIcon {}]
@@ -92,15 +91,27 @@ module SlamData.App.Notebook (notebook) where
 
   makeNotebook :: forall eff. Maybe NotebookID
                -> (NotebookID -> NotebookEvent eff)
+               -> (NotebookID -> NotebookEvent eff)
                -> Notebook
                -> UI
-  makeNotebook active activate (Notebook nb) = D.dd
-    [D.className $ maybeActive nb.ident active]
+  makeNotebook active activate close (Notebook nb) = D.dd
+    [D.className $ "tab" ++ maybeActive nb.ident active]
     [D.a
         [ D.href $ "#" ++ tabize (getNotebookID nb.ident)
-        , D.onClick $ \_ -> activate nb.ident
+        , D.onClick \e -> do
+            pure $ e.preventDefault {}
+            activate nb.ident
         ]
-        [D.text nb.name]
+        [ D.text nb.name
+        , D.i
+            [ D.className "fa fa-times"
+            , D.onClick \e -> do
+                pure $ e.stopPropagation {}
+                pure $ e.preventDefault {}
+                close nb.ident
+            ]
+            []
+        ]
     ]
 
   makeBlocks :: forall eff. Maybe NotebookID
@@ -188,17 +199,26 @@ module SlamData.App.Notebook (notebook) where
           , content: c
           }
 
-  addNotebook :: forall eff. NotebookEvent eff
-  addNotebook = do
+  crudNotebook :: forall eff. ([Notebook] -> [Notebook])
+               -> (Maybe NotebookID -> Maybe NotebookID)
+               -> NotebookEvent eff
+  crudNotebook f g = do
     state <- readState
-    let notebooks' = state.notebooks
-    let ident = NotebookID $ runUUID v4
-    pure $ writeState { notebooks: snoc notebooks' $ Notebook { name: "Untitled"
-                                                              , blocks: []
-                                                              , ident: ident
-                                                              }
-                      , active: Just ident
-                      }
+    pure $ writeState {notebooks: f state.notebooks, active: g state.active}
+
+  createNotebook :: forall eff. NotebookEvent eff
+  createNotebook = let ident = NotebookID $ runUUID v4 in
+    crudNotebook (\nbs -> snoc nbs $ Notebook { name: "Untitled"
+                                              , blocks: []
+                                              , ident: ident
+                                              })
+                 (const $ Just ident)
+
+  deleteNotebook :: forall eff. NotebookID -> NotebookEvent eff
+  deleteNotebook ident =
+    crudNotebook (filter (\(Notebook nb) -> nb.ident /= ident)) (const Nothing)
+
+  -- This is all testing stuff, can delete whenever.
 
   localBlocks :: [BlockSpec]
   localBlocks =
