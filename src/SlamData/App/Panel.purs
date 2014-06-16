@@ -21,7 +21,9 @@ module SlamData.App.Panel (panel) where
     props <- getProps
     state <- readState
     let tabs = props.tabs
-    let activeTab = state.activeTab <|> maybe Nothing (_ident >>> pure) (head tabs)
+    let activeTab = state.activeTab
+                <|> maybe Nothing (_ident >>> pure) (head tabs)
+    Debug.Trace.print "render"
     pure $ D.div
       [ D.className "slamdata-panel"
       , D.dataSet {"equalizer-watch": ""}
@@ -31,7 +33,9 @@ module SlamData.App.Panel (panel) where
              ]
              (injectMakeActive activeTab <$> tabs)
       , D.div [D.className "tabs-content"] $
-        maybe [] (makeCont >>> pure) (find (_ident >>> Just >>> ((==) activeTab)) tabs)
+              maybe []
+                    (makeCont >>> pure)
+                    (find (_ident >>> Just >>> ((==) activeTab)) tabs)
       ]
 
   _name :: forall r. {name :: String | r} -> String

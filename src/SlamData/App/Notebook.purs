@@ -56,6 +56,10 @@ module SlamData.App.Notebook (notebook) where
                                                        , blocks: testBlocks {}
                                                        , ident: runUUID v4
                                                        }
+                                            , Notebook { name: "Baz"
+                                                       , blocks: []
+                                                       , ident: runUUID v4
+                                                       }
                                             ]
                                , activeBook: Nothing :: Maybe UUID
                                }
@@ -112,17 +116,21 @@ module SlamData.App.Notebook (notebook) where
     pure $ writeState state{notebooks = f <$> state.notebooks}
 
   createBlock :: forall eff. UUID -> BlockType -> NotebookEvent eff
-  createBlock ident ty = crudBlock \(Notebook nb) -> if nb.ident == ident
+  createBlock ident ty = crudBlock \(Notebook nb) ->
+    if nb.ident == ident
     then Notebook nb{blocks = nb.blocks ++ [BlockSpec {ident: runUUID v4, blockType: ty, content: Nothing}]}
     else Notebook nb
 
   updateBlock :: forall eff. UUID -> Maybe String -> NotebookEvent eff
   updateBlock ident c = crudBlock \(Notebook nb) ->
-    Notebook nb{blocks = (\(BlockSpec b) -> if b.ident == ident then BlockSpec b{content = c} else BlockSpec b) <$> nb.blocks}
+    Notebook nb{blocks = (\(BlockSpec b) ->
+      if b.ident == ident
+      then BlockSpec b{content = c}
+      else BlockSpec b) <$> nb.blocks}
 
   deleteBlock :: forall eff. UUID -> NotebookEvent eff
   deleteBlock ident = crudBlock \(Notebook nb) ->
-    Notebook nb{blocks = filter (\(BlockSpec {ident = i}) -> i /= ident) nb.blocks}
+    Notebook nb{blocks = filter (\(BlockSpec b) -> b.ident /= ident) nb.blocks}
 
   block2UI :: BlockSpec -> UI
   block2UI (BlockSpec {blockType = ty, ident = n, content = c}) =
@@ -144,7 +152,9 @@ module SlamData.App.Notebook (notebook) where
 
   localBlocks :: [BlockSpec]
   localBlocks =
-    maybe [] (parseJSON >>> either (const []) id) (WS.getItem WS.localStorage "blocks")
+    maybe []
+          (parseJSON >>> either (const []) id)
+          (WS.getItem WS.localStorage "blocks")
 
   testBlocks _ =
     [ BlockSpec { ident: runUUID v4
