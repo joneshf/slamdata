@@ -12,15 +12,20 @@ module SlamData.App.Notebook.Block.Common where
   import qualified React.DOM as D
 
   data BlockType = Markdown | SQL
+  data BlockID = BlockID UUID
   data Editor = Edit | Eval
 
   type BlockState = { edit :: Editor, content :: String }
   type BlockProps eff state result =
     { blockType :: BlockType
-    , ident :: UUID
+    , ident :: BlockID
     , close :: EventHandlerContext eff {} state result
     , content :: Maybe String
     }
+
+  instance eqBlockID :: Eq BlockID where
+    (==) (BlockID i) (BlockID i') =      i == i'
+    (/=) b           b'           = not (b == b')
 
   instance eqEditor :: Eq Editor where
     (==) Edit Edit = true

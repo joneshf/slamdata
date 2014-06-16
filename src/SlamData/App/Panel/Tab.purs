@@ -1,6 +1,7 @@
 module SlamData.App.Panel.Tab
   ( makeTabName
   , makeCont
+  , tabize
   , Tab(..)
   , TabSpec()
   , Action()
