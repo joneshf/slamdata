@@ -70,7 +70,16 @@ module SlamData.App.Notebook (notebook) where
       -- This can't be abstracted out, we'll lose the context if we try.
       [ D.dl
           [D.className "tabs"]
-          (makeNotebook active (deferred <<< activateTab) <$> notebooks)
+          ((makeNotebook active (deferred <<< activateTab) <$> notebooks) `snoc`
+            D.dd'
+              [ D.div'
+                [ D.a
+                    [ D.onClick \_ -> addNotebook
+                    , D.idProp "add-notebook"
+                    ]
+                    [toUI $ newNotebookIcon {}]
+                ]
+              ])
       , D.div
           [D.className "tabs-content"]
           (makeBlocks active (deferred <<< createMarkdown) (deferred <<< createSQL) <$> notebooks)
