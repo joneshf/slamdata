@@ -4,6 +4,7 @@ module SlamData.App.Notebook.Block
 
   import Control.Monad.Eff
 
+  import Data.Array
   import Data.Maybe
   import Data.Tuple
 
@@ -21,16 +22,38 @@ module SlamData.App.Notebook.Block
   import qualified Browser.WebStorage as WS
 
   block :: forall eff state result. BlockProps eff state result -> UI
-  block = mkUI spec { getInitialState = pure {edit: Edit, content: ""} } do
-    state <- readState
-    props <- getProps
-    let content = maybe state.content id props.content
-    let ty = props.blockType
-    pure $ D.div
-      [D.className "block"]
-      [ blockRow "block-toolbar toolbar" [blockType ty] [toolbar props]
-      , blockRow "block-content" [] [evalOrEdit state.edit ty content]
-      ]
+  block =
+    mkUI spec{ getInitialState = pure {edit: Edit, content: ""}
+             , componentWillReceiveProps = cwrp {-\_ -> do
+                state <- readState
+                pure $ WS.setItem WS.localStorage "blocks" state
+                pure {}-}
+             } do
+      state <- readState
+      props <- getProps
+      let content = maybe state.content id props.content
+      let ty = props.blockType
+      pure $ D.div
+        [D.className "block"]
+        [ blockRow "block-toolbar toolbar" [blockType ty] [toolbar props]
+        , blockRow "block-content" [] [evalOrEdit state.edit ty content]
+        ]
+
+  foreign import cwrp
+    "function cwrp(props) {\
+    \  var blocks = SlamData_App_Notebook_Block_Common.localBlocks;\
+    \  var newBlocks = updateBlock(props.ident)(props.content)(props.blockType)(blocks);\
+    \  var stringified = Data_Array.map(Prelude.show(SlamData_App_Notebook_Block_Common.showBlockSpec({})))(newBlocks);\
+    \  return localStorage.setItem('blocks', stringified);\
+    \}" :: forall a b. a -> b
+
+  updateBlock :: BlockID -> Maybe String -> BlockType -> [BlockSpec] -> [BlockSpec]
+  updateBlock ident str ty bss =
+    let spec = BlockSpec {ident: ident, content: str, blockType: ty}
+        i = findIndex (\(BlockSpec bs) -> bs.ident == ident) bss
+    in if i >= 0
+    then updateAt i (spec) bss
+    else bss `snoc` spec
 
   blockRow :: String -> [UI] -> [UI] -> UI
   blockRow styles firstCol secondCol =

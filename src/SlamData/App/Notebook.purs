@@ -17,20 +17,14 @@ module SlamData.App.Notebook (notebook) where
   import SlamData.App.Panel.Tab
 
   import qualified React.DOM as D
-  import qualified Browser.WebStorage as WS
 
   data Notebook = Notebook NotebookRecord
   data NotebookID = NotebookID UUID
-  data BlockSpec = BlockSpec BlockRecord
 
   type NotebookRecord = { name :: String
                         , blocks :: [BlockSpec]
                         , ident :: NotebookID
                         }
-  type BlockRecord = { blockType :: BlockType
-                     , content :: Maybe String
-                     , ident :: BlockID
-                     }
   type NotebookState = {notebooks :: [Notebook], active :: Maybe NotebookID}
   type NotebookEvent eff =
     EventHandlerContext eff
@@ -41,13 +35,6 @@ module SlamData.App.Notebook (notebook) where
   instance eqNotebookID :: Eq NotebookID where
     (==) (NotebookID i) (NotebookID i') =      i == i'
     (/=) b              b'              = not (b == b')
-
-  instance readBlockSpec :: ReadForeign BlockSpec where
-    read = do
-      ty <- prop "blockType"
-      c <- prop "content"
-      i <- prop "id"
-      pure $ BlockSpec {blockType: ty, content: c, ident: BlockID i}
 
   getNotebook :: Notebook -> NotebookRecord
   getNotebook (Notebook nb) = nb
@@ -199,32 +186,23 @@ module SlamData.App.Notebook (notebook) where
           , content: c
           }
 
-  crudNotebook :: forall eff. ([Notebook] -> [Notebook])
-               -> (Maybe NotebookID -> Maybe NotebookID)
-               -> NotebookEvent eff
-  crudNotebook f g = do
-    state <- readState
-    pure $ writeState {notebooks: f state.notebooks, active: g state.active}
-
   createNotebook :: forall eff. NotebookEvent eff
-  createNotebook = let ident = NotebookID $ runUUID v4 in
-    crudNotebook (\nbs -> snoc nbs $ Notebook { name: "Untitled"
-                                              , blocks: []
-                                              , ident: ident
-                                              })
-                 (const $ Just ident)
-
+  createNotebook = do
+    state <- readState
+    let notebooks' = state.notebooks
+    let ident = NotebookID $ runUUID v4
+    pure $ writeState { notebooks: snoc notebooks' $ Notebook { name: "Untitled"
+                                                              , blocks: []
+                                                              , ident: ident
+                                                              }
+                      , active: Just ident
+                      }
   deleteNotebook :: forall eff. NotebookID -> NotebookEvent eff
-  deleteNotebook ident =
-    crudNotebook (filter (\(Notebook nb) -> nb.ident /= ident)) (const Nothing)
-
-  -- This is all testing stuff, can delete whenever.
-
-  localBlocks :: [BlockSpec]
-  localBlocks =
-    maybe []
-          (parseJSON >>> either (const []) id)
-          (WS.getItem WS.localStorage "blocks")
+  deleteNotebook ident = do
+    state <- readState
+    pure $ writeState { notebooks: filter (\(Notebook nb) -> nb.ident /= ident) state.notebooks
+                      , active: Nothing
+                      }
 
   testBlocks _ =
     [ BlockSpec { ident: BlockID $ runUUID v4

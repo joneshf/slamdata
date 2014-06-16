@@ -23,7 +23,6 @@ module SlamData.App.Panel (panel) where
     let tabs = props.tabs
     let activeTab = state.activeTab
                 <|> maybe Nothing (_ident >>> pure) (head tabs)
-    Debug.Trace.print "render"
     pure $ D.div
       [ D.className "slamdata-panel"
       , D.dataSet {"equalizer-watch": ""}
