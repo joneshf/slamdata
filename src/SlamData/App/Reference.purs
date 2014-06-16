@@ -1,5 +1,7 @@
 module SlamData.App.Reference (reference) where
 
+  import Data.UUID
+
   import React
 
   import SlamData.App.Panel
@@ -12,28 +14,28 @@ module SlamData.App.Reference (reference) where
 
   refPanel :: UI
   refPanel =
-    panel [ tab { name: "Tutorial"
-                , content: [ D.text "Here's some tutorial things." ]
-                , external: []
-                , internal: []
-                , active: true
-                }
-          , tab { name: "References"
-                , content: [ D.text "Look at all this reference stuff." ]
-                , external: []
-                , internal: []
-                , active: false
-                }
-          , tab { name: "Examples"
-                , content: [ D.text "Wow, examples!" ]
-                , external: []
-                , internal: []
-                , active: false
-                }
-          , tab { name: "Notes"
-                , content: [ D.text "Knowtes." ]
-                , external: []
-                , internal: []
-                , active: false
-                }
+    panel [ { name: "Tutorial"
+            , content: [ D.text "Here's some tutorial things." ]
+            , external: []
+            , internal: []
+            , ident: runUUID v4
+            }
+          , { name: "References"
+            , content: [ D.text "Look at all this reference stuff." ]
+            , external: []
+            , internal: []
+            , ident: runUUID v4
+            }
+          , { name: "Examples"
+            , content: [ D.text "Wow, examples!" ]
+            , external: []
+            , internal: []
+            , ident: runUUID v4
+            }
+          , { name: "Notes"
+            , content: [ D.text "Knowtes." ]
+            , external: []
+            , internal: []
+            , ident: runUUID v4
+            }
           ]

@@ -1,52 +1,59 @@
 module SlamData.App.Notebook.Block
   ( block
-  , BlockType(..)
-  , BlockProps(..)
-  , BlockState(..)
   ) where
 
   import Control.Monad.Eff
 
+  import Data.Array
+  import Data.Maybe
   import Data.Tuple
 
   import React
   import Showdown
 
   import SlamData.Helpers
+  import SlamData.App.Notebook.Block.Common
+  import SlamData.App.Notebook.Block.Markdown
+  import SlamData.App.Notebook.Block.SQL
   import SlamData.App.Panel
   import SlamData.App.Panel.Tab
 
   import qualified React.DOM as D
-
-  data BlockType = Markdown | SQL
-  data Editor = Edit | Eval
-
-  type BlockState = { edit :: Editor, content :: String }
-  type BlockProps eff state result =
-    { blockType :: BlockType
-    , index :: Number
-    , close :: EventHandlerContext eff {} state result
-    }
-
-  instance eqEditor :: Eq Editor where
-    (==) Edit Edit = true
-    (==) Eval Eval = true
-    (==) _    _    = false
-
-    (/=) e    e'   = not (e == e')
-
-  instance showBlockType :: Show BlockType where
-    show Markdown = "Markdown"
-    show SQL = "SQL"
+  import qualified Browser.WebStorage as WS
 
   block :: forall eff state result. BlockProps eff state result -> UI
-  block = mkUI spec { getInitialState = pure {edit: Edit, content: ""} } do
-    state <- readState
-    props <- getProps
-    pure $ D.div [D.className "block"] $
-      [ blockRow "block-toolbar" [blockType props.blockType] [toolbar props]
-      , blockRow "block-content" [] [evalOrEdit state.edit $ state.content]
-      ]
+  block =
+    mkUI spec{ getInitialState = pure {edit: Edit, content: ""}
+             , componentWillReceiveProps = cwrp {-\_ -> do
+                state <- readState
+                pure $ WS.setItem WS.localStorage "blocks" state
+                pure {}-}
+             } do
+      state <- readState
+      props <- getProps
+      let content = maybe state.content id props.content
+      let ty = props.blockType
+      pure $ D.div
+        [D.className "block"]
+        [ blockRow "block-toolbar toolbar" [blockType ty] [toolbar props]
+        , blockRow "block-content" [] [evalOrEdit state.edit ty content]
+        ]
+
+  foreign import cwrp
+    "function cwrp(props) {\
+    \  var blocks = SlamData_App_Notebook_Block_Common.localBlocks;\
+    \  var newBlocks = updateBlock(props.ident)(props.content)(props.blockType)(blocks);\
+    \  var stringified = Data_Array.map(Prelude.show(SlamData_App_Notebook_Block_Common.showBlockSpec({})))(newBlocks);\
+    \  return localStorage.setItem('blocks', stringified);\
+    \}" :: forall a b. a -> b
+
+  updateBlock :: BlockID -> Maybe String -> BlockType -> [BlockSpec] -> [BlockSpec]
+  updateBlock ident str ty bss =
+    let spec = BlockSpec {ident: ident, content: str, blockType: ty}
+        i = findIndex (\(BlockSpec bs) -> bs.ident == ident) bss
+    in if i >= 0
+    then updateAt i (spec) bss
+    else bss `snoc` spec
 
   blockRow :: String -> [UI] -> [UI] -> UI
   blockRow styles firstCol secondCol =
@@ -56,7 +63,7 @@ module SlamData.App.Notebook.Block
           ]
 
   blockType :: BlockType -> UI
-  blockType ty = D.div [D.className "block-type"]
+  blockType ty = D.div [D.className "block-type text-center"]
     [ D.span [D.className ""]
         [D.text $ show ty]
     ]
@@ -77,34 +84,17 @@ module SlamData.App.Notebook.Block
         specificButtons Markdown = []
         specificButtons SQL      = []
 
-  eval ::forall attrs.
-    EventHandlerContext (f :: ReadRefsEff { editor :: Component attrs {value :: String} })
-                        {}
-                        BlockState
-                        (ReactStateRW BlockState BlockState)
-  eval = do
-    refs <- getRefs
-    pure $ writeState {edit: Eval, content: (getDOMNode refs.editor).value}
-
-  edit ::forall attrs.
-    EventHandlerContext (f :: ReadRefsEff { editor :: Component attrs {value :: String} }) -- Not sure why psc can't infer this with a type variable.
-                        {}
-                        BlockState
-                        (ReactStateRW BlockState BlockState)
-  edit = do
-    state <- readState
-    pure $ writeState {edit: Edit, content: state.content}
-
-  evalOrEdit :: Editor -> (String -> UI)
-  evalOrEdit Edit = blockEditor
-  evalOrEdit Eval = evalMarkdown
+  evalOrEdit :: Editor -> BlockType -> String -> UI
+  evalOrEdit Edit _ = blockEditor
+  evalOrEdit Eval Markdown = evalMarkdown
+  evalOrEdit Eval SQL      = evalSQL
 
   blockEditor :: String -> UI
   blockEditor content = D.div'
     [ D.textarea [ D.autoFocus "true"
                  , D.className "block-editor"
                  , D.onBlur \_ -> eval
-                 , D.onChange $ \e ->
+                 , D.onChange $ \e -> do
                     pure $ writeState {edit: Edit, content: e.target.value}
                  , D.onKeyPress handleKeyPress
                  , D.ref "editor"
@@ -113,20 +103,10 @@ module SlamData.App.Notebook.Block
                  []
     ]
 
-  evalMarkdown :: String -> UI
-  evalMarkdown content = D.div
-    [ D.className "evaled-block"
-    , D.onClick \_ -> edit
-    ]
-    [ D.span [D.dangerouslySetInnerHTML $ makeHtml content] []
-    ]
-
   handleKeyPress k = do
     if (k.ctrlKey && k.keyCode == 13) || k.keyCode == 10
       then eval
       else edit
 
-  foreign import focus
-    "function focus(x) {\
-    \  return x.focus();\
-    \}" :: forall a b. a -> b
+  updateStorage state =
+    WS.setItem WS.localStorage "blocks" state

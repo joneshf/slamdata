@@ -21,10 +21,6 @@ module SlamData.App.Menu (menu) where
                   , command "divider"
                   , editMenu
                   , command "divider"
-                  , codeMenu
-                  , command "divider"
-                  , collaborateMenu
-                  , command "divider"
                   , helpMenu
                   , command "divider"
                   ]
@@ -62,38 +58,6 @@ module SlamData.App.Menu (menu) where
     , "divider"
     , "Find and replace..."
     , "Find in folders..."
-    ]
-
-  codeMenu :: UI
-  codeMenu = menuButton "Code"
-    [ "Rename..."
-    , "Inline"
-    , "Extract"
-    , "divider"
-    , "Comment"
-    , "Uncomment"
-    , "Auto-Complete"
-    , "Go to Declaration"
-    , "divider"
-    , "Format pretty"
-    , "Format compact"
-    , "divider"
-    , "Insert Function"
-    , "divider"
-    , "Run Accurate"
-    , "Run Fast"
-    ]
-
-  collaborateMenu :: UI
-  collaborateMenu = menuButton "Collaborate"
-    [ "SlamData channel"
-    , "Create channel"
-    , "Join channel"
-    , "divider"
-    , "Share file..."
-    , "Manage saring..."
-    , "divider"
-    , "Add comment..."
     ]
 
   helpMenu :: UI

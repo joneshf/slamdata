@@ -5,26 +5,29 @@ module SlamData.Helpers where
   import React
   import React.DOM
 
-  actionButton :: forall eff props state result i. (Icon i) =>
-    { click :: EventHandlerContext eff props state result
-    , icon :: i
-    , tooltip :: Prim.String
-    } -> UI
+  actionButton :: forall eff props state result i. (Icon i)
+               => { click :: EventHandlerContext eff props state result
+                  , icon :: i
+                  , tooltip :: Prim.String
+                  }
+               -> UI
   actionButton props = li'
-    [ a [ ClassName "tiny secondary button has-tooltip"
+    [a
+        [ className "tiny secondary button has-tooltip"
         , onClick \_ -> props.click
         , titleProp props.tooltip
         , dataSet {tooltip: ""}
-        ] [toUI props.icon]
+        ]
+        [toUI props.icon]
     ]
 
   -- | Foundation stuff.
   row :: [UI] -> UI
-  row uis = div [ClassName "row" ] uis
+  row uis = div [className "row"] uis
 
   large :: String -> UI -> UI
   large size ui =
-    div [ClassName $ "large-" ++ size ++ " columns" ] [ ui ]
+    div [className $ "large-" ++ size ++ " columns"] [ui]
 
   -- | FontAwesome stuff.
 
@@ -55,6 +58,14 @@ module SlamData.Helpers where
   markdownIcon {} = faIcon "fa fa-file-text"
   sqlIcon :: {} -> FAIcon
   sqlIcon {} = faIcon "fa fa-database"
+  dirOpenIcon :: {} -> FAIcon
+  dirOpenIcon {} = faIcon "fa fa-folder-open-o"
+  dirClosedIcon :: {} -> FAIcon
+  dirClosedIcon {} = faIcon "fa fa-folder-o"
+  fileIcon :: {} -> FAIcon
+  fileIcon {} = faIcon "fa fa-file-o"
+  newNotebookIcon :: {} -> FAIcon
+  newNotebookIcon {} = faIcon "fa fa-plus"
 
   -- TODO: Move these to purescript-react.
 
@@ -67,3 +78,8 @@ module SlamData.Helpers where
     "function getDOMNode(x) {\
     \  return x.getDOMNode();\
     \}" :: forall attrs values. Component attrs values -> values
+
+  foreign import focus
+    "function focus(x) {\
+    \  return x.focus();\
+    \}" :: forall a b. a -> b

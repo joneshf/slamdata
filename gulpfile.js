@@ -9,7 +9,8 @@ var gulp = require('gulp')
 paths = {
     src: [
         'src/**/*.purs',
-        'bower_components/purescript-*/src/**/*.purs'
+        'bower_components/purescript-*/src/**/*.purs',
+        'bower_components/purescript-*/src/**/*.purs.hs'
     ],
     dest: 'js',
     style: 'style/**/*.scss',
@@ -38,7 +39,7 @@ paths = {
 options = {
     compile: {
         main: 'SlamData',
-        js: 'slamdata.js'
+        output: 'slamdata.js'
     },
     build: {
         main: 'SlamData',

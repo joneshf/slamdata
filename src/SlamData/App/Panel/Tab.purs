@@ -1,11 +1,17 @@
 module SlamData.App.Panel.Tab
-  ( tab
+  ( makeTabName
+  , makeCont
+  , tabize
   , Tab(..)
+  , TabSpec()
   , Action()
   ) where
 
+  import Control.Monad.Eff
+
   import Data.String
   import Data.Tuple
+  import Data.UUID
 
   import React
 
@@ -17,41 +23,70 @@ module SlamData.App.Panel.Tab
                               , internal :: [Action]
                               }
                  , content :: UI
+                 , active :: Boolean
                  }
+  type TabSpec =
+    { name :: String
+    , external :: [Action]
+    , internal :: [Action]
+    , content :: [UI]
+    , ident :: UUID
+    }
 
-  tab :: { name :: String
-         , external :: [Action]
-         , internal :: [Action]
-         , content :: [UI]
-         , active :: Boolean
-         }
-      -> Tab
-  tab props = Tab { name: tabName
-                  , toolbar: { external: props.external
-                             , internal: props.internal
-                             }
-                  , content: cont}
-    where
-      tabName = makeTabName props
-      cont = makeCont props
+  -- tab :: TabSpec -> Tab
+  -- tab props =
+  --   let tabName = makeTabName props
+  --       cont = makeCont props
+  --   in Tab { name: tabName
+  --          , toolbar: { external: props.external
+  --                     , internal: props.internal
+  --                     }
+  --          , content: cont
+  --          , active: props.active
+  --          }
 
-  makeTabName :: forall p. { name :: String, active :: Boolean | p } -> UI
+  makeTabName :: forall p eff state result.
+    { name :: String
+    , active :: Boolean
+    , ident :: UUID
+    , activate :: EventHandlerContext eff {} state result
+    | p
+    }
+              -> UI
   makeTabName props =
-    D.dd [D.ClassName $ activate "" props.active ]
-         [ D.a [D.Href $ "#" ++ tabizeName props.name ] [ D.text props.name ] ]
-  makeCont :: forall p. { name :: String, content :: [UI], active :: Boolean | p } -> UI
+    D.dd [D.className $ activate "tab" props.active]
+         [D.a [ D.href $ "#" ++ (tabize props.ident)
+              , D.onClick \_ -> props.activate
+              ]
+              [D.text props.name]
+         ]
+  makeCont :: forall eff p. { name :: String
+                            , content :: [UI]
+                            , external :: [Action]
+                            , internal :: [Action]
+                            , ident :: UUID
+                            | p
+                            }
+           -> UI
   makeCont props =
-    D.div [D.ClassName $ activate "content" props.active
-          , D.Id $ tabizeName props.name
-          ]
-          props.content
+    D.div
+      [ D.className $ "content active"
+      , D.idProp $ tabize props.ident
+      ]
+      [ D.div [D.className "toolbar button-bar"]
+              [ D.ul [D.className "button-group"] props.external
+              , D.ul [D.className "button-group"] props.internal
+              ]
+      , D.hr' []
+      , D.div [D.className "actual-content"] props.content
+      ]
 
   activate :: String -> Boolean -> String
   activate s true  = s ++ " active"
   activate s false = s
 
-  tabizeName :: String -> String
-  tabizeName = ((++) "tab-") <<< replace " " ""
-    where
-      words = split " "
-      unwords = joinWith ""
+  tabize :: UUID -> String
+  tabize = show >>> removeDashes >>> ((++) "tab-")
+
+  removeDashes :: String -> String
+  removeDashes = split "-" >>> joinWith ""

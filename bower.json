@@ -31,6 +31,9 @@
     "purescript-monoid": "0.1.0",
     "purescript-showdown": "https://github.com/joneshf/purescript-showdown.git",
     "showdown": "~0.3.1",
-    "fontawesome": "~4.1.0"
+    "fontawesome": "~4.1.0",
+    "purescript-foldable-traversable": "~0.1.1",
+    "purescript-webstorage": "~0.0.1",
+    "purescript-foreign": "~0.1.2"
   }
 }
