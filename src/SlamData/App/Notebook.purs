@@ -114,7 +114,7 @@ module SlamData.App.Notebook (notebook) where
         , internalActions {notebook: nb, createM: createM, createS: createS}
         ]
     , D.hr' []
-    , D.div [D.className "actual-content"] (block2UI <$> nb.blocks)
+    , D.div [D.className "actual-content"] (zipWith block2UI nb.blocks (0..length nb.blocks))
     ]
 
   maybeActive :: NotebookID -> Maybe NotebookID -> String
@@ -178,12 +178,13 @@ module SlamData.App.Notebook (notebook) where
   deleteBlock ident = crudBlock \(Notebook nb) ->
     Notebook nb{blocks = filter (\(BlockSpec b) -> b.ident /= ident) nb.blocks}
 
-  block2UI :: BlockSpec -> UI
-  block2UI (BlockSpec {blockType = ty, ident = n, content = c}) =
+  block2UI :: BlockSpec -> Number -> UI
+  block2UI (BlockSpec {blockType = ty, ident = n, content = c}) i =
     block { blockType: ty
           , ident: n
           , close: deferred $ deleteBlock n
           , content: c
+          , index: i
           }
 
   createNotebook :: forall eff. NotebookEvent eff
@@ -211,7 +212,7 @@ module SlamData.App.Notebook (notebook) where
       }
     , BlockSpec { ident: BlockID $ runUUID v4
       , blockType: SQL
-      , content: Just "SELECT happiness FROM subjects;"
+      , content: Just "SELECT pop FROM zips"
       }
     ]
 

@@ -24,10 +24,7 @@ module SlamData.App.Notebook.Block
   block :: forall eff state result. BlockProps eff state result -> UI
   block =
     mkUI spec{ getInitialState = pure {edit: Edit, content: ""}
-             , componentWillReceiveProps = cwrp {-\_ -> do
-                state <- readState
-                pure $ WS.setItem WS.localStorage "blocks" state
-                pure {}-}
+             , componentWillReceiveProps = cwrp
              } do
       state <- readState
       props <- getProps
@@ -36,7 +33,7 @@ module SlamData.App.Notebook.Block
       pure $ D.div
         [D.className "block"]
         [ blockRow "block-toolbar toolbar" [blockType ty] [toolbar props]
-        , blockRow "block-content" [] [evalOrEdit state.edit ty content]
+        , evalOrEdit state.edit props
         ]
 
   foreign import cwrp
@@ -54,13 +51,6 @@ module SlamData.App.Notebook.Block
     in if i >= 0
     then updateAt i (spec) bss
     else bss `snoc` spec
-
-  blockRow :: String -> [UI] -> [UI] -> UI
-  blockRow styles firstCol secondCol =
-    D.div [D.className $ styles ++ " row"]
-          [ D.div [D.className "large-1  columns"] firstCol
-          , D.div [D.className "large-11 columns right-side"] secondCol
-          ]
 
   blockType :: BlockType -> UI
   blockType ty = D.div [D.className "block-type text-center"]
@@ -84,23 +74,25 @@ module SlamData.App.Notebook.Block
         specificButtons Markdown = []
         specificButtons SQL      = []
 
-  evalOrEdit :: Editor -> BlockType -> String -> UI
-  evalOrEdit Edit _ = blockEditor
-  evalOrEdit Eval Markdown = evalMarkdown
-  evalOrEdit Eval SQL      = evalSQL
+  evalOrEdit :: forall eff state result. Editor -> BlockProps eff state result -> UI
+  evalOrEdit Edit p = blockEditor (maybe "" id p.content)
+  evalOrEdit Eval p@{blockType=Markdown} = evalMarkdown (maybe "" id p.content)
+  evalOrEdit Eval p@{blockType=SQL}      = evalSQL p
 
   blockEditor :: String -> UI
-  blockEditor content = D.div'
-    [ D.textarea [ D.autoFocus "true"
-                 , D.className "block-editor"
-                 , D.onBlur \_ -> eval
-                 , D.onChange $ \e -> do
-                    pure $ writeState {edit: Edit, content: e.target.value}
-                 , D.onKeyPress handleKeyPress
-                 , D.ref "editor"
-                 , D.value content
-                 ]
-                 []
+  blockEditor content = blockRow "block-content" []
+    [D.div'
+      [D.textarea [ D.autoFocus "true"
+                  , D.className "block-editor"
+                  , D.onBlur \_ -> eval
+                  , D.onChange $ \e -> do
+                      pure $ writeState {edit: Edit, content: e.target.value}
+                  , D.onKeyPress handleKeyPress
+                  , D.ref "editor"
+                  , D.value content
+                  ]
+                  []
+      ]
     ]
 
   handleKeyPress k = do

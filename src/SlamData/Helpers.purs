@@ -5,6 +5,11 @@ module SlamData.Helpers where
   import React
   import React.DOM
 
+  import qualified Data.Array as A
+
+  (..) :: Number -> Number -> [Number]
+  (..) = A.range
+
   actionButton :: forall eff props state result i. (Icon i)
                => { click :: EventHandlerContext eff props state result
                   , icon :: i

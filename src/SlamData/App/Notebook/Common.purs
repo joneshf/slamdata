@@ -25,6 +25,7 @@ module SlamData.App.Notebook.Block.Common where
   type BlockProps eff state result =
     { blockType :: BlockType
     , ident :: BlockID
+    , index :: Number
     , close :: EventHandlerContext eff {} state result
     , content :: Maybe String
     }
@@ -84,6 +85,13 @@ module SlamData.App.Notebook.Block.Common where
   edit = do
     state <- readState
     pure $ writeState state{edit = Edit, content = state.content}
+
+  blockRow :: String -> [UI] -> [UI] -> UI
+  blockRow styles firstCol secondCol =
+    D.div [D.className $ styles ++ " row"]
+          [ D.div [D.className "large-1  columns"] firstCol
+          , D.div [D.className "large-11 columns right-side"] secondCol
+          ]
 
   localBlocks :: [BlockSpec]
   localBlocks =

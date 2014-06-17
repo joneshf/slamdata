@@ -175,8 +175,12 @@ html, body {
     }
 }
 
-.block-editor {
+.block-editor, .block-content div {
     min-height: 150px;
+}
+
+.block-metadata {
+    padding: rem-calc(20);
 }
 
 .evaled-block {
