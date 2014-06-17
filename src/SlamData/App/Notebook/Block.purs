@@ -36,14 +36,6 @@ module SlamData.App.Notebook.Block
         , evalOrEdit state.edit props
         ]
 
-  foreign import cwrp
-    "function cwrp(props) {\
-    \  var blocks = SlamData_App_Notebook_Block_Common.localBlocks;\
-    \  var newBlocks = updateBlock(props.ident)(props.content)(props.blockType)(blocks);\
-    \  var stringified = Data_Array.map(Prelude.show(SlamData_App_Notebook_Block_Common.showBlockSpec({})))(newBlocks);\
-    \  return localStorage.setItem('blocks', stringified);\
-    \}" :: forall a b. a -> b
-
   updateBlock :: BlockID -> Maybe String -> BlockType -> [BlockSpec] -> [BlockSpec]
   updateBlock ident str ty bss =
     let spec = BlockSpec {ident: ident, content: str, blockType: ty}
@@ -100,5 +92,10 @@ module SlamData.App.Notebook.Block
       then eval
       else edit
 
-  updateStorage state =
-    WS.setItem WS.localStorage "blocks" state
+  foreign import cwrp
+    "function cwrp(props) {\
+    \  var blocks = SlamData_App_Notebook_Block_Common.localBlocks;\
+    \  var newBlocks = updateBlock(props.ident)(props.content)(props.blockType)(blocks);\
+    \  var stringified = Data_Array.map(Prelude.show(SlamData_App_Notebook_Block_Common.showBlockSpec({})))(newBlocks);\
+    \  return localStorage.setItem('blocks', stringified);\
+    \}" :: forall a. a

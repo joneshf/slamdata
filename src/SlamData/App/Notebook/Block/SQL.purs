@@ -26,15 +26,15 @@ module SlamData.App.Notebook.Block.SQL where
           [D.span' [D.text state.content]]
         ]
 
+  -- Some helpers for the ffi.
   showBlockID :: BlockID -> String
   showBlockID = show
-
-  mayhaps = maybe
+  maybe_ = maybe
   id_ x = x
 
   foreign import cwm
     "function cwm(content) {\
-    \  runQuery.call(this, mayhaps('')(id_)(this.props.content));\
+    \  runQuery.call(this, maybe_('')(id_)(this.props.content));\
     \}" :: forall a. a
 
   -- We can't use jQuery here, it will barf on the response.
