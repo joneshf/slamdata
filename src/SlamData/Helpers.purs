@@ -71,6 +71,8 @@ module SlamData.Helpers where
   fileIcon {} = faIcon "fa fa-file-o"
   newNotebookIcon :: {} -> FAIcon
   newNotebookIcon {} = faIcon "fa fa-plus"
+  loadingIcon :: {} -> FAIcon
+  loadingIcon {} = faIcon "fa fa-circle-o-notch fa-spin"
 
   -- TODO: Move these to purescript-react.
 

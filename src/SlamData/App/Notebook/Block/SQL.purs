@@ -5,12 +5,13 @@ module SlamData.App.Notebook.Block.SQL where
   import React
 
   import SlamData.App.Notebook.Block.Common
+  import SlamData.Helpers
 
   import qualified React.DOM as D
 
   evalSQL :: forall props. {index :: Number | props} -> UI
   evalSQL =
-    mkUI spec{ getInitialState = pure {content: ""}
+    mkUI spec{ getInitialState = pure {content: "", loading: true}
              , componentWillMount = cwm
              } do
       props <- getProps
@@ -23,7 +24,7 @@ module SlamData.App.Notebook.Block.SQL where
           [ D.className "evaled-block"
           , D.onClick \_ -> edit
           ]
-          [D.span' [D.text state.content]]
+          [if state.loading then toUI (loadingIcon {}) else D.span' [D.text state.content]]
         ]
 
   -- Some helpers for the ffi.
@@ -44,10 +45,10 @@ module SlamData.App.Notebook.Block.SQL where
     "function cdm() {\
     \  var xhr = new XMLHttpRequest();\
     \  xhr.onerror = function() {\
-    \    this.setState({state: {content: 'Problem loading query'}});\
+    \    this.setState({state: {content: 'Problem loading query', loading: false}});\
     \  }.bind(this);\
     \  xhr.onload = function() {\
-    \    this.setState({state: {content: xhr.responseText}});\
+    \    this.setState({state: {content: xhr.responseText, loading: false}});\
     \  }.bind(this);\
     \  xhr.open('GET', 'http://localhost:8080/data/fs/'+showBlockID(this.props.ident));\
     \  xhr.send(null);\
@@ -64,7 +65,7 @@ module SlamData.App.Notebook.Block.SQL where
     \      cdm.call(this);\
     \    }.bind(this),\
     \    error: function() {\
-    \      this.setState({state: {content: 'Problem loading query'}});\
+    \      this.setState({state: {content: 'Problem loading query', loading: false}});\
     \    }.bind(this)\
     \  });\
     \}" :: forall a. a
