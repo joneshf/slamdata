@@ -27,10 +27,5 @@ module SlamData.App.Workspace (workspace) where
                     , D.idProp "notebook"
                     ]
                 [notebook]
-            -- , large "3" reference
             ]
-    -- , D.div [ D.className "row"
-    --         , D.idProp "extra-row"
-    --         ]
-    --         [ large "12" extra ]
     ]

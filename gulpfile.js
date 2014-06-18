@@ -109,4 +109,4 @@ gulp.task('fonts', function() {
 
 gulp.task('build', ['compile', 'concat', 'fonts']);
 gulp.task('concat', ['concat-js', 'concat-css']);
-gulp.task('default', ['compile', 'sass', 'watch']);
+gulp.task('default', ['compile', 'sass']);

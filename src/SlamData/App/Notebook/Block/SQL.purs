@@ -1,37 +1,71 @@
 module SlamData.App.Notebook.Block.SQL where
 
+  import Data.Maybe
+
   import React
 
   import SlamData.App.Notebook.Block.Common
+  import SlamData.Helpers
 
   import qualified React.DOM as D
 
-  evalSQL :: String -> UI
-  evalSQL content =
-    (mkUI spec{ getInitialState = pure {out: ""}
-              , componentWillMount = cwm
-              } do
+  evalSQL :: forall props. {index :: Number | props} -> UI
+  evalSQL =
+    mkUI spec{ getInitialState = pure {content: "", loading: true}
+             , componentWillMount = cwm
+             } do
+      props <- getProps
       state <- readState
-      pure $ D.div
-        [ D.className "evaled-block"
-        , D.onClick \_ -> edit
+      pure $ blockRow "block-content block-sql"
+        [D.div [D.className "text-center block-metadata"]
+               [D.text $ "out" ++ show props.index ++ " :="]
         ]
-        [ D.span' [D.text state.out]
-        ]) {content: content}
+        [D.div
+          [ D.className "evaled-block"
+          , D.onClick \_ -> edit
+          ]
+          [if state.loading then toUI (loadingIcon {}) else D.span' [D.text state.content]]
+        ]
+
+  -- Some helpers for the ffi.
+  showBlockID :: BlockID -> String
+  showBlockID = show
+  maybe_ = maybe
+  id_ x = x
 
   foreign import cwm
     "function cwm(content) {\
-    \  runQuery.call(this, this.props.content);\
+    \  runQuery.call(this, maybe_('')(id_)(this.props.content));\
+    \}" :: forall a. a
+
+  -- We can't use jQuery here, it will barf on the response.
+  -- We also have to write this in the ffi since the rows are closed in `spec`
+  -- so, we can't do any other effects i.e. Ajax. :(
+  foreign import cdm
+    "function cdm() {\
+    \  var xhr = new XMLHttpRequest();\
+    \  xhr.onerror = function() {\
+    \    this.setState({state: {content: 'Problem loading query', loading: false}});\
+    \  }.bind(this);\
+    \  xhr.onload = function() {\
+    \    this.setState({state: {content: xhr.responseText, loading: false}});\
+    \  }.bind(this);\
+    \  xhr.open('GET', 'http://localhost:8080/data/fs/'+showBlockID(this.props.ident));\
+    \  xhr.send(null);\
     \}" :: forall a. a
 
   foreign import runQuery
     "function runQuery(query) {\
-    \  $.post({\
-    \    url: 'http://localhost:8081/query/fs/?out=tmp123',\
+    \  $.ajax({\
+    \    type: 'POST',\
+    \    url: 'http://localhost:8080/query/fs/?out='+showBlockID(this.props.ident),\
     \    data: query,\
     \    dataType: 'json',\
-    \    success: function(data) {\
-    \      this.replaceState({state: {out: data.out}})\
+    \    success: function() {\
+    \      cdm.call(this);\
+    \    }.bind(this),\
+    \    error: function() {\
+    \      this.setState({state: {content: 'Problem loading query', loading: false}});\
     \    }.bind(this)\
     \  });\
     \}" :: forall a. a

@@ -5,6 +5,11 @@ module SlamData.Helpers where
   import React
   import React.DOM
 
+  import qualified Data.Array as A
+
+  (..) :: Number -> Number -> [Number]
+  (..) = A.range
+
   actionButton :: forall eff props state result i. (Icon i)
                => { click :: EventHandlerContext eff props state result
                   , icon :: i
@@ -66,6 +71,8 @@ module SlamData.Helpers where
   fileIcon {} = faIcon "fa fa-file-o"
   newNotebookIcon :: {} -> FAIcon
   newNotebookIcon {} = faIcon "fa fa-plus"
+  loadingIcon :: {} -> FAIcon
+  loadingIcon {} = faIcon "fa fa-circle-o-notch fa-spin"
 
   -- TODO: Move these to purescript-react.
 
