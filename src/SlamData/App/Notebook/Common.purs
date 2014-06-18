@@ -12,10 +12,19 @@ module SlamData.App.Notebook.Block.Common where
   import qualified React.DOM as D
   import qualified Browser.WebStorage as WS
 
+  -- Notebook stuff
+  data NotebookSpec = NotebookSpec NotebookRecord
+  data NotebookID = NotebookID UUID
+  type NotebookRecord = { name :: String
+                        , blocks :: [BlockID]
+                        , ident :: NotebookID
+                        }
+
+  -- Block stuff
   data BlockType = Markdown | SQL
   data BlockID = BlockID UUID
-  data Editor = Edit | Eval
   data BlockSpec = BlockSpec BlockRecord
+  data Editor = Edit | Eval
   type BlockRecord =
     { blockType :: BlockType
     , content :: Maybe String
@@ -29,6 +38,10 @@ module SlamData.App.Notebook.Block.Common where
     , close :: EventHandlerContext eff {} state result
     , content :: Maybe String
     }
+
+  instance eqNotebookID :: Eq NotebookID where
+    (==) (NotebookID i) (NotebookID i') =      i == i'
+    (/=) b              b'              = not (b == b')
 
   instance eqBlockID :: Eq BlockID where
     (==) (BlockID i) (BlockID i') =      i == i'
@@ -52,20 +65,27 @@ module SlamData.App.Notebook.Block.Common where
     read = ForeignParser \str -> case parseForeign read str of
       Right "Markdown" -> Right Markdown
       Right "SQL"      -> Right SQL
-      _          -> Left "WAT!"
+      Left err-> Left err
 
   instance showBlockSpec :: Show BlockSpec where
-    show (BlockSpec bs) = "{ blockType: " ++ show bs.blockType ++
-                          ", content: " ++ show bs.content ++
-                          ", ident: " ++ show bs.ident ++
+    show (BlockSpec bs) = "{ \"blockType\": \"" ++ show bs.blockType ++ "\"" ++
+                          ", \"content\": " ++ maybe "null" (\c -> "\"" ++ show c ++ "\"") bs.content ++
+                          ", \"ident\": \"" ++ show bs.ident ++ "\"" ++
                           "}"
 
   instance readBlockSpec :: ReadForeign BlockSpec where
     read = do
       ty <- prop "blockType"
       c <- prop "content"
-      i <- prop "id"
+      i <- prop "ident"
       pure $ BlockSpec {blockType: ty, content: c, ident: BlockID i}
+
+  instance readNotebookSpec :: ReadForeign NotebookSpec where
+    read = do
+      b <- prop "blocks"
+      i <- prop "ident"
+      n <- prop "name"
+      pure $ NotebookSpec {ident: NotebookID i, blocks: BlockID <$> b, name: n}
 
   eval ::forall attrs.
     EventHandlerContext (f :: ReadRefsEff { editor :: Component attrs {value :: String} })
@@ -98,3 +118,9 @@ module SlamData.App.Notebook.Block.Common where
     maybe []
           (parseJSON >>> either (const []) id)
           (WS.getItem WS.localStorage "blocks")
+
+  localNotebooks :: [NotebookSpec]
+  localNotebooks =
+    maybe []
+          (parseJSON >>> either (const []) id)
+          (WS.getItem WS.localStorage "notebooks")
