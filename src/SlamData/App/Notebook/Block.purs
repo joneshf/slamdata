@@ -11,12 +11,13 @@ module SlamData.App.Notebook.Block
   import React
   import Showdown
 
-  import SlamData.Helpers
   import SlamData.App.Notebook.Block.Common
   import SlamData.App.Notebook.Block.Markdown
   import SlamData.App.Notebook.Block.SQL
+  import SlamData.App.Notebook.Block.Types
   import SlamData.App.Panel
   import SlamData.App.Panel.Tab
+  import SlamData.Helpers
 
   import qualified React.DOM as D
   import qualified Browser.WebStorage as WS

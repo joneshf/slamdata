@@ -5,6 +5,8 @@ module SlamData.App.Notebook.Block.SQL where
   import React
 
   import SlamData.App.Notebook.Block.Common
+  import SlamData.App.Notebook.Block.Types
+  import SlamData.App.Notebook.Types
   import SlamData.Helpers
 
   import qualified React.DOM as D

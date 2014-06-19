@@ -11,21 +11,16 @@ module SlamData.App.Notebook (notebook) where
 
   import React
 
-  import SlamData.Helpers
   import SlamData.App.Notebook.Block
   import SlamData.App.Notebook.Block.Common
+  import SlamData.App.Notebook.Block.Types
+  import SlamData.App.Notebook.Types
   import SlamData.App.Panel
   import SlamData.App.Panel.Tab
+  import SlamData.Helpers
 
   import qualified React.DOM as D
   import qualified Browser.WebStorage as WS
-
-  type NotebookState = {notebooks :: [NotebookSpec], active :: Maybe NotebookID}
-  type NotebookEvent eff =
-    EventHandlerContext eff
-                        {}
-                        NotebookState
-                        (ReactStateRW NotebookState NotebookState)
 
   notebook :: UI
   notebook = nbPanel {}
@@ -161,13 +156,6 @@ module SlamData.App.Notebook (notebook) where
   createSQL :: forall eff. NotebookID -> NotebookEvent eff
   createSQL = createBlock SQL
 
-  -- updateBlock :: forall eff. BlockID -> Maybe String -> NotebookEvent eff
-  -- updateBlock ident c = crudBlock \(NotebookSpec nb) ->
-  --   NotebookSpec nb{blocks = (\(BlockSpec b) ->
-  --     if b.ident == ident
-  --     then BlockSpec b{content = c}
-  --     else BlockSpec b) <$> nb.blocks}
-
   deleteBlock :: forall eff. BlockID -> NotebookEvent eff
   deleteBlock ident = do
     state <- readState
@@ -194,7 +182,7 @@ module SlamData.App.Notebook (notebook) where
     let notebooks' = state.notebooks `snoc` NotebookSpec { name: "Untitled"
                                                          , blocks: []
                                                          , ident: i
-                                                         }
+                                                         } -- TODO: Note this in a bug report. This is a compiler error if it's not inline.
     pure $ localSet Notebooks notebooks'
     pure $ writeState {notebooks: notebooks', active: Just i}
 
