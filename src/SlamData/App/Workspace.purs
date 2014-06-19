@@ -14,18 +14,21 @@ module SlamData.App.Workspace (workspace) where
   import qualified React.DOM as D
 
   workspace :: UI
-  workspace = D.div [ D.idProp "workspace" ] $
-    [ D.div [ D.className "row"
+  workspace = D.div
+    [D.idProp "workspace"]
+    [D.div  [ D.className "row"
             , D.idProp "main-row"
-            , D.dataSet {equalizer: ""}
+            -- , D.dataSet {equalizer: ""}
             ]
-            [ D.div [ D.className $ "large-2 columns"
-                    , D.idProp "filesystem"
-                    ]
+            [ D.div
+                [ D.className $ "large-2 medium-3 small-5 columns"
+                , D.idProp "filesystem"
+                ]
                 [filesystem]
-            , D.div [ D.className $ "large-10 columns"
-                    , D.idProp "notebook"
-                    ]
+            , D.div
+                [ D.className $ "large-10 medium-9 small-7 columns"
+                , D.idProp "notebook"
+                ]
                 [notebook]
             ]
     ]

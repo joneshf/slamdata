@@ -23,12 +23,10 @@ module SlamData.App.Notebook.Block
 
   block :: forall eff state result. BlockProps eff state result -> UI
   block =
-    mkUI spec{ getInitialState = pure {edit: Edit, content: ""}
-             , componentWillReceiveProps = cwrp
-             } do
+    mkUI spec{getInitialState = pure {edit: Edit, content: ""}} do
       state <- readState
       props <- getProps
-      let content = maybe state.content id props.content
+      let content = props.content `getOrElse` state.content
       let ty = props.blockType
       pure $ D.div
         [D.className "block"]
@@ -36,27 +34,33 @@ module SlamData.App.Notebook.Block
         , evalOrEdit state.edit props
         ]
 
-  updateBlock :: BlockID -> Maybe String -> BlockType -> [BlockSpec] -> [BlockSpec]
+  updateBlock :: BlockID
+              -> Maybe String
+              -> BlockType
+              -> [BlockSpec]
+              -> [BlockSpec]
   updateBlock ident str ty bss =
     let spec = BlockSpec {ident: ident, content: str, blockType: ty}
         i = findIndex (\(BlockSpec bs) -> bs.ident == ident) bss
     in if i >= 0
-    then updateAt i (spec) bss
+    then updateAt i spec bss
     else bss `snoc` spec
 
   blockType :: BlockType -> UI
-  blockType ty = D.div [D.className "block-type text-center"]
-    [ D.span [D.className ""]
+  blockType ty = D.div
+    [D.className "block-type text-center"]
+    [D.span [D.className ""]
         [D.text $ show ty]
     ]
 
   toolbar :: forall eff state result. BlockProps eff state result -> UI
   toolbar = mkUI spec do
     props <- getProps
-    pure $ D.div [ D.className "button-bar" ]
-      [ D.ul [ D.className "left button-group" ] (specificButtons props.blockType)
-      , D.ul [ D.className "right button-group" ]
-             [ actionButton { tooltip: "Close"
+    pure $ D.div
+      [ D.className "button-bar" ]
+      [ D.ul [D.className "left button-group"] (specificButtons props.blockType)
+      , D.ul [D.className "right button-group"]
+             [actionButton  { tooltip: "Close"
                             , icon: closeIcon {}
                             , click: props.close
                             }
@@ -66,9 +70,12 @@ module SlamData.App.Notebook.Block
         specificButtons Markdown = []
         specificButtons SQL      = []
 
-  evalOrEdit :: forall eff state result. Editor -> BlockProps eff state result -> UI
-  evalOrEdit Edit p = blockEditor (maybe "" id p.content)
-  evalOrEdit Eval p@{blockType=Markdown} = evalMarkdown (maybe "" id p.content)
+  evalOrEdit :: forall eff state result
+             .  Editor
+             -> BlockProps eff state result
+             -> UI
+  evalOrEdit Edit p = blockEditor (p.content `getOrElse` "")
+  evalOrEdit Eval p@{blockType=Markdown} = evalMarkdown (p.content `getOrElse` "")
   evalOrEdit Eval p@{blockType=SQL}      = evalSQL p
 
   blockEditor :: String -> UI
@@ -91,11 +98,3 @@ module SlamData.App.Notebook.Block
     if (k.ctrlKey && k.keyCode == 13) || k.keyCode == 10
       then eval
       else edit
-
-  foreign import cwrp
-    "function cwrp(props) {\
-    \  var blocks = SlamData_App_Notebook_Block_Common.localBlocks;\
-    \  var newBlocks = updateBlock(props.ident)(props.content)(props.blockType)(blocks);\
-    \  var stringified = Data_Array.map(Prelude.show(SlamData_App_Notebook_Block_Common.showBlockSpec({})))(newBlocks);\
-    \  return localStorage.setItem('blocks', stringified);\
-    \}" :: forall a. a

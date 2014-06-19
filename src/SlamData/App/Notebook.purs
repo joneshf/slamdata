@@ -49,8 +49,8 @@ module SlamData.App.Notebook (notebook) where
           ((makeNotebook active (deferred <<< activateTab) (deferred <<< deleteNotebook) <$> notebooks) `snoc`
             D.dd
               [D.className "tab"]
-              [ D.div'
-                [ D.a
+              [D.div'
+                [D.a
                     [ D.onClick \_ -> createNotebook
                     , D.idProp "add-notebook"
                     ]
@@ -105,7 +105,7 @@ module SlamData.App.Notebook (notebook) where
         , internalActions {notebook: nb, createM: createM, createS: createS}
         ]
     , D.hr' []
-    , D.div [D.className "actual-content"] (zipWith block2UI (filter (\(BlockSpec bs) -> bs.ident `elem` nb.blocks) localBlocks) (0..length nb.blocks))
+    , D.div [D.className "actual-content"] (zipWith block2UI (filter (\(BlockSpec bs) -> bs.ident `elem` nb.blocks) (localGet "blocks")) (0..length nb.blocks))
     ]
 
   maybeActive :: NotebookID -> Maybe NotebookID -> String
@@ -144,16 +144,21 @@ module SlamData.App.Notebook (notebook) where
   crudBlock :: forall eff. (NotebookSpec -> NotebookSpec) -> NotebookEvent eff
   crudBlock f = do
     state <- readState
+    let notebooks = f <$> state.notebooks
+    pure $ WS.setItem WS.localStorage "notebooks" (show notebooks)
     pure $ writeState state{notebooks = f <$> state.notebooks}
 
   createBlock :: forall eff. BlockType -> NotebookID -> NotebookEvent eff
   createBlock ty ident = do
+    state <- readState
     let i = BlockID $ runUUID v4
     let block = BlockSpec {blockType: ty, content: Nothing, ident: i}
-    let _ = WS.setItem WS.localStorage "blocks" (show (localBlocks `snoc` block))
+    let blocks' = localGet "blocks" `snoc` block
     let f (NotebookSpec nb) = if nb.ident == ident then NotebookSpec nb{blocks = nb.blocks `snoc` i} else NotebookSpec nb
-    state <- readState
-    pure $ writeState state{notebooks = f <$> state.notebooks}
+    let notebooks' = f <$> state.notebooks
+    pure $ WS.setItem WS.localStorage "blocks" (show blocks')
+    pure $ WS.setItem WS.localStorage "notebooks" (show notebooks')
+    pure $ writeState state{notebooks = notebooks'}
 
   createMarkdown :: forall eff. NotebookID -> NotebookEvent eff
   createMarkdown = createBlock Markdown
@@ -200,10 +205,7 @@ module SlamData.App.Notebook (notebook) where
                       }
 
   initialState :: NotebookState
-  initialState = { notebooks: [ NotebookSpec { name: "Foo"
-                                             , blocks: (\(BlockSpec bs) -> bs.ident) <$> localBlocks
-                                             , ident: NotebookID $ runUUID v4
-                                             }
-                              ]
-                 , active: Nothing :: Maybe NotebookID
-                 }
+  initialState =
+    { notebooks: localGet "notebooks"
+    , active: Nothing :: Maybe NotebookID
+    }

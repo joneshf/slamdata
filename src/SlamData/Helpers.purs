@@ -2,13 +2,25 @@ module SlamData.Helpers where
 
   import Control.Monad.Eff
 
+  import Data.Either
+  import Data.Foreign
+  import Data.Maybe
+
   import React
   import React.DOM
 
   import qualified Data.Array as A
+  import qualified Browser.WebStorage as WS
+
+  -- Random purescript stuff.
 
   (..) :: Number -> Number -> [Number]
   (..) = A.range
+
+  getOrElse :: forall a. Maybe a -> a -> a
+  getOrElse = flip fromMaybe
+
+  -- SlamData specific stuff.
 
   actionButton :: forall eff props state result i. (Icon i)
                => { click :: EventHandlerContext eff props state result
@@ -25,6 +37,12 @@ module SlamData.Helpers where
         ]
         [toUI props.icon]
     ]
+
+  localGet :: forall a. (ReadForeign a) => String -> [a]
+  localGet key =
+    maybe []
+          (parseJSON >>> either (const []) id)
+          (WS.getItem WS.localStorage key)
 
   -- | Foundation stuff.
   row :: [UI] -> UI

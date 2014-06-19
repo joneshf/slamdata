@@ -50,6 +50,9 @@ module SlamData.App.Notebook.Block.Common where
   instance showBlockID :: Show BlockID where
     show (BlockID ident) = show ident
 
+  instance showNotebookID :: Show NotebookID where
+    show (NotebookID ident) = show ident
+
   instance eqEditor :: Eq Editor where
     (==) Edit Edit = true
     (==) Eval Eval = true
@@ -59,26 +62,34 @@ module SlamData.App.Notebook.Block.Common where
 
   instance showBlockType :: Show BlockType where
     show Markdown = "Markdown"
-    show SQL = "SQL"
+    show SQL      = "SQL"
 
   instance readBlockType :: ReadForeign BlockType where
     read = ForeignParser \str -> case parseForeign read str of
       Right "Markdown" -> Right Markdown
       Right "SQL"      -> Right SQL
-      Left err-> Left err
+      Left err         -> Left err
 
   instance showBlockSpec :: Show BlockSpec where
-    show (BlockSpec bs) = "{ \"blockType\": \"" ++ show bs.blockType ++ "\"" ++
-                          ", \"content\": " ++ maybe "null" (\c -> "\"" ++ show c ++ "\"") bs.content ++
-                          ", \"ident\": \"" ++ show bs.ident ++ "\"" ++
-                          "}"
+    show (BlockSpec bs) =
+      "{ \"blockType\": \"" ++ show bs.blockType ++ "\"" ++
+      ", \"content\": " ++ maybe "null" (\c -> "\"" ++ show c ++ "\"") bs.content ++
+      ", \"ident\": \"" ++ show bs.ident ++ "\"" ++
+      "}"
 
   instance readBlockSpec :: ReadForeign BlockSpec where
     read = do
-      ty <- prop "blockType"
+      b <- prop "blockType"
       c <- prop "content"
       i <- prop "ident"
-      pure $ BlockSpec {blockType: ty, content: c, ident: BlockID i}
+      pure $ BlockSpec {blockType: b, content: c, ident: BlockID i}
+
+  instance showNotebookSpec :: Show NotebookSpec where
+    show (NotebookSpec ns) =
+      "{ \"blocks\": " ++ show (show <$> ns.blocks) ++
+      ", \"ident\": \"" ++ show ns.ident ++ "\"" ++
+      ", \"name\": \"" ++ ns.name ++ "\"" ++
+      "}"
 
   instance readNotebookSpec :: ReadForeign NotebookSpec where
     read = do
@@ -87,7 +98,7 @@ module SlamData.App.Notebook.Block.Common where
       n <- prop "name"
       pure $ NotebookSpec {ident: NotebookID i, blocks: BlockID <$> b, name: n}
 
-  eval ::forall attrs.
+  eval :: forall attrs.
     EventHandlerContext (f :: ReadRefsEff { editor :: Component attrs {value :: String} })
                         {}
                         BlockState
@@ -97,7 +108,7 @@ module SlamData.App.Notebook.Block.Common where
     state <- readState
     pure $ writeState state{edit = Eval, content = (getDOMNode refs.editor).value}
 
-  edit ::forall attrs.
+  edit :: forall attrs.
     EventHandlerContext (f :: ReadRefsEff { editor :: Component attrs {value :: String} }) -- Not sure why psc can't infer this with a type variable.
                         {}
                         BlockState
@@ -112,15 +123,3 @@ module SlamData.App.Notebook.Block.Common where
           [ D.div [D.className "large-1  columns"] firstCol
           , D.div [D.className "large-11 columns right-side"] secondCol
           ]
-
-  localBlocks :: [BlockSpec]
-  localBlocks =
-    maybe []
-          (parseJSON >>> either (const []) id)
-          (WS.getItem WS.localStorage "blocks")
-
-  localNotebooks :: [NotebookSpec]
-  localNotebooks =
-    maybe []
-          (parseJSON >>> either (const []) id)
-          (WS.getItem WS.localStorage "notebooks")
