@@ -53,7 +53,7 @@ module SlamData.App.Notebook.Block.Types where
   instance showBlockSpec :: Show BlockSpec where
     show (BlockSpec bs) =
       "{ \"blockType\": \"" ++ show bs.blockType ++ "\"" ++
-      ", \"content\": " ++ maybe "null" (\c -> "\"" ++ show c ++ "\"") bs.content ++
+      ", \"content\": " ++ maybe "null" handleString bs.content ++
       ", \"ident\": \"" ++ show bs.ident ++ "\"" ++
       "}"
 
@@ -63,3 +63,6 @@ module SlamData.App.Notebook.Block.Types where
       c <- prop "content"
       i <- prop "ident"
       pure $ BlockSpec {blockType: b, content: c, ident: BlockID i}
+
+  handleString "" = "\"\""
+  handleString s  = show s

@@ -1,22 +1,19 @@
-module SlamData.App.Notebook.Block
-  ( block
-  ) where
+module SlamData.App.Notebook.Block (block) where
 
+  import Control.Apply
   import Control.Monad.Eff
 
   import Data.Array
+  import Data.Foldable
+  import Data.Function
   import Data.Maybe
-  import Data.Tuple
 
   import React
-  import Showdown
 
   import SlamData.App.Notebook.Block.Common
   import SlamData.App.Notebook.Block.Markdown
   import SlamData.App.Notebook.Block.SQL
   import SlamData.App.Notebook.Block.Types
-  import SlamData.App.Panel
-  import SlamData.App.Panel.Tab
   import SlamData.Helpers
 
   import qualified React.DOM as D
@@ -24,28 +21,41 @@ module SlamData.App.Notebook.Block
 
   block :: forall eff state result. BlockProps eff state result -> UI
   block =
-    mkUI spec{getInitialState = pure {edit: Edit, content: ""}} do
+    mkUI spec{ getInitialState = pure {edit: Edit, content: ""}
+             , componentWillUpdate = mkFn2 cdu
+             , componentWillMount = cwm
+             } do
       state <- readState
       props <- getProps
-      let content = props.content `getOrElse` state.content
+      let content = state.content
       let ty = props.blockType
       pure $ D.div
         [D.className "block"]
         [ blockRow "block-toolbar toolbar" [blockType ty] [toolbar props]
-        , evalOrEdit state.edit props
+        , evalOrEdit state.edit props content
         ]
 
-  updateBlock :: BlockID
-              -> Maybe String
-              -> BlockType
-              -> [BlockSpec]
-              -> [BlockSpec]
-  updateBlock ident str ty bss =
-    let spec = BlockSpec {ident: ident, content: str, blockType: ty}
-        i = findIndex (\(BlockSpec bs) -> bs.ident == ident) bss
-    in if i >= 0
-    then updateAt i spec bss
-    else bss `snoc` spec
+  cwm = do
+    props <- getProps
+    state <- readState
+    pure $ writeState state{content = props.content `getOrElse` ""}
+    pure {}
+
+  cdu :: forall eff state result a
+      .  BlockProps eff state result
+      -> BlockState
+      -> Eff a {}
+  cdu props state =
+    let rec = BlockSpec {blockType: props.blockType, content: Just $ state2Content state, ident: props.ident}
+        blocks = localGet Blocks
+        go (BlockSpec bs) = if bs.ident == props.ident then rec else BlockSpec bs
+        blocks' = go <$> blocks
+    in (pure $ localSet Blocks blocks') *> pure {}
+
+  foreign import state2Content
+    "function state2Content(state) {\
+    \  return state.state.content;\
+    \}" :: BlockState -> String
 
   blockType :: BlockType -> UI
   blockType ty = D.div
@@ -74,10 +84,11 @@ module SlamData.App.Notebook.Block
   evalOrEdit :: forall eff state result
              .  Editor
              -> BlockProps eff state result
+             -> String
              -> UI
-  evalOrEdit Edit p = blockEditor (p.content `getOrElse` "")
-  evalOrEdit Eval p@{blockType=Markdown} = evalMarkdown (p.content `getOrElse` "")
-  evalOrEdit Eval p@{blockType=SQL}      = evalSQL p
+  evalOrEdit Edit p = blockEditor
+  evalOrEdit Eval p@{blockType=Markdown} = \s -> evalMarkdown s {}
+  evalOrEdit Eval p@{blockType=SQL}      = \s -> evalSQL (deferred edit) s p
 
   blockEditor :: String -> UI
   blockEditor content = blockRow "block-content" []
