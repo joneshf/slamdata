@@ -3,14 +3,15 @@ module SlamData.Helpers where
   import Control.Monad.Eff
 
   import Data.Either
+  import Data.Foldable
   import Data.Foreign
   import Data.Maybe
 
   import React
-  import React.DOM
 
-  import qualified Data.Array as A
   import qualified Browser.WebStorage as WS
+  import qualified Data.Array as A
+  import qualified React.DOM as D
 
   -- Random purescript stuff.
 
@@ -20,6 +21,13 @@ module SlamData.Helpers where
   getOrElse :: forall a. Maybe a -> a -> a
   getOrElse = flip fromMaybe
 
+  partition :: forall a. (a -> Boolean) -> [a] -> {fst :: [a], snd :: [a]}
+  partition p = foldr (select p) {fst: [], snd: []}
+
+  select :: forall a. (a -> Boolean) -> a -> {fst :: [a], snd :: [a]} -> {fst :: [a], snd :: [a]}
+  select p x o | p x = o{fst = x:o.fst}
+  select p x o       = o{snd = x:o.snd}
+
   -- SlamData specific stuff.
 
   actionButton :: forall eff props state result i. (Icon i)
@@ -28,29 +36,47 @@ module SlamData.Helpers where
                   , tooltip :: Prim.String
                   }
                -> UI
-  actionButton props = li'
-    [a
-        [ className "tiny secondary button has-tooltip"
-        , onClick \_ -> props.click
-        , titleProp props.tooltip
-        , dataSet {tooltip: ""}
+  actionButton props = D.li'
+    [D.a
+        [ D.className "tiny secondary button has-tooltip"
+        , D.onClick \_ -> props.click
+        , D.titleProp props.tooltip
+        , D.dataSet {tooltip: ""}
         ]
         [toUI props.icon]
     ]
 
-  localGet :: forall a. (ReadForeign a) => String -> [a]
+  -- At least we can try to catch spelling mistakes.
+  data LocalKey = Blocks
+                | Notebooks
+
+  instance eqLocalKey :: Eq LocalKey where
+    (==) Blocks    Blocks    = true
+    (==) Notebooks Notebooks = true
+    (==) _         _         = false
+
+    (/=) l         l'        = not (l == l')
+
+  instance showLocalKey :: Show LocalKey where
+    show Blocks    = "blocks"
+    show Notebooks = "notebooks"
+
+  localGet :: forall a. (ReadForeign a) => LocalKey -> [a]
   localGet key =
     maybe []
           (parseJSON >>> either (const []) id)
-          (WS.getItem WS.localStorage key)
+          (WS.getItem WS.localStorage $ show key)
+
+  localSet :: forall a. (Show a) => LocalKey -> a -> WS.LocalStorage
+  localSet key val = WS.setItem WS.localStorage (show key) (show val)
 
   -- | Foundation stuff.
   row :: [UI] -> UI
-  row uis = div [className "row"] uis
+  row uis = D.div [D.className "row"] uis
 
   large :: String -> UI -> UI
   large size ui =
-    div [className $ "large-" ++ size ++ " columns"] [ui]
+    D.div [D.className $ "large-" ++ size ++ " columns"] [ui]
 
   -- | FontAwesome stuff.
 
@@ -65,7 +91,7 @@ module SlamData.Helpers where
     toUI (FAIcon ui) = ui
 
   faIcon :: String -> FAIcon
-  faIcon name = FAIcon $ i [className name] []
+  faIcon name = FAIcon $ D.i [D.className name] []
 
   closeIcon :: {} -> FAIcon
   closeIcon {} = faIcon "fa fa-times"

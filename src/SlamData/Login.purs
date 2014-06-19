@@ -2,13 +2,14 @@ module SlamData.Login (loginForm) where
 
   import Control.Monad.Eff
 
-  import qualified Data.Array as A
   import Data.String
 
   import React
-  import React.DOM
 
   import SlamData.Helpers
+
+  import qualified Data.Array as A
+  import qualified React.DOM as D
 
   -- | Something to tell us if we've got a new user or an existing user.
   data NewOrExisting = New | Existing
@@ -27,16 +28,16 @@ module SlamData.Login (loginForm) where
   loginForm :: {} -> UI
   loginForm = mkUI spec {getInitialState = pure { newAccount: Existing }} do
     state <- readState
-    pure $ form []
-      [ fieldset []
-          [ legend [] [ text "Login to SlamData" ]
+    pure $ D.form []
+      [ D.fieldset []
+          [ D.legend [] [ D.text "Login to SlamData" ]
           , row [ large "6" $ newOrExisting { newAccount: state.newAccount
                                             , onChangeNew: handle changeNew
                                             }
                 , large "6" demo
                 ]
           , information { newAccount: state.newAccount }
-          , row [ large "6" $ div [] []
+          , row [ large "6" $ D.div [] []
                 , large "6" $ createOrLogin { newAccount: state.newAccount }
                 ]
           ]
@@ -46,17 +47,17 @@ module SlamData.Login (loginForm) where
   newOrExisting = mkUI spec do
     props <- getProps
     let radioWithLabel {labelText = l, value = v} =
-        p [] [ input [ typeProp "radio"
-                     , checked $ show $ props.newAccount == v
-                     , idProp $ show v
-                     , name "new-or-existing"
-                     , onChange $ newAccountChanged v
+        D.p [] [ D.input [ D.typeProp "radio"
+                     , D.checked $ show $ props.newAccount == v
+                     , D.idProp $ show v
+                     , D.name "new-or-existing"
+                     , D.onChange $ newAccountChanged v
                      ]
                      []
-             , label [ htmlFor $ show v ]
-                     [ text l ]
+             , D.label [ D.htmlFor $ show v ]
+                     [ D.text l ]
              ]
-    pure $ div []
+    pure $ D.div []
       [ radioWithLabel { labelText: "I have an existing account."
                        , value: Existing
                        }
@@ -71,18 +72,18 @@ module SlamData.Login (loginForm) where
 
   demo :: UI
   demo =
-    button [ className "right secondary" ]
-      [ text "Try Demo!" ]
+    D.button [ D.className "right secondary" ]
+      [ D.text "Try Demo!" ]
 
   information :: { newAccount :: NewOrExisting } -> UI
   information = mkUI spec do
     props <- getProps
     let info = if isNew props.newAccount then [alwaysInfo, newInfo] else [alwaysInfo]
-    pure $ div [] info
+    pure $ D.div [] info
 
   alwaysInfo :: UI
   alwaysInfo =
-    div []
+    D.div []
       [ row $ large "6" <$> [ validationText { label: "Email" }
                             , validationText { label: "Password" }
                             ]
@@ -90,7 +91,7 @@ module SlamData.Login (loginForm) where
 
   newInfo :: UI
   newInfo =
-    div []
+    D.div []
       [ row $ large "6" <$> [ validationText { label: "Name" }
                             , validationText { label: "Confirm Password" }
                             , validationText { label: "Company" }
@@ -101,11 +102,11 @@ module SlamData.Login (loginForm) where
   validationText :: { label :: String } -> UI
   validationText = mkUI spec do
     props <- getProps
-    pure $ div []
-      [ label [ htmlFor $ toLower props.label ]
-              [ text props.label ]
-      , input [ typeProp "text"
-              , idProp $ toLower props.label
+    pure $ D.div []
+      [ D.label [ D.htmlFor $ toLower props.label ]
+              [ D.text props.label ]
+      , D.input [ D.typeProp "text"
+              , D.idProp $ toLower props.label
               ]
               []
       ]
@@ -114,10 +115,10 @@ module SlamData.Login (loginForm) where
   createOrLogin = mkUI spec do
     props <- getProps
     let buttonText = if isNew props.newAccount then "Create Account" else "Login"
-    pure $ div []
-      [ div [] []
-      , button [ className "right" ]
-               [ text buttonText ]
+    pure $ D.div []
+      [ D.div [] []
+      , D.button [ D.className "right" ]
+               [ D.text buttonText ]
       ]
 
   -- | Helper functions.
