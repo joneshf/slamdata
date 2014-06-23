@@ -11,6 +11,7 @@ module SlamData.Helpers where
 
   import qualified Browser.WebStorage as WS
   import qualified Data.Array as A
+  import qualified Graphics.C3 as C3
   import qualified React.DOM as D
 
   -- Random purescript stuff.
@@ -28,7 +29,13 @@ module SlamData.Helpers where
   select p x o | p x = o{fst = x:o.fst}
   select p x o       = o{snd = x:o.snd}
 
+  guardMaybe :: forall a. Boolean -> Maybe a -> Maybe a
+  guardMaybe true  m = m
+  guardMaybe false _ = Nothing
+
   -- SlamData specific stuff.
+
+  serverURI = "http://localhost:8080"
 
   actionButton :: forall eff props state result i. (Icon i)
                => { click :: EventHandlerContext eff props state result
@@ -49,17 +56,20 @@ module SlamData.Helpers where
   -- At least we can try to catch spelling mistakes.
   data LocalKey = Blocks
                 | Notebooks
+                | EvalSQLBlocks
 
   instance eqLocalKey :: Eq LocalKey where
-    (==) Blocks    Blocks    = true
-    (==) Notebooks Notebooks = true
-    (==) _         _         = false
+    (==) Blocks        Blocks        = true
+    (==) Notebooks     Notebooks     = true
+    (==) EvalSQLBlocks EvalSQLBlocks = true
+    (==) _             _             = false
 
-    (/=) l         l'        = not (l == l')
+    (/=) l l' = not (l == l')
 
   instance showLocalKey :: Show LocalKey where
     show Blocks    = "blocks"
     show Notebooks = "notebooks"
+    show EvalSQLBlocks = "evalsqlblocks"
 
   localGet :: forall a. (ReadForeign a) => LocalKey -> [a]
   localGet key =
@@ -70,6 +80,17 @@ module SlamData.Helpers where
   localSet :: forall a. (Show a) => LocalKey -> a -> WS.LocalStorage
   localSet key val = WS.setItem WS.localStorage (show key) (show val)
 
+  type VisualType = C3.C3Type
+  visualBar :: VisualType
+  visualBar = C3.Bar
+  visualLine :: VisualType
+  visualLine = C3.Line
+  visualPie :: VisualType
+  visualPie = C3.Pie
+
+  type FileType = {name :: String, "type" :: String}
+  type FileSystemProps = {files :: [FileType]}
+
   -- | Foundation stuff.
   row :: [UI] -> UI
   row uis = D.div [D.className "row"] uis
@@ -78,7 +99,7 @@ module SlamData.Helpers where
   large size ui =
     D.div [D.className $ "large-" ++ size ++ " columns"] [ui]
 
-  -- | FontAwesome stuff.
+  -- | Icon stuff.
 
   -- Let's try and make the icons easily replaceable.
   -- Hopefully we can get it to the point where we can mix and match icons
@@ -90,11 +111,18 @@ module SlamData.Helpers where
   instance iconFA :: Icon FAIcon where
     toUI (FAIcon ui) = ui
 
+  data EntypoIcon = EntypoIcon UI
+  instance iconEntypo :: Icon EntypoIcon where
+    toUI (EntypoIcon ui) = ui
+
   faIcon :: String -> FAIcon
   faIcon name = FAIcon $ D.i [D.className name] []
+  entypoIcon :: String -> EntypoIcon
+  entypoIcon name = EntypoIcon $ D.i [D.className name] []
 
   closeIcon :: {} -> FAIcon
   closeIcon {} = faIcon "fa fa-times"
+  -- Notebook
   newIcon :: {} -> FAIcon
   newIcon {} = faIcon "fa fa-file"
   openIcon :: {} -> FAIcon
@@ -103,10 +131,14 @@ module SlamData.Helpers where
   saveIcon {} = faIcon "fa fa-save"
   publishIcon :: {} -> FAIcon
   publishIcon {} = faIcon "fa fa-book"
+  -- Blocks
   markdownIcon :: {} -> FAIcon
   markdownIcon {} = faIcon "fa fa-file-text"
   sqlIcon :: {} -> FAIcon
   sqlIcon {} = faIcon "fa fa-database"
+  visualIcon :: {} -> FAIcon
+  visualIcon {} = faIcon "fa fa-bar-chart-o"
+  -- FileSystem
   dirOpenIcon :: {} -> FAIcon
   dirOpenIcon {} = faIcon "fa fa-folder-open-o"
   dirClosedIcon :: {} -> FAIcon
@@ -117,6 +149,15 @@ module SlamData.Helpers where
   newNotebookIcon {} = faIcon "fa fa-plus"
   loadingIcon :: {} -> FAIcon
   loadingIcon {} = faIcon "fa fa-circle-o-notch fa-spin"
+
+  areaChartIcon :: {} -> EntypoIcon
+  areaChartIcon {} = entypoIcon "icon-chart-area"
+  barChartIcon :: {} -> EntypoIcon
+  barChartIcon {} = entypoIcon "icon-chart-bar"
+  lineChartIcon :: {} -> EntypoIcon
+  lineChartIcon {} = entypoIcon "icon-chart-line"
+  pieChartIcon :: {} -> EntypoIcon
+  pieChartIcon {} = entypoIcon "icon-chart-pie"
 
   -- TODO: Move these to purescript-react.
 

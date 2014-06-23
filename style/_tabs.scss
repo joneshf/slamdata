@@ -2,6 +2,8 @@
 .tabs {
     .tab a {
         border: 1px solid $slamdata-border-color;
+    }
+    &:not(.vertical) .tab a {
         border-bottom: 1px solid white;
         margin-right: -1px;
         span + i {
@@ -20,8 +22,23 @@
             }
         }
     }
-    .tab:not(.active) a {
+    &.vertical {
+        height: 100%;
+        margin-right: 0;
+        border-right: 1px solid $slamdata-border-color;
+        .tab {
+            margin-right: -1px;
+        }
+    }
+    &.vertical .tab a {
+        border-right: 1px solid white;
+        margin-bottom: -1px;
+    }
+    &:not(.vertical) .tab:not(.active) a {
         border-bottom: 1px solid $slamdata-border-color;
+    }
+    &.vertical .tab:not(.active) a {
+        border-right: 1px solid $slamdata-border-color;
     }
     #add-notebook {
       display: block;
@@ -47,6 +64,12 @@
         .toolbar.button-bar, .actual-content {
             margin-left: 10px;
         }
+    }
+    &.vertical {
+        border: 1px solid $slamdata-border-color;
+        border-left: none;
+        margin-top: 0;
+        margin-left: -1px;
     }
 }
 

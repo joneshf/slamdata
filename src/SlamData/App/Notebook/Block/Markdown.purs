@@ -8,7 +8,7 @@ module SlamData.App.Notebook.Block.Markdown (evalMarkdown) where
 
   import qualified React.DOM as D
 
-  evalMarkdown :: String ->{} -> UI
+  evalMarkdown :: String -> {} -> UI
   evalMarkdown content = mkUI spec do
     pure $ blockRow "block-content" []
       [D.div

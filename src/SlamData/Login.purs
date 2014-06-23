@@ -48,7 +48,7 @@ module SlamData.Login (loginForm) where
     props <- getProps
     let radioWithLabel {labelText = l, value = v} =
         D.p [] [ D.input [ D.typeProp "radio"
-                     , D.checked $ show $ props.newAccount == v
+                     , D.checked $ props.newAccount == v
                      , D.idProp $ show v
                      , D.name "new-or-existing"
                      , D.onChange $ newAccountChanged v

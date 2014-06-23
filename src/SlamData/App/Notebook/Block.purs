@@ -13,16 +13,18 @@ module SlamData.App.Notebook.Block (block) where
   import SlamData.App.Notebook.Block.Common
   import SlamData.App.Notebook.Block.Markdown
   import SlamData.App.Notebook.Block.SQL
+  import SlamData.App.Notebook.Block.Visual
   import SlamData.App.Notebook.Block.Types
   import SlamData.Helpers
 
+  import qualified Graphics.C3 as C3
   import qualified React.DOM as D
   import qualified Browser.WebStorage as WS
 
-  block :: forall eff state result. BlockProps eff state result -> UI
+  block :: forall eff state result extra. BlockProps eff state result extra -> UI
   block =
     mkUI spec{ getInitialState = pure {edit: Edit, content: ""}
-             , componentWillUpdate = mkFn2 cdu
+             , componentWillUpdate = mkFn2 cwu
              , componentWillMount = cwm
              } do
       state <- readState
@@ -41,11 +43,11 @@ module SlamData.App.Notebook.Block (block) where
     pure $ writeState state{content = props.content `getOrElse` ""}
     pure {}
 
-  cdu :: forall eff state result a
-      .  BlockProps eff state result
+  cwu :: forall eff state result a extra
+      .  BlockProps eff state result extra
       -> BlockState
       -> Eff a {}
-  cdu props state =
+  cwu props state =
     let rec = BlockSpec {blockType: props.blockType, content: Just $ state2Content state, ident: props.ident}
         blocks = localGet Blocks
         go (BlockSpec bs) = if bs.ident == props.ident then rec else BlockSpec bs
@@ -64,7 +66,9 @@ module SlamData.App.Notebook.Block (block) where
         [D.text $ show ty]
     ]
 
-  toolbar :: forall eff state result. BlockProps eff state result -> UI
+  toolbar :: forall eff state result extra
+          .  BlockProps eff state result extra
+          -> UI
   toolbar = mkUI spec do
     props <- getProps
     pure $ D.div
@@ -80,13 +84,15 @@ module SlamData.App.Notebook.Block (block) where
       where
         specificButtons Markdown = []
         specificButtons SQL      = []
+        specificButtons Visual   = []
 
-  evalOrEdit :: forall eff state result
+  evalOrEdit :: forall eff state result extra
              .  Editor
-             -> BlockProps eff state result
+             -> BlockProps eff state result extra
              -> String
              -> UI
-  evalOrEdit Edit p = blockEditor
+  evalOrEdit _    p@{blockType=Visual}   = \s -> evalVisual s (injectC3Options p)
+  evalOrEdit Edit p                      = blockEditor
   evalOrEdit Eval p@{blockType=Markdown} = \s -> evalMarkdown s {}
   evalOrEdit Eval p@{blockType=SQL}      = \s -> evalSQL (deferred edit) s p
 
@@ -105,6 +111,15 @@ module SlamData.App.Notebook.Block (block) where
                   []
       ]
     ]
+
+  injectC3Options o =
+    { blockType: o.blockType
+    , ident: o.ident
+    , index: o.index
+    , close: o.close
+    , content: o.content
+    , options: C3.options
+    }
 
   handleKeyPress k = do
     if (k.ctrlKey && k.keyCode == 13) || k.keyCode == 10

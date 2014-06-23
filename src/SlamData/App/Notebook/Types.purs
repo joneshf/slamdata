@@ -16,12 +16,40 @@ module SlamData.App.Notebook.Types where
                         , blocks :: [BlockID]
                         , ident :: NotebookID
                         }
-  type NotebookState = {notebooks :: [NotebookSpec], active :: Maybe NotebookID}
+  type NotebookState =
+    { notebooks :: [NotebookSpec]
+    , active :: Maybe NotebookID
+    , visualState :: VisualState
+    }
   type NotebookEvent eff =
     EventHandlerContext eff
                         {}
                         NotebookState
                         (ReactStateRW NotebookState NotebookState)
+
+  type VisualState =
+    { active :: VisualTab
+    , fields :: [VisualStateField]
+    , visualType :: VisualType
+    , visible :: Boolean
+    , visualData :: [VisualData]
+    }
+  type VisualStateField =
+    { dataSrc :: String
+    , allFields :: [String]
+    , selectedFields :: [String]
+    }
+  type VisualData =
+    { dataSrc :: String
+    , field :: String
+    }
+
+  data VisualTab = DataSrcTab | FieldsTab | VisualTypeTab
+
+  instance showVisualTab :: Show VisualTab where
+    show DataSrcTab    = "Data Source"
+    show FieldsTab     = "Fields"
+    show VisualTypeTab = "Type"
 
   instance eqNotebookID :: Eq NotebookID where
     (==) (NotebookID i) (NotebookID i') =      i == i'
@@ -43,3 +71,8 @@ module SlamData.App.Notebook.Types where
       i <- prop "ident"
       n <- prop "name"
       pure $ NotebookSpec {ident: NotebookID i, blocks: BlockID <$> b, name: n}
+
+  foreign import showVisualData
+    "function showVisualData(vd) {\
+    \  return JSON.stringify(vd);\
+    \}" :: VisualData -> String
