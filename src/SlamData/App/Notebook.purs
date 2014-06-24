@@ -96,7 +96,7 @@ module SlamData.App.Notebook (notebook) where
                               [D.className "chart-type small-block-grid-5"]
                               (visuals (deferred <<< changeVisual) vState.visualType)
                           , D.select
-                              [D.onChange \e -> let vState' = vState{visualData = [targetValue e]} in writeState state{visualState = vState'}]
+                              [D.onChange \e -> let vState' = vState{visualData = [targetValue e vState.visualType]} in writeState state{visualState = vState'}]
                               (optionify <$> vState.fields)
                           , D.div [D.className "actions"]
                               [ D.a
@@ -128,11 +128,17 @@ module SlamData.App.Notebook (notebook) where
 
   foreign import targetValue
     "function targetValue(e) {\
-    \  return {\
-    \    dataSrc: e.target.selectedOptions[0].parentNode.label,\
-    \    field: e.target.value\
+    \  return function(ty) {\
+    \    return {\
+    \      dataSrc: e.target.selectedOptions[0].parentNode.label,\
+    \      field: e.target.value,\
+    \      visualType: showVisualType_(ty)\
+    \    }\
     \  }\
-    \}" :: forall a. a -> VisualData
+    \}" :: forall a. a -> VisualType -> VisualData
+
+  showVisualType_ :: VisualType -> String
+  showVisualType_ ty = show ty
 
   _type o = o."type"
   _dataSrc o = o.dataSrc

@@ -30,9 +30,9 @@ module SlamData.App.Notebook.Block.Visual (evalVisual) where
 
   foreign import cdm
     "function cdm() {\
-    \  var defaultJson = '{\"dataSrc\": \"\", \"field\": \"\"}';\
+    \  var defaultJson = '{\"dataSrc\": \"\", \"field\": \"\", \"visualType\": \"\"}';\
     \  var content = JSON.parse(getOrElse_(this.props.content)(defaultJson));\
-    \  var opts = newOptions(this.props.ident)(content.field);\
+    \  var opts = newOptions(this.props.ident)(content.field)(parseVisualType(content.visualType));\
     \  var chart = generate_(opts)();\
     \  var data = [];\
     \  oboe(serverURI_ + '/data/fs/' + content.dataSrc)\
@@ -42,11 +42,16 @@ module SlamData.App.Notebook.Block.Visual (evalVisual) where
     \    });\
     \}" :: forall a. a
 
-  newOptions :: BlockID -> String -> C3.Options
-  newOptions ident name = C3.options
+  newOptions :: BlockID -> String -> VisualType -> C3.Options
+  newOptions ident name ty = C3.options
     { bindto= "#chart-" ++ show ident
-    , c3Data= [C3.c3Data{name= name}]
+    , c3Data= [C3.c3Data{name= name, c3Type= ty}]
     }
+
+  parseVisualType "bar" = C3.Bar
+  parseVisualType "line" = C3.Line
+  parseVisualType "pie" = C3.Pie
+  parseVisualType _ = C3.Bar
 
   pieSlice o = {name: o.city, c3Type: C3.Pie, values: [o.pop]}
 

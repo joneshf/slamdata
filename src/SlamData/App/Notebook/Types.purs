@@ -42,6 +42,7 @@ module SlamData.App.Notebook.Types where
   type VisualData =
     { dataSrc :: String
     , field :: String
+    , visualType :: VisualType
     }
 
   data VisualTab = DataSrcTab | FieldsTab | VisualTypeTab
