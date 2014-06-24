@@ -7128,6 +7128,11 @@ html, body {
 #content {
   height: 100%; }
 
+nav.top-bar .right {
+  margin: 5px 15px; }
+  nav.top-bar .right img {
+    height: 30px; }
+
 #workspace {
   bottom: 0;
   position: absolute;

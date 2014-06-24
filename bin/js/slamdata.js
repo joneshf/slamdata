@@ -9363,7 +9363,7 @@ return jQuery;
 
         // configuration for no plot-able data supplied.
         var __data_empty_label_text = getConfig(['data', 'empty', 'label', 'text'], "");
-
+        
         // subchart
         var __subchart_show = getConfig(['subchart', 'show'], false),
             __subchart_size_height = getConfig(['subchart', 'size', 'height'], 60);
@@ -60770,7 +60770,7 @@ PS.SlamData_App_Menu = (function () {
     var menu = React_DOM.nav([ React_DOM.ClassName("top-bar"), React_DOM.Data({
         options: "is_hover: false", 
         topbar: true
-    }) ])([ React_DOM.ul([ React_DOM.ClassName("title-area") ])([ React_DOM["li'"]([  ]) ]), React_DOM.section([ React_DOM.ClassName("top-bar-section") ])([ React_DOM.ul([ React_DOM.ClassName("left") ])([ fileMenu, command("divider"), editMenu, command("divider"), helpMenu, command("divider") ]) ]) ]);
+    }) ])([ React_DOM.ul([ React_DOM.ClassName("title-area") ])([ React_DOM["li'"]([  ]) ]), React_DOM.section([ React_DOM.ClassName("top-bar-section") ])([ React_DOM.ul([ React_DOM.ClassName("left") ])([ fileMenu, command("divider"), editMenu, command("divider"), helpMenu, command("divider") ]), React_DOM.ul([ React_DOM.className("right") ])([ React_DOM["li'"]([ React_DOM.img([ React_DOM.src("imgs/slamdata-logo.png") ])([  ]) ]) ]) ]) ]);
     return {
         menu: menu
     };

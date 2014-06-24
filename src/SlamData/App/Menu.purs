@@ -24,6 +24,9 @@ module SlamData.App.Menu (menu) where
                   , helpMenu
                   , command "divider"
                   ]
+              , D.ul
+                  [D.className "right"]
+                  [D.li' [D.img [D.src "imgs/slamdata-logo.png"] []]]
               ]
           ]
 

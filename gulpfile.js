@@ -15,10 +15,12 @@ paths = {
     dest: 'js',
     style: 'style/**/*.scss',
     css: 'css',
+    imgs: 'imgs/*',
     build: {
         css: 'bin/css',
         fonts: 'bin/fonts',
         index: 'bin',
+        imgs: 'bin/imgs',
         js: 'bin/js'
     },
     concat: {
@@ -128,6 +130,11 @@ gulp.task('entypo', function() {
       .pipe(gulp.dest(paths.build.css));
 });
 
-gulp.task('build', ['compile', 'concat', 'fonts', 'entypo']);
+gulp.task('imgs', function() {
+    return gulp.src(paths.imgs)
+      .pipe(gulp.dest(paths.build.imgs));
+});
+
+gulp.task('build', ['compile', 'concat', 'fonts', 'entypo', 'imgs']);
 gulp.task('concat', ['concat-js', 'concat-css']);
 gulp.task('default', ['compile', 'sass']);
