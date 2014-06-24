@@ -1,0 +1,87 @@
+// Add borders to Foundation 5's tabs.
+.tabs {
+    .tab a {
+        border: 1px solid $slamdata-border-color;
+    }
+    &:not(.vertical) .tab a {
+        border-bottom: 1px solid white;
+        margin-right: -1px;
+        span + i {
+            margin: {
+                left: $tabs-navigation-padding;
+                right: 0;
+                top: 0;
+                bottom: 0;
+            }
+            text-align: center;
+            width: 18px;
+            &:hover {
+                @extend .label.alert;
+                @extend .label.round;
+                background-color: $slamdata-orange;
+            }
+        }
+    }
+    &.vertical {
+        height: 100%;
+        margin-right: 0;
+        border-right: 1px solid $slamdata-border-color;
+        .tab {
+            margin-right: -1px;
+        }
+    }
+    &.vertical .tab a {
+        border-right: 1px solid white;
+        margin-bottom: -1px;
+    }
+    &:not(.vertical) .tab:not(.active) a {
+        border-bottom: 1px solid $slamdata-border-color;
+    }
+    &.vertical .tab:not(.active) a {
+        border-right: 1px solid $slamdata-border-color;
+    }
+    #add-notebook {
+      display: block;
+      background: $tabs-navigation-bg-color;
+      color: $tabs-navigation-font-color;
+      padding: $tabs-navigation-padding $tabs-navigation-padding * 2;
+      font-family: $tabs-navigation-font-family;
+      font-size: $tabs-navigation-font-size;
+      &:hover { background: $tabs-navigation-hover-bg-color; }
+    }
+}
+
+.tabs-content {
+    border-top: 1px solid $slamdata-border-color;
+    margin-top: -1px;
+    padding: 10px 0;
+    .content {
+        padding: 0;
+        hr {
+            border-color: $slamdata-border-color;
+            margin: 10px 0;
+        }
+        .toolbar.button-bar, .actual-content {
+            margin-left: 10px;
+        }
+    }
+    &.vertical {
+        border: 1px solid $slamdata-border-color;
+        border-left: none;
+        margin-top: 0;
+        margin-left: -1px;
+    }
+}
+
+.toolbar {
+    .button {
+        margin-bottom: 0;
+    }
+    ul, ol, dl {
+        line-height: 1;
+    }
+}
+
+.button-group:last-of-type {
+    margin-right: 0;
+}

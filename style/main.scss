@@ -18,6 +18,11 @@ $slamdata-border-color: #d3d3d3;
 $workspace-extra-height: 0;
 $slamdata-orange: rgb(255, 128, 0);
 
+// Import our stuff.
+@import "filesystem.scss";
+@import "notebook.scss";
+@import "tabs.scss";
+
 html, body {
     background-color: #f9f9f9;
     height: 100%;
@@ -72,144 +77,5 @@ html, body {
     overflow: auto;
     .row {
         margin: 0 auto;
-    }
-}
-
-// Add borders to Foundation 5's tabs.
-.tabs {
-    .tab a {
-        border: 1px solid $slamdata-border-color;
-        border-bottom: 1px solid white;
-        margin-right: -1px;
-        span + i {
-            margin: {
-                left: $tabs-navigation-padding;
-                right: 0;
-                top: 0;
-                bottom: 0;
-            }
-            text-align: center;
-            width: 18px;
-            &:hover {
-                @extend .label.alert;
-                @extend .label.round;
-                background-color: $slamdata-orange;
-            }
-        }
-    }
-    .tab:not(.active) a {
-        border-bottom: 1px solid $slamdata-border-color;
-    }
-    #add-notebook {
-      display: block;
-      background: $tabs-navigation-bg-color;
-      color: $tabs-navigation-font-color;
-      padding: $tabs-navigation-padding $tabs-navigation-padding * 2;
-      font-family: $tabs-navigation-font-family;
-      font-size: $tabs-navigation-font-size;
-      &:hover { background: $tabs-navigation-hover-bg-color; }
-    }
-}
-
-.tabs-content {
-    border-top: 1px solid $slamdata-border-color;
-    margin-top: -1px;
-    padding: 10px 0;
-    .content {
-        padding: 0;
-        hr {
-            border-color: $slamdata-border-color;
-            margin: 10px 0;
-        }
-        .toolbar.button-bar, .actual-content {
-            margin-left: 10px;
-        }
-    }
-}
-
-.toolbar {
-    .button {
-        margin-bottom: 0;
-    }
-    ul, ol, dl {
-        line-height: 1;
-    }
-}
-
-.button-group:last-of-type {
-    margin-right: 0;
-}
-
-.block {
-    border: 1px solid $slamdata-border-color;
-    .right-side {
-        border-left: 1px solid $slamdata-border-color;
-    }
-}
-
-.block-toolbar {
-    div {
-        height: 100%;
-    }
-    &.row {
-        border-bottom: 1px solid $slamdata-border-color;
-    }
-    .button-bar .button {
-        margin-bottom: 0;
-    }
-}
-
-.block-type {
-    span {
-        font-size: 14pt;
-        line-height: 1;
-    }
-}
-
-.block-content {
-    textarea {
-        margin-bottom: 0;
-    }
-    &.row > div {
-        bottom: 0;
-    }
-}
-
-.block-editor {
-    min-height: 150px;
-}
-
-.evaled-block {
-    border: 1px solid transparent;
-    padding: rem-calc(20);
-    &:hover {
-        @include panel($bg: #e6e6e6);
-        margin: 0;
-        h1, h2, h3, h4, h5, h6 {
-            line-height: $header-line-height;
-            margin-bottom: $header-bottom-margin;
-        }
-    }
-}
-
-#filesystem {
-    .actual-content > ul {
-        margin-left: 0;
-        i {
-            padding-left: 10px;
-        }
-        span {
-            padding: 5px;
-        }
-        .selected i, .selected span {
-            font-weight: bold;
-        }
-        &, ul {
-            list-style-type: none;
-            margin-bottom: 0;
-            li {
-                margin-left: 15px;
-            }
-        }
     }
 }

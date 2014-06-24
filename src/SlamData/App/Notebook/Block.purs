@@ -1,80 +1,81 @@
-module SlamData.App.Notebook.Block
-  ( block
-  ) where
+module SlamData.App.Notebook.Block (block) where
 
+  import Control.Apply
   import Control.Monad.Eff
 
   import Data.Array
+  import Data.Foldable
+  import Data.Function
   import Data.Maybe
-  import Data.Tuple
 
   import React
-  import Showdown
 
-  import SlamData.Helpers
   import SlamData.App.Notebook.Block.Common
   import SlamData.App.Notebook.Block.Markdown
   import SlamData.App.Notebook.Block.SQL
-  import SlamData.App.Panel
-  import SlamData.App.Panel.Tab
+  import SlamData.App.Notebook.Block.Visual
+  import SlamData.App.Notebook.Block.Types
+  import SlamData.Helpers
 
+  import qualified Graphics.C3 as C3
   import qualified React.DOM as D
   import qualified Browser.WebStorage as WS
 
-  block :: forall eff state result. BlockProps eff state result -> UI
+  block :: forall eff state result extra. BlockProps eff state result extra -> UI
   block =
     mkUI spec{ getInitialState = pure {edit: Edit, content: ""}
-             , componentWillReceiveProps = cwrp {-\_ -> do
-                state <- readState
-                pure $ WS.setItem WS.localStorage "blocks" state
-                pure {}-}
+             , componentWillUpdate = mkFn2 cwu
+             , componentWillMount = cwm
              } do
       state <- readState
       props <- getProps
-      let content = maybe state.content id props.content
+      let content = state.content
       let ty = props.blockType
       pure $ D.div
         [D.className "block"]
         [ blockRow "block-toolbar toolbar" [blockType ty] [toolbar props]
-        , blockRow "block-content" [] [evalOrEdit state.edit ty content]
+        , evalOrEdit state.edit props content
         ]
 
-  foreign import cwrp
-    "function cwrp(props) {\
-    \  var blocks = SlamData_App_Notebook_Block_Common.localBlocks;\
-    \  var newBlocks = updateBlock(props.ident)(props.content)(props.blockType)(blocks);\
-    \  var stringified = Data_Array.map(Prelude.show(SlamData_App_Notebook_Block_Common.showBlockSpec({})))(newBlocks);\
-    \  return localStorage.setItem('blocks', stringified);\
-    \}" :: forall a b. a -> b
+  cwm = do
+    props <- getProps
+    state <- readState
+    pure $ writeState state{content = props.content `getOrElse` ""}
+    pure {}
 
-  updateBlock :: BlockID -> Maybe String -> BlockType -> [BlockSpec] -> [BlockSpec]
-  updateBlock ident str ty bss =
-    let spec = BlockSpec {ident: ident, content: str, blockType: ty}
-        i = findIndex (\(BlockSpec bs) -> bs.ident == ident) bss
-    in if i >= 0
-    then updateAt i (spec) bss
-    else bss `snoc` spec
+  cwu :: forall eff state result a extra
+      .  BlockProps eff state result extra
+      -> BlockState
+      -> Eff a {}
+  cwu props state =
+    let rec = BlockSpec {blockType: props.blockType, content: Just $ state2Content state, ident: props.ident}
+        blocks = localGet Blocks
+        go (BlockSpec bs) = if bs.ident == props.ident then rec else BlockSpec bs
+        blocks' = go <$> blocks
+    in (pure $ localSet Blocks blocks') *> pure {}
 
-  blockRow :: String -> [UI] -> [UI] -> UI
-  blockRow styles firstCol secondCol =
-    D.div [D.className $ styles ++ " row"]
-          [ D.div [D.className "large-1  columns"] firstCol
-          , D.div [D.className "large-11 columns right-side"] secondCol
-          ]
+  foreign import state2Content
+    "function state2Content(state) {\
+    \  return state.state.content;\
+    \}" :: BlockState -> String
 
   blockType :: BlockType -> UI
-  blockType ty = D.div [D.className "block-type text-center"]
-    [ D.span [D.className ""]
+  blockType ty = D.div
+    [D.className "block-type text-center"]
+    [D.span [D.className ""]
         [D.text $ show ty]
     ]
 
-  toolbar :: forall eff state result. BlockProps eff state result -> UI
+  toolbar :: forall eff state result extra
+          .  BlockProps eff state result extra
+          -> UI
   toolbar = mkUI spec do
     props <- getProps
-    pure $ D.div [ D.className "button-bar" ]
-      [ D.ul [ D.className "left button-group" ] (specificButtons props.blockType)
-      , D.ul [ D.className "right button-group" ]
-             [ actionButton { tooltip: "Close"
+    pure $ D.div
+      [ D.className "button-bar" ]
+      [ D.ul [D.className "left button-group"] (specificButtons props.blockType)
+      , D.ul [D.className "right button-group"]
+             [actionButton  { tooltip: "Close"
                             , icon: closeIcon {}
                             , click: props.close
                             }
@@ -83,30 +84,44 @@ module SlamData.App.Notebook.Block
       where
         specificButtons Markdown = []
         specificButtons SQL      = []
+        specificButtons Visual   = []
 
-  evalOrEdit :: Editor -> BlockType -> String -> UI
-  evalOrEdit Edit _ = blockEditor
-  evalOrEdit Eval Markdown = evalMarkdown
-  evalOrEdit Eval SQL      = evalSQL
+  evalOrEdit :: forall eff state result extra
+             .  Editor
+             -> BlockProps eff state result extra
+             -> String
+             -> UI
+  evalOrEdit _    p@{blockType=Visual}   = \s -> evalVisual s (injectC3Options p)
+  evalOrEdit Edit p                      = blockEditor
+  evalOrEdit Eval p@{blockType=Markdown} = \s -> evalMarkdown s {}
+  evalOrEdit Eval p@{blockType=SQL}      = \s -> evalSQL (deferred edit) s p
 
   blockEditor :: String -> UI
-  blockEditor content = D.div'
-    [ D.textarea [ D.autoFocus "true"
-                 , D.className "block-editor"
-                 , D.onBlur \_ -> eval
-                 , D.onChange $ \e -> do
-                    pure $ writeState {edit: Edit, content: e.target.value}
-                 , D.onKeyPress handleKeyPress
-                 , D.ref "editor"
-                 , D.value content
-                 ]
-                 []
+  blockEditor content = blockRow "block-content" []
+    [D.div'
+      [D.textarea [ D.autoFocus "true"
+                  , D.className "block-editor"
+                  , D.onBlur \_ -> eval
+                  , D.onChange $ \e -> do
+                      pure $ writeState {edit: Edit, content: e.target.value}
+                  , D.onKeyPress handleKeyPress
+                  , D.ref "editor"
+                  , D.value content
+                  ]
+                  []
+      ]
     ]
+
+  injectC3Options o =
+    { blockType: o.blockType
+    , ident: o.ident
+    , index: o.index
+    , close: o.close
+    , content: o.content
+    , options: C3.options
+    }
 
   handleKeyPress k = do
     if (k.ctrlKey && k.keyCode == 13) || k.keyCode == 10
       then eval
       else edit
-
-  updateStorage state =
-    WS.setItem WS.localStorage "blocks" state

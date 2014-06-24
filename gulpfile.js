@@ -21,18 +21,34 @@ paths = {
         index: 'bin',
         js: 'bin/js'
     },
-    concat: [
-        'bower_components/modernizr/modernizr.js',
-        'bower_components/showdown/src/showdown.js',
-        'bower_components/react/react-with-addons.js',
-        'bower_components/jquery/dist/jquery.js',
-        'bower_components/fastclick/lib/fastclick.js',
-        'bower_components/foundation/js/foundation.js',
-        'js/slamdata.js'
-    ],
-    fontawesome: {
-        css: 'bower_components/fontawesome/css/font-awesome.css',
-        fonts: 'bower_components/fontawesome/fonts/*'
+    concat: {
+        js: [
+            'bower_components/jquery/dist/jquery.js',
+            'bower_components/c3/c3.js',
+            'bower_components/d3/d3.js',
+            'bower_components/fastclick/lib/fastclick.js',
+            'bower_components/foundation/js/foundation.js',
+            'bower_components/modernizr/modernizr.js',
+            'bower_components/node-uuid/uuid.js',
+            'bower_components/oboe/dist/oboe-browser.js',
+            'bower_components/react/react-with-addons.js',
+            'bower_components/showdown/src/showdown.js',
+            'js/slamdata.js'
+        ],
+        css: [
+            'bower_components/c3/c3.css',
+            'bower_components/entypo/font/entypo.css',
+            'bower_components/fontawesome/css/font-awesome.css'
+        ],
+        fonts: [
+            'bower_components/fontawesome/fonts/*'
+        ],
+        entypo: [
+            'bower_components/entypo/font/entypo.eot',
+            'bower_components/entypo/font/entypo.svg',
+            'bower_components/entypo/font/entypo.ttf',
+            'bower_components/entypo/font/entypo.woff'
+        ]
     }
 }
 
@@ -87,13 +103,13 @@ gulp.task('watch', function() {
 
 
 gulp.task('concat-js', function() {
-    return gulp.src(paths.concat)
+    return gulp.src(paths.concat.js)
       .pipe(concat(options.build.js))
       .pipe(gulp.dest(paths.build.js));
 });
 
 gulp.task('concat-css', function(){
-    var fa = gulp.src(paths.fontawesome.css);
+    var fa = gulp.src(paths.concat.css);
     var styles = gulp.src(paths.style)
         .pipe(sass());
 
@@ -103,10 +119,15 @@ gulp.task('concat-css', function(){
 });
 
 gulp.task('fonts', function() {
-    return gulp.src(paths.fontawesome.fonts)
+    return gulp.src(paths.concat.fonts)
       .pipe(gulp.dest(paths.build.fonts));
 });
 
-gulp.task('build', ['compile', 'concat', 'fonts']);
+gulp.task('entypo', function() {
+    return gulp.src(paths.concat.entypo)
+      .pipe(gulp.dest(paths.build.css));
+});
+
+gulp.task('build', ['compile', 'concat', 'fonts', 'entypo']);
 gulp.task('concat', ['concat-js', 'concat-css']);
-gulp.task('default', ['compile', 'sass', 'watch']);
+gulp.task('default', ['compile', 'sass']);

@@ -33,18 +33,6 @@ module SlamData.App.Panel.Tab
     , ident :: UUID
     }
 
-  -- tab :: TabSpec -> Tab
-  -- tab props =
-  --   let tabName = makeTabName props
-  --       cont = makeCont props
-  --   in Tab { name: tabName
-  --          , toolbar: { external: props.external
-  --                     , internal: props.internal
-  --                     }
-  --          , content: cont
-  --          , active: props.active
-  --          }
-
   makeTabName :: forall p eff state result.
     { name :: String
     , active :: Boolean

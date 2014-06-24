@@ -10,5 +10,5 @@ module SlamData.App (app) where
   app :: UI
   app = D.div'
     [ menu
-    , workspace
+    , workspace {}
     ]
