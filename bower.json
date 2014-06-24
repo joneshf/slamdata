@@ -39,6 +39,8 @@
     "purescript-oboe": "~0.2.0",
     "c3": "~0.2.4",
     "d3": "~3.4.8",
-    "entypo": "*"
+    "entypo": "*",
+    "purescript-c3": "~0.1.0",
+    "purescript-http": "~0.1.1"
   }
 }
