@@ -23,10 +23,10 @@
   "homepage": "https://github.com/slamdata/slamdata",
   "devDependencies": {
     "event-stream": "^3.1.5",
-    "gulp": "^3.6.2",
+    "gulp": "^3.8.5",
     "gulp-clean": "^0.2.4",
     "gulp-concat": "^2.2.0",
-    "gulp-purescript": "0.0.7",
+    "gulp-purescript": "0.0.8",
     "gulp-sass": "^0.7.1"
   }
 }

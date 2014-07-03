@@ -135,6 +135,10 @@ gulp.task('imgs', function() {
       .pipe(gulp.dest(paths.build.imgs));
 });
 
+gulp.task('test', ['build'], function() {
+    // Placeholder for test task.
+});
+
 gulp.task('build', ['compile', 'concat', 'fonts', 'entypo', 'imgs']);
 gulp.task('concat', ['concat-js', 'concat-css']);
 gulp.task('default', ['compile', 'sass']);

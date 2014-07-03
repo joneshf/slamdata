@@ -29,11 +29,10 @@
     "purescript-arrays": "~0.1.4",
     "purescript-tuples": "~0.1.1",
     "purescript-monoid": "0.1.0",
-    "purescript-showdown": "https://github.com/joneshf/purescript-showdown.git",
     "showdown": "~0.3.1",
     "fontawesome": "~4.1.0",
     "purescript-foldable-traversable": "~0.1.1",
-    "purescript-webstorage": "~0.0.1",
+    "purescript-webstorage": "~0.1.0",
     "purescript-foreign": "~0.1.2",
     "purescript-node-uuid": "~0.1.0",
     "purescript-oboe": "~0.2.0",
@@ -41,6 +40,7 @@
     "d3": "~3.4.8",
     "entypo": "*",
     "purescript-c3": "~0.1.0",
-    "purescript-http": "~0.1.1"
+    "purescript-http": "~0.1.1",
+    "purescript-showdown": "~0.0.1"
   }
 }
