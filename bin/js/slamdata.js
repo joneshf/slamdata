@@ -64854,7 +64854,7 @@ PS.Browser_WebStorage = (function () {
     function unsafeSetItem(storage) {  return function(str) {    return function(val) {      storage.setItem(str, val);      return storage;    }  }};
     function unsafeRemoveItem(storage) {  return function(str) {    storage.removeItem(str);    return storage;  }};
     function unsafeClear(storage) {  storage.clear();  return storage;};
-    function null2Maybe(n) {  return n == null ? Data_Maybe.Nothing : Data_Maybe.Just(n);};
+    function null2Maybe(n) {  return n == null ? nothing : just(n);};
     var storageSessionStorage = function (_) {
         return {
             "__superclasses": {}, 
@@ -64907,16 +64907,17 @@ PS.Browser_WebStorage = (function () {
     var removeItem = function (dict) {
         return dict.removeItem;
     };
+    var nothing = Data_Maybe.Nothing;
     var length = function (dict) {
         return dict.length;
     };
     var key = function (dict) {
         return dict.key;
     };
+    var just = Data_Maybe.Just;
     var getItem = function (dict) {
         return dict.getItem;
     };
-    var foo = Data_Maybe.Nothing;
     var clear = function (dict) {
         return dict.clear;
     };
@@ -65487,7 +65488,7 @@ PS.SlamData_App_Notebook_Block_SQL = (function () {
     var Data_Function = PS.Data_Function;
     var SlamData_App_Notebook_Block_Common = PS.SlamData_App_Notebook_Block_Common;
     function cwm() {  extendState.call(this, {status: loading});  if (isJust_(this.state.state.location)) {    cdm.call(this, fromJust_(this.state.state.location));  } else {    runQuery.call(this, this.state.state.content);  }};
-    function cdm(location) {  var xhr = new XMLHttpRequest();  xhr.onerror = function() {    extendState.call(this, {status: err('Problem loading query')});  }.bind(this);  xhr.onload = function() {    extendState.call(this, {status: successful(xhr.responseText)});  }.bind(this);  xhr.open('GET', 'http://localhost:8080/data/fs/'+location);  xhr.send(null);};
+    function cdm(location) {  var xhr = new XMLHttpRequest();  xhr.onerror = function() {    extendState.call(this, {status: err('Problem loading query')});  }.bind(this);  xhr.onload = function() {    extendState.call(this, {status: successful(xhr.responseText)});  }.bind(this);  xhr.open('GET', 'http://localhost:8080/data/fs/'+location+'?limit='+pagingLimit);  xhr.send(null);};
     function runQuery(query) {  var id = newID();  $.ajax({    type: 'POST',    url: 'http://localhost:8080/query/fs/?out='+showBlockID(id),    data: query,    dataType: 'json',    success: function(data, status, jqXHR) {      /* Parse the location out of the response. */      var location = data.out;      extendState.call(this, {location: just(location)});      saveLocal(this.props)(this.state.state);      cdm.call(this, location);    }.bind(this),    error: function() {      extendState.call(this, {status: err('Could not create query')});    }.bind(this)  });};
     function extendState(neu) {  return this.setState({state: extend(this.state.state)(neu)});};
     function extend(old) {  return function(neu) {    return copy(neu)(copy(old)({}));  }};
@@ -65514,6 +65515,7 @@ PS.SlamData_App_Notebook_Block_SQL = (function () {
             return Control_Apply["*>"](Control_Monad_Eff.applyEff({}))(Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_Helpers.localSet(Prelude.showArray(SlamData_App_Notebook_Block_Types.showEvalSQLSpec({})))(SlamData_Helpers.EvalSQLBlocks)(blocks$prime$prime)))(Prelude.pure(Control_Monad_Eff.applicativeEff({}))({}));
         };
     };
+    var pagingLimit = 20;
     var newID = function (_456) {
         return SlamData_App_Notebook_Block_Types.BlockID(Data_UUID.runUUID(Data_UUID.v4));
     };

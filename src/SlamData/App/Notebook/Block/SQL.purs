@@ -103,6 +103,8 @@ module SlamData.App.Notebook.Block.SQL (evalSQL) where
   fromJust_ = fromJust
   newID _ = BlockID $ runUUID v4
 
+  pagingLimit = 20
+
   foreign import cwm
     "function cwm() {\
     \  extendState.call(this, {status: loading});\
@@ -127,7 +129,7 @@ module SlamData.App.Notebook.Block.SQL (evalSQL) where
     \  xhr.onload = function() {\
     \    extendState.call(this, {status: successful(xhr.responseText)});\
     \  }.bind(this);\
-    \  xhr.open('GET', 'http://localhost:8080/data/fs/'+location);\
+    \  xhr.open('GET', 'http://localhost:8080/data/fs/'+location+'?limit='+pagingLimit);\
     \  xhr.send(null);\
     \}" :: forall a. a
 
