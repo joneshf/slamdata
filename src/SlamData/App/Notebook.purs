@@ -179,7 +179,9 @@ module SlamData.App.Notebook (notebook) where
     \            state.visualState.fields[i].allFields = Object.keys(json);\
     \          }\
     \        });\
-    \        that.setState(state);\
+    \        if (that.isMounted()) {\
+    \          that.setState(state);\
+    \        }\
     \      });\
     \    });\
     \}" :: forall a. a

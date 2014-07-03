@@ -122,10 +122,14 @@ module SlamData.App.Notebook.Block.SQL (evalSQL) where
     "function cdm(location) {\
     \  var xhr = new XMLHttpRequest();\
     \  xhr.onerror = function() {\
-    \    extendState.call(this, {status: err('Problem loading query')});\
+    \    if (this.isMounted()) {\
+    \      extendState.call(this, {status: err('Problem loading query')});\
+    \    }\
     \  }.bind(this);\
     \  xhr.onload = function() {\
-    \    extendState.call(this, {status: successful(xhr.responseText)});\
+    \    if (this.isMounted()) {\
+    \      extendState.call(this, {status: successful(xhr.responseText)});\
+    \    }\
     \  }.bind(this);\
     \  xhr.open('GET', 'http://localhost:8080/data/fs/'+location);\
     \  xhr.send(null);\
@@ -142,12 +146,16 @@ module SlamData.App.Notebook.Block.SQL (evalSQL) where
     \    success: function(data, status, jqXHR) {\
     \      /* Parse the location out of the response. */\
     \      var location = data.out;\
-    \      extendState.call(this, {location: just(location)});\
+    \      if (this.isMounted()) {\
+    \        extendState.call(this, {location: just(location)});\
+    \      }\
     \      saveLocal(this.props)(this.state.state);\
     \      cdm.call(this, location);\
     \    }.bind(this),\
     \    error: function() {\
-    \      extendState.call(this, {status: err('Could not create query')});\
+    \      if (this.isMounted()) {\
+    \        extendState.call(this, {status: err('Could not create query')});\
+    \      }\
     \    }.bind(this)\
     \  });\
     \}" :: forall a. a

@@ -40,6 +40,8 @@ module SlamData.App.Workspace (workspace) where
     "function cwm() {\
     \ oboe(serverURI_ + '/metadata/fs/')\
     \   .done(function(json) {\
-    \     this.setState({state: {files: json.children}})\
+    \     if (this.isMounted()) {\
+    \       this.setState({state: {files: json.children}})\
+    \     }\
     \   }.bind(this));\
     \}" :: forall a. a
