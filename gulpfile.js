@@ -1,9 +1,9 @@
 var gulp = require('gulp')
   , clean = require('gulp-clean')
   , concat = require('gulp-concat')
+  , es = require('event-stream')
   , purescript = require('gulp-purescript')
   , sass = require('gulp-sass')
-  , es = require('event-stream')
   ;
 
 paths = {
