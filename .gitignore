@@ -4,3 +4,5 @@ bower_components
 js
 css
 node_modules
+cache
+dist

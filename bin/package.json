@@ -1,0 +1,12 @@
+{
+    "main": "index.html",
+    "name": "slamdata",
+    "description": "Front end for SlamData",
+    "version": "0.1.0",
+    "window": {
+        "title": "SlamData",
+        "toolbar": true,
+        "width": 1600,
+        "height": 900
+    }
+}

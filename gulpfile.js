@@ -1,6 +1,7 @@
 var gulp = require('gulp')
   , clean = require('gulp-clean')
   , concat = require('gulp-concat')
+  , nwBuilder = require('node-webkit-builder')
   , purescript = require('gulp-purescript')
   , sass = require('gulp-sass')
   , es = require('event-stream')
@@ -142,3 +143,11 @@ gulp.task('test', ['build'], function() {
 gulp.task('build', ['compile', 'concat', 'fonts', 'entypo', 'imgs']);
 gulp.task('concat', ['concat-js', 'concat-css']);
 gulp.task('default', ['compile', 'sass']);
+gulp.task('dist', ['build'], function() {
+    nw = new nwBuilder({
+        files: 'bin/**',
+        platforms: ['linux64', 'osx', 'win'],
+        buildDir: 'dist'
+    });
+    return nw.build();
+});

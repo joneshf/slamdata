@@ -65476,8 +65476,8 @@ PS.SlamData_App_Notebook_Block_SQL = (function () {
     var Data_Function = PS.Data_Function;
     var SlamData_App_Notebook_Block_Common = PS.SlamData_App_Notebook_Block_Common;
     function cwm() {  extendState.call(this, {status: loading});  if (isJust_(this.state.state.location)) {    cdm.call(this, fromJust_(this.state.state.location));  } else {    runQuery.call(this, this.state.state.content);  }};
-    function cdm(location) {  var xhr = new XMLHttpRequest();  xhr.onerror = function() {    if (this.isMounted()) {      extendState.call(this, {status: err('Problem loading query')});    }  }.bind(this);  xhr.onload = function() {    if (this.isMounted()) {      extendState.call(this, {status: successful(xhr.responseText)});    }  }.bind(this);  xhr.open('GET', 'http://localhost:8080/data/fs/'+location);  xhr.send(null);};
-    function runQuery(query) {  var id = newID();  $.ajax({    type: 'POST',    url: 'http://localhost:8080/query/fs/?out='+showBlockID(id),    data: query,    dataType: 'json',    success: function(data, status, jqXHR) {      /* Parse the location out of the response. */      var location = data.out;      if (this.isMounted()) {        extendState.call(this, {location: just(location)});      }      saveLocal(this.props)(this.state.state);      cdm.call(this, location);    }.bind(this),    error: function() {      if (this.isMounted()) {        extendState.call(this, {status: err('Could not create query')});      }    }.bind(this)  });};
+    function cdm(location) {  var xhr = new XMLHttpRequest();  xhr.onerror = function() {    if (this.isMounted()) {      extendState.call(this, {status: err('Problem loading query')});    }  }.bind(this);  xhr.onload = function() {    if (this.isMounted()) {      extendState.call(this, {status: successful(xhr.responseText)});    }  }.bind(this);  xhr.open('GET', serverURI_ + '/data/fs/' + location);  xhr.send(null);};
+    function runQuery(query) {  var id = newID();  $.ajax({    type: 'POST',    url: serverURI_ + '/query/fs/?out=' + showBlockID(id),    data: query,    dataType: 'json',    success: function(data, status, jqXHR) {      /* Parse the location out of the response. */      var location = data.out;      if (this.isMounted()) {        extendState.call(this, {location: just(location)});      }      saveLocal(this.props)(this.state.state);      cdm.call(this, location);    }.bind(this),    error: function() {      if (this.isMounted()) {        extendState.call(this, {status: err('Could not create query')});      }    }.bind(this)  });};
     function extendState(neu) {  return this.setState({state: extend(this.state.state)(neu)});};
     function extend(old) {  return function(neu) {    return copy(neu)(copy(old)({}));  }};
     function copy(neu) {  return function(old) {    for (var key in neu) {      old[key] = neu[key];    }    return old;  }};
@@ -65486,6 +65486,7 @@ PS.SlamData_App_Notebook_Block_SQL = (function () {
         return SlamData_App_Notebook_Block_Types.Successful(str);
     };
     var showBlockID = Prelude.show(SlamData_App_Notebook_Block_Types.showBlockID({}));
+    var serverURI_ = SlamData_Helpers.serverURI;
     var saveLocal = function (props) {
         return function (state) {
             var rec = SlamData_App_Notebook_Block_Types.EvalSQLSpec({
@@ -65914,7 +65915,7 @@ PS.SlamData_App_Notebook = (function () {
     var Data_UUID = PS.Data_UUID;
     var SlamData_App_Notebook_Block = PS.SlamData_App_Notebook_Block;
     function targetValue(e) {  return function(ty) {    return {      dataSrc: e.target.selectedOptions[0].parentNode.label,      field: e.target.value,      visualType: showVisualType_(ty)    }  }};
-    function fieldswm(that) {    that.state.state.visualState.fields.forEach(function(f0) {      oboe(SlamData_Helpers.serverURI +'/data/fs/' + f0.dataSrc + '?limit=1')      .done(function(json) {        var state = that.state.state;        state.visualState.fields.forEach(function(f1, i) {          if (f1.dataSrc === f0.dataSrc) {            state.visualState.fields[i].allFields = Object.keys(json);          }        });        that.setState(state);      });    });};
+    function fieldswm(that) {    that.state.state.visualState.fields.forEach(function(f0) {      oboe(SlamData_Helpers.serverURI +'/data/fs/' + f0.dataSrc + '?limit=1')      .done(function(json) {        var state = that.state.state;        state.visualState.fields.forEach(function(f1, i) {          if (f1.dataSrc === f0.dataSrc) {            state.visualState.fields[i].allFields = Object.keys(json);          }        });        if (that.isMounted()) {          that.setState(state);        }      });    });};
     function bind(that) {  return function(f) {    return f.bind(that);  }};
     function modifyDataSrc(that) {  return function(bool) {    return function(str) {      return function() {        var state = that.state.state;        var vState = dataSrcUpdate(bool)(str)(state.visualState);        state.visualState = vState;        that.replaceState({state: state});        fieldswm(that);      }    }  }};
     function createVisualBlock(that) {  return function(ty) {    return function(ident) {      return function(content) {        var event = createBlock(ty)(ident)(content)();        that.forceUpdate();        return event;      }    }  }};
@@ -66542,7 +66543,7 @@ PS.SlamData_App_Workspace = (function () {
     var SlamData_App_FileSystem = PS.SlamData_App_FileSystem;
     var SlamData_App_Notebook = PS.SlamData_App_Notebook;
     var SlamData_Helpers = PS.SlamData_Helpers;
-    function cwm() { oboe(serverURI_ + '/metadata/fs/')   .done(function(json) {     this.setState({state: {files: json.children}})   }.bind(this));};
+    function cwm() { oboe(serverURI_ + '/metadata/fs/')   .done(function(json) {     if (this.isMounted()) {       this.setState({state: {files: json.children}})     }   }.bind(this));};
     var workspace = React.mkUI((function () {
         var _1513 = {};
         for (var _1514 in React.spec) {
