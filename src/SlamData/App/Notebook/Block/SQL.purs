@@ -102,6 +102,7 @@ module SlamData.App.Notebook.Block.SQL (evalSQL) where
   isJust_ = isJust
   fromJust_ = fromJust
   newID _ = BlockID $ runUUID v4
+  serverURI_ = serverURI
 
   foreign import cwm
     "function cwm() {\
@@ -131,7 +132,7 @@ module SlamData.App.Notebook.Block.SQL (evalSQL) where
     \      extendState.call(this, {status: successful(xhr.responseText)});\
     \    }\
     \  }.bind(this);\
-    \  xhr.open('GET', 'http://localhost:8080/data/fs/'+location);\
+    \  xhr.open('GET', serverURI_ + '/data/fs/' + location);\
     \  xhr.send(null);\
     \}" :: forall a. a
 
@@ -140,7 +141,7 @@ module SlamData.App.Notebook.Block.SQL (evalSQL) where
     \  var id = newID();\
     \  $.ajax({\
     \    type: 'POST',\
-    \    url: 'http://localhost:8080/query/fs/?out='+showBlockID(id),\
+    \    url: serverURI_ + '/query/fs/?out=' + showBlockID(id),\
     \    data: query,\
     \    dataType: 'json',\
     \    success: function(data, status, jqXHR) {\
