@@ -6,3 +6,4 @@ css
 node_modules
 cache
 dist
+*.jar
