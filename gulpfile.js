@@ -1,11 +1,10 @@
 var gulp = require('gulp')
-  , spawn = require('child_process').spawn
   , clean = require('gulp-clean')
   , concat = require('gulp-concat')
+  , es = require('event-stream')
   , nwBuilder = require('node-webkit-builder')
   , purescript = require('gulp-purescript')
   , sass = require('gulp-sass')
-  , es = require('event-stream')
   ;
 
 // Configuration.

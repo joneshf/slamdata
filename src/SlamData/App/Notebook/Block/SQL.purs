@@ -104,6 +104,8 @@ module SlamData.App.Notebook.Block.SQL (evalSQL) where
   newID _ = BlockID $ runUUID v4
   serverURI_ = serverURI
 
+  pagingLimit = 20
+
   foreign import cwm
     "function cwm() {\
     \  extendState.call(this, {status: loading});\
