@@ -8,6 +8,7 @@ var gulp = require('gulp')
   , es = require('event-stream')
   ;
 
+// Configuration.
 paths = {
     src: [
         'src/**/*.purs',
@@ -79,43 +80,7 @@ options = {
     }
 }
 
-gulp.task('compile', function() {
-    // We need this hack for now until gulp does something about
-    // https://github.com/gulpjs/gulp/issues/71
-    var psc = purescript.psc(options.compile);
-    psc.on('error', function(e) {
-        console.error(e.message);
-        psc.end();
-    });
-    return gulp.src(paths.src)
-        .pipe(psc)
-        .pipe(gulp.dest(paths.dest));
-});
-
-gulp.task('clean-sass', function() {
-    return gulp.src(paths.css)
-      .pipe(clean());
-});
-
-gulp.task('sass', ['clean-sass'], function() {
-    var scss = sass();
-    scss.on('error', function(e) {
-        console.error(e.message);
-        scss.end();
-    });
-    // There's something wonky going on with gulp-sass.
-    // Removing the return allows things to operate more fluidly.
-    gulp.src(paths.style)
-        .pipe(scss)
-        .pipe(gulp.dest(paths.css));
-});
-
-gulp.task('watch', function() {
-    gulp.watch(paths.src, ['compile']);
-    gulp.watch(paths.style, ['sass']);
-});
-
-
+// Functions.
 var concatJs = function(target) {
     return gulp.src(paths.concat.js)
       .pipe(concat(options.build.js))
@@ -147,6 +112,38 @@ var imgs = function(target) {
       .pipe(gulp.dest(paths.build[target].imgs));
 };
 
+// Workhorse tasks.
+gulp.task('compile', function() {
+    // We need this hack for now until gulp does something about
+    // https://github.com/gulpjs/gulp/issues/71
+    var psc = purescript.psc(options.compile);
+    psc.on('error', function(e) {
+        console.error(e.message);
+        psc.end();
+    });
+    return gulp.src(paths.src)
+        .pipe(psc)
+        .pipe(gulp.dest(paths.dest));
+});
+
+gulp.task('clean-sass', function() {
+    return gulp.src(paths.css)
+      .pipe(clean());
+});
+
+gulp.task('sass', ['clean-sass'], function() {
+    var scss = sass();
+    scss.on('error', function(e) {
+        console.error(e.message);
+        scss.end();
+    });
+    // There's something wonky going on with gulp-sass.
+    // Removing the return allows things to operate more fluidly.
+    gulp.src(paths.style)
+        .pipe(scss)
+        .pipe(gulp.dest(paths.css));
+});
+
 gulp.task('slamengine-jar', function() {
     return gulp.src('../slamengine/target/scala-2.10/slamengine_2.10-0.1-SNAPSHOT-one-jar.jar')
         .pipe(gulp.dest(paths.build['node-webkit'].jar));
@@ -155,10 +152,6 @@ gulp.task('slamengine-jar', function() {
 gulp.task('slamengine-js', function() {
     return gulp.src('lib/node-webkit/js/slamengine.js')
         .pipe(gulp.dest(paths.build['node-webkit'].js));
-});
-
-gulp.task('test', ['build'], function() {
-    // Placeholder for test task.
 });
 
 gulp.task('concat-js-browser', function() {return concatJs('browser');});
@@ -191,13 +184,22 @@ gulp.task('build-node-webkit', [
     'slamengine-jar',
     'slamengine-js'
 ]);
-gulp.task('build', ['build-browser', 'build-node-webkit']);
-gulp.task('default', ['compile', 'sass']);
-gulp.task('dist', ['build'], function() {
+
+gulp.task('dist-node-webkit', function() {
     nw = new nwBuilder({
         files: 'bin/node-webkit/**',
         platforms: ['linux64', 'osx', 'win'],
         buildDir: 'dist'
     });
     return nw.build();
+});
+
+// Main tasks.
+gulp.task('build', ['build-browser', 'build-node-webkit']);
+gulp.task('default', ['compile', 'sass']);
+gulp.task('dist', ['build', 'dist-node-webkit']);
+gulp.task('test', ['build']);
+gulp.task('watch', function() {
+    gulp.watch(paths.src, ['compile']);
+    gulp.watch(paths.style, ['sass']);
 });
