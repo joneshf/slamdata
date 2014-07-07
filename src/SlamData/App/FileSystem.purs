@@ -1,5 +1,6 @@
 module SlamData.App.FileSystem (filesystem) where
 
+  import Data.Array (null)
   import Data.UUID
 
   import React
@@ -13,8 +14,9 @@ module SlamData.App.FileSystem (filesystem) where
   filesystem :: {files :: [FileType]} -> UI
   filesystem = mkUI spec do
     props <- getProps
+    let fs = props.files
     pure $ panel [ { name: "File System"
-                   , content: [D.ul' (ft2UI <$> props.files)]
+                   , content: [if null fs then toUI $ loadingIcon {} else D.ul' (ft2UI <$> props.files)]
                    , external: []
                    , internal: [ actionButton {tooltip: "New", icon: newIcon {}, click: pure {}}
                                , actionButton {tooltip: "Open", icon: openIcon {}, click: pure {}}
