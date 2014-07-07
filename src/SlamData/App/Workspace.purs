@@ -38,10 +38,14 @@ module SlamData.App.Workspace (workspace) where
 
   foreign import cwm
     "function cwm() {\
-    \ oboe(serverURI_ + '/metadata/fs/')\
-    \   .done(function(json) {\
-    \     if (this.isMounted()) {\
-    \       this.setState({state: {files: json.children}})\
-    \     }\
-    \   }.bind(this));\
+    \  var fetchFS = function() {\
+    \    oboe(serverURI_ + '/metadata/fs/')\
+    \    .done(function(json) {\
+    \      if (this.isMounted()) {\
+    \        this.setState({state: {files: json.children}})\
+    \      }\
+    \    }.bind(this));\
+    \  };\
+    \  fetchFS();\
+    \  setInterval(fetchFS.bind(this), 5000);\
     \}" :: forall a. a
