@@ -65884,7 +65884,7 @@ PS.SlamData_App_FileSystem = (function () {
         var _86 = React.getProps();
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_App_Panel.panel([ {
             name: "File System", 
-            content: [ React_DOM["ul'"](Prelude["<$>"](Data_Array.functorArray({}))(ft2UI)(_86.files)) ], 
+            content: [ Data_Array["null"](_86.files) ? SlamData_Helpers.toUI(SlamData_Helpers.iconFA({}))(SlamData_Helpers.loadingIcon({})) : React_DOM["ul'"](Prelude["<$>"](Data_Array.functorArray({}))(ft2UI)(_86.files)) ], 
             external: [  ], 
             internal: [ SlamData_Helpers.actionButton(SlamData_Helpers.iconFA({}))({
                 tooltip: "New", 
