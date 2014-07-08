@@ -55316,8 +55316,8 @@ PS.Prelude = (function () {
     var $less = function (__dict_Ord_10) {
         return function (a1) {
             return function (a2) {
-                return (function (_525) {
-                    if (_525.ctor === "Prelude.LT") {
+                return (function (_535) {
+                    if (_535.ctor === "Prelude.LT") {
                         return true;
                     };
                     return false;
@@ -55328,8 +55328,8 @@ PS.Prelude = (function () {
     var $less$eq = function (__dict_Ord_11) {
         return function (a1) {
             return function (a2) {
-                return (function (_526) {
-                    if (_526.ctor === "Prelude.GT") {
+                return (function (_536) {
+                    if (_536.ctor === "Prelude.GT") {
                         return false;
                     };
                     return true;
@@ -55340,8 +55340,8 @@ PS.Prelude = (function () {
     var $greater = function (__dict_Ord_12) {
         return function (a1) {
             return function (a2) {
-                return (function (_527) {
-                    if (_527.ctor === "Prelude.GT") {
+                return (function (_537) {
+                    if (_537.ctor === "Prelude.GT") {
                         return true;
                     };
                     return false;
@@ -55352,8 +55352,8 @@ PS.Prelude = (function () {
     var $greater$eq = function (__dict_Ord_13) {
         return function (a1) {
             return function (a2) {
-                return (function (_528) {
-                    if (_528.ctor === "Prelude.LT") {
+                return (function (_538) {
+                    if (_538.ctor === "Prelude.LT") {
                         return false;
                     };
                     return true;
@@ -55417,14 +55417,14 @@ PS.Prelude = (function () {
                         return GT;
                     };
                     if (_127.length > 0) {
-                        var _535 = _127.slice(1);
+                        var _545 = _127.slice(1);
                         if (_128.length > 0) {
-                            var _533 = _128.slice(1);
-                            return (function (_531) {
-                                if (_531.ctor === "Prelude.EQ") {
-                                    return compare(ordArray(__dict_Ord_9))(_535)(_533);
+                            var _543 = _128.slice(1);
+                            return (function (_541) {
+                                if (_541.ctor === "Prelude.EQ") {
+                                    return compare(ordArray(__dict_Ord_9))(_545)(_543);
                                 };
-                                return _531;
+                                return _541;
                             })(compare(__dict_Ord_9)(_127[0])(_128[0]));
                         };
                     };
@@ -56260,8 +56260,8 @@ PS.Data_Array = (function () {
     };
     var tail = function (_165) {
         if (_165.length > 0) {
-            var _606 = _165.slice(1);
-            return Data_Maybe.Just(_606);
+            var _616 = _165.slice(1);
+            return Data_Maybe.Just(_616);
         };
         return Data_Maybe.Nothing;
     };
@@ -56275,13 +56275,13 @@ PS.Data_Array = (function () {
                     tco: while (true) {
                         var acc = _181;
                         if (_183.length > 0) {
-                            var _611 = _183.slice(1);
+                            var _621 = _183.slice(1);
                             if (_182(_183[0])) {
                                 var __tco__181 = Prelude[":"](_183[0])(acc);
                                 var __tco__182 = _182;
                                 _181 = __tco__181;
                                 _182 = __tco__182;
-                                _183 = _611;
+                                _183 = _621;
                                 continue tco;
                             };
                         };
@@ -56299,14 +56299,14 @@ PS.Data_Array = (function () {
         return function (xs) {
             var comp$prime = function (x) {
                 return function (y) {
-                    return (function (_612) {
-                        if (_612.ctor === "Prelude.GT") {
+                    return (function (_622) {
+                        if (_622.ctor === "Prelude.GT") {
                             return 1;
                         };
-                        if (_612.ctor === "Prelude.EQ") {
+                        if (_622.ctor === "Prelude.EQ") {
                             return 0;
                         };
-                        if (_612.ctor === "Prelude.LT") {
+                        if (_622.ctor === "Prelude.LT") {
                             return -1;
                         };
                         throw "Failed pattern match";
@@ -56342,10 +56342,10 @@ PS.Data_Array = (function () {
                 return [  ];
             };
             if (_175.length > 0) {
-                var _617 = _175.slice(1);
+                var _627 = _175.slice(1);
                 return Prelude[":"](_175[0])(nubBy(_174)(filter(function (y) {
                     return !_174(_175[0])(y);
-                })(_617)));
+                })(_627)));
             };
             throw "Failed pattern match";
         };
@@ -56360,14 +56360,14 @@ PS.Data_Array = (function () {
         var _164 = __copy__164;
         tco: while (true) {
             if (_164.length > 0) {
-                var _620 = _164.slice(1);
-                if (_620.length === 0) {
+                var _630 = _164.slice(1);
+                if (_630.length === 0) {
                     return Data_Maybe.Just(_164[0]);
                 };
             };
             if (_164.length > 0) {
-                var _622 = _164.slice(1);
-                _164 = _622;
+                var _632 = _164.slice(1);
+                _164 = _632;
                 continue tco;
             };
             return Data_Maybe.Nothing;
@@ -56400,7 +56400,7 @@ PS.Data_Array = (function () {
     };
     var head = function (_163) {
         if (_163.length > 0) {
-            var _629 = _163.slice(1);
+            var _639 = _163.slice(1);
             return Data_Maybe.Just(_163[0]);
         };
         return Data_Maybe.Nothing;
@@ -56418,8 +56418,8 @@ PS.Data_Array = (function () {
                             return reverse(acc);
                         };
                         if (_180.length > 0) {
-                            var _634 = _180.slice(1);
-                            var sp = span(_179(_180[0]))(_634);
+                            var _644 = _180.slice(1);
+                            var sp = span(_179(_180[0]))(_644);
                             var __tco__178 = Prelude[":"](Prelude[":"](_180[0])(sp.init))(_178);
                             var __tco__179 = _179;
                             _178 = __tco__178;
@@ -56464,11 +56464,11 @@ PS.Data_Array = (function () {
                 if (_170.length === 0) {
                     return [  ];
                 };
-                return (function (_638) {
-                    if (_638 < 0) {
+                return (function (_648) {
+                    if (_648 < 0) {
                         return _170;
                     };
-                    return deleteAt(_638)(1)(_170);
+                    return deleteAt(_648)(1)(_170);
                 })(findIndex(_168(_169))(_170));
             };
         };
@@ -56492,10 +56492,10 @@ PS.Data_Array = (function () {
                                 return [  ];
                             };
                             if (_177.length > 0) {
-                                var _642 = _177.slice(1);
+                                var _652 = _177.slice(1);
                                 var __tco__176 = $$delete(__dict_Eq_32)(_177[0])(_176);
                                 _176 = __tco__176;
-                                _177 = _642;
+                                _177 = _652;
                                 continue tco;
                             };
                             throw "Failed pattern match";
@@ -56616,8 +56616,8 @@ PS.Data_Array_Unsafe = (function () {
     var Data_Maybe_Unsafe = PS.Data_Maybe_Unsafe;
     var tail = function (_185) {
         if (_185.length > 0) {
-            var _645 = _185.slice(1);
-            return _645;
+            var _655 = _185.slice(1);
+            return _655;
         };
         throw "Failed pattern match";
     };
@@ -56627,7 +56627,7 @@ PS.Data_Array_Unsafe = (function () {
     var init = Prelude["<<<"](Prelude.semigroupoidArr({}))(Data_Maybe_Unsafe.fromJust)(Data_Array.init);
     var head = function (_184) {
         if (_184.length > 0) {
-            var _648 = _184.slice(1);
+            var _658 = _184.slice(1);
             return _184[0];
         };
         throw "Failed pattern match";
@@ -57272,10 +57272,10 @@ PS.Data_Tuple = (function () {
     var zip = Data_Array.zipWith(Tuple);
     var unzip = function (_259) {
         if (_259.length > 0) {
-            var _793 = _259.slice(1);
-            return (function (_789) {
-                return Tuple(Prelude[":"]((_259[0]).values[0])(_789.values[0]))(Prelude[":"]((_259[0]).values[1])(_789.values[1]));
-            })(unzip(_793));
+            var _803 = _259.slice(1);
+            return (function (_799) {
+                return Tuple(Prelude[":"]((_259[0]).values[0])(_799.values[0]))(Prelude[":"]((_259[0]).values[1])(_799.values[1]));
+            })(unzip(_803));
         };
         if (_259.length === 0) {
             return Tuple([  ])([  ]);
@@ -57343,11 +57343,11 @@ PS.Data_Tuple = (function () {
                 }, 
                 compare: function (_264) {
                     return function (_265) {
-                        return (function (_824) {
-                            if (_824.ctor === "Prelude.EQ") {
+                        return (function (_834) {
+                            if (_834.ctor === "Prelude.EQ") {
                                 return Prelude.compare(__dict_Ord_47)(_264.values[1])(_265.values[1]);
                             };
-                            return _824;
+                            return _834;
                         })(Prelude.compare(__dict_Ord_46)(_264.values[0])(_265.values[0]));
                     };
                 }
@@ -57384,8 +57384,8 @@ PS.Data_Tuple = (function () {
             }, 
             ">>=": function (_270) {
                 return function (_271) {
-                    return (function (_837) {
-                        return Tuple(Prelude["<>"](__dict_Semigroup_51)(_270.values[0])(_837.values[0]))(_837.values[1]);
+                    return (function (_847) {
+                        return Tuple(Prelude["<>"](__dict_Semigroup_51)(_270.values[0])(_847.values[0]))(_847.values[1]);
                     })(_271(_270.values[1]));
                 };
             }
@@ -58198,12 +58198,12 @@ PS.Control_Monad_Error_Trans = (function () {
         return function (pass) {
             return mapErrorT(function (m) {
                 return pass(Prelude[">>="](__dict_Monad_93["__superclasses"]["Prelude.Bind_1"]({}))(m)(function (_16) {
-                    return Prelude["return"](__dict_Monad_93)((function (_901) {
-                        if (_901.ctor === "Data.Either.Left") {
-                            return Data_Tuple.Tuple(Data_Either.Left(_901.values[0]))(Prelude.id(Prelude.categoryArr({})));
+                    return Prelude["return"](__dict_Monad_93)((function (_911) {
+                        if (_911.ctor === "Data.Either.Left") {
+                            return Data_Tuple.Tuple(Data_Either.Left(_911.values[0]))(Prelude.id(Prelude.categoryArr({})));
                         };
-                        if (_901.ctor === "Data.Either.Right") {
-                            return Data_Tuple.Tuple(Data_Either.Right((_901.values[0]).values[0]))((_901.values[0]).values[1]);
+                        if (_911.ctor === "Data.Either.Right") {
+                            return Data_Tuple.Tuple(Data_Either.Right((_911.values[0]).values[0]))((_911.values[0]).values[1]);
                         };
                         throw "Failed pattern match";
                     })(_16));
@@ -58255,12 +58255,12 @@ PS.Control_Monad_Error_Trans = (function () {
                             };
                             if (_12.ctor === "Data.Either.Right") {
                                 return Prelude[">>="](__dict_Monad_99["__superclasses"]["Prelude.Bind_1"]({}))(runErrorT(v))(function (_11) {
-                                    return Prelude["return"](__dict_Monad_99)((function (_913) {
-                                        if (_913.ctor === "Data.Either.Left") {
-                                            return Data_Either.Left(_913.values[0]);
+                                    return Prelude["return"](__dict_Monad_99)((function (_923) {
+                                        if (_923.ctor === "Data.Either.Left") {
+                                            return Data_Either.Left(_923.values[0]);
                                         };
-                                        if (_913.ctor === "Data.Either.Right") {
-                                            return Data_Either.Right(_12.values[0](_913.values[0]));
+                                        if (_923.ctor === "Data.Either.Right") {
+                                            return Data_Either.Right(_12.values[0](_923.values[0]));
                                         };
                                         throw "Failed pattern match";
                                     })(_11));
@@ -58538,12 +58538,12 @@ PS.Control_Monad_Free = (function () {
         return function (__dict_Monad_115) {
             return function (k) {
                 return function (f) {
-                    return (function (_929) {
-                        if (_929.ctor === "Data.Either.Left") {
-                            return Prelude[">>="](__dict_Monad_115["__superclasses"]["Prelude.Bind_1"]({}))(k(_929.values[0]))(goM(__dict_Functor_114)(__dict_Monad_115)(k));
+                    return (function (_939) {
+                        if (_939.ctor === "Data.Either.Left") {
+                            return Prelude[">>="](__dict_Monad_115["__superclasses"]["Prelude.Bind_1"]({}))(k(_939.values[0]))(goM(__dict_Functor_114)(__dict_Monad_115)(k));
                         };
-                        if (_929.ctor === "Data.Either.Right") {
-                            return Prelude["return"](__dict_Monad_115)(_929.values[0]);
+                        if (_939.ctor === "Data.Either.Right") {
+                            return Prelude["return"](__dict_Monad_115)(_939.values[0]);
                         };
                         throw "Failed pattern match";
                     })(resume(__dict_Functor_114)(f));
@@ -58629,17 +58629,17 @@ PS.Control_Monad_Free = (function () {
         return function (f) {
             return f(function (a) {
                 return function (g) {
-                    return (function (_938) {
-                        if (_938.ctor === "Control.Monad.Free.Pure") {
-                            return Data_Either.Right(g(_938.values[0]));
+                    return (function (_948) {
+                        if (_948.ctor === "Control.Monad.Free.Pure") {
+                            return Data_Either.Right(g(_948.values[0]));
                         };
-                        if (_938.ctor === "Control.Monad.Free.Free") {
+                        if (_948.ctor === "Control.Monad.Free.Free") {
                             return Data_Either.Left(Prelude["<$>"](__dict_Functor_104)(function (h) {
                                 return Prelude[">>="](bindFree(__dict_Functor_104))(h)(g);
-                            })(_938.values[0]));
+                            })(_948.values[0]));
                         };
-                        if (_938.ctor === "Control.Monad.Free.Gosub") {
-                            return Data_Either.Right(_938.values[0](function (b) {
+                        if (_948.ctor === "Control.Monad.Free.Gosub") {
+                            return Data_Either.Right(_948.values[0](function (b) {
                                 return function (i) {
                                     return Prelude[">>="](bindFree(__dict_Functor_104))(b(Prelude.unit))(function (x) {
                                         return Prelude[">>="](bindFree(__dict_Functor_104))(i(x))(g);
@@ -58911,14 +58911,14 @@ PS.React = (function () {
     function noop0() { return null; };
     var noop1 = noop0;
     var noop2 = noop0;
-    function noop2_(x, y) {return function(x){return function(y){}}};
+    function noop2_(_) { return function(_) { return noop0; }; };
      function getProps() {        return __current.props;  };
      function getRefs() {        return __current.refs;  };
-     function writeState(state) {                      __current.replaceState({state: state});         return function() { return state; }           };
-     function readState() {             return __current.state.state;  };
+     function writeState(state) {                      __current.replaceState(state);         return function() { return state; }           };
+     function readState() {             return __current.state;  };
      function getSelf() {    return __current;   };
      function runUI(ref) {            return function(action) {        return function() {              if (ref.isMounted()) {           __current = ref;               try {                            return action();             } finally {                      __current = null;            }                            }                            }                            }                            };
-     var __current;                                     function mkUI(ss) {                                  return function(render) {                            var specs = {};                                    for (var s in ss) {                                  if (ss.hasOwnProperty(s)) {                          specs[s] = (function(impl) {                         return function() {                                  __current = this;                                  try {                                                return impl.apply(this, arguments);              } finally {                                          __current = null;                                }                                                }                                                })(ss[s]);                                       }                                                }                                                  specs.getInitialState= function() {                  __current = this;                                  try {                                                return {state: ss.getInitialState()};            } finally {                                          __current = null;                                }                                                };                                                 specs.render = function() {                          __current = this;                                  try {                                                var ui = render.call(this);                      } finally {                                          __current = null;                                }                                                  return ui;                                       };                                                 return React.createClass(specs);                 }                                                };
+     var __current;                                     function mkUI(ss) {                                  return function(render) {                            var specs = {};                                    for (var s in ss) {                                  if (ss.hasOwnProperty(s)) {                          specs[s] = (function(impl) {                         return function() {                                  __current = this;                                  try {                                                return impl.apply(this, arguments);              } finally {                                          __current = null;                                }                                                }                                                })(ss[s]);                                       }                                                }                                                  specs.getInitialState= function() {                  __current = this;                                  try {                                                return ss.getInitialState();            } finally {                                          __current = null;                                }                                                };                                                 specs.render = function() {                          __current = this;                                  try {                                                var ui = render.call(this);                      } finally {                                          __current = null;                                }                                                  return ui;                                       };                                                 return React.createClass(specs);                 }                                                };
      function handle(f) {                       var component = __current;               return function(e) {                       __current = component;                   try {                                      var res = f.call(__current, e)();      } finally {                                __current = null;                      }                                        return res;                            }                                      };
     var renderToString = React.renderComponentToString;
      function renderToBody(component) {                             return function() {                                            return React.renderComponent(component, document.body);    }                                                          };
@@ -60747,22 +60747,22 @@ PS.SlamData_App_Menu = (function () {
     var Data_Array = PS.Data_Array;
     var command = function (_304) {
         if (_304 === "divider") {
-            return React_DOM.li([ React_DOM.ClassName("divider") ])([  ]);
+            return React_DOM.li([ React_DOM.className("divider") ])([  ]);
         };
         return React_DOM["li'"]([ React_DOM["a'"]([ React_DOM.text(_304) ]) ]);
     };
     var menuButton = function (name) {
         return function (commands) {
-            return React_DOM.li([ React_DOM.ClassName("has-dropdown") ])([ React_DOM["a'"]([ React_DOM.text(name) ]), React_DOM.ul([ React_DOM.ClassName("dropdown") ])(Prelude["<$>"](Data_Array.functorArray({}))(command)(commands)) ]);
+            return React_DOM.li([ React_DOM.className("has-dropdown") ])([ React_DOM["a'"]([ React_DOM.text(name) ]), React_DOM.ul([ React_DOM.className("dropdown") ])(Prelude["<$>"](Data_Array.functorArray({}))(command)(commands)) ]);
         };
     };
     var editMenu = menuButton("Edit")([ "Undo", "Redo", "divider", "Copy", "Cut", "Paste", "Paste as data", "Paste and indent", "divider", "Find and replace...", "Find in folders..." ]);
     var fileMenu = menuButton("File")([ "New", "Open...", "Open recent", "Revert to...", "Browse history...", "divider", "Import...", "Export...", "divider", "Close", "Save as...", "Save a copy as...", "divider", "Print" ]);
     var helpMenu = menuButton("Help")([ "Lookup symbol...", "divider", "Support forum", "Support email" ]);
-    var menu = React_DOM.nav([ React_DOM.ClassName("top-bar"), React_DOM.Data({
+    var menu = React_DOM.nav([ React_DOM.className("top-bar"), React_DOM.dataSet({
         options: "is_hover: false", 
         topbar: true
-    }) ])([ React_DOM.ul([ React_DOM.ClassName("title-area") ])([ React_DOM["li'"]([  ]) ]), React_DOM.section([ React_DOM.ClassName("top-bar-section") ])([ React_DOM.ul([ React_DOM.ClassName("left") ])([ fileMenu, command("divider"), editMenu, command("divider"), helpMenu, command("divider") ]), React_DOM.ul([ React_DOM.className("right") ])([ React_DOM["li'"]([ React_DOM.img([ React_DOM.src("imgs/slamdata-logo.png") ])([  ]) ]) ]) ]) ]);
+    }) ])([ React_DOM.ul([ React_DOM.className("title-area") ])([ React_DOM["li'"]([  ]) ]), React_DOM.section([ React_DOM.className("top-bar-section") ])([ React_DOM.ul([ React_DOM.className("left") ])([ fileMenu, command("divider"), editMenu, command("divider"), helpMenu, command("divider") ]), React_DOM.ul([ React_DOM.className("right") ])([ React_DOM["li'"]([ React_DOM.img([ React_DOM.src("imgs/slamdata-logo.png") ])([  ]) ]) ]) ]) ]);
     return {
         menu: menu
     };
@@ -60965,9 +60965,9 @@ PS.Control_Monad = (function () {
                         return Prelude["return"](__dict_Monad_132)(_310);
                     };
                     if (_311.length > 0) {
-                        var _979 = _311.slice(1);
+                        var _989 = _311.slice(1);
                         return Prelude[">>="](__dict_Monad_132["__superclasses"]["Prelude.Bind_1"]({}))(_309(_310)(_311[0]))(function (a$prime) {
-                            return foldM(__dict_Monad_132)(_309)(a$prime)(_979);
+                            return foldM(__dict_Monad_132)(_309)(a$prime)(_989);
                         });
                     };
                     throw "Failed pattern match";
@@ -61012,12 +61012,12 @@ PS.Control_Monad_Maybe_Trans = (function () {
         return function (pass) {
             return mapMaybeT(function (m) {
                 return pass(Prelude[">>="](__dict_Monad_135["__superclasses"]["Prelude.Bind_1"]({}))(m)(function (_23) {
-                    return Prelude["return"](__dict_Monad_135)((function (_983) {
-                        if (_983.ctor === "Data.Maybe.Nothing") {
+                    return Prelude["return"](__dict_Monad_135)((function (_993) {
+                        if (_993.ctor === "Data.Maybe.Nothing") {
                             return Data_Tuple.Tuple(Data_Maybe.Nothing)(Prelude.id(Prelude.categoryArr({})));
                         };
-                        if (_983.ctor === "Data.Maybe.Just") {
-                            return Data_Tuple.Tuple(Data_Maybe.Just((_983.values[0]).values[0]))((_983.values[0]).values[1]);
+                        if (_993.ctor === "Data.Maybe.Just") {
+                            return Data_Tuple.Tuple(Data_Maybe.Just((_993.values[0]).values[0]))((_993.values[0]).values[1]);
                         };
                         throw "Failed pattern match";
                     })(_23));
@@ -61718,11 +61718,11 @@ PS.Text_Parsing_Parser = (function () {
             "__superclasses": {}, 
             state: function (f) {
                 return ParserT(function (s) {
-                    return Prelude["return"](__dict_Monad_217)((function (_1016) {
+                    return Prelude["return"](__dict_Monad_217)((function (_1026) {
                         return {
-                            input: _1016.values[1], 
+                            input: _1026.values[1], 
                             consumed: false, 
-                            result: Data_Either.Right(_1016.values[0])
+                            result: Data_Either.Right(_1026.values[0])
                         };
                     })(f(s)));
                 });
@@ -62050,8 +62050,8 @@ PS.Text_Parsing_Parser_Combinators = (function () {
                 return _320[0];
             };
             if (_320.length > 0) {
-                var _1039 = _320.slice(1);
-                return Prelude["<|>"](Text_Parsing_Parser.alternativeParserT(__dict_Monad_240))(_320[0])(choice(__dict_Monad_240)(_1039));
+                var _1049 = _320.slice(1);
+                return Prelude["<|>"](Text_Parsing_Parser.alternativeParserT(__dict_Monad_240))(_320[0])(choice(__dict_Monad_240)(_1049));
             };
             throw "Failed pattern match";
         };
@@ -62532,12 +62532,12 @@ PS.Data_Foldable = (function () {
     var find = function (__dict_Foldable_280) {
         return function (p) {
             return function (f) {
-                return (function (_1100) {
-                    if (_1100.length > 0) {
-                        var _1102 = _1100.slice(1);
-                        return Data_Maybe.Just(_1100[0]);
+                return (function (_1110) {
+                    if (_1110.length > 0) {
+                        var _1112 = _1110.slice(1);
+                        return Data_Maybe.Just(_1110[0]);
                     };
-                    if (_1100.length === 0) {
+                    if (_1110.length === 0) {
                         return Data_Maybe.Nothing;
                     };
                     throw "Failed pattern match";
@@ -62721,8 +62721,8 @@ PS.Data_Traversable = (function () {
                             return Prelude.pure(__dict_Applicative_296)([  ]);
                         };
                         if (_357.length > 0) {
-                            var _1130 = _357.slice(1);
-                            return Prelude["<*>"](__dict_Applicative_296["__superclasses"]["Prelude.Apply_0"]({}))(Prelude["<$>"]((__dict_Applicative_296["__superclasses"]["Prelude.Apply_0"]({}))["__superclasses"]["Prelude.Functor_0"]({}))(Prelude[":"])(_356(_357[0])))(traverse(traversableArray({}))(__dict_Applicative_296)(_356)(_1130));
+                            var _1140 = _357.slice(1);
+                            return Prelude["<*>"](__dict_Applicative_296["__superclasses"]["Prelude.Apply_0"]({}))(Prelude["<$>"]((__dict_Applicative_296["__superclasses"]["Prelude.Apply_0"]({}))["__superclasses"]["Prelude.Functor_0"]({}))(Prelude[":"])(_356(_357[0])))(traverse(traversableArray({}))(__dict_Applicative_296)(_356)(_1140));
                         };
                         throw "Failed pattern match";
                     };
@@ -62734,8 +62734,8 @@ PS.Data_Traversable = (function () {
                         return Prelude.pure(__dict_Applicative_297)([  ]);
                     };
                     if (_358.length > 0) {
-                        var _1133 = _358.slice(1);
-                        return Prelude["<*>"](__dict_Applicative_297["__superclasses"]["Prelude.Apply_0"]({}))(Prelude["<$>"]((__dict_Applicative_297["__superclasses"]["Prelude.Apply_0"]({}))["__superclasses"]["Prelude.Functor_0"]({}))(Prelude[":"])(_358[0]))(sequence(traversableArray({}))(__dict_Applicative_297)(_1133));
+                        var _1143 = _358.slice(1);
+                        return Prelude["<*>"](__dict_Applicative_297["__superclasses"]["Prelude.Apply_0"]({}))(Prelude["<$>"]((__dict_Applicative_297["__superclasses"]["Prelude.Apply_0"]({}))["__superclasses"]["Prelude.Functor_0"]({}))(Prelude[":"])(_358[0]))(sequence(traversableArray({}))(__dict_Applicative_297)(_1143));
                     };
                     throw "Failed pattern match";
                 };
@@ -62857,12 +62857,12 @@ PS.Data_Foreign = (function () {
             "<*>": function (_377) {
                 return function (_378) {
                     return ForeignParser(function (x) {
-                        return (function (_1142) {
-                            if (_1142.ctor === "Data.Either.Left") {
-                                return Data_Either.Left(_1142.values[0]);
+                        return (function (_1152) {
+                            if (_1152.ctor === "Data.Either.Left") {
+                                return Data_Either.Left(_1152.values[0]);
                             };
-                            if (_1142.ctor === "Data.Either.Right") {
-                                return Prelude["<$>"](Data_Either.functorEither({}))(_1142.values[0])(_378.values[0](x));
+                            if (_1152.ctor === "Data.Either.Right") {
+                                return Prelude["<$>"](Data_Either.functorEither({}))(_1152.values[0])(_378.values[0](x));
                             };
                             throw "Failed pattern match";
                         })(_377.values[0](x));
@@ -62881,12 +62881,12 @@ PS.Data_Foreign = (function () {
             ">>=": function (_375) {
                 return function (_376) {
                     return ForeignParser(function (x) {
-                        return (function (_1149) {
-                            if (_1149.ctor === "Data.Either.Left") {
-                                return Data_Either.Left(_1149.values[0]);
+                        return (function (_1159) {
+                            if (_1159.ctor === "Data.Either.Left") {
+                                return Data_Either.Left(_1159.values[0]);
                             };
-                            if (_1149.ctor === "Data.Either.Right") {
-                                return parseForeign(_376(_1149.values[0]))(x);
+                            if (_1159.ctor === "Data.Either.Right") {
+                                return parseForeign(_376(_1159.values[0]))(x);
                             };
                             throw "Failed pattern match";
                         })(_375.values[0](x));
@@ -62901,12 +62901,12 @@ PS.Data_Foreign = (function () {
                 return readPropImpl(p)(x);
             }))(function (x) {
                 return ForeignParser(function (_) {
-                    return (function (_1153) {
-                        if (_1153.ctor === "Data.Either.Right") {
-                            return Data_Either.Right(_1153.values[0]);
+                    return (function (_1163) {
+                        if (_1163.ctor === "Data.Either.Right") {
+                            return Data_Either.Right(_1163.values[0]);
                         };
-                        if (_1153.ctor === "Data.Either.Left") {
-                            return Data_Either.Left("Error reading property '" + p + "':\n" + _1153.values[0]);
+                        if (_1163.ctor === "Data.Either.Left") {
+                            return Data_Either.Left("Error reading property '" + p + "':\n" + _1163.values[0]);
                         };
                         throw "Failed pattern match";
                     })(parseForeign(read(__dict_ReadForeign_302))(x));
@@ -62919,12 +62919,12 @@ PS.Data_Foreign = (function () {
             "__superclasses": {}, 
             read: (function () {
                 var arrayItem = function (_379) {
-                    return (function (_1157) {
-                        if (_1157.ctor === "Data.Either.Right") {
-                            return Data_Either.Right(_1157.values[0]);
+                    return (function (_1167) {
+                        if (_1167.ctor === "Data.Either.Right") {
+                            return Data_Either.Right(_1167.values[0]);
                         };
-                        if (_1157.ctor === "Data.Either.Left") {
-                            return Data_Either.Left("Error reading item at index " + Prelude.show(Prelude.showNumber({}))(_379.values[0]) + ":\n" + _1157.values[0]);
+                        if (_1167.ctor === "Data.Either.Left") {
+                            return Data_Either.Left("Error reading item at index " + Prelude.show(Prelude.showNumber({}))(_379.values[0]) + ":\n" + _1167.values[0]);
                         };
                         throw "Failed pattern match";
                     })(parseForeign(read(__dict_ReadForeign_303))(_379.values[1]));
@@ -63211,24 +63211,24 @@ PS.SlamData_App_Notebook_Block_Types = (function () {
         return {
             "__superclasses": {}, 
             read: Data_Foreign.ForeignParser(function (str) {
-                return (function (_1172) {
-                    if (_1172.ctor === "Data.Either.Right") {
-                        if (_1172.values[0] === "Loading") {
+                return (function (_1182) {
+                    if (_1182.ctor === "Data.Either.Right") {
+                        if (_1182.values[0] === "Loading") {
                             return Data_Either.Right(Loading);
                         };
                     };
-                    if (_1172.ctor === "Data.Either.Right") {
-                        if (startsWith(_1172.values[0])("Successful ")) {
-                            return Data_Either.Right(Successful(Data_String.drop(Data_String.length("Successful "))(_1172.values[0])));
+                    if (_1182.ctor === "Data.Either.Right") {
+                        if (startsWith(_1182.values[0])("Successful ")) {
+                            return Data_Either.Right(Successful(Data_String.drop(Data_String.length("Successful "))(_1182.values[0])));
                         };
                     };
-                    if (_1172.ctor === "Data.Either.Right") {
-                        if (startsWith(_1172.values[0])("Error ")) {
-                            return Data_Either.Right(Successful(Data_String.drop(Data_String.length("Error "))(_1172.values[0])));
+                    if (_1182.ctor === "Data.Either.Right") {
+                        if (startsWith(_1182.values[0])("Error ")) {
+                            return Data_Either.Right(Successful(Data_String.drop(Data_String.length("Error "))(_1182.values[0])));
                         };
                     };
-                    if (_1172.ctor === "Data.Either.Left") {
-                        return Data_Either.Left(_1172.values[0]);
+                    if (_1182.ctor === "Data.Either.Left") {
+                        return Data_Either.Left(_1182.values[0]);
                     };
                     throw "Failed pattern match";
                 })(Data_Foreign.parseForeign(Data_Foreign.read(Data_Foreign.readString({})))(str));
@@ -63258,24 +63258,24 @@ PS.SlamData_App_Notebook_Block_Types = (function () {
         return {
             "__superclasses": {}, 
             read: Data_Foreign.ForeignParser(function (str) {
-                return (function (_1181) {
-                    if (_1181.ctor === "Data.Either.Right") {
-                        if (_1181.values[0] === "Markdown") {
+                return (function (_1191) {
+                    if (_1191.ctor === "Data.Either.Right") {
+                        if (_1191.values[0] === "Markdown") {
                             return Data_Either.Right(Markdown);
                         };
                     };
-                    if (_1181.ctor === "Data.Either.Right") {
-                        if (_1181.values[0] === "SQL") {
+                    if (_1191.ctor === "Data.Either.Right") {
+                        if (_1191.values[0] === "SQL") {
                             return Data_Either.Right(SQL);
                         };
                     };
-                    if (_1181.ctor === "Data.Either.Right") {
-                        if (_1181.values[0] === "Visual") {
+                    if (_1191.ctor === "Data.Either.Right") {
+                        if (_1191.values[0] === "Visual") {
                             return Data_Either.Right(Visual);
                         };
                     };
-                    if (_1181.ctor === "Data.Either.Left") {
-                        return Data_Either.Left(_1181.values[0]);
+                    if (_1191.ctor === "Data.Either.Left") {
+                        return Data_Either.Left(_1191.values[0]);
                     };
                     throw "Failed pattern match";
                 })(Data_Foreign.parseForeign(Data_Foreign.read(Data_Foreign.readString({})))(str));
@@ -63435,6 +63435,147 @@ PS.SlamData_App_Notebook_Block_Types = (function () {
     };
 })();
 var PS = PS || {};
+PS.SlamData_App_Panel = (function () {
+    "use strict";
+    var Prelude = PS.Prelude;
+    var Control_Monad_Eff = PS.Control_Monad_Eff;
+    var React = PS.React;
+    var Data_Maybe = PS.Data_Maybe;
+    var SlamData_App_Panel_Tab = PS.SlamData_App_Panel_Tab;
+    var Data_UUID = PS.Data_UUID;
+    var Data_Array = PS.Data_Array;
+    var React_DOM = PS.React_DOM;
+    var Data_Foldable = PS.Data_Foldable;
+    var makeActive = function (ident) {
+        return function __do() {
+            var _54 = React.readState();
+            return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
+                var _1221 = {};
+                for (var _1222 in _54) {
+                    if (_54.hasOwnProperty(_1222)) {
+                        _1221[_1222] = _54[_1222];
+                    };
+                };
+                _1221.activeTab = Data_Maybe.Just(ident);
+                return _1221;
+            })()))();
+        };
+    };
+    var injectMakeActive = function (_397) {
+        return function (_398) {
+            return SlamData_App_Panel_Tab.makeTabName({
+                name: _398.name, 
+                external: _398.external, 
+                internal: _398.internal, 
+                content: _398.content, 
+                active: Prelude["=="](Data_Maybe.eqMaybe(Data_UUID.eqUUID({})))(_397)(Data_Maybe.Just(_398.ident)), 
+                ident: _398.ident, 
+                activate: React.deferred(makeActive(_398.ident))
+            });
+        };
+    };
+    var _ident = function (_396) {
+        return _396.ident;
+    };
+    var panel$prime = React.mkUI((function () {
+        var _1232 = {};
+        for (var _1233 in React.spec) {
+            if (React.spec.hasOwnProperty(_1233)) {
+                _1232[_1233] = React.spec[_1233];
+            };
+        };
+        _1232.getInitialState = Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
+            tabs: [  ], 
+            activeTab: Data_Maybe.Nothing
+        });
+        return _1232;
+    })())(function __do() {
+        var _53 = React.getProps();
+        var _52 = React.readState();
+        return (function () {
+            var activeTab = Prelude["<|>"](Data_Maybe.alternativeMaybe({}))(_52.activeTab)(Data_Maybe.maybe(Data_Maybe.Nothing)(Prelude[">>>"](Prelude.semigroupoidArr({}))(_ident)(Prelude.pure(Data_Maybe.applicativeMaybe({}))))(Data_Array.head(_53.tabs)));
+            return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div([ React_DOM.className("slamdata-panel"), React_DOM.dataSet({
+                "equalizer-watch": ""
+            }) ])([ React_DOM.dl([ React_DOM.className("tabs"), React_DOM.dataSet({
+                tab: ""
+            }) ])(Prelude["<$>"](Data_Array.functorArray({}))(injectMakeActive(activeTab))(_53.tabs)), React_DOM.div([ React_DOM.className("tabs-content") ])(Data_Maybe.maybe([  ])(Prelude[">>>"](Prelude.semigroupoidArr({}))(SlamData_App_Panel_Tab.makeCont)(Prelude.pure(Data_Array.applicativeArray({}))))(Data_Foldable.find(Data_Foldable.foldableArray({}))(Prelude[">>>"](Prelude.semigroupoidArr({}))(_ident)(Prelude[">>>"](Prelude.semigroupoidArr({}))(Data_Maybe.Just)(Prelude["=="](Data_Maybe.eqMaybe(Data_UUID.eqUUID({})))(activeTab))))(_53.tabs))) ]));
+        })()();
+    });
+    var panel = function (tabs) {
+        return panel$prime({
+            tabs: tabs
+        });
+    };
+    return {
+        panel: panel
+    };
+})();
+var PS = PS || {};
+PS.SlamData_App_Extra = (function () {
+    "use strict";
+    var SlamData_App_Panel = PS.SlamData_App_Panel;
+    var React_DOM = PS.React_DOM;
+    var Data_UUID = PS.Data_UUID;
+    var extra = SlamData_App_Panel.panel([ {
+        name: "Tasks", 
+        content: [ React_DOM.text("Do some tasks.") ], 
+        external: [  ], 
+        internal: [  ], 
+        ident: Data_UUID.runUUID(Data_UUID.v4)
+    }, {
+        name: "Sharing", 
+        content: [ React_DOM.text("Show your friends.") ], 
+        external: [  ], 
+        internal: [  ], 
+        ident: Data_UUID.runUUID(Data_UUID.v4)
+    }, {
+        name: "Chat", 
+        content: [ React_DOM.text("Guess what he/she said.") ], 
+        external: [  ], 
+        internal: [  ], 
+        ident: Data_UUID.runUUID(Data_UUID.v4)
+    } ]);
+    return {
+        extra: extra
+    };
+})();
+var PS = PS || {};
+PS.SlamData_App_Reference = (function () {
+    "use strict";
+    var SlamData_App_Panel = PS.SlamData_App_Panel;
+    var React_DOM = PS.React_DOM;
+    var Data_UUID = PS.Data_UUID;
+    var refPanel = SlamData_App_Panel.panel([ {
+        name: "Tutorial", 
+        content: [ React_DOM.text("Here's some tutorial things.") ], 
+        external: [  ], 
+        internal: [  ], 
+        ident: Data_UUID.runUUID(Data_UUID.v4)
+    }, {
+        name: "References", 
+        content: [ React_DOM.text("Look at all this reference stuff.") ], 
+        external: [  ], 
+        internal: [  ], 
+        ident: Data_UUID.runUUID(Data_UUID.v4)
+    }, {
+        name: "Examples", 
+        content: [ React_DOM.text("Wow, examples!") ], 
+        external: [  ], 
+        internal: [  ], 
+        ident: Data_UUID.runUUID(Data_UUID.v4)
+    }, {
+        name: "Notes", 
+        content: [ React_DOM.text("Knowtes.") ], 
+        external: [  ], 
+        internal: [  ], 
+        ident: Data_UUID.runUUID(Data_UUID.v4)
+    } ]);
+    var reference = refPanel;
+    return {
+        reference: reference
+    };
+})();
+var PS = PS || {};
 PS.Text_Parsing_Parser_Expr = (function () {
     "use strict";
     var Prelude = PS.Prelude;
@@ -63477,10 +63618,10 @@ PS.Text_Parsing_Parser_Expr = (function () {
         return function (prefixP) {
             return function (term) {
                 return function (postfixP) {
-                    return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_305))(prefixP)(function (_61) {
-                        return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_305))(term)(function (_60) {
-                            return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_305))(postfixP)(function (_59) {
-                                return Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_305))(_59(_61(_60)));
+                    return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_305))(prefixP)(function (_64) {
+                        return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_305))(term)(function (_63) {
+                            return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_305))(postfixP)(function (_62) {
+                                return Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_305))(_62(_64(_63)));
                             });
                         });
                     });
@@ -63488,63 +63629,63 @@ PS.Text_Parsing_Parser_Expr = (function () {
             };
         };
     };
-    var splitOp = function (_396) {
-        return function (_397) {
-            if (_396.ctor === "Text.Parsing.Parser.Expr.Infix") {
-                if ((_396.values[1]).ctor === "Text.Parsing.Parser.Expr.AssocNone") {
-                    var _1215 = {};
-                    for (var _1216 in _397) {
-                        if (_397.hasOwnProperty(_1216)) {
-                            _1215[_1216] = _397[_1216];
+    var splitOp = function (_399) {
+        return function (_400) {
+            if (_399.ctor === "Text.Parsing.Parser.Expr.Infix") {
+                if ((_399.values[1]).ctor === "Text.Parsing.Parser.Expr.AssocNone") {
+                    var _1241 = {};
+                    for (var _1242 in _400) {
+                        if (_400.hasOwnProperty(_1242)) {
+                            _1241[_1242] = _400[_1242];
                         };
                     };
-                    _1215.nassoc = Prelude[":"](_396.values[0])(_397.nassoc);
-                    return _1215;
+                    _1241.nassoc = Prelude[":"](_399.values[0])(_400.nassoc);
+                    return _1241;
                 };
             };
-            if (_396.ctor === "Text.Parsing.Parser.Expr.Infix") {
-                if ((_396.values[1]).ctor === "Text.Parsing.Parser.Expr.AssocLeft") {
-                    var _1219 = {};
-                    for (var _1220 in _397) {
-                        if (_397.hasOwnProperty(_1220)) {
-                            _1219[_1220] = _397[_1220];
+            if (_399.ctor === "Text.Parsing.Parser.Expr.Infix") {
+                if ((_399.values[1]).ctor === "Text.Parsing.Parser.Expr.AssocLeft") {
+                    var _1245 = {};
+                    for (var _1246 in _400) {
+                        if (_400.hasOwnProperty(_1246)) {
+                            _1245[_1246] = _400[_1246];
                         };
                     };
-                    _1219.lassoc = Prelude[":"](_396.values[0])(_397.lassoc);
-                    return _1219;
+                    _1245.lassoc = Prelude[":"](_399.values[0])(_400.lassoc);
+                    return _1245;
                 };
             };
-            if (_396.ctor === "Text.Parsing.Parser.Expr.Infix") {
-                if ((_396.values[1]).ctor === "Text.Parsing.Parser.Expr.AssocRight") {
-                    var _1223 = {};
-                    for (var _1224 in _397) {
-                        if (_397.hasOwnProperty(_1224)) {
-                            _1223[_1224] = _397[_1224];
+            if (_399.ctor === "Text.Parsing.Parser.Expr.Infix") {
+                if ((_399.values[1]).ctor === "Text.Parsing.Parser.Expr.AssocRight") {
+                    var _1249 = {};
+                    for (var _1250 in _400) {
+                        if (_400.hasOwnProperty(_1250)) {
+                            _1249[_1250] = _400[_1250];
                         };
                     };
-                    _1223.rassoc = Prelude[":"](_396.values[0])(_397.rassoc);
-                    return _1223;
+                    _1249.rassoc = Prelude[":"](_399.values[0])(_400.rassoc);
+                    return _1249;
                 };
             };
-            if (_396.ctor === "Text.Parsing.Parser.Expr.Prefix") {
-                var _1227 = {};
-                for (var _1228 in _397) {
-                    if (_397.hasOwnProperty(_1228)) {
-                        _1227[_1228] = _397[_1228];
+            if (_399.ctor === "Text.Parsing.Parser.Expr.Prefix") {
+                var _1253 = {};
+                for (var _1254 in _400) {
+                    if (_400.hasOwnProperty(_1254)) {
+                        _1253[_1254] = _400[_1254];
                     };
                 };
-                _1227.prefix = Prelude[":"](_396.values[0])(_397.prefix);
-                return _1227;
+                _1253.prefix = Prelude[":"](_399.values[0])(_400.prefix);
+                return _1253;
             };
-            if (_396.ctor === "Text.Parsing.Parser.Expr.Postfix") {
-                var _1230 = {};
-                for (var _1231 in _397) {
-                    if (_397.hasOwnProperty(_1231)) {
-                        _1230[_1231] = _397[_1231];
+            if (_399.ctor === "Text.Parsing.Parser.Expr.Postfix") {
+                var _1256 = {};
+                for (var _1257 in _400) {
+                    if (_400.hasOwnProperty(_1257)) {
+                        _1256[_1257] = _400[_1257];
                     };
                 };
-                _1230.postfix = Prelude[":"](_396.values[0])(_397.postfix);
-                return _1230;
+                _1256.postfix = Prelude[":"](_399.values[0])(_400.postfix);
+                return _1256;
             };
             throw "Failed pattern match";
         };
@@ -63555,11 +63696,11 @@ PS.Text_Parsing_Parser_Expr = (function () {
                 return function (prefixP) {
                     return function (term) {
                         return function (postfixP) {
-                            return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_306))(rassocOp)(function (_54) {
-                                return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_306))(Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_306))(termP(__dict_Monad_306)(prefixP)(term)(postfixP))(function (_52) {
-                                    return rassocP1(__dict_Monad_306)(_52)(rassocOp)(prefixP)(term)(postfixP);
-                                }))(function (_53) {
-                                    return Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_306))(_54(x)(_53));
+                            return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_306))(rassocOp)(function (_57) {
+                                return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_306))(Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_306))(termP(__dict_Monad_306)(prefixP)(term)(postfixP))(function (_55) {
+                                    return rassocP1(__dict_Monad_306)(_55)(rassocOp)(prefixP)(term)(postfixP);
+                                }))(function (_56) {
+                                    return Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_306))(_57(x)(_56));
                                 });
                             });
                         };
@@ -63587,9 +63728,9 @@ PS.Text_Parsing_Parser_Expr = (function () {
                 return function (prefixP) {
                     return function (term) {
                         return function (postfixP) {
-                            return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_308))(nassocOp)(function (_58) {
-                                return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_308))(termP(__dict_Monad_308)(prefixP)(term)(postfixP))(function (_57) {
-                                    return Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_308))(_58(x)(_57));
+                            return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_308))(nassocOp)(function (_61) {
+                                return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_308))(termP(__dict_Monad_308)(prefixP)(term)(postfixP))(function (_60) {
+                                    return Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_308))(_61(x)(_60));
                                 });
                             });
                         };
@@ -63604,9 +63745,9 @@ PS.Text_Parsing_Parser_Expr = (function () {
                 return function (prefixP) {
                     return function (term) {
                         return function (postfixP) {
-                            return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_309))(lassocOp)(function (_56) {
-                                return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_309))(termP(__dict_Monad_309)(prefixP)(term)(postfixP))(function (_55) {
-                                    return lassocP1(__dict_Monad_309)(_56(x)(_55))(lassocOp)(prefixP)(term)(postfixP);
+                            return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_309))(lassocOp)(function (_59) {
+                                return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_309))(termP(__dict_Monad_309)(prefixP)(term)(postfixP))(function (_58) {
+                                    return lassocP1(__dict_Monad_309)(_59(x)(_58))(lassocOp)(prefixP)(term)(postfixP);
                                 });
                             });
                         };
@@ -63647,8 +63788,8 @@ PS.Text_Parsing_Parser_Expr = (function () {
                         var postfixOp = Text_Parsing_Parser_Combinators["<?>"](__dict_Monad_311)(Text_Parsing_Parser_Combinators.choice(__dict_Monad_311)(accum.postfix))("");
                         var postfixP = Prelude["<|>"](Text_Parsing_Parser.alternativeParserT(__dict_Monad_311))(postfixOp)(Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_311))(Prelude.id(Prelude.categoryArr({}))));
                         var prefixP = Prelude["<|>"](Text_Parsing_Parser.alternativeParserT(__dict_Monad_311))(prefixOp)(Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_311))(Prelude.id(Prelude.categoryArr({}))));
-                        return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_311))(termP(__dict_Monad_311)(prefixP)(term)(postfixP))(function (_62) {
-                            return Text_Parsing_Parser_Combinators["<?>"](__dict_Monad_311)(Prelude["<|>"](Text_Parsing_Parser.alternativeParserT(__dict_Monad_311))(Prelude["<|>"](Text_Parsing_Parser.alternativeParserT(__dict_Monad_311))(Prelude["<|>"](Text_Parsing_Parser.alternativeParserT(__dict_Monad_311))(rassocP(__dict_Monad_311)(_62)(rassocOp)(prefixP)(term)(postfixP))(lassocP(__dict_Monad_311)(_62)(lassocOp)(prefixP)(term)(postfixP)))(nassocP(__dict_Monad_311)(_62)(nassocOp)(prefixP)(term)(postfixP)))(Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_311))(_62)))("operator");
+                        return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_311))(termP(__dict_Monad_311)(prefixP)(term)(postfixP))(function (_65) {
+                            return Text_Parsing_Parser_Combinators["<?>"](__dict_Monad_311)(Prelude["<|>"](Text_Parsing_Parser.alternativeParserT(__dict_Monad_311))(Prelude["<|>"](Text_Parsing_Parser.alternativeParserT(__dict_Monad_311))(Prelude["<|>"](Text_Parsing_Parser.alternativeParserT(__dict_Monad_311))(rassocP(__dict_Monad_311)(_65)(rassocOp)(prefixP)(term)(postfixP))(lassocP(__dict_Monad_311)(_65)(lassocOp)(prefixP)(term)(postfixP)))(nassocP(__dict_Monad_311)(_65)(nassocOp)(prefixP)(term)(postfixP)))(Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_311))(_65)))("operator");
                         });
                     };
                 };
@@ -63687,8 +63828,8 @@ PS.Text_Parsing_Parser_String = (function () {
     var string = function (__dict_Monad_312) {
         return function (s) {
             return Text_Parsing_Parser.ParserT(function (s$prime) {
-                return Prelude["return"](__dict_Monad_312)((function (_1241) {
-                    if (_1241 === 0) {
+                return Prelude["return"](__dict_Monad_312)((function (_1267) {
+                    if (_1267 === 0) {
                         return {
                             consumed: true, 
                             input: Data_String.drop(Data_String.length(s))(s$prime), 
@@ -63705,14 +63846,14 @@ PS.Text_Parsing_Parser_String = (function () {
         };
     };
     var whiteSpace = function (__dict_Monad_313) {
-        return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_313))(Text_Parsing_Parser_Combinators.many(__dict_Monad_313)(Prelude["<|>"](Text_Parsing_Parser.alternativeParserT(__dict_Monad_313))(Prelude["<|>"](Text_Parsing_Parser.alternativeParserT(__dict_Monad_313))(Prelude["<|>"](Text_Parsing_Parser.alternativeParserT(__dict_Monad_313))(string(__dict_Monad_313)("\n"))(string(__dict_Monad_313)("\r")))(string(__dict_Monad_313)(" ")))(string(__dict_Monad_313)("\t"))))(function (_64) {
-            return Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_313))(Data_Foldable.foldMap(Data_Foldable.foldableArray({}))(Data_Monoid.monoidString({}))(Prelude.id(Prelude.categoryArr({})))(_64));
+        return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_313))(Text_Parsing_Parser_Combinators.many(__dict_Monad_313)(Prelude["<|>"](Text_Parsing_Parser.alternativeParserT(__dict_Monad_313))(Prelude["<|>"](Text_Parsing_Parser.alternativeParserT(__dict_Monad_313))(Prelude["<|>"](Text_Parsing_Parser.alternativeParserT(__dict_Monad_313))(string(__dict_Monad_313)("\n"))(string(__dict_Monad_313)("\r")))(string(__dict_Monad_313)(" ")))(string(__dict_Monad_313)("\t"))))(function (_67) {
+            return Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_313))(Data_Foldable.foldMap(Data_Foldable.foldableArray({}))(Data_Monoid.monoidString({}))(Prelude.id(Prelude.categoryArr({})))(_67));
         });
     };
     var eof = function (__dict_Monad_314) {
         return Text_Parsing_Parser.ParserT(function (s) {
-            return Prelude["return"](__dict_Monad_314)((function (_1243) {
-                if (_1243 === "") {
+            return Prelude["return"](__dict_Monad_314)((function (_1269) {
+                if (_1269 === "") {
                     return {
                         consumed: false, 
                         input: s, 
@@ -63729,8 +63870,8 @@ PS.Text_Parsing_Parser_String = (function () {
     };
     var $$char = function (__dict_Monad_315) {
         return Text_Parsing_Parser.ParserT(function (s$prime) {
-            return Prelude["return"](__dict_Monad_315)((function (_1244) {
-                if (_1244 === "") {
+            return Prelude["return"](__dict_Monad_315)((function (_1270) {
+                if (_1270 === "") {
                     return {
                         consumed: false, 
                         input: s$prime, 
@@ -63747,8 +63888,8 @@ PS.Text_Parsing_Parser_String = (function () {
     };
     var satisfy = function (__dict_Monad_316) {
         return function (f) {
-            return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_316))($$char(__dict_Monad_316))(function (_63) {
-                return f(_63) ? Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_316))(_63) : Text_Parsing_Parser.fail(__dict_Monad_316)("Character did not satisfy predicate");
+            return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_316))($$char(__dict_Monad_316))(function (_66) {
+                return f(_66) ? Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_316))(_66) : Text_Parsing_Parser.fail(__dict_Monad_316)("Character did not satisfy predicate");
             });
         };
     };
@@ -64124,242 +64265,242 @@ PS.Network_HTTP = (function () {
             };
         };
     };
-    var string2Head = function (_398) {
-        if (_398 === "Accept") {
+    var string2Head = function (_401) {
+        if (_401 === "Accept") {
             return Accept;
         };
-        if (_398 === "Accept-Charset") {
+        if (_401 === "Accept-Charset") {
             return AcceptCharset;
         };
-        if (_398 === "Accept-Encoding") {
+        if (_401 === "Accept-Encoding") {
             return AcceptEncoding;
         };
-        if (_398 === "Accept-Language") {
+        if (_401 === "Accept-Language") {
             return AcceptLanguage;
         };
-        if (_398 === "Allow") {
+        if (_401 === "Allow") {
             return Allow;
         };
-        if (_398 === "Authorization") {
+        if (_401 === "Authorization") {
             return Authorization;
         };
-        if (_398 === "Cache-Control") {
+        if (_401 === "Cache-Control") {
             return CacheControl;
         };
-        if (_398 === "Connection") {
+        if (_401 === "Connection") {
             return Connection;
         };
-        if (_398 === "Content-Encoding") {
+        if (_401 === "Content-Encoding") {
             return ContentEncoding;
         };
-        if (_398 === "Content-Language") {
+        if (_401 === "Content-Language") {
             return ContentLanguage;
         };
-        if (_398 === "Content-Length") {
+        if (_401 === "Content-Length") {
             return ContentLength;
         };
-        if (_398 === "Content-Location") {
+        if (_401 === "Content-Location") {
             return ContentLocation;
         };
-        if (_398 === "Content-MD5") {
+        if (_401 === "Content-MD5") {
             return ContentMD5;
         };
-        if (_398 === "Content-Range") {
+        if (_401 === "Content-Range") {
             return ContentRange;
         };
-        if (_398 === "Content-Type") {
+        if (_401 === "Content-Type") {
             return ContentType;
         };
-        if (_398 === "Date") {
+        if (_401 === "Date") {
             return Date;
         };
-        if (_398 === "Expect") {
+        if (_401 === "Expect") {
             return Expect;
         };
-        if (_398 === "Expires") {
+        if (_401 === "Expires") {
             return Expires;
         };
-        if (_398 === "From") {
+        if (_401 === "From") {
             return From;
         };
-        if (_398 === "Host") {
+        if (_401 === "Host") {
             return Host;
         };
-        if (_398 === "If-Match") {
+        if (_401 === "If-Match") {
             return IfMatch;
         };
-        if (_398 === "If-Modified-Since") {
+        if (_401 === "If-Modified-Since") {
             return IfModifiedSince;
         };
-        if (_398 === "If-None-Match") {
+        if (_401 === "If-None-Match") {
             return IfNoneMatch;
         };
-        if (_398 === "If-Range") {
+        if (_401 === "If-Range") {
             return IfRange;
         };
-        if (_398 === "If-Unmodified-Since") {
+        if (_401 === "If-Unmodified-Since") {
             return IfUnmodifiedSince;
         };
-        if (_398 === "Last-Modified") {
+        if (_401 === "Last-Modified") {
             return LastModified;
         };
-        if (_398 === "Max-Forwards") {
+        if (_401 === "Max-Forwards") {
             return MaxForwards;
         };
-        if (_398 === "Pragma") {
+        if (_401 === "Pragma") {
             return Pragma;
         };
-        if (_398 === "Proxy-Authorization") {
+        if (_401 === "Proxy-Authorization") {
             return ProxyAuthorization;
         };
-        if (_398 === "Range") {
+        if (_401 === "Range") {
             return Range;
         };
-        if (_398 === "Referer") {
+        if (_401 === "Referer") {
             return Referer;
         };
-        if (_398 === "Te") {
+        if (_401 === "Te") {
             return TE;
         };
-        if (_398 === "Trailer") {
+        if (_401 === "Trailer") {
             return Trailer;
         };
-        if (_398 === "Transfer-Encoding") {
+        if (_401 === "Transfer-Encoding") {
             return TransferEncoding;
         };
-        if (_398 === "Upgrade") {
+        if (_401 === "Upgrade") {
             return Upgrade;
         };
-        if (_398 === "User-Agent") {
+        if (_401 === "User-Agent") {
             return UserAgent;
         };
-        if (_398 === "Via") {
+        if (_401 === "Via") {
             return Via;
         };
-        if (_398 === "Warning") {
+        if (_401 === "Warning") {
             return Warning;
         };
-        return Custom(_398);
+        return Custom(_401);
     };
-    var status2Number = function (_399) {
-        if (_399.ctor === "Network.HTTP.NoStatus") {
+    var status2Number = function (_402) {
+        if (_402.ctor === "Network.HTTP.NoStatus") {
             return 0;
         };
-        if (_399.ctor === "Network.HTTP.Continue") {
+        if (_402.ctor === "Network.HTTP.Continue") {
             return 100;
         };
-        if (_399.ctor === "Network.HTTP.SwitchingProtocols") {
+        if (_402.ctor === "Network.HTTP.SwitchingProtocols") {
             return 101;
         };
-        if (_399.ctor === "Network.HTTP.Ok") {
+        if (_402.ctor === "Network.HTTP.Ok") {
             return 200;
         };
-        if (_399.ctor === "Network.HTTP.Created") {
+        if (_402.ctor === "Network.HTTP.Created") {
             return 201;
         };
-        if (_399.ctor === "Network.HTTP.Accepted") {
+        if (_402.ctor === "Network.HTTP.Accepted") {
             return 202;
         };
-        if (_399.ctor === "Network.HTTP.NonAuthoritativeInformation") {
+        if (_402.ctor === "Network.HTTP.NonAuthoritativeInformation") {
             return 203;
         };
-        if (_399.ctor === "Network.HTTP.NoContent") {
+        if (_402.ctor === "Network.HTTP.NoContent") {
             return 204;
         };
-        if (_399.ctor === "Network.HTTP.ResetContent") {
+        if (_402.ctor === "Network.HTTP.ResetContent") {
             return 205;
         };
-        if (_399.ctor === "Network.HTTP.PartialContent") {
+        if (_402.ctor === "Network.HTTP.PartialContent") {
             return 206;
         };
-        if (_399.ctor === "Network.HTTP.MultipleChoices") {
+        if (_402.ctor === "Network.HTTP.MultipleChoices") {
             return 300;
         };
-        if (_399.ctor === "Network.HTTP.MovedPermanently") {
+        if (_402.ctor === "Network.HTTP.MovedPermanently") {
             return 301;
         };
-        if (_399.ctor === "Network.HTTP.Found") {
+        if (_402.ctor === "Network.HTTP.Found") {
             return 302;
         };
-        if (_399.ctor === "Network.HTTP.SeeOther") {
+        if (_402.ctor === "Network.HTTP.SeeOther") {
             return 303;
         };
-        if (_399.ctor === "Network.HTTP.NotModified") {
+        if (_402.ctor === "Network.HTTP.NotModified") {
             return 304;
         };
-        if (_399.ctor === "Network.HTTP.UseProxy") {
+        if (_402.ctor === "Network.HTTP.UseProxy") {
             return 305;
         };
-        if (_399.ctor === "Network.HTTP.TemporaryRedirect") {
+        if (_402.ctor === "Network.HTTP.TemporaryRedirect") {
             return 307;
         };
-        if (_399.ctor === "Network.HTTP.BadRequest") {
+        if (_402.ctor === "Network.HTTP.BadRequest") {
             return 400;
         };
-        if (_399.ctor === "Network.HTTP.Unauthorized") {
+        if (_402.ctor === "Network.HTTP.Unauthorized") {
             return 401;
         };
-        if (_399.ctor === "Network.HTTP.PaymentRequired") {
+        if (_402.ctor === "Network.HTTP.PaymentRequired") {
             return 402;
         };
-        if (_399.ctor === "Network.HTTP.Forbidden") {
+        if (_402.ctor === "Network.HTTP.Forbidden") {
             return 403;
         };
-        if (_399.ctor === "Network.HTTP.NotFound") {
+        if (_402.ctor === "Network.HTTP.NotFound") {
             return 404;
         };
-        if (_399.ctor === "Network.HTTP.MethodNotAllowed") {
+        if (_402.ctor === "Network.HTTP.MethodNotAllowed") {
             return 405;
         };
-        if (_399.ctor === "Network.HTTP.NotAcceptable") {
+        if (_402.ctor === "Network.HTTP.NotAcceptable") {
             return 406;
         };
-        if (_399.ctor === "Network.HTTP.ProxyAuthenticationRequired") {
+        if (_402.ctor === "Network.HTTP.ProxyAuthenticationRequired") {
             return 407;
         };
-        if (_399.ctor === "Network.HTTP.RequestTimeout") {
+        if (_402.ctor === "Network.HTTP.RequestTimeout") {
             return 408;
         };
-        if (_399.ctor === "Network.HTTP.Gone") {
+        if (_402.ctor === "Network.HTTP.Gone") {
             return 410;
         };
-        if (_399.ctor === "Network.HTTP.LengthRequired") {
+        if (_402.ctor === "Network.HTTP.LengthRequired") {
             return 411;
         };
-        if (_399.ctor === "Network.HTTP.PreconditionFailed") {
+        if (_402.ctor === "Network.HTTP.PreconditionFailed") {
             return 412;
         };
-        if (_399.ctor === "Network.HTTP.RequestEntityTooLarge") {
+        if (_402.ctor === "Network.HTTP.RequestEntityTooLarge") {
             return 413;
         };
-        if (_399.ctor === "Network.HTTP.RequestURITooLong") {
+        if (_402.ctor === "Network.HTTP.RequestURITooLong") {
             return 414;
         };
-        if (_399.ctor === "Network.HTTP.UnsupportedMediaType") {
+        if (_402.ctor === "Network.HTTP.UnsupportedMediaType") {
             return 415;
         };
-        if (_399.ctor === "Network.HTTP.RequestedRangeNotSatisfiable") {
+        if (_402.ctor === "Network.HTTP.RequestedRangeNotSatisfiable") {
             return 416;
         };
-        if (_399.ctor === "Network.HTTP.ExpectationFailed") {
+        if (_402.ctor === "Network.HTTP.ExpectationFailed") {
             return 417;
         };
-        if (_399.ctor === "Network.HTTP.InternalServerError") {
+        if (_402.ctor === "Network.HTTP.InternalServerError") {
             return 500;
         };
-        if (_399.ctor === "Network.HTTP.NotImplemented") {
+        if (_402.ctor === "Network.HTTP.NotImplemented") {
             return 501;
         };
-        if (_399.ctor === "Network.HTTP.BadGateway") {
+        if (_402.ctor === "Network.HTTP.BadGateway") {
             return 502;
         };
-        if (_399.ctor === "Network.HTTP.ServiceUnavailable") {
+        if (_402.ctor === "Network.HTTP.ServiceUnavailable") {
             return 503;
         };
-        if (_399.ctor === "Network.HTTP.GatewayTimeout") {
+        if (_402.ctor === "Network.HTTP.GatewayTimeout") {
             return 504;
         };
-        if (_399.ctor === "Network.HTTP.HTTPVersionNotSupported") {
+        if (_402.ctor === "Network.HTTP.HTTPVersionNotSupported") {
             return 505;
         };
         throw "Failed pattern match";
@@ -64378,123 +64519,123 @@ PS.Network_HTTP = (function () {
     var showHeaderHead = function (_) {
         return {
             "__superclasses": {}, 
-            show: function (_403) {
-                if (_403.ctor === "Network.HTTP.Accept") {
+            show: function (_406) {
+                if (_406.ctor === "Network.HTTP.Accept") {
                     return "Accept";
                 };
-                if (_403.ctor === "Network.HTTP.AcceptCharset") {
+                if (_406.ctor === "Network.HTTP.AcceptCharset") {
                     return "Accept-Charset";
                 };
-                if (_403.ctor === "Network.HTTP.AcceptEncoding") {
+                if (_406.ctor === "Network.HTTP.AcceptEncoding") {
                     return "Accept-Encoding";
                 };
-                if (_403.ctor === "Network.HTTP.AcceptLanguage") {
+                if (_406.ctor === "Network.HTTP.AcceptLanguage") {
                     return "Accept-Language";
                 };
-                if (_403.ctor === "Network.HTTP.Allow") {
+                if (_406.ctor === "Network.HTTP.Allow") {
                     return "Allow";
                 };
-                if (_403.ctor === "Network.HTTP.Authorization") {
+                if (_406.ctor === "Network.HTTP.Authorization") {
                     return "Authorization";
                 };
-                if (_403.ctor === "Network.HTTP.CacheControl") {
+                if (_406.ctor === "Network.HTTP.CacheControl") {
                     return "Cache-Control";
                 };
-                if (_403.ctor === "Network.HTTP.Connection") {
+                if (_406.ctor === "Network.HTTP.Connection") {
                     return "Connection";
                 };
-                if (_403.ctor === "Network.HTTP.ContentEncoding") {
+                if (_406.ctor === "Network.HTTP.ContentEncoding") {
                     return "Content-Encoding";
                 };
-                if (_403.ctor === "Network.HTTP.ContentLanguage") {
+                if (_406.ctor === "Network.HTTP.ContentLanguage") {
                     return "Content-Language";
                 };
-                if (_403.ctor === "Network.HTTP.ContentLength") {
+                if (_406.ctor === "Network.HTTP.ContentLength") {
                     return "Content-Length";
                 };
-                if (_403.ctor === "Network.HTTP.ContentLocation") {
+                if (_406.ctor === "Network.HTTP.ContentLocation") {
                     return "Content-Location";
                 };
-                if (_403.ctor === "Network.HTTP.ContentMD5") {
+                if (_406.ctor === "Network.HTTP.ContentMD5") {
                     return "Content-MD5";
                 };
-                if (_403.ctor === "Network.HTTP.ContentRange") {
+                if (_406.ctor === "Network.HTTP.ContentRange") {
                     return "Content-Range";
                 };
-                if (_403.ctor === "Network.HTTP.ContentType") {
+                if (_406.ctor === "Network.HTTP.ContentType") {
                     return "Content-Type";
                 };
-                if (_403.ctor === "Network.HTTP.Date") {
+                if (_406.ctor === "Network.HTTP.Date") {
                     return "Date";
                 };
-                if (_403.ctor === "Network.HTTP.Expect") {
+                if (_406.ctor === "Network.HTTP.Expect") {
                     return "Expect";
                 };
-                if (_403.ctor === "Network.HTTP.Expires") {
+                if (_406.ctor === "Network.HTTP.Expires") {
                     return "Expires";
                 };
-                if (_403.ctor === "Network.HTTP.From") {
+                if (_406.ctor === "Network.HTTP.From") {
                     return "From";
                 };
-                if (_403.ctor === "Network.HTTP.Host") {
+                if (_406.ctor === "Network.HTTP.Host") {
                     return "Host";
                 };
-                if (_403.ctor === "Network.HTTP.IfMatch") {
+                if (_406.ctor === "Network.HTTP.IfMatch") {
                     return "If-Match";
                 };
-                if (_403.ctor === "Network.HTTP.IfModifiedSince") {
+                if (_406.ctor === "Network.HTTP.IfModifiedSince") {
                     return "If-Modified-Since";
                 };
-                if (_403.ctor === "Network.HTTP.IfNoneMatch") {
+                if (_406.ctor === "Network.HTTP.IfNoneMatch") {
                     return "If-None-Match";
                 };
-                if (_403.ctor === "Network.HTTP.IfRange") {
+                if (_406.ctor === "Network.HTTP.IfRange") {
                     return "If-Range";
                 };
-                if (_403.ctor === "Network.HTTP.IfUnmodifiedSince") {
+                if (_406.ctor === "Network.HTTP.IfUnmodifiedSince") {
                     return "If-Unmodified-Since";
                 };
-                if (_403.ctor === "Network.HTTP.LastModified") {
+                if (_406.ctor === "Network.HTTP.LastModified") {
                     return "Last-Modified";
                 };
-                if (_403.ctor === "Network.HTTP.MaxForwards") {
+                if (_406.ctor === "Network.HTTP.MaxForwards") {
                     return "Max-Forwards";
                 };
-                if (_403.ctor === "Network.HTTP.Pragma") {
+                if (_406.ctor === "Network.HTTP.Pragma") {
                     return "Pragma";
                 };
-                if (_403.ctor === "Network.HTTP.ProxyAuthorization") {
+                if (_406.ctor === "Network.HTTP.ProxyAuthorization") {
                     return "Proxy-Authorization";
                 };
-                if (_403.ctor === "Network.HTTP.Range") {
+                if (_406.ctor === "Network.HTTP.Range") {
                     return "Range";
                 };
-                if (_403.ctor === "Network.HTTP.Referer") {
+                if (_406.ctor === "Network.HTTP.Referer") {
                     return "Referer";
                 };
-                if (_403.ctor === "Network.HTTP.TE") {
+                if (_406.ctor === "Network.HTTP.TE") {
                     return "Te";
                 };
-                if (_403.ctor === "Network.HTTP.Trailer") {
+                if (_406.ctor === "Network.HTTP.Trailer") {
                     return "Trailer";
                 };
-                if (_403.ctor === "Network.HTTP.TransferEncoding") {
+                if (_406.ctor === "Network.HTTP.TransferEncoding") {
                     return "Transfer-Encoding";
                 };
-                if (_403.ctor === "Network.HTTP.Upgrade") {
+                if (_406.ctor === "Network.HTTP.Upgrade") {
                     return "Upgrade";
                 };
-                if (_403.ctor === "Network.HTTP.UserAgent") {
+                if (_406.ctor === "Network.HTTP.UserAgent") {
                     return "User-Agent";
                 };
-                if (_403.ctor === "Network.HTTP.Via") {
+                if (_406.ctor === "Network.HTTP.Via") {
                     return "Via";
                 };
-                if (_403.ctor === "Network.HTTP.Warning") {
+                if (_406.ctor === "Network.HTTP.Warning") {
                     return "Warning";
                 };
-                if (_403.ctor === "Network.HTTP.Custom") {
-                    return _403.values[0];
+                if (_406.ctor === "Network.HTTP.Custom") {
+                    return _406.values[0];
                 };
                 throw "Failed pattern match";
             }
@@ -64503,159 +64644,159 @@ PS.Network_HTTP = (function () {
     var showHeader = function (_) {
         return {
             "__superclasses": {}, 
-            show: function (_402) {
-                return Prelude.show(showHeaderHead({}))(_402.values[0]) + ": " + _402.values[1];
+            show: function (_405) {
+                return Prelude.show(showHeaderHead({}))(_405.values[0]) + ": " + _405.values[1];
             }
         };
     };
     var showHTTPVerb = function (_) {
         return {
             "__superclasses": {}, 
-            show: function (_401) {
-                if (_401.ctor === "Network.HTTP.DELETE") {
+            show: function (_404) {
+                if (_404.ctor === "Network.HTTP.DELETE") {
                     return "DELETE";
                 };
-                if (_401.ctor === "Network.HTTP.GET") {
+                if (_404.ctor === "Network.HTTP.GET") {
                     return "GET";
                 };
-                if (_401.ctor === "Network.HTTP.HEAD") {
+                if (_404.ctor === "Network.HTTP.HEAD") {
                     return "HEAD";
                 };
-                if (_401.ctor === "Network.HTTP.OPTIONS") {
+                if (_404.ctor === "Network.HTTP.OPTIONS") {
                     return "OPTIONS";
                 };
-                if (_401.ctor === "Network.HTTP.PATCH") {
+                if (_404.ctor === "Network.HTTP.PATCH") {
                     return "PATCH";
                 };
-                if (_401.ctor === "Network.HTTP.POST") {
+                if (_404.ctor === "Network.HTTP.POST") {
                     return "POST";
                 };
-                if (_401.ctor === "Network.HTTP.PUT") {
+                if (_404.ctor === "Network.HTTP.PUT") {
                     return "PUT";
                 };
                 throw "Failed pattern match";
             }
         };
     };
-    var number2Status = function (_400) {
-        if (_400 === 0) {
+    var number2Status = function (_403) {
+        if (_403 === 0) {
             return Data_Maybe.Just(NoStatus);
         };
-        if (_400 === 100) {
+        if (_403 === 100) {
             return Data_Maybe.Just(Continue);
         };
-        if (_400 === 101) {
+        if (_403 === 101) {
             return Data_Maybe.Just(SwitchingProtocols);
         };
-        if (_400 === 200) {
+        if (_403 === 200) {
             return Data_Maybe.Just(Ok);
         };
-        if (_400 === 201) {
+        if (_403 === 201) {
             return Data_Maybe.Just(Created);
         };
-        if (_400 === 202) {
+        if (_403 === 202) {
             return Data_Maybe.Just(Accepted);
         };
-        if (_400 === 203) {
+        if (_403 === 203) {
             return Data_Maybe.Just(NonAuthoritativeInformation);
         };
-        if (_400 === 204) {
+        if (_403 === 204) {
             return Data_Maybe.Just(NoContent);
         };
-        if (_400 === 205) {
+        if (_403 === 205) {
             return Data_Maybe.Just(ResetContent);
         };
-        if (_400 === 206) {
+        if (_403 === 206) {
             return Data_Maybe.Just(PartialContent);
         };
-        if (_400 === 300) {
+        if (_403 === 300) {
             return Data_Maybe.Just(MultipleChoices);
         };
-        if (_400 === 301) {
+        if (_403 === 301) {
             return Data_Maybe.Just(MovedPermanently);
         };
-        if (_400 === 302) {
+        if (_403 === 302) {
             return Data_Maybe.Just(Found);
         };
-        if (_400 === 303) {
+        if (_403 === 303) {
             return Data_Maybe.Just(SeeOther);
         };
-        if (_400 === 304) {
+        if (_403 === 304) {
             return Data_Maybe.Just(NotModified);
         };
-        if (_400 === 305) {
+        if (_403 === 305) {
             return Data_Maybe.Just(UseProxy);
         };
-        if (_400 === 307) {
+        if (_403 === 307) {
             return Data_Maybe.Just(TemporaryRedirect);
         };
-        if (_400 === 400) {
+        if (_403 === 400) {
             return Data_Maybe.Just(BadRequest);
         };
-        if (_400 === 401) {
+        if (_403 === 401) {
             return Data_Maybe.Just(Unauthorized);
         };
-        if (_400 === 402) {
+        if (_403 === 402) {
             return Data_Maybe.Just(PaymentRequired);
         };
-        if (_400 === 403) {
+        if (_403 === 403) {
             return Data_Maybe.Just(Forbidden);
         };
-        if (_400 === 404) {
+        if (_403 === 404) {
             return Data_Maybe.Just(NotFound);
         };
-        if (_400 === 405) {
+        if (_403 === 405) {
             return Data_Maybe.Just(MethodNotAllowed);
         };
-        if (_400 === 406) {
+        if (_403 === 406) {
             return Data_Maybe.Just(NotAcceptable);
         };
-        if (_400 === 407) {
+        if (_403 === 407) {
             return Data_Maybe.Just(ProxyAuthenticationRequired);
         };
-        if (_400 === 408) {
+        if (_403 === 408) {
             return Data_Maybe.Just(RequestTimeout);
         };
-        if (_400 === 410) {
+        if (_403 === 410) {
             return Data_Maybe.Just(Gone);
         };
-        if (_400 === 411) {
+        if (_403 === 411) {
             return Data_Maybe.Just(LengthRequired);
         };
-        if (_400 === 412) {
+        if (_403 === 412) {
             return Data_Maybe.Just(PreconditionFailed);
         };
-        if (_400 === 413) {
+        if (_403 === 413) {
             return Data_Maybe.Just(RequestEntityTooLarge);
         };
-        if (_400 === 414) {
+        if (_403 === 414) {
             return Data_Maybe.Just(RequestURITooLong);
         };
-        if (_400 === 415) {
+        if (_403 === 415) {
             return Data_Maybe.Just(UnsupportedMediaType);
         };
-        if (_400 === 416) {
+        if (_403 === 416) {
             return Data_Maybe.Just(RequestedRangeNotSatisfiable);
         };
-        if (_400 === 417) {
+        if (_403 === 417) {
             return Data_Maybe.Just(ExpectationFailed);
         };
-        if (_400 === 500) {
+        if (_403 === 500) {
             return Data_Maybe.Just(InternalServerError);
         };
-        if (_400 === 501) {
+        if (_403 === 501) {
             return Data_Maybe.Just(NotImplemented);
         };
-        if (_400 === 502) {
+        if (_403 === 502) {
             return Data_Maybe.Just(BadGateway);
         };
-        if (_400 === 503) {
+        if (_403 === 503) {
             return Data_Maybe.Just(ServiceUnavailable);
         };
-        if (_400 === 504) {
+        if (_403 === 504) {
             return Data_Maybe.Just(GatewayTimeout);
         };
-        if (_400 === 505) {
+        if (_403 === 505) {
             return Data_Maybe.Just(HTTPVersionNotSupported);
         };
         return Data_Maybe.Nothing;
@@ -64664,10 +64805,10 @@ PS.Network_HTTP = (function () {
         return Text_Parsing_Parser_String.string(__dict_Monad_320)("\n");
     };
     var parseHeader = function (__dict_Monad_321) {
-        return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_321))(Control_Apply["<*"](Text_Parsing_Parser.applyParserT(__dict_Monad_321))(Control_Apply["<*"](Text_Parsing_Parser.applyParserT(__dict_Monad_321))(Text_Parsing_Parser_Combinators.many1(__dict_Monad_321)(Text_Parsing_Parser_String["char"](__dict_Monad_321)))(Text_Parsing_Parser_String.string(__dict_Monad_321)(":")))(skipSpaces(__dict_Monad_321)))(function (_66) {
-            return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_321))(Control_Apply["<*"](Text_Parsing_Parser.applyParserT(__dict_Monad_321))(Text_Parsing_Parser_Combinators.many1(__dict_Monad_321)(Text_Parsing_Parser_String["char"](__dict_Monad_321)))(eol(__dict_Monad_321)))(function (_65) {
-                var head$prime = string2Head(Data_String.joinWith("")(_66));
-                var values$prime = Data_String.joinWith("")(_65);
+        return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_321))(Control_Apply["<*"](Text_Parsing_Parser.applyParserT(__dict_Monad_321))(Control_Apply["<*"](Text_Parsing_Parser.applyParserT(__dict_Monad_321))(Text_Parsing_Parser_Combinators.many1(__dict_Monad_321)(Text_Parsing_Parser_String["char"](__dict_Monad_321)))(Text_Parsing_Parser_String.string(__dict_Monad_321)(":")))(skipSpaces(__dict_Monad_321)))(function (_69) {
+            return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_321))(Control_Apply["<*"](Text_Parsing_Parser.applyParserT(__dict_Monad_321))(Text_Parsing_Parser_Combinators.many1(__dict_Monad_321)(Text_Parsing_Parser_String["char"](__dict_Monad_321)))(eol(__dict_Monad_321)))(function (_68) {
+                var head$prime = string2Head(Data_String.joinWith("")(_69));
+                var values$prime = Data_String.joinWith("")(_68);
                 return Prelude.pure(Text_Parsing_Parser.applicativeParserT(__dict_Monad_321))(Header(head$prime)(values$prime));
             });
         });
@@ -64804,23 +64945,23 @@ PS.Network_Oboe = (function () {
     };
     var oboeGet = function (url) {
         return oboe((function () {
-            var _1257 = {};
-            for (var _1258 in oboeOptions) {
-                if (oboeOptions.hasOwnProperty(_1258)) {
-                    _1257[_1258] = oboeOptions[_1258];
+            var _1283 = {};
+            for (var _1284 in oboeOptions) {
+                if (oboeOptions.hasOwnProperty(_1284)) {
+                    _1283[_1284] = oboeOptions[_1284];
                 };
             };
-            _1257.url = url;
-            return _1257;
+            _1283.url = url;
+            return _1283;
         })());
     };
     var mkFn3_ = Data_Function.mkFn3;
     var mkFn2_ = Data_Function.mkFn2;
     var mkFn1_ = Data_Function.mkFn1;
-    var header2Obj = function (_404) {
+    var header2Obj = function (_407) {
         return {
-            head: Prelude.show(Network_HTTP.showHeaderHead({}))(_404.values[0]), 
-            value: _404.values[1]
+            head: Prelude.show(Network_HTTP.showHeaderHead({}))(_407.values[0]), 
+            value: _407.values[1]
         };
     };
     return {
@@ -64851,22 +64992,22 @@ PS.Browser_WebStorage = (function () {
     var storageSessionStorage = function (_) {
         return {
             "__superclasses": {}, 
-            length: function (_411) {
+            length: function (_414) {
                 return unsafeLength(sessionStorage);
             }, 
-            key: function (_412) {
+            key: function (_415) {
                 return unsafeKey(sessionStorage);
             }, 
-            getItem: function (_413) {
+            getItem: function (_416) {
                 return unsafeGetItem(sessionStorage);
             }, 
-            setItem: function (_414) {
+            setItem: function (_417) {
                 return unsafeSetItem(sessionStorage);
             }, 
-            removeItem: function (_415) {
+            removeItem: function (_418) {
                 return unsafeRemoveItem(sessionStorage);
             }, 
-            clear: function (_416) {
+            clear: function (_419) {
                 return unsafeClear(sessionStorage);
             }
         };
@@ -64874,22 +65015,22 @@ PS.Browser_WebStorage = (function () {
     var storageLocalStorage = function (_) {
         return {
             "__superclasses": {}, 
-            length: function (_405) {
+            length: function (_408) {
                 return unsafeLength(localStorage);
             }, 
-            key: function (_406) {
+            key: function (_409) {
                 return unsafeKey(localStorage);
             }, 
-            getItem: function (_407) {
+            getItem: function (_410) {
                 return unsafeGetItem(localStorage);
             }, 
-            setItem: function (_408) {
+            setItem: function (_411) {
                 return unsafeSetItem(localStorage);
             }, 
-            removeItem: function (_409) {
+            removeItem: function (_412) {
                 return unsafeRemoveItem(localStorage);
             }, 
-            clear: function (_410) {
+            clear: function (_413) {
                 return unsafeClear(localStorage);
             }
         };
@@ -64964,7 +65105,6 @@ PS.SlamData_Helpers = (function () {
         };
     };
     function getDOMNode(x) {  return x.getDOMNode();};
-    function focus(x) {  return x.focus();};
     var $dot$dot = Data_Array.range;
     var visualPie = Graphics_C3.Pie;
     var visualLine = Graphics_C3.Line;
@@ -64975,14 +65115,14 @@ PS.SlamData_Helpers = (function () {
     var showLocalKey = function (_) {
         return {
             "__superclasses": {}, 
-            show: function (_441) {
-                if (_441.ctor === "SlamData.Helpers.Blocks") {
+            show: function (_445) {
+                if (_445.ctor === "SlamData.Helpers.Blocks") {
                     return "blocks";
                 };
-                if (_441.ctor === "SlamData.Helpers.Notebooks") {
+                if (_445.ctor === "SlamData.Helpers.Notebooks") {
                     return "notebooks";
                 };
-                if (_441.ctor === "SlamData.Helpers.EvalSQLBlocks") {
+                if (_445.ctor === "SlamData.Helpers.EvalSQLBlocks") {
                     return "evalsqlblocks";
                 };
                 throw "Failed pattern match";
@@ -64990,29 +65130,32 @@ PS.SlamData_Helpers = (function () {
         };
     };
     var serverURI = "http://localhost:8080";
-    var select = function (_417) {
-        return function (_418) {
-            return function (_419) {
-                if (_417(_418)) {
-                    var _1278 = {};
-                    for (var _1279 in _419) {
-                        if (_419.hasOwnProperty(_1279)) {
-                            _1278[_1279] = _419[_1279];
+    var select = function (_420) {
+        return function (_421) {
+            return function (_422) {
+                if (_420(_421)) {
+                    var _1304 = {};
+                    for (var _1305 in _422) {
+                        if (_422.hasOwnProperty(_1305)) {
+                            _1304[_1305] = _422[_1305];
                         };
                     };
-                    _1278.fst = Prelude[":"](_418)(_419.fst);
-                    return _1278;
+                    _1304.fst = Prelude[":"](_421)(_422.fst);
+                    return _1304;
                 };
-                var _1280 = {};
-                for (var _1281 in _419) {
-                    if (_419.hasOwnProperty(_1281)) {
-                        _1280[_1281] = _419[_1281];
+                var _1306 = {};
+                for (var _1307 in _422) {
+                    if (_422.hasOwnProperty(_1307)) {
+                        _1306[_1307] = _422[_1307];
                     };
                 };
-                _1280.snd = Prelude[":"](_418)(_419.snd);
-                return _1280;
+                _1306.snd = Prelude[":"](_421)(_422.snd);
+                return _1306;
             };
         };
+    };
+    var runVisualIcon = function (_433) {
+        return FAIcon(React_DOM.span([ React_DOM.className("fa-stack run-visual tiny secondary button has-tooltip") ])([ React_DOM.i([ React_DOM.className("fa fa-stack-1x fa-bar-chart-o") ])([  ]), React_DOM.i([ React_DOM.className("fa fa-stack-1x fa-play run-icon") ])([  ]) ]));
     };
     var row = function (uis) {
         return React_DOM.div([ React_DOM.className("row") ])(uis);
@@ -65043,25 +65186,25 @@ PS.SlamData_Helpers = (function () {
     var iconFA = function (_) {
         return {
             "__superclasses": {}, 
-            toUI: function (_442) {
-                return _442.values[0];
+            toUI: function (_446) {
+                return _446.values[0];
             }
         };
     };
     var iconEntypo = function (_) {
         return {
             "__superclasses": {}, 
-            toUI: function (_443) {
-                return _443.values[0];
+            toUI: function (_447) {
+                return _447.values[0];
             }
         };
     };
-    var guardMaybe = function (_420) {
-        return function (_421) {
-            if (_420) {
-                return _421;
+    var guardMaybe = function (_423) {
+        return function (_424) {
+            if (_423) {
+                return _424;
             };
-            if (!_420) {
+            if (!_423) {
                 return Data_Maybe.Nothing;
             };
             throw "Failed pattern match";
@@ -65071,53 +65214,53 @@ PS.SlamData_Helpers = (function () {
     var faIcon = function (name) {
         return FAIcon(React_DOM.i([ React_DOM.className(name) ])([  ]));
     };
-    var fileIcon = function (_432) {
+    var fileIcon = function (_436) {
         return faIcon("fa fa-file-o");
     };
-    var loadingIcon = function (_434) {
+    var loadingIcon = function (_438) {
         return faIcon("fa fa-circle-o-notch fa-spin");
     };
-    var markdownIcon = function (_427) {
+    var markdownIcon = function (_430) {
         return faIcon("fa fa-file-text");
     };
-    var newIcon = function (_423) {
+    var newIcon = function (_426) {
         return faIcon("fa fa-file");
     };
-    var newNotebookIcon = function (_433) {
+    var newNotebookIcon = function (_437) {
         return faIcon("fa fa-plus");
     };
-    var openIcon = function (_424) {
+    var openIcon = function (_427) {
         return faIcon("fa fa-folder-open");
     };
-    var publishIcon = function (_426) {
+    var publishIcon = function (_429) {
         return faIcon("fa fa-book");
     };
-    var saveIcon = function (_425) {
+    var saveIcon = function (_428) {
         return faIcon("fa fa-save");
     };
-    var sqlIcon = function (_428) {
+    var sqlIcon = function (_431) {
         return faIcon("fa fa-database");
     };
-    var visualIcon = function (_429) {
+    var visualIcon = function (_432) {
         return faIcon("fa fa-bar-chart-o");
     };
     var eqLocalKey = function (_) {
         return {
             "__superclasses": {}, 
-            "==": function (_439) {
-                return function (_440) {
-                    if (_439.ctor === "SlamData.Helpers.Blocks") {
-                        if (_440.ctor === "SlamData.Helpers.Blocks") {
+            "==": function (_443) {
+                return function (_444) {
+                    if (_443.ctor === "SlamData.Helpers.Blocks") {
+                        if (_444.ctor === "SlamData.Helpers.Blocks") {
                             return true;
                         };
                     };
-                    if (_439.ctor === "SlamData.Helpers.Notebooks") {
-                        if (_440.ctor === "SlamData.Helpers.Notebooks") {
+                    if (_443.ctor === "SlamData.Helpers.Notebooks") {
+                        if (_444.ctor === "SlamData.Helpers.Notebooks") {
                             return true;
                         };
                     };
-                    if (_439.ctor === "SlamData.Helpers.EvalSQLBlocks") {
-                        if (_440.ctor === "SlamData.Helpers.EvalSQLBlocks") {
+                    if (_443.ctor === "SlamData.Helpers.EvalSQLBlocks") {
+                        if (_444.ctor === "SlamData.Helpers.EvalSQLBlocks") {
                             return true;
                         };
                     };
@@ -65134,25 +65277,25 @@ PS.SlamData_Helpers = (function () {
     var entypoIcon = function (name) {
         return EntypoIcon(React_DOM.i([ React_DOM.className(name) ])([  ]));
     };
-    var lineChartIcon = function (_437) {
+    var lineChartIcon = function (_441) {
         return entypoIcon("icon-chart-line");
     };
-    var pieChartIcon = function (_438) {
+    var pieChartIcon = function (_442) {
         return entypoIcon("icon-chart-pie");
     };
-    var dirOpenIcon = function (_430) {
+    var dirOpenIcon = function (_434) {
         return faIcon("fa fa-folder-open-o");
     };
-    var dirClosedIcon = function (_431) {
+    var dirClosedIcon = function (_435) {
         return faIcon("fa fa-folder-o");
     };
-    var closeIcon = function (_422) {
+    var closeIcon = function (_425) {
         return faIcon("fa fa-times");
     };
-    var barChartIcon = function (_436) {
+    var barChartIcon = function (_440) {
         return entypoIcon("icon-chart-bar");
     };
-    var areaChartIcon = function (_435) {
+    var areaChartIcon = function (_439) {
         return entypoIcon("icon-chart-area");
     };
     var actionButton = function (__dict_Icon_324) {
@@ -65170,7 +65313,6 @@ PS.SlamData_Helpers = (function () {
         Blocks: Blocks, 
         Notebooks: Notebooks, 
         EvalSQLBlocks: EvalSQLBlocks, 
-        focus: focus, 
         getDOMNode: getDOMNode, 
         pieChartIcon: pieChartIcon, 
         lineChartIcon: lineChartIcon, 
@@ -65181,6 +65323,7 @@ PS.SlamData_Helpers = (function () {
         fileIcon: fileIcon, 
         dirClosedIcon: dirClosedIcon, 
         dirOpenIcon: dirOpenIcon, 
+        runVisualIcon: runVisualIcon, 
         visualIcon: visualIcon, 
         sqlIcon: sqlIcon, 
         markdownIcon: markdownIcon, 
@@ -65213,43 +65356,72 @@ PS.SlamData_Helpers = (function () {
     };
 })();
 var PS = PS || {};
+PS.SlamData_App_FileSystem = (function () {
+    "use strict";
+    var React_DOM = PS.React_DOM;
+    var Prelude = PS.Prelude;
+    var SlamData_Helpers = PS.SlamData_Helpers;
+    var React = PS.React;
+    var Control_Monad_Eff = PS.Control_Monad_Eff;
+    var SlamData_App_Panel = PS.SlamData_App_Panel;
+    var Data_Array = PS.Data_Array;
+    var Data_UUID = PS.Data_UUID;
+    var ft2UI = function (_448) {
+        if (_448.type === "directory") {
+            return React_DOM["ul'"]([ SlamData_Helpers.toUI(SlamData_Helpers.iconFA({}))(SlamData_Helpers.dirOpenIcon({})), React_DOM.text(_448.name) ]);
+        };
+        if (_448.type === "file") {
+            return React_DOM["li'"]([ SlamData_Helpers.toUI(SlamData_Helpers.iconFA({}))(SlamData_Helpers.fileIcon({})), React_DOM.text(_448.name) ]);
+        };
+        throw "Failed pattern match";
+    };
+    var filesystem = React.mkUI(React.spec)(function __do() {
+        var _70 = React.getProps();
+        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_App_Panel.panel([ {
+            name: "File System", 
+            content: [ Data_Array["null"](_70.files) ? SlamData_Helpers.toUI(SlamData_Helpers.iconFA({}))(SlamData_Helpers.loadingIcon({})) : React_DOM["ul'"](Prelude["<$>"](Data_Array.functorArray({}))(ft2UI)(_70.files)) ], 
+            external: [  ], 
+            internal: [ SlamData_Helpers.actionButton(SlamData_Helpers.iconFA({}))({
+                tooltip: "New", 
+                icon: SlamData_Helpers.newIcon({}), 
+                click: Prelude.pure(Control_Monad_Eff.applicativeEff({}))({})
+            }), SlamData_Helpers.actionButton(SlamData_Helpers.iconFA({}))({
+                tooltip: "Open", 
+                icon: SlamData_Helpers.openIcon({}), 
+                click: Prelude.pure(Control_Monad_Eff.applicativeEff({}))({})
+            }) ], 
+            ident: Data_UUID.runUUID(Data_UUID.v4)
+        } ]))();
+    });
+    return {
+        filesystem: filesystem
+    };
+})();
+var PS = PS || {};
 PS.SlamData_App_Notebook_Block_Common = (function () {
     "use strict";
     var Prelude = PS.Prelude;
     var Control_Monad_Eff = PS.Control_Monad_Eff;
     var React = PS.React;
     var SlamData_App_Notebook_Block_Types = PS.SlamData_App_Notebook_Block_Types;
-    var SlamData_Helpers = PS.SlamData_Helpers;
     var React_DOM = PS.React_DOM;
-    var $$eval = function __do() {
-        var _68 = React.getRefs();
-        var _67 = React.readState();
-        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-            var _1309 = {};
-            for (var _1310 in _67) {
-                if (_67.hasOwnProperty(_1310)) {
-                    _1309[_1310] = _67[_1310];
+    var modifyEditor = function (editor) {
+        return function __do() {
+            var _71 = React.readState();
+            return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
+                var _1341 = {};
+                for (var _1342 in _71) {
+                    if (_71.hasOwnProperty(_1342)) {
+                        _1341[_1342] = _71[_1342];
+                    };
                 };
-            };
-            _1309.edit = SlamData_App_Notebook_Block_Types.Eval;
-            _1309.content = (SlamData_Helpers.getDOMNode(_68.editor)).value;
-            return _1309;
-        })()))();
+                _1341.edit = editor;
+                return _1341;
+            })()))();
+        };
     };
-    var edit = function __do() {
-        var _69 = React.readState();
-        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-            var _1312 = {};
-            for (var _1313 in _69) {
-                if (_69.hasOwnProperty(_1313)) {
-                    _1312[_1313] = _69[_1313];
-                };
-            };
-            _1312.edit = SlamData_App_Notebook_Block_Types.Edit;
-            _1312.content = _69.content;
-            return _1312;
-        })()))();
-    };
+    var $$eval = modifyEditor(SlamData_App_Notebook_Block_Types.Eval);
+    var edit = modifyEditor(SlamData_App_Notebook_Block_Types.Edit);
     var blockRow = function (styles) {
         return function (firstCol) {
             return function (secondCol) {
@@ -65260,6 +65432,7 @@ PS.SlamData_App_Notebook_Block_Common = (function () {
     return {
         edit: edit, 
         "eval": $$eval, 
+        modifyEditor: modifyEditor, 
         blockRow: blockRow
     };
 })();
@@ -65282,74 +65455,132 @@ PS.SlamData_App_Notebook_Block_Markdown = (function () {
     };
 })();
 var PS = PS || {};
-PS.SlamData_App_Notebook_Block_Visual = (function () {
+PS.SlamData_App_Notebook_Block_SQL = (function () {
     "use strict";
-    var SlamData_Helpers = PS.SlamData_Helpers;
-    var Graphics_C3 = PS.Graphics_C3;
-    var Prelude = PS.Prelude;
     var SlamData_App_Notebook_Block_Types = PS.SlamData_App_Notebook_Block_Types;
-    var React = PS.React;
+    var Prelude = PS.Prelude;
+    var SlamData_Helpers = PS.SlamData_Helpers;
+    var Data_Array = PS.Data_Array;
+    var Control_Apply = PS.Control_Apply;
     var Control_Monad_Eff = PS.Control_Monad_Eff;
-    var SlamData_App_Notebook_Block_Common = PS.SlamData_App_Notebook_Block_Common;
+    var Data_String = PS.Data_String;
+    var Data_UUID = PS.Data_UUID;
+    var Data_Maybe = PS.Data_Maybe;
+    var Data_Maybe_Unsafe = PS.Data_Maybe_Unsafe;
     var React_DOM = PS.React_DOM;
-    function cdm() {  var defaultJson = '{"dataSrc": "", "field": "", "visualType": ""}';  var content = JSON.parse(getOrElse_(this.props.content)(defaultJson));  var opts = newOptions(this.props.ident)(content.field)(parseVisualType(content.visualType));  var chart = generate_(opts)();  var data = [];  oboe(serverURI_ + '/data/fs/' + content.dataSrc)    .node('!', function(json) {      data.push(json[content.field]);      chart.load({columns: [[content.field].concat(data)]});    });};
+    var Data_Foldable = PS.Data_Foldable;
+    var React = PS.React;
+    var SlamData_App_Notebook_Block_Common = PS.SlamData_App_Notebook_Block_Common;
+    function cwm() {  extendState.call(this, {status: loading});  if (isJust_(this.state.location)) {    cdm.call(this, fromJust_(this.state.location));  } else {    runQuery.call(this, this.state.content);  }};
+    function cdm(location) {  var xhr = new XMLHttpRequest();  xhr.onerror = function() {    if (this.isMounted()) {      extendState.call(this, {status: error('Problem loading query')});    }  }.bind(this);  xhr.onload = function() {    if (this.isMounted()) {      extendState.call(this, {status: successful(xhr.responseText)});    }  }.bind(this);  xhr.open('GET', serverURI_ + '/data/fs/' + location);  xhr.send(null);};
+    function runQuery(query) {  var id = newID();  $.ajax({    type: 'POST',    url: serverURI_ + '/query/fs/?out=' + showBlockID(id),    data: query,    dataType: 'json',    success: function(data, status, jqXHR) {      /* Parse the location out of the response. */      var location = data.out;      if (this.isMounted()) {        extendState.call(this, {location: just_(location)});      }      saveLocal(this.props)(this.state);      cdm.call(this, location);    }.bind(this),    error: function() {      if (this.isMounted()) {        extendState.call(this, {status: error('Could not create query')});      }    }.bind(this)  });};
+    function extendState(neu) {  return this.setState(extend(this.state)(neu));};
+    function extend(old) {  return function(neu) {    return copy(neu)(copy(old)({}));  }};
+    function copy(neu) {  return function(old) {    for (var key in neu) {      old[key] = neu[key];    }    return old;  }};
+    var successful = function (str) {
+        return SlamData_App_Notebook_Block_Types.Successful(str);
+    };
+    var showBlockID = Prelude.show(SlamData_App_Notebook_Block_Types.showBlockID({}));
     var serverURI_ = SlamData_Helpers.serverURI;
-    var parseVisualType = function (_444) {
-        if (_444 === "bar") {
-            return Graphics_C3.Bar;
+    var saveLocal = function (props) {
+        return function (state) {
+            var rec = SlamData_App_Notebook_Block_Types.EvalSQLSpec({
+                ident: props.ident, 
+                status: state.status, 
+                content: state.content, 
+                location: state.location
+            });
+            var go = function (_454) {
+                return Prelude["=="](SlamData_App_Notebook_Block_Types.eqBlockID({}))((_454.values[0]).ident)(props.ident) ? rec : _454;
+            };
+            var blocks = SlamData_Helpers.localGet(SlamData_App_Notebook_Block_Types.readEvalSQLSpec({}))(SlamData_Helpers.EvalSQLBlocks);
+            var blocks$prime = Prelude["<$>"](Data_Array.functorArray({}))(go)(blocks);
+            var blocks$prime$prime = Prelude["=="](Prelude.eqArray(SlamData_App_Notebook_Block_Types.eqEvalSQLSpec({})))(blocks)(blocks$prime) ? Data_Array.snoc(blocks)(rec) : blocks$prime;
+            return Control_Apply["*>"](Control_Monad_Eff.applyEff({}))(Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_Helpers.localSet(Prelude.showArray(SlamData_App_Notebook_Block_Types.showEvalSQLSpec({})))(SlamData_Helpers.EvalSQLBlocks)(blocks$prime$prime)))(Prelude.pure(Control_Monad_Eff.applicativeEff({}))({}));
         };
-        if (_444 === "line") {
-            return Graphics_C3.Line;
-        };
-        if (_444 === "pie") {
-            return Graphics_C3.Pie;
-        };
-        return Graphics_C3.Bar;
     };
-    var newOptions = function (ident) {
-        return function (name) {
-            return function (ty) {
-                var _1317 = {};
-                for (var _1318 in Graphics_C3.options) {
-                    if (Graphics_C3.options.hasOwnProperty(_1318)) {
-                        _1317[_1318] = Graphics_C3.options[_1318];
-                    };
-                };
-                _1317.bindto = "#chart-" + Prelude.show(SlamData_App_Notebook_Block_Types.showBlockID({}))(ident);
-                _1317.c3Data = [ (function () {
-                    var _1315 = {};
-                    for (var _1316 in Graphics_C3.c3Data) {
-                        if (Graphics_C3.c3Data.hasOwnProperty(_1316)) {
-                            _1315[_1316] = Graphics_C3.c3Data[_1316];
-                        };
-                    };
-                    _1315.name = name;
-                    _1315.c3Type = ty;
-                    return _1315;
-                })() ];
-                return _1317;
+    var parseRaw = Prelude[">>>"](Prelude.semigroupoidArr({}))(Data_String.trim)(Data_String.split("\\n"));
+    var pagingLimit = 20;
+    var newID = function (_453) {
+        return SlamData_App_Notebook_Block_Types.BlockID(Data_UUID.runUUID(Data_UUID.v4));
+    };
+    var loading = SlamData_App_Notebook_Block_Types.Loading;
+    var just_ = Data_Maybe.Just;
+    var isJust_ = Data_Maybe.isJust;
+    var fromJust_ = Data_Maybe_Unsafe.fromJust;
+    var format = function (str) {
+        return React_DOM["li'"]([ React_DOM["span'"]([ React_DOM.text(str) ]) ]);
+    };
+    var essLocation = function (_452) {
+        return (_452.values[0]).location;
+    };
+    var essIdent = function (_450) {
+        return (_450.values[0]).ident;
+    };
+    var essContent = function (_451) {
+        return (_451.values[0]).content;
+    };
+    var getLocation = function (props) {
+        return function (content) {
+            return function (blocks) {
+                return Prelude[">>="](Data_Maybe.bindMaybe({}))(Data_Foldable.find(Data_Foldable.foldableArray({}))(Prelude[">>>"](Prelude.semigroupoidArr({}))(essIdent)(Prelude["=="](SlamData_App_Notebook_Block_Types.eqBlockID({}))(props.ident)))(blocks))(function (_75) {
+                    return SlamData_Helpers.guardMaybe(essContent(_75) === content)(essLocation(_75));
+                });
             };
         };
     };
-    var getOrElse_ = SlamData_Helpers.getOrElse;
-    var generate_ = Graphics_C3.generate;
-    var evalVisual = function (content) {
-        return React.mkUI((function () {
-            var _1319 = {};
-            for (var _1320 in React.spec) {
-                if (React.spec.hasOwnProperty(_1320)) {
-                    _1319[_1320] = React.spec[_1320];
+    var error = function (str) {
+        return SlamData_App_Notebook_Block_Types.Error(str);
+    };
+    var actualContent = function (_449) {
+        if (_449.ctor === "SlamData.App.Notebook.Block.Types.Loading") {
+            return SlamData_Helpers.toUI(SlamData_Helpers.iconFA({}))(SlamData_Helpers.loadingIcon({}));
+        };
+        if (_449.ctor === "SlamData.App.Notebook.Block.Types.Error") {
+            return React_DOM["span'"]([ React_DOM.text(_449.values[0]) ]);
+        };
+        if (_449.ctor === "SlamData.App.Notebook.Block.Types.Successful") {
+            return React_DOM["ul'"](Prelude["<$>"](Data_Array.functorArray({}))(format)(parseRaw(_449.values[0])));
+        };
+        throw "Failed pattern match";
+    };
+    var evalSQL = function (ed) {
+        return function (content) {
+            return React.mkUI((function () {
+                var _1357 = {};
+                for (var _1358 in React.spec) {
+                    if (React.spec.hasOwnProperty(_1358)) {
+                        _1357[_1358] = React.spec[_1358];
+                    };
                 };
-            };
-            _1319.componentDidMount = cdm;
-            return _1319;
-        })())(function __do() {
-            var _70 = React.getProps();
-            return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_App_Notebook_Block_Common.blockRow("block-content")([  ])([ React_DOM.div([ React_DOM.className("evaled-block") ])([ React_DOM.div([ React_DOM.idProp("chart-" + Prelude.show(SlamData_App_Notebook_Block_Types.showBlockID({}))(_70.ident)) ])([  ]) ]) ]))();
-        });
+                _1357.getInitialState = function __do() {
+                    var _72 = React.getProps();
+                    return (function () {
+                        var blocks = SlamData_Helpers.localGet(SlamData_App_Notebook_Block_Types.readEvalSQLSpec({}))(SlamData_Helpers.EvalSQLBlocks);
+                        var location = getLocation(_72)(content)(blocks);
+                        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
+                            status: SlamData_App_Notebook_Block_Types.Successful(content), 
+                            content: content, 
+                            location: location
+                        });
+                    })()();
+                };
+                _1357.componentWillMount = cwm;
+                return _1357;
+            })())(function __do() {
+                var _74 = React.getProps();
+                var _73 = React.readState();
+                return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_App_Notebook_Block_Common.blockRow("block-content block-sql")([ React_DOM.div([ React_DOM.className("text-center block-metadata") ])([ React_DOM.text("out" + Prelude.show(Prelude.showNumber({}))(_74.index) + " :=") ]) ])([ React_DOM.div([ React_DOM.className("evaled-block"), React_DOM.onClick(function (_) {
+                    return ed;
+                }) ])([ actualContent(_73.status) ]) ]))();
+            });
+        };
+    };
+    var _status = function (o) {
+        return o.status;
     };
     return {
-        evalVisual: evalVisual
+        evalSQL: evalSQL
     };
 })();
 var PS = PS || {};
@@ -65388,14 +65619,14 @@ PS.SlamData_App_Notebook_Types = (function () {
     var showVisualTab = function (_) {
         return {
             "__superclasses": {}, 
-            show: function (_445) {
-                if (_445.ctor === "SlamData.App.Notebook.Types.DataSrcTab") {
+            show: function (_455) {
+                if (_455.ctor === "SlamData.App.Notebook.Types.DataSrcTab") {
                     return "Data Source";
                 };
-                if (_445.ctor === "SlamData.App.Notebook.Types.FieldsTab") {
+                if (_455.ctor === "SlamData.App.Notebook.Types.FieldsTab") {
                     return "Fields";
                 };
-                if (_445.ctor === "SlamData.App.Notebook.Types.VisualTypeTab") {
+                if (_455.ctor === "SlamData.App.Notebook.Types.VisualTypeTab") {
                     return "Type";
                 };
                 throw "Failed pattern match";
@@ -65405,29 +65636,29 @@ PS.SlamData_App_Notebook_Types = (function () {
     var showNotebookID = function (_) {
         return {
             "__superclasses": {}, 
-            show: function (_448) {
-                return Prelude.show(Data_UUID.showUUID({}))(_448.values[0]);
+            show: function (_458) {
+                return Prelude.show(Data_UUID.showUUID({}))(_458.values[0]);
             }
         };
     };
     var showNotebookSpec = function (_) {
         return {
             "__superclasses": {}, 
-            show: function (_449) {
-                return "{ \"blocks\": " + Prelude.show(Prelude.showArray(Prelude.showString({})))(Prelude["<$>"](Data_Array.functorArray({}))(Prelude.show(SlamData_App_Notebook_Block_Types.showBlockID({})))((_449.values[0]).blocks)) + ", \"ident\": \"" + Prelude.show(showNotebookID({}))((_449.values[0]).ident) + "\"" + ", \"name\": \"" + (_449.values[0]).name + "\"" + "}";
+            show: function (_459) {
+                return "{ \"blocks\": " + Prelude.show(Prelude.showArray(Prelude.showString({})))(Prelude["<$>"](Data_Array.functorArray({}))(Prelude.show(SlamData_App_Notebook_Block_Types.showBlockID({})))((_459.values[0]).blocks)) + ", \"ident\": \"" + Prelude.show(showNotebookID({}))((_459.values[0]).ident) + "\"" + ", \"name\": \"" + (_459.values[0]).name + "\"" + "}";
             }
         };
     };
     var readNotebookSpec = function (_) {
         return {
             "__superclasses": {}, 
-            read: Prelude[">>="](Data_Foreign.bindForeignParser({}))(Data_Foreign.prop(Data_Foreign.readArray(Data_UUID.readUUID({})))("blocks"))(function (_73) {
-                return Prelude[">>="](Data_Foreign.bindForeignParser({}))(Data_Foreign.prop(Data_UUID.readUUID({}))("ident"))(function (_72) {
-                    return Prelude[">>="](Data_Foreign.bindForeignParser({}))(Data_Foreign.prop(Data_Foreign.readString({}))("name"))(function (_71) {
+            read: Prelude[">>="](Data_Foreign.bindForeignParser({}))(Data_Foreign.prop(Data_Foreign.readArray(Data_UUID.readUUID({})))("blocks"))(function (_78) {
+                return Prelude[">>="](Data_Foreign.bindForeignParser({}))(Data_Foreign.prop(Data_UUID.readUUID({}))("ident"))(function (_77) {
+                    return Prelude[">>="](Data_Foreign.bindForeignParser({}))(Data_Foreign.prop(Data_Foreign.readString({}))("name"))(function (_76) {
                         return Prelude.pure(Data_Foreign.applicativeForeignParser({}))(NotebookSpec({
-                            ident: NotebookID(_72), 
-                            blocks: Prelude["<$>"](Data_Array.functorArray({}))(SlamData_App_Notebook_Block_Types.BlockID)(_73), 
-                            name: _71
+                            ident: NotebookID(_77), 
+                            blocks: Prelude["<$>"](Data_Array.functorArray({}))(SlamData_App_Notebook_Block_Types.BlockID)(_78), 
+                            name: _76
                         }));
                     });
                 });
@@ -65437,9 +65668,9 @@ PS.SlamData_App_Notebook_Types = (function () {
     var eqNotebookID = function (_) {
         return {
             "__superclasses": {}, 
-            "==": function (_446) {
-                return function (_447) {
-                    return Prelude["=="](Data_UUID.eqUUID({}))(_446.values[0])(_447.values[0]);
+            "==": function (_456) {
+                return function (_457) {
+                    return Prelude["=="](Data_UUID.eqUUID({}))(_456.values[0])(_457.values[0]);
                 };
             }, 
             "/=": function (b) {
@@ -65464,148 +65695,221 @@ PS.SlamData_App_Notebook_Types = (function () {
     };
 })();
 var PS = PS || {};
-PS.SlamData_App_Notebook_Block_SQL = (function () {
+PS.SlamData_App_Notebook_Block_Visual = (function () {
     "use strict";
-    var SlamData_App_Notebook_Block_Types = PS.SlamData_App_Notebook_Block_Types;
     var Prelude = PS.Prelude;
+    var Graphics_C3 = PS.Graphics_C3;
     var SlamData_Helpers = PS.SlamData_Helpers;
-    var Data_Array = PS.Data_Array;
-    var Control_Apply = PS.Control_Apply;
-    var Control_Monad_Eff = PS.Control_Monad_Eff;
-    var Data_UUID = PS.Data_UUID;
-    var Data_Maybe = PS.Data_Maybe;
-    var Data_Maybe_Unsafe = PS.Data_Maybe_Unsafe;
     var React_DOM = PS.React_DOM;
-    var Data_Foldable = PS.Data_Foldable;
+    var Data_Array = PS.Data_Array;
+    var SlamData_App_Notebook_Block_Types = PS.SlamData_App_Notebook_Block_Types;
     var React = PS.React;
-    var Data_Function = PS.Data_Function;
+    var Control_Monad_Eff = PS.Control_Monad_Eff;
     var SlamData_App_Notebook_Block_Common = PS.SlamData_App_Notebook_Block_Common;
-    function cwm() {  extendState.call(this, {status: loading});  if (isJust_(this.state.state.location)) {    cdm.call(this, fromJust_(this.state.state.location));  } else {    runQuery.call(this, this.state.state.content);  }};
-    function cdm(location) {  var xhr = new XMLHttpRequest();  xhr.onerror = function() {    if (this.isMounted()) {      extendState.call(this, {status: err('Problem loading query')});    }  }.bind(this);  xhr.onload = function() {    if (this.isMounted()) {      extendState.call(this, {status: successful(xhr.responseText)});    }  }.bind(this);  xhr.open('GET', serverURI_ + '/data/fs/' + location);  xhr.send(null);};
-    function runQuery(query) {  var id = newID();  $.ajax({    type: 'POST',    url: serverURI_ + '/query/fs/?out=' + showBlockID(id),    data: query,    dataType: 'json',    success: function(data, status, jqXHR) {      /* Parse the location out of the response. */      var location = data.out;      if (this.isMounted()) {        extendState.call(this, {location: just(location)});      }      saveLocal(this.props)(this.state.state);      cdm.call(this, location);    }.bind(this),    error: function() {      if (this.isMounted()) {        extendState.call(this, {status: err('Could not create query')});      }    }.bind(this)  });};
-    function extendState(neu) {  return this.setState({state: extend(this.state.state)(neu)});};
-    function extend(old) {  return function(neu) {    return copy(neu)(copy(old)({}));  }};
-    function copy(neu) {  return function(old) {    for (var key in neu) {      old[key] = neu[key];    }    return old;  }};
-    function parseRaw(raw) {  return raw.trim().split('\n');};
-    var successful = function (str) {
-        return SlamData_App_Notebook_Block_Types.Successful(str);
-    };
-    var showBlockID = Prelude.show(SlamData_App_Notebook_Block_Types.showBlockID({}));
+    var SlamData_App_Notebook_Types = PS.SlamData_App_Notebook_Types;
+    var Data_String = PS.Data_String;
+    var Debug_Trace = PS.Debug_Trace;
+    function cdm() {  var defaultJson = '{"dataSrc": "", "field": "", "visualType": ""}';  try {    var content = JSON.parse(getOrElse_(this.props.content)(defaultJson));  } catch (e) {    var content = JSON.parse(defaultJson);  }  var opts = newOptions(this.props.ident)(content.field)(parseVisualType(content.visualType));  var chart = generate_(opts)();  var data = [];  oboe(serverURI_ + '/data/fs/' + content.dataSrc)    .node('!', function(json) {      data.push(json[content.field]);      chart.load({columns: [[content.field].concat(data)]});    });};
+    function targetValue(e) {  return function(ty) {    return {      dataSrc: e.target.selectedOptions[0].parentNode.label,      field: e.target.value,      visualType: showVisualType_(ty)    }  }};
+    var showVisualType_ = Prelude.show(Graphics_C3.showC3Type({}));
     var serverURI_ = SlamData_Helpers.serverURI;
-    var saveLocal = function (props) {
-        return function (state) {
-            var rec = SlamData_App_Notebook_Block_Types.EvalSQLSpec({
-                ident: props.ident, 
-                status: state.status, 
-                content: state.content, 
-                location: state.location
-            });
-            var go = function (_455) {
-                return Prelude["=="](SlamData_App_Notebook_Block_Types.eqBlockID({}))((_455.values[0]).ident)(props.ident) ? rec : SlamData_App_Notebook_Block_Types.EvalSQLSpec(_455.values[0]);
-            };
-            var blocks = SlamData_Helpers.localGet(SlamData_App_Notebook_Block_Types.readEvalSQLSpec({}))(SlamData_Helpers.EvalSQLBlocks);
-            var blocks$prime = Prelude["<$>"](Data_Array.functorArray({}))(go)(blocks);
-            var blocks$prime$prime = Prelude["=="](Prelude.eqArray(SlamData_App_Notebook_Block_Types.eqEvalSQLSpec({})))(blocks)(blocks$prime) ? Data_Array.snoc(blocks)(rec) : blocks$prime;
-            return Control_Apply["*>"](Control_Monad_Eff.applyEff({}))(Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_Helpers.localSet(Prelude.showArray(SlamData_App_Notebook_Block_Types.showEvalSQLSpec({})))(SlamData_Helpers.EvalSQLBlocks)(blocks$prime$prime)))(Prelude.pure(Control_Monad_Eff.applicativeEff({}))({}));
+    var parseVisualType = function (_460) {
+        if (_460 === "bar") {
+            return Graphics_C3.Bar;
         };
+        if (_460 === "line") {
+            return Graphics_C3.Line;
+        };
+        if (_460 === "pie") {
+            return Graphics_C3.Pie;
+        };
+        return Graphics_C3.Bar;
     };
-    var pagingLimit = 20;
-    var newID = function (_454) {
-        return SlamData_App_Notebook_Block_Types.BlockID(Data_UUID.runUUID(Data_UUID.v4));
+    var optionify = function (vsf) {
+        return React_DOM.optgroup([ React_DOM.labelProp(vsf.dataSrc) ])(Prelude["<$>"](Data_Array.functorArray({}))(function (s) {
+            return React_DOM.option([ React_DOM.value(s) ])([ React_DOM.text(s) ]);
+        })(vsf.selectedFields));
     };
-    var loading = SlamData_App_Notebook_Block_Types.Loading;
-    var just = Data_Maybe.Just;
-    var isJust_ = Data_Maybe.isJust;
-    var fromJust_ = Data_Maybe_Unsafe.fromJust;
-    var format = function (str) {
-        return React_DOM["li'"]([ React_DOM["span'"]([ React_DOM.text(str) ]) ]);
-    };
-    var essLocation = function (_453) {
-        return (_453.values[0]).location;
-    };
-    var essIdent = function (_451) {
-        return (_451.values[0]).ident;
-    };
-    var essContent = function (_452) {
-        return (_452.values[0]).content;
-    };
-    var getLocation = function (props) {
-        return function (content) {
-            return function (blocks) {
-                return Prelude[">>="](Data_Maybe.bindMaybe({}))(Data_Foldable.find(Data_Foldable.foldableArray({}))(Prelude[">>>"](Prelude.semigroupoidArr({}))(essIdent)(Prelude["=="](SlamData_App_Notebook_Block_Types.eqBlockID({}))(props.ident)))(blocks))(function (_77) {
-                    return SlamData_Helpers.guardMaybe(essContent(_77) === content)(essLocation(_77));
-                });
+    var newOptions = function (ident) {
+        return function (name) {
+            return function (ty) {
+                var _1376 = {};
+                for (var _1377 in Graphics_C3.options) {
+                    if (Graphics_C3.options.hasOwnProperty(_1377)) {
+                        _1376[_1377] = Graphics_C3.options[_1377];
+                    };
+                };
+                _1376.bindto = "#chart-" + Prelude.show(SlamData_App_Notebook_Block_Types.showBlockID({}))(ident);
+                _1376.c3Data = [ (function () {
+                    var _1374 = {};
+                    for (var _1375 in Graphics_C3.c3Data) {
+                        if (Graphics_C3.c3Data.hasOwnProperty(_1375)) {
+                            _1374[_1375] = Graphics_C3.c3Data[_1375];
+                        };
+                    };
+                    _1374.name = name;
+                    _1374.c3Type = ty;
+                    return _1374;
+                })() ];
+                return _1376;
             };
         };
     };
-    var err = function (str) {
-        return SlamData_App_Notebook_Block_Types.Error(str);
-    };
-    var blockID = Prelude[">>>"](Prelude.semigroupoidArr({}))(Data_UUID.parse)(Prelude[">>>"](Prelude.semigroupoidArr({}))(Data_UUID.unparse)(SlamData_App_Notebook_Block_Types.BlockID));
-    var actualContent = function (_450) {
-        if (_450.ctor === "SlamData.App.Notebook.Block.Types.Loading") {
-            return SlamData_Helpers.toUI(SlamData_Helpers.iconFA({}))(SlamData_Helpers.loadingIcon({}));
-        };
-        if (_450.ctor === "SlamData.App.Notebook.Block.Types.Error") {
-            return React_DOM["span'"]([ React_DOM.text(_450.values[0]) ]);
-        };
-        if (_450.ctor === "SlamData.App.Notebook.Block.Types.Successful") {
-            return React_DOM["ul'"](Prelude["<$>"](Data_Array.functorArray({}))(format)(parseRaw(_450.values[0])));
+    var getOrElse_ = SlamData_Helpers.getOrElse;
+    var generate_ = Graphics_C3.generate;
+    var ft2UI = function (_462) {
+        if (_462.type === "file") {
+            return React_DOM["li'"]([ React_DOM.input([ React_DOM.typeProp("checkbox") ])([  ]), React_DOM.text(_462.name) ]);
         };
         throw "Failed pattern match";
     };
-    var _status = function (o) {
-        return o.status;
+    var evalVisual = function (content) {
+        return React.mkUI((function () {
+            var _1381 = {};
+            for (var _1382 in React.spec) {
+                if (React.spec.hasOwnProperty(_1382)) {
+                    _1381[_1382] = React.spec[_1382];
+                };
+            };
+            _1381.componentDidMount = cdm;
+            return _1381;
+        })())(function __do() {
+            var _79 = React.getProps();
+            return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_App_Notebook_Block_Common.blockRow("block-content")([  ])([ React_DOM.div([ React_DOM.className("evaled-block") ])([ React_DOM.div([ React_DOM.idProp("chart-" + Prelude.show(SlamData_App_Notebook_Block_Types.showBlockID({}))(_79.ident)), React_DOM.onClick(function (_) {
+                return SlamData_App_Notebook_Block_Common.edit;
+            }) ])([  ]) ]) ]))();
+        });
     };
-    var evalSQL = function (ed) {
-        return function (content) {
-            return React.mkUI((function () {
-                var _1348 = {};
-                for (var _1349 in React.spec) {
-                    if (React.spec.hasOwnProperty(_1349)) {
-                        _1348[_1349] = React.spec[_1349];
-                    };
+    var editInitialState = {
+        active: SlamData_App_Notebook_Types.DataSrcTab, 
+        fields: [  ], 
+        visualType: SlamData_Helpers.visualLine, 
+        visualData: [  ], 
+        visible: false
+    };
+    var capitalize = function (str) {
+        return Data_String.toUpper(Data_String.take(1)(str)) + Data_String.drop(1)(str);
+    };
+    var visual = function (__dict_Icon_325) {
+        return function (change) {
+            return function (ty) {
+                return function (ty$prime) {
+                    return React_DOM.li([ React_DOM.onClick(function (_) {
+                        return change(ty$prime.vis);
+                    }), React_DOM.className(Prelude["=="](Graphics_C3.eqC3Type({}))(ty)(ty$prime.vis) ? "selected" : "") ])([ React_DOM["a'"]([ SlamData_Helpers.toUI(__dict_Icon_325)(ty$prime.icon) ]), React_DOM["span'"]([ React_DOM.text(capitalize(Prelude.show(Graphics_C3.showC3Type({}))(ty$prime.vis))) ]) ]);
                 };
-                _1348.getInitialState = function __do() {
-                    var _74 = React.getProps();
-                    return (function () {
-                        var blocks = SlamData_Helpers.localGet(SlamData_App_Notebook_Block_Types.readEvalSQLSpec({}))(SlamData_Helpers.EvalSQLBlocks);
-                        var location = getLocation(_74)(content)(blocks);
-                        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
-                            status: SlamData_App_Notebook_Block_Types.Successful(content), 
-                            content: content, 
-                            location: location
-                        });
-                    })()();
-                };
-                _1348.componentWillMount = cwm;
-                _1348.shouldComponentUpdate = Data_Function.mkFn2(function (p) {
-                    return function (s) {
-                        return Prelude[">>="](Control_Monad_Eff.bindEff({}))(React.readState)(Prelude[">>>"](Prelude.semigroupoidArr({}))(_status)(Prelude[">>>"](Prelude.semigroupoidArr({}))(Prelude["/="](SlamData_App_Notebook_Block_Types.eqLoadingStatus({}))(SlamData_App_Notebook_Block_Types.Loading))(Prelude["const"](Prelude.pure(Control_Monad_Eff.applicativeEff({}))(false)))));
-                    };
-                });
-                return _1348;
-            })())(function __do() {
-                var _76 = React.getProps();
-                var _75 = React.readState();
-                return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_App_Notebook_Block_Common.blockRow("block-content block-sql")([ React_DOM.div([ React_DOM.className("text-center block-metadata") ])([ React_DOM.text("out" + Prelude.show(Prelude.showNumber({}))(_76.index) + " :=") ]) ])([ React_DOM.div([ React_DOM.className("evaled-block"), React_DOM.onClick(function (_) {
-                    return ed;
-                }) ])([ actualContent(_75.status) ]) ]))();
-            });
+            };
         };
     };
+    var visuals = function (change) {
+        return function (ty) {
+            return Prelude["<$>"](Data_Array.functorArray({}))(visual(SlamData_Helpers.iconEntypo({}))(change)(ty))([ {
+                vis: SlamData_Helpers.visualBar, 
+                icon: SlamData_Helpers.barChartIcon({})
+            }, {
+                vis: SlamData_Helpers.visualLine, 
+                icon: SlamData_Helpers.lineChartIcon({})
+            }, {
+                vis: SlamData_Helpers.visualPie, 
+                icon: SlamData_Helpers.pieChartIcon({})
+            } ]);
+        };
+    };
+    var actVisualType = function (_465) {
+        if (_465.ctor === "SlamData.App.Notebook.Types.VisualTypeTab") {
+            return " active";
+        };
+        return "";
+    };
+    var actFields = function (_464) {
+        if (_464.ctor === "SlamData.App.Notebook.Types.FieldsTab") {
+            return " active";
+        };
+        return "";
+    };
+    var actData = function (_463) {
+        if (_463.ctor === "SlamData.App.Notebook.Types.DataSrcTab") {
+            return " active";
+        };
+        return "";
+    };
+    var editVisual = function (_461) {
+        return React.mkUI((function () {
+            var _1388 = {};
+            for (var _1389 in React.spec) {
+                if (React.spec.hasOwnProperty(_1389)) {
+                    _1388[_1389] = React.spec[_1389];
+                };
+            };
+            _1388.getInitialState = Prelude.pure(Control_Monad_Eff.applicativeEff({}))(editInitialState);
+            return _1388;
+        })())(function __do() {
+            var _81 = React.getProps();
+            var _80 = React.readState();
+            return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_App_Notebook_Block_Common.blockRow("block-content edit-visual")([ React_DOM.dl([ React_DOM.className("tabs vertical"), React_DOM.onBlur(function (_) {
+                return Debug_Trace.print(Prelude.showString({}))("hi");
+            }) ])([ React_DOM.dd([ React_DOM.className("tab" + actData(_80.active)) ])([ React_DOM.a([ React_DOM.onClick(function (_) {
+                return React.writeState((function () {
+                    var _1392 = {};
+                    for (var _1393 in _80) {
+                        if (_80.hasOwnProperty(_1393)) {
+                            _1392[_1393] = _80[_1393];
+                        };
+                    };
+                    _1392.active = SlamData_App_Notebook_Types.DataSrcTab;
+                    return _1392;
+                })());
+            }) ])([ React_DOM.text("Data Source") ]) ]), React_DOM.dd([ React_DOM.className("tab" + actVisualType(_80.active)) ])([ React_DOM.a([ React_DOM.onClick(function (_) {
+                return React.writeState((function () {
+                    var _1394 = {};
+                    for (var _1395 in _80) {
+                        if (_80.hasOwnProperty(_1395)) {
+                            _1394[_1395] = _80[_1395];
+                        };
+                    };
+                    _1394.active = SlamData_App_Notebook_Types.VisualTypeTab;
+                    return _1394;
+                })());
+            }) ])([ React_DOM.text("Type") ]) ]) ]) ])([ React_DOM.div([ React_DOM.className("tabs-content vertical") ])([ React_DOM.ul([ React_DOM.className("content" + actData(_80.active)) ])(Prelude["<$>"](Data_Array.functorArray({}))(ft2UI)(Data_Array.filter(function (o) {
+                return o.type === "file";
+            })(_81.files))), React_DOM.div([ React_DOM.className("content chart-type row" + actVisualType(_80.active)) ])([ React_DOM.ul([ React_DOM.className("columns small-6") ])(visuals(function (ty) {
+                return React.writeState((function () {
+                    var _1396 = {};
+                    for (var _1397 in _80) {
+                        if (_80.hasOwnProperty(_1397)) {
+                            _1396[_1397] = _80[_1397];
+                        };
+                    };
+                    _1396.visualType = ty;
+                    return _1396;
+                })());
+            })(_80.visualType)), React_DOM.select([ React_DOM.className("columns small-6"), React_DOM.onChange(function (e) {
+                return React.writeState((function () {
+                    var _1398 = {};
+                    for (var _1399 in _80) {
+                        if (_80.hasOwnProperty(_1399)) {
+                            _1398[_1399] = _80[_1399];
+                        };
+                    };
+                    _1398.visualData = [ targetValue(e)(_80.visualType) ];
+                    return _1398;
+                })());
+            }) ])(Prelude["<$>"](Data_Array.functorArray({}))(optionify)(_80.fields)) ]) ]) ]))();
+        });
+    };
     return {
-        evalSQL: evalSQL
+        evalVisual: evalVisual, 
+        editVisual: editVisual
     };
 })();
 var PS = PS || {};
 PS.SlamData_App_Notebook_Block = (function () {
     "use strict";
+    var SlamData_Helpers = PS.SlamData_Helpers;
     var React = PS.React;
     var Prelude = PS.Prelude;
     var Control_Monad_Eff = PS.Control_Monad_Eff;
     var React_DOM = PS.React_DOM;
-    var SlamData_Helpers = PS.SlamData_Helpers;
     var Graphics_C3 = PS.Graphics_C3;
     var SlamData_App_Notebook_Block_Common = PS.SlamData_App_Notebook_Block_Common;
     var SlamData_App_Notebook_Block_Types = PS.SlamData_App_Notebook_Block_Types;
@@ -65616,29 +65920,35 @@ PS.SlamData_App_Notebook_Block = (function () {
     var SlamData_App_Notebook_Block_Markdown = PS.SlamData_App_Notebook_Block_Markdown;
     var SlamData_App_Notebook_Block_SQL = PS.SlamData_App_Notebook_Block_SQL;
     var Data_Function = PS.Data_Function;
-    function state2Content(state) {  return state.state.content;};
-    var toolbar = (function () {
-        var specificButtons = function (_459) {
-            if (_459.ctor === "SlamData.App.Notebook.Block.Types.Markdown") {
+    function state2Content(state) {  return state.content;};
+    var specificButtons = function (_466) {
+        return function (_467) {
+            if (_466.ctor === "SlamData.App.Notebook.Block.Types.Markdown") {
                 return [  ];
             };
-            if (_459.ctor === "SlamData.App.Notebook.Block.Types.SQL") {
+            if (_466.ctor === "SlamData.App.Notebook.Block.Types.SQL") {
                 return [  ];
             };
-            if (_459.ctor === "SlamData.App.Notebook.Block.Types.Visual") {
-                return [  ];
+            if (_466.ctor === "SlamData.App.Notebook.Block.Types.Visual") {
+                return [ SlamData_Helpers.actionButton(SlamData_Helpers.iconFA({}))({
+                    tooltip: "Run Visual", 
+                    icon: SlamData_Helpers.runVisualIcon({}), 
+                    click: _467
+                }) ];
             };
             throw "Failed pattern match";
         };
+    };
+    var toolbar = function (edEvent) {
         return React.mkUI(React.spec)(function __do() {
-            var _82 = React.getProps();
-            return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div([ React_DOM.className("button-bar") ])([ React_DOM.ul([ React_DOM.className("left button-group") ])(specificButtons(_82.blockType)), React_DOM.ul([ React_DOM.className("right button-group") ])([ SlamData_Helpers.actionButton(SlamData_Helpers.iconFA({}))({
+            var _86 = React.getProps();
+            return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div([ React_DOM.className("button-bar") ])([ React_DOM.ul([ React_DOM.className("left button-group") ])(specificButtons(_86.blockType)(edEvent)), React_DOM.ul([ React_DOM.className("right button-group") ])([ SlamData_Helpers.actionButton(SlamData_Helpers.iconFA({}))({
                 tooltip: "Close", 
                 icon: SlamData_Helpers.closeIcon({}), 
-                click: _82.close
+                click: _86.close
             }) ]) ]))();
         });
-    })();
+    };
     var injectC3Options = function (o) {
         return {
             blockType: o.blockType, 
@@ -65659,8 +65969,8 @@ PS.SlamData_App_Notebook_Block = (function () {
                 content: Data_Maybe.Just(state2Content(state)), 
                 ident: props.ident
             });
-            var go = function (_458) {
-                return Prelude["=="](SlamData_App_Notebook_Block_Types.eqBlockID({}))((_458.values[0]).ident)(props.ident) ? rec : SlamData_App_Notebook_Block_Types.BlockSpec(_458.values[0]);
+            var go = function (_470) {
+                return Prelude["=="](SlamData_App_Notebook_Block_Types.eqBlockID({}))((_470.values[0]).ident)(props.ident) ? rec : _470;
             };
             var blocks = SlamData_Helpers.localGet(SlamData_App_Notebook_Block_Types.readBlockSpec({}))(SlamData_Helpers.Blocks);
             var blocks$prime = Prelude["<$>"](Data_Array.functorArray({}))(go)(blocks);
@@ -65668,17 +65978,17 @@ PS.SlamData_App_Notebook_Block = (function () {
         };
     };
     var cwm = function __do() {
-        var _81 = React.getProps();
-        var _80 = React.readState();
+        var _85 = React.getProps();
+        var _84 = React.readState();
         Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-            var _1358 = {};
-            for (var _1359 in _80) {
-                if (_80.hasOwnProperty(_1359)) {
-                    _1358[_1359] = _80[_1359];
+            var _1407 = {};
+            for (var _1408 in _84) {
+                if (_84.hasOwnProperty(_1408)) {
+                    _1407[_1408] = _84[_1408];
                 };
             };
-            _1358.content = SlamData_Helpers.getOrElse(_81.content)("");
-            return _1358;
+            _1407.content = SlamData_Helpers.getOrElse(_85.content)("");
+            return _1407;
         })()))();
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))({})();
     };
@@ -65693,29 +66003,40 @@ PS.SlamData_App_Notebook_Block = (function () {
                 edit: SlamData_App_Notebook_Block_Types.Edit, 
                 content: e.target.value
             }));
-        }), React_DOM.onKeyPress(handleKeyPress), React_DOM.ref("editor"), React_DOM.value(content) ])([  ]) ]) ]);
+        }), React_DOM.onKeyPress(handleKeyPress), React_DOM.value(content) ])([  ]) ]) ]);
     };
-    var evalOrEdit = function (_456) {
-        return function (_457) {
-            if (_457.blockType.ctor === "SlamData.App.Notebook.Block.Types.Visual") {
-                return function (s) {
-                    return SlamData_App_Notebook_Block_Visual.evalVisual(s)(injectC3Options(_457));
+    var evalOrEdit = function (_468) {
+        return function (_469) {
+            if (_468.ctor === "SlamData.App.Notebook.Block.Types.Edit") {
+                if (_469.blockType.ctor === "SlamData.App.Notebook.Block.Types.Visual") {
+                    return function (s) {
+                        return SlamData_App_Notebook_Block_Visual.editVisual(s)({
+                            files: _469.files
+                        });
+                    };
                 };
             };
-            if (_456.ctor === "SlamData.App.Notebook.Block.Types.Edit") {
+            if (_468.ctor === "SlamData.App.Notebook.Block.Types.Edit") {
                 return blockEditor;
             };
-            if (_456.ctor === "SlamData.App.Notebook.Block.Types.Eval") {
-                if (_457.blockType.ctor === "SlamData.App.Notebook.Block.Types.Markdown") {
+            if (_468.ctor === "SlamData.App.Notebook.Block.Types.Eval") {
+                if (_469.blockType.ctor === "SlamData.App.Notebook.Block.Types.Markdown") {
                     return function (s) {
                         return SlamData_App_Notebook_Block_Markdown.evalMarkdown(s)({});
                     };
                 };
             };
-            if (_456.ctor === "SlamData.App.Notebook.Block.Types.Eval") {
-                if (_457.blockType.ctor === "SlamData.App.Notebook.Block.Types.SQL") {
+            if (_468.ctor === "SlamData.App.Notebook.Block.Types.Eval") {
+                if (_469.blockType.ctor === "SlamData.App.Notebook.Block.Types.SQL") {
                     return function (s) {
-                        return SlamData_App_Notebook_Block_SQL.evalSQL(React.deferred(SlamData_App_Notebook_Block_Common.edit))(s)(_457);
+                        return SlamData_App_Notebook_Block_SQL.evalSQL(React.deferred(SlamData_App_Notebook_Block_Common.edit))(s)(_469);
+                    };
+                };
+            };
+            if (_468.ctor === "SlamData.App.Notebook.Block.Types.Eval") {
+                if (_469.blockType.ctor === "SlamData.App.Notebook.Block.Types.Visual") {
+                    return function (s) {
+                        return SlamData_App_Notebook_Block_Visual.evalVisual(s)(injectC3Options(_469));
                     };
                 };
             };
@@ -65723,183 +66044,26 @@ PS.SlamData_App_Notebook_Block = (function () {
         };
     };
     var block = React.mkUI((function () {
-        var _1365 = {};
-        for (var _1366 in React.spec) {
-            if (React.spec.hasOwnProperty(_1366)) {
-                _1365[_1366] = React.spec[_1366];
+        var _1415 = {};
+        for (var _1416 in React.spec) {
+            if (React.spec.hasOwnProperty(_1416)) {
+                _1415[_1416] = React.spec[_1416];
             };
         };
-        _1365.getInitialState = Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
+        _1415.getInitialState = Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
             edit: SlamData_App_Notebook_Block_Types.Edit, 
             content: ""
         });
-        _1365.componentWillUpdate = Data_Function.mkFn2(cwu);
-        _1365.componentWillMount = cwm;
-        return _1365;
+        _1415.componentWillUpdate = Data_Function.mkFn2(cwu);
+        _1415.componentWillMount = cwm;
+        return _1415;
     })())(function __do() {
-        var _79 = React.readState();
-        var _78 = React.getProps();
-        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div([ React_DOM.className("block") ])([ SlamData_App_Notebook_Block_Common.blockRow("block-toolbar toolbar")([ blockType(_78.blockType) ])([ toolbar(_78) ]), evalOrEdit(_79.edit)(_78)(_79.content) ]))();
+        var _83 = React.readState();
+        var _82 = React.getProps();
+        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div([ React_DOM.className("block " + Prelude.show(SlamData_App_Notebook_Block_Types.showBlockType({}))(_82.blockType)) ])([ SlamData_App_Notebook_Block_Common.blockRow("block-toolbar toolbar")([ blockType(_82.blockType) ])([ toolbar(React.deferred(SlamData_App_Notebook_Block_Common["eval"]))(_82) ]), evalOrEdit(_83.edit)(_82)(_83.content) ]))();
     });
     return {
         block: block
-    };
-})();
-var PS = PS || {};
-PS.SlamData_App_Panel = (function () {
-    "use strict";
-    var Prelude = PS.Prelude;
-    var Control_Monad_Eff = PS.Control_Monad_Eff;
-    var React = PS.React;
-    var Data_Maybe = PS.Data_Maybe;
-    var SlamData_App_Panel_Tab = PS.SlamData_App_Panel_Tab;
-    var Data_UUID = PS.Data_UUID;
-    var Data_Array = PS.Data_Array;
-    var React_DOM = PS.React_DOM;
-    var Data_Foldable = PS.Data_Foldable;
-    var makeActive = function (ident) {
-        return function __do() {
-            var _85 = React.readState();
-            return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-                var _1370 = {};
-                for (var _1371 in _85) {
-                    if (_85.hasOwnProperty(_1371)) {
-                        _1370[_1371] = _85[_1371];
-                    };
-                };
-                _1370.activeTab = Data_Maybe.Just(ident);
-                return _1370;
-            })()))();
-        };
-    };
-    var injectMakeActive = function (_464) {
-        return function (_465) {
-            return SlamData_App_Panel_Tab.makeTabName({
-                name: _465.name, 
-                external: _465.external, 
-                internal: _465.internal, 
-                content: _465.content, 
-                active: Prelude["=="](Data_Maybe.eqMaybe(Data_UUID.eqUUID({})))(_464)(Data_Maybe.Just(_465.ident)), 
-                ident: _465.ident, 
-                activate: React.deferred(makeActive(_465.ident))
-            });
-        };
-    };
-    var _name = function (_460) {
-        return _460.name;
-    };
-    var _ident = function (_463) {
-        return _463.ident;
-    };
-    var panel$prime = React.mkUI((function () {
-        var _1383 = {};
-        for (var _1384 in React.spec) {
-            if (React.spec.hasOwnProperty(_1384)) {
-                _1383[_1384] = React.spec[_1384];
-            };
-        };
-        _1383.getInitialState = Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
-            tabs: [  ], 
-            activeTab: Data_Maybe.Nothing
-        });
-        return _1383;
-    })())(function __do() {
-        var _84 = React.getProps();
-        var _83 = React.readState();
-        return (function () {
-            var activeTab = Prelude["<|>"](Data_Maybe.alternativeMaybe({}))(_83.activeTab)(Data_Maybe.maybe(Data_Maybe.Nothing)(Prelude[">>>"](Prelude.semigroupoidArr({}))(_ident)(Prelude.pure(Data_Maybe.applicativeMaybe({}))))(Data_Array.head(_84.tabs)));
-            return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div([ React_DOM.className("slamdata-panel"), React_DOM.dataSet({
-                "equalizer-watch": ""
-            }) ])([ React_DOM.dl([ React_DOM.className("tabs"), React_DOM.dataSet({
-                tab: ""
-            }) ])(Prelude["<$>"](Data_Array.functorArray({}))(injectMakeActive(activeTab))(_84.tabs)), React_DOM.div([ React_DOM.className("tabs-content") ])(Data_Maybe.maybe([  ])(Prelude[">>>"](Prelude.semigroupoidArr({}))(SlamData_App_Panel_Tab.makeCont)(Prelude.pure(Data_Array.applicativeArray({}))))(Data_Foldable.find(Data_Foldable.foldableArray({}))(Prelude[">>>"](Prelude.semigroupoidArr({}))(_ident)(Prelude[">>>"](Prelude.semigroupoidArr({}))(Data_Maybe.Just)(Prelude["=="](Data_Maybe.eqMaybe(Data_UUID.eqUUID({})))(activeTab))))(_84.tabs))) ]));
-        })()();
-    });
-    var panel = function (tabs) {
-        return panel$prime({
-            tabs: tabs
-        });
-    };
-    var _content = function (_461) {
-        return _461.content;
-    };
-    var _active = function (_462) {
-        return _462.active;
-    };
-    return {
-        panel: panel
-    };
-})();
-var PS = PS || {};
-PS.SlamData_App_Extra = (function () {
-    "use strict";
-    var SlamData_App_Panel = PS.SlamData_App_Panel;
-    var React_DOM = PS.React_DOM;
-    var Data_UUID = PS.Data_UUID;
-    var exPanel = SlamData_App_Panel.panel([ {
-        name: "Tasks", 
-        content: [ React_DOM.text("Do some tasks.") ], 
-        external: [  ], 
-        internal: [  ], 
-        ident: Data_UUID.runUUID(Data_UUID.v4)
-    }, {
-        name: "Sharing", 
-        content: [ React_DOM.text("Show your friends.") ], 
-        external: [  ], 
-        internal: [  ], 
-        ident: Data_UUID.runUUID(Data_UUID.v4)
-    }, {
-        name: "Chat", 
-        content: [ React_DOM.text("Guess what he/she said.") ], 
-        external: [  ], 
-        internal: [  ], 
-        ident: Data_UUID.runUUID(Data_UUID.v4)
-    } ]);
-    var extra = exPanel;
-    return {
-        extra: extra
-    };
-})();
-var PS = PS || {};
-PS.SlamData_App_FileSystem = (function () {
-    "use strict";
-    var React_DOM = PS.React_DOM;
-    var Prelude = PS.Prelude;
-    var SlamData_Helpers = PS.SlamData_Helpers;
-    var React = PS.React;
-    var Control_Monad_Eff = PS.Control_Monad_Eff;
-    var SlamData_App_Panel = PS.SlamData_App_Panel;
-    var Data_Array = PS.Data_Array;
-    var Data_UUID = PS.Data_UUID;
-    var ft2UI = function (_466) {
-        if (_466.type === "directory") {
-            return React_DOM["ul'"]([ SlamData_Helpers.toUI(SlamData_Helpers.iconFA({}))(SlamData_Helpers.dirOpenIcon({})), React_DOM.text(_466.name) ]);
-        };
-        if (_466.type === "file") {
-            return React_DOM["li'"]([ SlamData_Helpers.toUI(SlamData_Helpers.iconFA({}))(SlamData_Helpers.fileIcon({})), React_DOM.text(_466.name) ]);
-        };
-        throw "Failed pattern match";
-    };
-    var filesystem = React.mkUI(React.spec)(function __do() {
-        var _86 = React.getProps();
-        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_App_Panel.panel([ {
-            name: "File System", 
-            content: [ Data_Array["null"](_86.files) ? SlamData_Helpers.toUI(SlamData_Helpers.iconFA({}))(SlamData_Helpers.loadingIcon({})) : React_DOM["ul'"](Prelude["<$>"](Data_Array.functorArray({}))(ft2UI)(_86.files)) ], 
-            external: [  ], 
-            internal: [ SlamData_Helpers.actionButton(SlamData_Helpers.iconFA({}))({
-                tooltip: "New", 
-                icon: SlamData_Helpers.newIcon({}), 
-                click: Prelude.pure(Control_Monad_Eff.applicativeEff({}))({})
-            }), SlamData_Helpers.actionButton(SlamData_Helpers.iconFA({}))({
-                tooltip: "Open", 
-                icon: SlamData_Helpers.openIcon({}), 
-                click: Prelude.pure(Control_Monad_Eff.applicativeEff({}))({})
-            }) ], 
-            ident: Data_UUID.runUUID(Data_UUID.v4)
-        } ]))();
-    });
-    return {
-        filesystem: filesystem
     };
 })();
 var PS = PS || {};
@@ -65921,9 +66085,8 @@ PS.SlamData_App_Notebook = (function () {
     var Data_UUID = PS.Data_UUID;
     var SlamData_App_Notebook_Block = PS.SlamData_App_Notebook_Block;
     function targetValue(e) {  return function(ty) {    return {      dataSrc: e.target.selectedOptions[0].parentNode.label,      field: e.target.value,      visualType: showVisualType_(ty)    }  }};
-    function fieldswm(that) {    that.state.state.visualState.fields.forEach(function(f0) {      oboe(SlamData_Helpers.serverURI +'/data/fs/' + f0.dataSrc + '?limit=1')      .done(function(json) {        var state = that.state.state;        state.visualState.fields.forEach(function(f1, i) {          if (f1.dataSrc === f0.dataSrc) {            state.visualState.fields[i].allFields = Object.keys(json);          }        });        if (that.isMounted()) {          that.setState(state);        }      });    });};
-    function bind(that) {  return function(f) {    return f.bind(that);  }};
-    function modifyDataSrc(that) {  return function(bool) {    return function(str) {      return function() {        var state = that.state.state;        var vState = dataSrcUpdate(bool)(str)(state.visualState);        state.visualState = vState;        that.replaceState({state: state});        fieldswm(that);      }    }  }};
+    function fieldswm(that) {    that.state.visualState.fields.forEach(function(f0) {      oboe(SlamData_Helpers.serverURI +'/data/fs/' + f0.dataSrc + '?limit=1')      .done(function(json) {        var state = that.state;        state.visualState.fields.forEach(function(f1, i) {          if (f1.dataSrc === f0.dataSrc) {            state.visualState.fields[i].allFields = Object.keys(json);          }        });        if (that.isMounted()) {          that.setState(state);        }      });    });};
+    function modifyDataSrc(that) {  return function(bool) {    return function(str) {      return function() {        var state = that.state;        var vState = dataSrcUpdate(bool)(str)(state.visualState);        state.visualState = vState;        that.replaceState(state);        fieldswm(that);      }    }  }};
     function createVisualBlock(that) {  return function(ty) {    return function(ident) {      return function(content) {        var event = createBlock(ty)(ident)(content)();        that.forceUpdate();        return event;      }    }  }};
     var visuals = function (change) {
         return function (ty) {
@@ -65940,9 +66103,24 @@ PS.SlamData_App_Notebook = (function () {
         var content = Data_String.joinWith("")(Prelude["<$>"](Data_Array.functorArray({}))(SlamData_App_Notebook_Types.showVisualData)(vds));
         return content === "" ? Data_Maybe.Nothing : Data_Maybe.Just(content);
     };
-    var showVisualType_ = function (ty) {
-        return Prelude.show(Graphics_C3.showC3Type({}))(ty);
+    var updateNotebook = function (_490) {
+        return function (_491) {
+            return function (_492) {
+                return Prelude["=="](SlamData_App_Notebook_Types.eqNotebookID({}))((_492.values[0]).ident)(_490) ? SlamData_App_Notebook_Types.NotebookSpec((function () {
+    var _1422 = {};
+    for (var _1423 in _492.values[0]) {
+        if ((_492.values[0]).hasOwnProperty(_1423)) {
+            _1422[_1423] = _492.values[0][_1423];
+        };
     };
+    _1422.blocks = Data_Array.snoc((_492.values[0]).blocks)(_491);
+    return _1422;
+})()) : SlamData_App_Notebook_Types.NotebookSpec(_492.values[0]);
+            };
+        };
+    };
+    var showVisualType_ = Prelude.show(Graphics_C3.showC3Type({}));
+    var serverURI_ = SlamData_Helpers.serverURI;
     var optionify = function (vsf) {
         return React_DOM.optgroup([ React_DOM.labelProp(vsf.dataSrc) ])(Prelude["<$>"](Data_Array.functorArray({}))(function (s) {
             return React_DOM.option([ React_DOM.value(s) ])([ React_DOM.text(s) ]);
@@ -65950,27 +66128,27 @@ PS.SlamData_App_Notebook = (function () {
     };
     var modalVisibility = function (vis) {
         return function __do() {
-            var _94 = React.readState();
+            var _100 = React.readState();
             return (function () {
                 var visualState$prime = (function () {
-                    var _1398 = {};
-                    for (var _1399 in _94.visualState) {
-                        if (_94.visualState.hasOwnProperty(_1399)) {
-                            _1398[_1399] = _94.visualState[_1399];
+                    var _1426 = {};
+                    for (var _1427 in _100.visualState) {
+                        if (_100.visualState.hasOwnProperty(_1427)) {
+                            _1426[_1427] = _100.visualState[_1427];
                         };
                     };
-                    _1398.visible = vis;
-                    return _1398;
+                    _1426.visible = vis;
+                    return _1426;
                 })();
                 return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-                    var _1400 = {};
-                    for (var _1401 in _94) {
-                        if (_94.hasOwnProperty(_1401)) {
-                            _1400[_1401] = _94[_1401];
+                    var _1428 = {};
+                    for (var _1429 in _100) {
+                        if (_100.hasOwnProperty(_1429)) {
+                            _1428[_1429] = _100[_1429];
                         };
                     };
-                    _1400.visualState = visualState$prime;
-                    return _1400;
+                    _1428.visualState = visualState$prime;
+                    return _1428;
                 })()));
             })()();
         };
@@ -65991,23 +66169,23 @@ PS.SlamData_App_Notebook = (function () {
             visible: false
         }
     };
-    var getNotebookID = function (_490) {
-        return _490.values[0];
+    var getNotebookID = function (_496) {
+        return _496.values[0];
     };
-    var makeNotebook = function (_479) {
-        return function (_480) {
-            return function (_481) {
-                return function (_482) {
-                    return React_DOM.dd([ React_DOM.className("tab" + maybeActive((_482.values[0]).ident)(_479)) ])([ React_DOM.a([ React_DOM.href("#" + SlamData_App_Panel_Tab.tabize(getNotebookID((_482.values[0]).ident))), React_DOM.onClick(function (e) {
+    var makeNotebook = function (_477) {
+        return function (_478) {
+            return function (_479) {
+                return function (_480) {
+                    return React_DOM.dd([ React_DOM.className("tab" + maybeActive((_480.values[0]).ident)(_477)) ])([ React_DOM.a([ React_DOM.href("#" + SlamData_App_Panel_Tab.tabize(getNotebookID((_480.values[0]).ident))), React_DOM.onClick(function (e) {
                         return function __do() {
                             Prelude.pure(Control_Monad_Eff.applicativeEff({}))(e.preventDefault({}))();
-                            return _480((_482.values[0]).ident)();
+                            return _478((_480.values[0]).ident)();
                         };
-                    }) ])([ React_DOM.text((_482.values[0]).name), React_DOM.i([ React_DOM.className("fa fa-times"), React_DOM.onClick(function (e) {
+                    }) ])([ React_DOM.text((_480.values[0]).name), React_DOM.i([ React_DOM.className("fa fa-times"), React_DOM.onClick(function (e) {
                         return function __do() {
                             Prelude.pure(Control_Monad_Eff.applicativeEff({}))(e.stopPropagation({}))();
                             Prelude.pure(Control_Monad_Eff.applicativeEff({}))(e.preventDefault({}))();
-                            return _481((_482.values[0]).ident)();
+                            return _479((_480.values[0]).ident)();
                         };
                     }) ])([  ]) ]) ]);
                 };
@@ -66031,7 +66209,7 @@ PS.SlamData_App_Notebook = (function () {
             return React_DOM["li'"]([ React_DOM.text(props.dataSrc), React_DOM["ul'"](Prelude["<$>"](Data_Array.functorArray({}))(field2UI(modify)(props.dataSrc)(props.selectedFields))(props.allFields)) ]);
         };
     };
-    var externalActions = function (_486) {
+    var externalActions = function (_485) {
         return React_DOM.ul([ React_DOM.className("button-group") ])([ SlamData_Helpers.actionButton(SlamData_Helpers.iconFA({}))({
             tooltip: "Save", 
             icon: SlamData_Helpers.saveIcon({}), 
@@ -66044,30 +66222,30 @@ PS.SlamData_App_Notebook = (function () {
     };
     var deleteNotebook = function (ident) {
         return function __do() {
-            var _102 = React.readState();
+            var _97 = React.readState();
             return (function () {
-                var o = SlamData_Helpers.partition(function (_471) {
-                    return Prelude["=="](SlamData_App_Notebook_Types.eqNotebookID({}))((_471.values[0]).ident)(ident);
-                })(_102.notebooks);
+                var o = SlamData_Helpers.partition(function (_475) {
+                    return Prelude["=="](SlamData_App_Notebook_Types.eqNotebookID({}))((_475.values[0]).ident)(ident);
+                })(_97.notebooks);
                 var blocks = SlamData_Helpers.localGet(SlamData_App_Notebook_Block_Types.readBlockSpec({}))(SlamData_Helpers.Blocks);
                 return function __do() {
-                    var _101 = Prelude.pure(Control_Monad_Eff.applicativeEff({}))(Data_Maybe.fromMaybe(blocks)(Prelude[">>="](Data_Maybe.bindMaybe({}))(Data_Array.head(o.fst))(function (_100) {
-                        return Prelude.pure(Data_Maybe.applicativeMaybe({}))(Data_Array.filter(function (_472) {
-                            return Data_Foldable.notElem(SlamData_App_Notebook_Block_Types.eqBlockID({}))(Data_Foldable.foldableArray({}))((_472.values[0]).ident)((_100.values[0]).blocks);
+                    var _96 = Prelude.pure(Control_Monad_Eff.applicativeEff({}))(Data_Maybe.fromMaybe(blocks)(Prelude[">>="](Data_Maybe.bindMaybe({}))(Data_Array.head(o.fst))(function (_95) {
+                        return Prelude.pure(Data_Maybe.applicativeMaybe({}))(Data_Array.filter(function (_476) {
+                            return Data_Foldable.notElem(SlamData_App_Notebook_Block_Types.eqBlockID({}))(Data_Foldable.foldableArray({}))((_476.values[0]).ident)((_95.values[0]).blocks);
                         })(blocks));
                     })))();
-                    Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_Helpers.localSet(Prelude.showArray(SlamData_App_Notebook_Block_Types.showBlockSpec({})))(SlamData_Helpers.Blocks)(_101))();
+                    Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_Helpers.localSet(Prelude.showArray(SlamData_App_Notebook_Block_Types.showBlockSpec({})))(SlamData_Helpers.Blocks)(_96))();
                     Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_Helpers.localSet(Prelude.showArray(SlamData_App_Notebook_Types.showNotebookSpec({})))(SlamData_Helpers.Notebooks)(o.snd))();
                     return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-                        var _1418 = {};
-                        for (var _1419 in _102) {
-                            if (_102.hasOwnProperty(_1419)) {
-                                _1418[_1419] = _102[_1419];
+                        var _1446 = {};
+                        for (var _1447 in _97) {
+                            if (_97.hasOwnProperty(_1447)) {
+                                _1446[_1447] = _97[_1447];
                             };
                         };
-                        _1418.notebooks = o.snd;
-                        _1418.active = Data_Maybe.Nothing;
-                        return _1418;
+                        _1446.notebooks = o.snd;
+                        _1446.active = Data_Maybe.Nothing;
+                        return _1446;
                     })()))();
                 };
             })()();
@@ -66075,83 +66253,63 @@ PS.SlamData_App_Notebook = (function () {
     };
     var deleteBlock = function (ident) {
         return function __do() {
-            var _98 = React.readState();
+            var _93 = React.readState();
             return (function () {
-                var blocks$prime = Data_Array.filter(function (_470) {
-                    return Prelude["/="](SlamData_App_Notebook_Block_Types.eqBlockID({}))((_470.values[0]).ident)(ident);
+                var blocks$prime = Data_Array.filter(function (_474) {
+                    return Prelude["/="](SlamData_App_Notebook_Block_Types.eqBlockID({}))((_474.values[0]).ident)(ident);
                 })(SlamData_Helpers.localGet(SlamData_App_Notebook_Block_Types.readBlockSpec({}))(SlamData_Helpers.Blocks));
-                var go = function (_492) {
+                var go = function (_500) {
                     return SlamData_App_Notebook_Types.NotebookSpec((function () {
-                        var _1424 = {};
-                        for (var _1425 in _492.values[0]) {
-                            if ((_492.values[0]).hasOwnProperty(_1425)) {
-                                _1424[_1425] = _492.values[0][_1425];
+                        var _1452 = {};
+                        for (var _1453 in _500.values[0]) {
+                            if ((_500.values[0]).hasOwnProperty(_1453)) {
+                                _1452[_1453] = _500.values[0][_1453];
                             };
                         };
-                        _1424.blocks = Data_Array["delete"](SlamData_App_Notebook_Block_Types.eqBlockID({}))(ident)((_492.values[0]).blocks);
-                        return _1424;
+                        _1452.blocks = Data_Array["delete"](SlamData_App_Notebook_Block_Types.eqBlockID({}))(ident)((_500.values[0]).blocks);
+                        return _1452;
                     })());
                 };
-                var notebooks$prime = Prelude["<$>"](Data_Array.functorArray({}))(go)(_98.notebooks);
+                var notebooks$prime = Prelude["<$>"](Data_Array.functorArray({}))(go)(_93.notebooks);
                 return function __do() {
                     Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_Helpers.localSet(Prelude.showArray(SlamData_App_Notebook_Block_Types.showBlockSpec({})))(SlamData_Helpers.Blocks)(blocks$prime))();
                     Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_Helpers.localSet(Prelude.showArray(SlamData_App_Notebook_Types.showNotebookSpec({})))(SlamData_Helpers.Notebooks)(notebooks$prime))();
                     return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-                        var _1427 = {};
-                        for (var _1428 in _98) {
-                            if (_98.hasOwnProperty(_1428)) {
-                                _1427[_1428] = _98[_1428];
+                        var _1455 = {};
+                        for (var _1456 in _93) {
+                            if (_93.hasOwnProperty(_1456)) {
+                                _1455[_1456] = _93[_1456];
                             };
                         };
-                        _1427.notebooks = notebooks$prime;
-                        return _1427;
-                    })()))();
-                };
-            })()();
-        };
-    };
-    var crudBlock = function (f) {
-        return function __do() {
-            var _96 = React.readState();
-            return (function () {
-                var notebooks = Prelude["<$>"](Data_Array.functorArray({}))(f)(_96.notebooks);
-                return function __do() {
-                    Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_Helpers.localSet(Prelude.showArray(SlamData_App_Notebook_Types.showNotebookSpec({})))(SlamData_Helpers.Notebooks)(notebooks))();
-                    return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-                        var _1430 = {};
-                        for (var _1431 in _96) {
-                            if (_96.hasOwnProperty(_1431)) {
-                                _1430[_1431] = _96[_1431];
-                            };
-                        };
-                        _1430.notebooks = Prelude["<$>"](Data_Array.functorArray({}))(f)(_96.notebooks);
-                        return _1430;
+                        _1455.notebooks = notebooks$prime;
+                        return _1455;
                     })()))();
                 };
             })()();
         };
     };
     var createNotebook = function __do() {
-        var _99 = React.readState();
+        var _94 = React.readState();
         return (function () {
             var i = SlamData_App_Notebook_Types.NotebookID(Data_UUID.runUUID(Data_UUID.v4));
-            var notebooks$prime = Data_Array.snoc(_99.notebooks)(SlamData_App_Notebook_Types.NotebookSpec({
+            var nb = SlamData_App_Notebook_Types.NotebookSpec({
                 name: "Untitled", 
                 blocks: [  ], 
                 ident: i
-            }));
+            });
+            var notebooks$prime = Data_Array.snoc(_94.notebooks)(nb);
             return function __do() {
                 Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_Helpers.localSet(Prelude.showArray(SlamData_App_Notebook_Types.showNotebookSpec({})))(SlamData_Helpers.Notebooks)(notebooks$prime))();
                 return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-                    var _1433 = {};
-                    for (var _1434 in _99) {
-                        if (_99.hasOwnProperty(_1434)) {
-                            _1433[_1434] = _99[_1434];
+                    var _1458 = {};
+                    for (var _1459 in _94) {
+                        if (_94.hasOwnProperty(_1459)) {
+                            _1458[_1459] = _94[_1459];
                         };
                     };
-                    _1433.notebooks = notebooks$prime;
-                    _1433.active = Data_Maybe.Just(i);
-                    return _1433;
+                    _1458.notebooks = notebooks$prime;
+                    _1458.active = Data_Maybe.Just(i);
+                    return _1458;
                 })()))();
             };
         })()();
@@ -66160,7 +66318,7 @@ PS.SlamData_App_Notebook = (function () {
         return function (ident) {
             return function (content) {
                 return function __do() {
-                    var _97 = React.readState();
+                    var _92 = React.readState();
                     return (function () {
                         var i = SlamData_App_Notebook_Block_Types.BlockID(Data_UUID.runUUID(Data_UUID.v4));
                         var block = SlamData_App_Notebook_Block_Types.BlockSpec({
@@ -66169,31 +66327,19 @@ PS.SlamData_App_Notebook = (function () {
                             ident: i
                         });
                         var blocks$prime = Data_Array.snoc(SlamData_Helpers.localGet(SlamData_App_Notebook_Block_Types.readBlockSpec({}))(SlamData_Helpers.Blocks))(block);
-                        var go = function (_491) {
-                            return Prelude["=="](SlamData_App_Notebook_Types.eqNotebookID({}))((_491.values[0]).ident)(ident) ? SlamData_App_Notebook_Types.NotebookSpec((function () {
-    var _1437 = {};
-    for (var _1438 in _491.values[0]) {
-        if ((_491.values[0]).hasOwnProperty(_1438)) {
-            _1437[_1438] = _491.values[0][_1438];
-        };
-    };
-    _1437.blocks = Data_Array.snoc((_491.values[0]).blocks)(i);
-    return _1437;
-})()) : SlamData_App_Notebook_Types.NotebookSpec(_491.values[0]);
-                        };
-                        var notebooks$prime = Prelude["<$>"](Data_Array.functorArray({}))(go)(_97.notebooks);
+                        var notebooks$prime = Prelude["<$>"](Data_Array.functorArray({}))(updateNotebook(ident)(i))(_92.notebooks);
                         return function __do() {
                             Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_Helpers.localSet(Prelude.showArray(SlamData_App_Notebook_Block_Types.showBlockSpec({})))(SlamData_Helpers.Blocks)(blocks$prime))();
                             Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_Helpers.localSet(Prelude.showArray(SlamData_App_Notebook_Types.showNotebookSpec({})))(SlamData_Helpers.Notebooks)(notebooks$prime))();
                             return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-                                var _1440 = {};
-                                for (var _1441 in _97) {
-                                    if (_97.hasOwnProperty(_1441)) {
-                                        _1440[_1441] = _97[_1441];
+                                var _1461 = {};
+                                for (var _1462 in _92) {
+                                    if (_92.hasOwnProperty(_1462)) {
+                                        _1461[_1462] = _92[_1462];
                                     };
                                 };
-                                _1440.notebooks = notebooks$prime;
-                                return _1440;
+                                _1461.notebooks = notebooks$prime;
+                                return _1461;
                             })()))();
                         };
                     })()();
@@ -66201,136 +66347,138 @@ PS.SlamData_App_Notebook = (function () {
             };
         };
     };
-    var internalActions = function (_487) {
+    var internalActions = function (_486) {
         return React_DOM.ul([ React_DOM.className("button-group") ])([ SlamData_Helpers.actionButton(SlamData_Helpers.iconFA({}))({
             tooltip: Prelude.show(SlamData_App_Notebook_Block_Types.showBlockType({}))(SlamData_App_Notebook_Block_Types.Markdown), 
             icon: SlamData_Helpers.markdownIcon({}), 
-            click: createBlock(SlamData_App_Notebook_Block_Types.Markdown)(_487.notebook.ident)(Data_Maybe.Nothing)
+            click: createBlock(SlamData_App_Notebook_Block_Types.Markdown)(_486.notebook.ident)(Data_Maybe.Nothing)
         }), SlamData_Helpers.actionButton(SlamData_Helpers.iconFA({}))({
             tooltip: Prelude.show(SlamData_App_Notebook_Block_Types.showBlockType({}))(SlamData_App_Notebook_Block_Types.SQL), 
             icon: SlamData_Helpers.sqlIcon({}), 
-            click: createBlock(SlamData_App_Notebook_Block_Types.SQL)(_487.notebook.ident)(Data_Maybe.Nothing)
+            click: createBlock(SlamData_App_Notebook_Block_Types.SQL)(_486.notebook.ident)(Data_Maybe.Nothing)
         }), SlamData_Helpers.actionButton(SlamData_Helpers.iconFA({}))({
             tooltip: Prelude.show(SlamData_App_Notebook_Block_Types.showBlockType({}))(SlamData_App_Notebook_Block_Types.Visual), 
             icon: SlamData_Helpers.visualIcon({}), 
-            click: _487.visibility(true)
+            click: createBlock(SlamData_App_Notebook_Block_Types.Visual)(_486.notebook.ident)(Data_Maybe.Nothing)
         }) ]);
     };
     var changeVisual = function (ty) {
         return function __do() {
-            var _91 = React.readState();
+            var _98 = React.readState();
             return (function () {
                 var vState$prime = (function () {
-                    var _1446 = {};
-                    for (var _1447 in _91.visualState) {
-                        if (_91.visualState.hasOwnProperty(_1447)) {
-                            _1446[_1447] = _91.visualState[_1447];
+                    var _1467 = {};
+                    for (var _1468 in _98.visualState) {
+                        if (_98.visualState.hasOwnProperty(_1468)) {
+                            _1467[_1468] = _98.visualState[_1468];
                         };
                     };
-                    _1446.visualType = ty;
-                    return _1446;
+                    _1467.visualType = ty;
+                    return _1467;
                 })();
                 return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-                    var _1448 = {};
-                    for (var _1449 in _91) {
-                        if (_91.hasOwnProperty(_1449)) {
-                            _1448[_1449] = _91[_1449];
+                    var _1469 = {};
+                    for (var _1470 in _98) {
+                        if (_98.hasOwnProperty(_1470)) {
+                            _1469[_1470] = _98[_1470];
                         };
                     };
-                    _1448.visualState = vState$prime;
-                    return _1448;
+                    _1469.visualState = vState$prime;
+                    return _1469;
                 })()));
             })()();
         };
     };
-    var block2UI = function (_488) {
-        return function (_489) {
-            return SlamData_App_Notebook_Block.block({
-                blockType: (_488.values[0]).blockType, 
-                ident: (_488.values[0]).ident, 
-                close: React.deferred(deleteBlock((_488.values[0]).ident)), 
-                content: (_488.values[0]).content, 
-                index: _489
-            });
+    var block2UI = function (_487) {
+        return function (_488) {
+            return function (_489) {
+                return SlamData_App_Notebook_Block.block({
+                    blockType: (_488.values[0]).blockType, 
+                    ident: (_488.values[0]).ident, 
+                    close: React.deferred(deleteBlock((_488.values[0]).ident)), 
+                    content: (_488.values[0]).content, 
+                    index: _489, 
+                    files: _487
+                });
+            };
         };
     };
-    var makeBlocks = function (_483) {
-        return function (_484) {
-            return function (_485) {
-                return React_DOM.div([ React_DOM.className("content" + maybeActive((_485.values[0]).ident)(_483)) ])([ React_DOM.div([ React_DOM.className("toolbar button-bar") ])([ externalActions({}), internalActions({
-                    notebook: _485.values[0], 
-                    visibility: _484
-                }) ]), React_DOM["hr'"]([  ]), React_DOM.div([ React_DOM.className("actual-content") ])(Data_Array.zipWith(block2UI)(Data_Array.filter(function (_469) {
-                    return Data_Foldable.elem(SlamData_App_Notebook_Block_Types.eqBlockID({}))(Data_Foldable.foldableArray({}))((_469.values[0]).ident)((_485.values[0]).blocks);
-                })(SlamData_Helpers.localGet(SlamData_App_Notebook_Block_Types.readBlockSpec({}))(SlamData_Helpers.Blocks)))(SlamData_Helpers[".."](0)(Data_Array.length((_485.values[0]).blocks)))) ]);
+    var makeBlocks = function (_481) {
+        return function (_482) {
+            return function (_483) {
+                return function (_484) {
+                    return React_DOM.div([ React_DOM.className("content" + maybeActive((_484.values[0]).ident)(_482)) ])([ React_DOM.div([ React_DOM.className("toolbar button-bar") ])([ externalActions({}), internalActions({
+                        notebook: _484.values[0], 
+                        visibility: _483
+                    }) ]), React_DOM["hr'"]([  ]), React_DOM.div([ React_DOM.className("actual-content") ])(Data_Array.zipWith(block2UI(_481))(Data_Array.filter(function (_473) {
+                        return Data_Foldable.elem(SlamData_App_Notebook_Block_Types.eqBlockID({}))(Data_Foldable.foldableArray({}))((_473.values[0]).ident)((_484.values[0]).blocks);
+                    })(SlamData_Helpers.localGet(SlamData_App_Notebook_Block_Types.readBlockSpec({}))(SlamData_Helpers.Blocks)))(SlamData_Helpers[".."](0)(Data_Array.length((_484.values[0]).blocks)))) ]);
+                };
             };
         };
     };
     var activateVisualTab = function (visualTab) {
         return function __do() {
-            var _93 = React.readState();
+            var _99 = React.readState();
             return (function () {
                 var visualState$prime = (function () {
-                    var _1463 = {};
-                    for (var _1464 in _93.visualState) {
-                        if (_93.visualState.hasOwnProperty(_1464)) {
-                            _1463[_1464] = _93.visualState[_1464];
+                    var _1486 = {};
+                    for (var _1487 in _99.visualState) {
+                        if (_99.visualState.hasOwnProperty(_1487)) {
+                            _1486[_1487] = _99.visualState[_1487];
                         };
                     };
-                    _1463.active = visualTab;
-                    return _1463;
+                    _1486.active = visualTab;
+                    return _1486;
                 })();
                 return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-                    var _1465 = {};
-                    for (var _1466 in _93) {
-                        if (_93.hasOwnProperty(_1466)) {
-                            _1465[_1466] = _93[_1466];
+                    var _1488 = {};
+                    for (var _1489 in _99) {
+                        if (_99.hasOwnProperty(_1489)) {
+                            _1488[_1489] = _99[_1489];
                         };
                     };
-                    _1465.visualState = visualState$prime;
-                    return _1465;
+                    _1488.visualState = visualState$prime;
+                    return _1488;
                 })()));
             })()();
         };
     };
     var activateTab = function (ident) {
         return function __do() {
-            var _92 = React.readState();
+            var _91 = React.readState();
             return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-                var _1468 = {};
-                for (var _1469 in _92) {
-                    if (_92.hasOwnProperty(_1469)) {
-                        _1468[_1469] = _92[_1469];
+                var _1491 = {};
+                for (var _1492 in _91) {
+                    if (_91.hasOwnProperty(_1492)) {
+                        _1491[_1492] = _91[_1492];
                     };
                 };
-                _1468.active = Data_Maybe.Just(ident);
-                return _1468;
+                _1491.active = Data_Maybe.Just(ident);
+                return _1491;
             })()))();
         };
     };
-    var actVisualType = function (_478) {
-        if (_478.ctor === "SlamData.App.Notebook.Types.VisualTypeTab") {
+    var actVisualType = function (_499) {
+        if (_499.ctor === "SlamData.App.Notebook.Types.VisualTypeTab") {
             return " active";
         };
         return "";
     };
-    var actFields = function (_477) {
-        if (_477.ctor === "SlamData.App.Notebook.Types.FieldsTab") {
+    var actFields = function (_498) {
+        if (_498.ctor === "SlamData.App.Notebook.Types.FieldsTab") {
             return " active";
         };
         return "";
     };
-    var actData = function (_476) {
-        if (_476.ctor === "SlamData.App.Notebook.Types.DataSrcTab") {
+    var actData = function (_497) {
+        if (_497.ctor === "SlamData.App.Notebook.Types.DataSrcTab") {
             return " active";
         };
         return "";
     };
     var _type = function (o) {
         return o.type;
-    };
-    var _selectedFields = function (o) {
-        return o.selectedFields;
     };
     var _dataSrc = function (o) {
         return o.dataSrc;
@@ -66344,25 +66492,25 @@ PS.SlamData_App_Notebook = (function () {
                     selectedFields: [  ]
                 };
                 var fields$prime = $$new ? Prelude[":"](newField)(vState.fields) : Data_Array.filter(Prelude[">>>"](Prelude.semigroupoidArr({}))(_dataSrc)(Prelude["/="](Prelude.eqString({}))(ident)))(vState.fields);
-                var _1473 = {};
-                for (var _1474 in vState) {
-                    if (vState.hasOwnProperty(_1474)) {
-                        _1473[_1474] = vState[_1474];
+                var _1496 = {};
+                for (var _1497 in vState) {
+                    if (vState.hasOwnProperty(_1497)) {
+                        _1496[_1497] = vState[_1497];
                     };
                 };
-                _1473.fields = fields$prime;
-                return _1473;
+                _1496.fields = fields$prime;
+                return _1496;
             };
         };
     };
-    var ft2UI = function (_473) {
-        return function (_474) {
-            return function (_475) {
-                if (_475.type === "file") {
-                    var checked = Data_Foldable.elem(Prelude.eqString({}))(Data_Foldable.foldableArray({}))(_475.name)(Prelude["<$>"](Data_Array.functorArray({}))(_dataSrc)(_474));
+    var ft2UI = function (_493) {
+        return function (_494) {
+            return function (_495) {
+                if (_495.type === "file") {
+                    var checked = Data_Foldable.elem(Prelude.eqString({}))(Data_Foldable.foldableArray({}))(_495.name)(Prelude["<$>"](Data_Array.functorArray({}))(_dataSrc)(_494));
                     return React_DOM["li'"]([ React_DOM.input([ React_DOM.typeProp("checkbox"), React_DOM.onChange(function (_) {
-                        return _473(!checked)(_475.name);
-                    }), React_DOM.checked(checked) ])([  ]), React_DOM.text(_475.name) ]);
+                        return _493(!checked)(_495.name);
+                    }), React_DOM.checked(checked) ])([  ]), React_DOM.text(_495.name) ]);
                 };
                 throw "Failed pattern match";
             };
@@ -66371,64 +66519,64 @@ PS.SlamData_App_Notebook = (function () {
     var modifyFields = function (ident) {
         return function (fields) {
             return function __do() {
-                var _95 = React.readState();
+                var _101 = React.readState();
                 return (function () {
                     var fields$prime = Prelude["<$>"](Data_Array.functorArray({}))(function (f) {
                         return ident === _dataSrc(f) ? (function () {
-    var _1481 = {};
-    for (var _1482 in f) {
-        if (f.hasOwnProperty(_1482)) {
-            _1481[_1482] = f[_1482];
+    var _1504 = {};
+    for (var _1505 in f) {
+        if (f.hasOwnProperty(_1505)) {
+            _1504[_1505] = f[_1505];
         };
     };
-    _1481.selectedFields = fields;
-    return _1481;
+    _1504.selectedFields = fields;
+    return _1504;
 })() : f;
-                    })(_95.visualState.fields);
+                    })(_101.visualState.fields);
                     var vState$prime = (function () {
-                        var _1483 = {};
-                        for (var _1484 in _95.visualState) {
-                            if (_95.visualState.hasOwnProperty(_1484)) {
-                                _1483[_1484] = _95.visualState[_1484];
+                        var _1506 = {};
+                        for (var _1507 in _101.visualState) {
+                            if (_101.visualState.hasOwnProperty(_1507)) {
+                                _1506[_1507] = _101.visualState[_1507];
                             };
                         };
-                        _1483.fields = fields$prime;
-                        return _1483;
+                        _1506.fields = fields$prime;
+                        return _1506;
                     })();
                     return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-                        var _1485 = {};
-                        for (var _1486 in _95) {
-                            if (_95.hasOwnProperty(_1486)) {
-                                _1485[_1486] = _95[_1486];
+                        var _1508 = {};
+                        for (var _1509 in _101) {
+                            if (_101.hasOwnProperty(_1509)) {
+                                _1508[_1509] = _101[_1509];
                             };
                         };
-                        _1485.visualState = vState$prime;
-                        return _1485;
+                        _1508.visualState = vState$prime;
+                        return _1508;
                     })()));
                 })()();
             };
         };
     };
     var notebook = React.mkUI((function () {
-        var _1487 = {};
-        for (var _1488 in React.spec) {
-            if (React.spec.hasOwnProperty(_1488)) {
-                _1487[_1488] = React.spec[_1488];
+        var _1510 = {};
+        for (var _1511 in React.spec) {
+            if (React.spec.hasOwnProperty(_1511)) {
+                _1510[_1511] = React.spec[_1511];
             };
         };
-        _1487.getInitialState = Prelude.pure(Control_Monad_Eff.applicativeEff({}))(initialState);
-        return _1487;
+        _1510.getInitialState = Prelude.pure(Control_Monad_Eff.applicativeEff({}))(initialState);
+        return _1510;
     })())(function __do() {
         var _90 = React.getProps();
         var _89 = React.readState();
         var _88 = React.getSelf();
         return (function () {
-            var active = Prelude["<|>"](Data_Maybe.alternativeMaybe({}))(_89.active)(Data_Maybe.maybe(Data_Maybe.Nothing)(function (_467) {
-                return Data_Maybe.Just((_467.values[0]).ident);
+            var active = Prelude["<|>"](Data_Maybe.alternativeMaybe({}))(_89.active)(Data_Maybe.maybe(Data_Maybe.Nothing)(function (_471) {
+                return Data_Maybe.Just((_471.values[0]).ident);
             })(Data_Array.head(_89.notebooks)));
             return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div([ React_DOM.className("slamdata-panel") ])(Prelude["++"](Data_Array.semigroupArray({}))([ React_DOM.dl([ React_DOM.className("tabs") ])(Data_Array.snoc(Prelude["<$>"](Data_Array.functorArray({}))(makeNotebook(active)(Prelude["<<<"](Prelude.semigroupoidArr({}))(React.deferred)(activateTab))(Prelude["<<<"](Prelude.semigroupoidArr({}))(React.deferred)(deleteNotebook)))(_89.notebooks))(React_DOM.dd([ React_DOM.className("tab") ])([ React_DOM["div'"]([ React_DOM.a([ React_DOM.onClick(function (_) {
                 return createNotebook;
-            }), React_DOM.idProp("add-notebook") ])([ SlamData_Helpers.toUI(SlamData_Helpers.iconFA({}))(SlamData_Helpers.newNotebookIcon({})) ]) ]) ]))), React_DOM.div([ React_DOM.className("tabs-content") ])(Prelude["<$>"](Data_Array.functorArray({}))(makeBlocks(active)(Prelude["<<<"](Prelude.semigroupoidArr({}))(React.deferred)(modalVisibility)))(_89.notebooks)) ])(_89.visualState.visible ? [ React_DOM.div([ React_DOM.idProp("visual-modal") ])([ React_DOM.div([ React_DOM.idProp("visual-modal-content") ])([ React_DOM.dl([ React_DOM.className("tabs vertical") ])([ React_DOM.dd([ React_DOM.className("tab" + actData(_89.visualState.active)) ])([ React_DOM.a([ React_DOM.onClick(function (_) {
+            }), React_DOM.idProp("add-notebook") ])([ SlamData_Helpers.toUI(SlamData_Helpers.iconFA({}))(SlamData_Helpers.newNotebookIcon({})) ]) ]) ]))), React_DOM.div([ React_DOM.className("tabs-content") ])(Prelude["<$>"](Data_Array.functorArray({}))(makeBlocks(_90.files)(active)(Prelude["<<<"](Prelude.semigroupoidArr({}))(React.deferred)(modalVisibility)))(_89.notebooks)) ])(_89.visualState.visible ? [ React_DOM.div([ React_DOM.idProp("visual-modal") ])([ React_DOM.div([ React_DOM.idProp("visual-modal-content") ])([ React_DOM.dl([ React_DOM.className("tabs vertical") ])([ React_DOM.dd([ React_DOM.className("tab" + actData(_89.visualState.active)) ])([ React_DOM.a([ React_DOM.onClick(function (_) {
     return activateVisualTab(SlamData_App_Notebook_Types.DataSrcTab);
 }) ])([ React_DOM.text("Data Source") ]) ]), React_DOM.dd([ React_DOM.className("tab" + actFields(_89.visualState.active)) ])([ React_DOM.a([ React_DOM.onClick(function (_) {
     return activateVisualTab(SlamData_App_Notebook_Types.FieldsTab);
@@ -66444,57 +66592,57 @@ PS.SlamData_App_Notebook = (function () {
     };
 }))(_89.visualState.fields)), React_DOM.div([ React_DOM.className("content" + actVisualType(_89.visualState.active)) ])([ React_DOM.ul([ React_DOM.className("chart-type small-block-grid-5") ])(visuals(Prelude["<<<"](Prelude.semigroupoidArr({}))(React.deferred)(changeVisual))(_89.visualState.visualType)), React_DOM.select([ React_DOM.onChange(function (e) {
     var vState$prime = (function () {
-        var _1494 = {};
-        for (var _1495 in _89.visualState) {
-            if (_89.visualState.hasOwnProperty(_1495)) {
-                _1494[_1495] = _89.visualState[_1495];
+        var _1517 = {};
+        for (var _1518 in _89.visualState) {
+            if (_89.visualState.hasOwnProperty(_1518)) {
+                _1517[_1518] = _89.visualState[_1518];
             };
         };
-        _1494.visualData = [ targetValue(e)(_89.visualState.visualType) ];
-        return _1494;
+        _1517.visualData = [ targetValue(e)(_89.visualState.visualType) ];
+        return _1517;
     })();
     return React.writeState((function () {
-        var _1496 = {};
-        for (var _1497 in _89) {
-            if (_89.hasOwnProperty(_1497)) {
-                _1496[_1497] = _89[_1497];
+        var _1519 = {};
+        for (var _1520 in _89) {
+            if (_89.hasOwnProperty(_1520)) {
+                _1519[_1520] = _89[_1520];
             };
         };
-        _1496.visualState = vState$prime;
-        return _1496;
+        _1519.visualState = vState$prime;
+        return _1519;
     })());
 }) ])(Prelude["<$>"](Data_Array.functorArray({}))(optionify)(_89.visualState.fields)), React_DOM.div([ React_DOM.className("actions") ])([ React_DOM.a([ React_DOM.className("button"), React_DOM.onClick(function (_) {
     return function __do() {
         var _87 = React.readState();
         return (function () {
-            var active = SlamData_Helpers.getOrElse(_87.active)(Data_Maybe.maybe(SlamData_App_Notebook_Types.NotebookID(Data_UUID.runUUID(Data_UUID.v4)))(function (_468) {
-                return (_468.values[0]).ident;
+            var active = SlamData_Helpers.getOrElse(_87.active)(Data_Maybe.maybe(SlamData_App_Notebook_Types.NotebookID(Data_UUID.runUUID(Data_UUID.v4)))(function (_472) {
+                return (_472.values[0]).ident;
             })(Data_Array.head(_87.notebooks)));
             return function __do() {
                 createVisualBlock(_88)(SlamData_App_Notebook_Block_Types.Visual)(active)(visualContent(_89.visualState.visualData))();
                 return React.writeState((function () {
-                    var _1501 = {};
-                    for (var _1502 in _87) {
-                        if (_87.hasOwnProperty(_1502)) {
-                            _1501[_1502] = _87[_1502];
+                    var _1524 = {};
+                    for (var _1525 in _87) {
+                        if (_87.hasOwnProperty(_1525)) {
+                            _1524[_1525] = _87[_1525];
                         };
                     };
-                    _1501.visualState = initialState.visualState;
-                    return _1501;
+                    _1524.visualState = initialState.visualState;
+                    return _1524;
                 })())();
             };
         })()();
     };
 }) ])([ React_DOM.text("Create") ]), React_DOM.a([ React_DOM.className("button secondary"), React_DOM.onClick(function (_) {
     return React.writeState((function () {
-        var _1503 = {};
-        for (var _1504 in _89) {
-            if (_89.hasOwnProperty(_1504)) {
-                _1503[_1504] = _89[_1504];
+        var _1526 = {};
+        for (var _1527 in _89) {
+            if (_89.hasOwnProperty(_1527)) {
+                _1526[_1527] = _89[_1527];
             };
         };
-        _1503.visualState = initialState.visualState;
-        return _1503;
+        _1526.visualState = initialState.visualState;
+        return _1526;
     })());
 }) ])([ React_DOM.text("Cancel") ]) ]) ]) ]) ]) ]) ] : [  ])));
         })()();
@@ -66504,64 +66652,57 @@ PS.SlamData_App_Notebook = (function () {
     };
 })();
 var PS = PS || {};
-PS.SlamData_App_Reference = (function () {
-    "use strict";
-    var SlamData_App_Panel = PS.SlamData_App_Panel;
-    var React_DOM = PS.React_DOM;
-    var Data_UUID = PS.Data_UUID;
-    var refPanel = SlamData_App_Panel.panel([ {
-        name: "Tutorial", 
-        content: [ React_DOM.text("Here's some tutorial things.") ], 
-        external: [  ], 
-        internal: [  ], 
-        ident: Data_UUID.runUUID(Data_UUID.v4)
-    }, {
-        name: "References", 
-        content: [ React_DOM.text("Look at all this reference stuff.") ], 
-        external: [  ], 
-        internal: [  ], 
-        ident: Data_UUID.runUUID(Data_UUID.v4)
-    }, {
-        name: "Examples", 
-        content: [ React_DOM.text("Wow, examples!") ], 
-        external: [  ], 
-        internal: [  ], 
-        ident: Data_UUID.runUUID(Data_UUID.v4)
-    }, {
-        name: "Notes", 
-        content: [ React_DOM.text("Knowtes.") ], 
-        external: [  ], 
-        internal: [  ], 
-        ident: Data_UUID.runUUID(Data_UUID.v4)
-    } ]);
-    var reference = refPanel;
-    return {
-        reference: reference
-    };
-})();
-var PS = PS || {};
 PS.SlamData_App_Workspace = (function () {
     "use strict";
-    var React = PS.React;
+    var SlamData_Helpers = PS.SlamData_Helpers;
     var Prelude = PS.Prelude;
+    var React = PS.React;
     var Control_Monad_Eff = PS.Control_Monad_Eff;
     var React_DOM = PS.React_DOM;
     var SlamData_App_FileSystem = PS.SlamData_App_FileSystem;
     var SlamData_App_Notebook = PS.SlamData_App_Notebook;
-    var SlamData_Helpers = PS.SlamData_Helpers;
-    function cwm() {  var fetchFS = function() {    oboe(serverURI_ + '/metadata/fs/')    .done(function(json) {      if (this.isMounted()) {        this.setState({state: {files: json.children}})      }    }.bind(this));  };  fetchFS();  setInterval(fetchFS.bind(this), 5000);};
+    function cwm() {  var fetchFS = function() {    oboe(serverURI_ + '/metadata/fs/')    .done(function(json) {      if (this.isMounted()) {        this.setState({files: json.children});      }    }.bind(this));  }.bind(this);  fetchFS();  setInterval(fetchFS, pollRate);};
+    function mkFn2Eff(f) {  return function(x, y) {    return f(x)(y)();  }};
+    function eqObj(o1) {  return function(o2) {    for (var k in o1) {      if ((o1.hasOwnProperty(k) && o2.hasOwnProperty(k)) && (o1[k] !== o2[k])) {        return false;      } else if (o1.hasOwnProperty(k) && !o2.hasOwnProperty(k)) {        return false;      } else if (!o1.hasOwnProperty(k) && o2.hasOwnProperty(k)) {        return false;      }    }    return true;  }};
+    var serverURI_ = SlamData_Helpers.serverURI;
+    var pollRate = 5000;
+    var eqArr = function (_501) {
+        return function (_502) {
+            if (_501.length === 0) {
+                if (_502.length === 0) {
+                    return true;
+                };
+            };
+            if (_501.length > 0) {
+                var _1533 = _501.slice(1);
+                if (_502.length > 0) {
+                    var _1531 = _502.slice(1);
+                    return eqObj(_501[0])(_502[0]) && eqArr(_1533)(_1531);
+                };
+            };
+            return false;
+        };
+    };
     var workspace = React.mkUI((function () {
-        var _1505 = {};
-        for (var _1506 in React.spec) {
-            if (React.spec.hasOwnProperty(_1506)) {
-                _1505[_1506] = React.spec[_1506];
+        var _1535 = {};
+        for (var _1536 in React.spec) {
+            if (React.spec.hasOwnProperty(_1536)) {
+                _1535[_1536] = React.spec[_1536];
             };
         };
-        _1505.getInitialState = Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
+        _1535.getInitialState = Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
             files: [  ]
         });
-        _1505.componentWillMount = cwm;
-        return _1505;
+        _1535.componentWillMount = cwm;
+        _1535.shouldComponentUpdate = mkFn2Eff(function (_) {
+            return function (s) {
+                return function __do() {
+                    var _102 = React.readState();
+                    return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(!eqArr(_102.files)(s.files))();
+                };
+            };
+        });
+        return _1535;
     })())(function __do() {
         var _103 = React.readState();
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div([ React_DOM.idProp("workspace") ])([ React_DOM.div([ React_DOM.className("row"), React_DOM.idProp("main-row") ])([ React_DOM.div([ React_DOM.className("large-2 medium-3 small-5 columns"), React_DOM.idProp("filesystem") ])([ SlamData_App_FileSystem.filesystem({
@@ -66570,7 +66711,6 @@ PS.SlamData_App_Workspace = (function () {
             files: _103.files
         }) ]) ]) ]))();
     });
-    var serverURI_ = SlamData_Helpers.serverURI;
     return {
         workspace: workspace
     };
@@ -66617,23 +66757,23 @@ PS.SlamData_Login = (function () {
     function changeNew(state) {  React.writeState(state);};
     var validationText = React.mkUI(React.spec)(function __do() {
         var _108 = React.getProps();
-        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div([  ])([ React_DOM.label([ React_DOM.htmlFor(Data_String.toLower(_108.label)) ])([ React_DOM.text(_108.label) ]), React_DOM.input([ React_DOM.typeProp("text"), React_DOM.idProp(Data_String.toLower(_108.label)) ])([  ]) ]))();
+        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM["div'"]([ React_DOM.label([ React_DOM.htmlFor(Data_String.toLower(_108.label)) ])([ React_DOM.text(_108.label) ]), React_DOM.input([ React_DOM.typeProp("text"), React_DOM.idProp(Data_String.toLower(_108.label)) ])([  ]) ]))();
     });
     var showNewOrExisting = function (_) {
         return {
             "__superclasses": {}, 
-            show: function (_496) {
-                if (_496.ctor === "SlamData.Login.New") {
+            show: function (_506) {
+                if (_506.ctor === "SlamData.Login.New") {
                     return "NewAccount";
                 };
-                if (_496.ctor === "SlamData.Login.Existing") {
+                if (_506.ctor === "SlamData.Login.Existing") {
                     return "ExistingAccount";
                 };
                 throw "Failed pattern match";
             }
         };
     };
-    var newInfo = React_DOM.div([  ])([ SlamData_Helpers.row(Prelude["<$>"](Data_Array.functorArray({}))(SlamData_Helpers.large("6"))([ validationText({
+    var newInfo = React_DOM["div'"]([ SlamData_Helpers.row(Prelude["<$>"](Data_Array.functorArray({}))(SlamData_Helpers.large("6"))([ validationText({
         label: "Name"
     }), validationText({
         label: "Confirm Password"
@@ -66642,8 +66782,8 @@ PS.SlamData_Login = (function () {
     }), validationText({
         label: "Title"
     }) ])) ]);
-    var isNew = function (_493) {
-        if (_493.ctor === "SlamData.Login.New") {
+    var isNew = function (_503) {
+        if (_503.ctor === "SlamData.Login.New") {
             return true;
         };
         return false;
@@ -66651,15 +66791,15 @@ PS.SlamData_Login = (function () {
     var eqNewOrExisting = function (_) {
         return {
             "__superclasses": {}, 
-            "==": function (_494) {
-                return function (_495) {
-                    if (_494.ctor === "SlamData.Login.New") {
-                        if (_495.ctor === "SlamData.Login.New") {
+            "==": function (_504) {
+                return function (_505) {
+                    if (_504.ctor === "SlamData.Login.New") {
+                        if (_505.ctor === "SlamData.Login.New") {
                             return true;
                         };
                     };
-                    if (_494.ctor === "SlamData.Login.Existing") {
-                        if (_495.ctor === "SlamData.Login.Existing") {
+                    if (_504.ctor === "SlamData.Login.Existing") {
+                        if (_505.ctor === "SlamData.Login.Existing") {
                             return true;
                         };
                     };
@@ -66674,12 +66814,12 @@ PS.SlamData_Login = (function () {
         };
     };
     var newOrExisting = (function () {
-        var newAccountChanged = function (_497) {
-            return function (_498) {
+        var newAccountChanged = function (_507) {
+            return function (_508) {
                 return function __do() {
                     var _105 = React.getProps();
                     return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(_105.onChangeNew({
-                        newAccount: _497
+                        newAccount: _507
                     }))();
                 };
             };
@@ -66687,10 +66827,10 @@ PS.SlamData_Login = (function () {
         return React.mkUI(React.spec)(function __do() {
             var _106 = React.getProps();
             return (function () {
-                var radioWithLabel = function (_499) {
-                    return React_DOM.p([  ])([ React_DOM.input([ React_DOM.typeProp("radio"), React_DOM.checked(Prelude["=="](eqNewOrExisting({}))(_106.newAccount)(_499.value)), React_DOM.idProp(Prelude.show(showNewOrExisting({}))(_499.value)), React_DOM.name("new-or-existing"), React_DOM.onChange(newAccountChanged(_499.value)) ])([  ]), React_DOM.label([ React_DOM.htmlFor(Prelude.show(showNewOrExisting({}))(_499.value)) ])([ React_DOM.text(_499.labelText) ]) ]);
+                var radioWithLabel = function (_509) {
+                    return React_DOM["p'"]([ React_DOM.input([ React_DOM.typeProp("radio"), React_DOM.checked(Prelude["=="](eqNewOrExisting({}))(_106.newAccount)(_509.value)), React_DOM.idProp(Prelude.show(showNewOrExisting({}))(_509.value)), React_DOM.name("new-or-existing"), React_DOM.onChange(newAccountChanged(_509.value)) ])([  ]), React_DOM.label([ React_DOM.htmlFor(Prelude.show(showNewOrExisting({}))(_509.value)) ])([ React_DOM.text(_509.labelText) ]) ]);
                 };
-                return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div([  ])([ radioWithLabel({
+                return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM["div'"]([ radioWithLabel({
                     labelText: "I have an existing account.", 
                     value: Existing
                 }), radioWithLabel({
@@ -66703,34 +66843,28 @@ PS.SlamData_Login = (function () {
     var demo = React_DOM.button([ React_DOM.className("right secondary") ])([ React_DOM.text("Try Demo!") ]);
     var createOrLogin = React.mkUI(React.spec)(function __do() {
         var _109 = React.getProps();
-        return (function () {
-            var buttonText = isNew(_109.newAccount) ? "Create Account" : "Login";
-            return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div([  ])([ React_DOM.div([  ])([  ]), React_DOM.button([ React_DOM.className("right") ])([ React_DOM.text(buttonText) ]) ]));
-        })()();
+        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM["div'"]([ React_DOM["div'"]([  ]), React_DOM.button([ React_DOM.className("right") ])([ React_DOM.text(isNew(_109.newAccount) ? "Create Account" : "Login") ]) ]))();
     });
-    var alwaysInfo = React_DOM.div([  ])([ SlamData_Helpers.row(Prelude["<$>"](Data_Array.functorArray({}))(SlamData_Helpers.large("6"))([ validationText({
+    var alwaysInfo = React_DOM["div'"]([ SlamData_Helpers.row(Prelude["<$>"](Data_Array.functorArray({}))(SlamData_Helpers.large("6"))([ validationText({
         label: "Email"
     }), validationText({
         label: "Password"
     }) ])) ]);
     var information = React.mkUI(React.spec)(function __do() {
         var _107 = React.getProps();
-        return (function () {
-            var info = isNew(_107.newAccount) ? [ alwaysInfo, newInfo ] : [ alwaysInfo ];
-            return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div([  ])(info));
-        })()();
+        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM["div'"](isNew(_107.newAccount) ? [ alwaysInfo, newInfo ] : [ alwaysInfo ]))();
     });
     var loginForm = React.mkUI((function () {
-        var _1522 = {};
-        for (var _1523 in React.spec) {
-            if (React.spec.hasOwnProperty(_1523)) {
-                _1522[_1523] = React.spec[_1523];
+        var _1552 = {};
+        for (var _1553 in React.spec) {
+            if (React.spec.hasOwnProperty(_1553)) {
+                _1552[_1553] = React.spec[_1553];
             };
         };
-        _1522.getInitialState = Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
+        _1552.getInitialState = Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
             newAccount: Existing
         });
-        return _1522;
+        return _1552;
     })())(function __do() {
         var _104 = React.readState();
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.form([  ])([ React_DOM.fieldset([  ])([ React_DOM.legend([  ])([ React_DOM.text("Login to SlamData") ]), SlamData_Helpers.row([ SlamData_Helpers.large("6")(newOrExisting({
@@ -66738,7 +66872,7 @@ PS.SlamData_Login = (function () {
             onChangeNew: React.handle(changeNew)
         })), SlamData_Helpers.large("6")(demo) ]), information({
             newAccount: _104.newAccount
-        }), SlamData_Helpers.row([ SlamData_Helpers.large("6")(React_DOM.div([  ])([  ])), SlamData_Helpers.large("6")(createOrLogin({
+        }), SlamData_Helpers.row([ SlamData_Helpers.large("6")(React_DOM["div'"]([  ])), SlamData_Helpers.large("6")(createOrLogin({
             newAccount: _104.newAccount
         })) ]) ]) ]))();
     });
