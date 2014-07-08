@@ -1,23 +1,35 @@
 module SlamData.App.Notebook.Block.SQL (evalSQL) where
 
-  import Control.Apply
-  import Control.Monad.Eff
+  import Control.Apply ((*>))
+  import Control.Monad.Eff (Eff())
 
   import Data.Array (snoc)
-  import Data.Either
-  import Data.Foldable
-  import Data.Foreign
-  import Data.Function
-  import Data.Maybe
-  import Data.Maybe.Unsafe
-  import Data.UUID
+  import Data.Foldable (find)
+  import Data.Maybe (isJust, Maybe(..))
+  import Data.Maybe.Unsafe (fromJust)
+  import Data.String (split, trim)
+  import Data.UUID (runUUID, v4)
 
-  import React
+  import React (getProps, mkUI, readState, spec, EventHandlerContext(), UI())
 
-  import SlamData.App.Notebook.Block.Common
+  import SlamData.App.Notebook.Block.Common (blockRow)
   import SlamData.App.Notebook.Block.Types
-  import SlamData.App.Notebook.Types
+    ( BlockID(..)
+    , BlockProps()
+    , BlockState()
+    , EvalSQLSpec(..)
+    , EvalSQLState()
+    , LoadingStatus(..)
+    )
   import SlamData.Helpers
+    ( guardMaybe
+    , localGet
+    , localSet
+    , loadingIcon
+    , serverURI
+    , toUI
+    , LocalKey(..)
+    )
 
   import qualified React.DOM as D
 
@@ -36,8 +48,6 @@ module SlamData.App.Notebook.Block.SQL (evalSQL) where
                        , location: location
                        }
              , componentWillMount = cwm
-             , shouldComponentUpdate = mkFn2 \p s ->
-                readState >>= _status >>> (/=) Loading >>> const (pure false)
              } do
       props <- getProps
       state <- readState
@@ -57,9 +67,13 @@ module SlamData.App.Notebook.Block.SQL (evalSQL) where
             -> EvalSQLState
             -> Eff a {}
   saveLocal props state =
-    let rec = EvalSQLSpec {ident: props.ident, status: state.status, content: state.content, location: state.location}
+    let rec = EvalSQLSpec { ident: props.ident
+                          , status: state.status
+                          , content: state.content
+                          , location: state.location
+                          }
         blocks = localGet EvalSQLBlocks
-        go (EvalSQLSpec bs) = if bs.ident == props.ident then rec else EvalSQLSpec bs
+        go ess@(EvalSQLSpec bs) = if bs.ident == props.ident then rec else ess
         blocks' = go <$> blocks
         blocks'' = if blocks == blocks' then blocks `snoc` rec else blocks'
     in (pure $ localSet EvalSQLBlocks blocks'') *> pure {}
@@ -81,6 +95,9 @@ module SlamData.App.Notebook.Block.SQL (evalSQL) where
     guardMaybe (essContent ess == content) $
       essLocation ess
 
+  parseRaw :: String -> [String]
+  parseRaw = trim >>> split "\\n"
+
   -- Projections
   essIdent :: EvalSQLSpec -> BlockID
   essIdent (EvalSQLSpec ess) = ess.ident
@@ -88,19 +105,22 @@ module SlamData.App.Notebook.Block.SQL (evalSQL) where
   essContent (EvalSQLSpec ess) = ess.content
   essLocation :: EvalSQLSpec -> Maybe String
   essLocation (EvalSQLSpec ess) = ess.location
+  _status :: forall a r. {status :: a | r} -> a
   _status o = o.status
 
   -- Some helpers for the ffi.
   showBlockID :: BlockID -> String
   showBlockID = show
+  loading :: LoadingStatus
   loading = Loading
+  successful :: String -> LoadingStatus
   successful str = Successful str
-  err str = Error str
-  just = Just
-  blockID :: String -> BlockID
-  blockID = parse >>> unparse >>> BlockID
+  error :: String -> LoadingStatus
+  error str = Error str
+  just_ = Just
   isJust_ = isJust
   fromJust_ = fromJust
+  newID :: Unit -> BlockID
   newID _ = BlockID $ runUUID v4
   serverURI_ = serverURI
 
@@ -109,10 +129,10 @@ module SlamData.App.Notebook.Block.SQL (evalSQL) where
   foreign import cwm
     "function cwm() {\
     \  extendState.call(this, {status: loading});\
-    \  if (isJust_(this.state.state.location)) {\
-    \    cdm.call(this, fromJust_(this.state.state.location));\
+    \  if (isJust_(this.state.location)) {\
+    \    cdm.call(this, fromJust_(this.state.location));\
     \  } else {\
-    \    runQuery.call(this, this.state.state.content);\
+    \    runQuery.call(this, this.state.content);\
     \  }\
     \}" :: forall a. a
 
@@ -126,7 +146,7 @@ module SlamData.App.Notebook.Block.SQL (evalSQL) where
     \  var xhr = new XMLHttpRequest();\
     \  xhr.onerror = function() {\
     \    if (this.isMounted()) {\
-    \      extendState.call(this, {status: err('Problem loading query')});\
+    \      extendState.call(this, {status: error('Problem loading query')});\
     \    }\
     \  }.bind(this);\
     \  xhr.onload = function() {\
@@ -150,14 +170,14 @@ module SlamData.App.Notebook.Block.SQL (evalSQL) where
     \      /* Parse the location out of the response. */\
     \      var location = data.out;\
     \      if (this.isMounted()) {\
-    \        extendState.call(this, {location: just(location)});\
+    \        extendState.call(this, {location: just_(location)});\
     \      }\
-    \      saveLocal(this.props)(this.state.state);\
+    \      saveLocal(this.props)(this.state);\
     \      cdm.call(this, location);\
     \    }.bind(this),\
     \    error: function() {\
     \      if (this.isMounted()) {\
-    \        extendState.call(this, {status: err('Could not create query')});\
+    \        extendState.call(this, {status: error('Could not create query')});\
     \      }\
     \    }.bind(this)\
     \  });\
@@ -167,7 +187,7 @@ module SlamData.App.Notebook.Block.SQL (evalSQL) where
   -- This should make it easier to work with from the ffi.
   foreign import extendState
     "function extendState(neu) {\
-    \  return this.setState({state: extend(this.state.state)(neu)});\
+    \  return this.setState(extend(this.state)(neu));\
     \}" :: forall a. a
 
   foreign import extend
@@ -186,8 +206,3 @@ module SlamData.App.Notebook.Block.SQL (evalSQL) where
     \    return old;\
     \  }\
     \}" :: forall a b c. a -> b -> c
-
-  foreign import parseRaw
-    "function parseRaw(raw) {\
-    \  return raw.trim().split('\\n');\
-    \}" :: forall a. a
