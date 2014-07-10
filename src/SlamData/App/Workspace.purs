@@ -16,9 +16,9 @@ module SlamData.App.Workspace (workspace) where
   workspace :: {} -> UI
   workspace = mkUI spec{ getInitialState = pure {files: []}
                        , componentWillMount = cwm
-                       , shouldComponentUpdate = mkFn2Eff \_ s -> do
+                       , shouldComponentUpdate = scu{- mkFn2Eff \_ s -> do
                           state <- readState
-                          pure $ not $ state.files `eqArr` s.files
+                          pure $ not $ state.files `eqArr` s.files-}
                        } do
     state <- readState
     pure $ D.div
@@ -39,6 +39,11 @@ module SlamData.App.Workspace (workspace) where
               [notebook {files: state.files}]
           ]
       ]
+
+  foreign import scu
+    "function scu(p, s) {\
+    \  return !(eqArr(this.state.files)(s.files));\
+    \}" :: forall a. a
 
   eqArr :: forall r. [{ | r}] -> [{ | r}] -> Boolean
   eqArr []     []     = true

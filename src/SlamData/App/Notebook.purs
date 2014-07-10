@@ -170,10 +170,10 @@ module SlamData.App.Notebook (notebook) where
 
   foreign import fieldswm
     "function fieldswm(that) {\
-    \    that.state.state.visualState.fields.forEach(function(f0) {\
+    \    that.state.visualState.fields.forEach(function(f0) {\
     \      oboe(SlamData_Helpers.serverURI +'/data/fs/' + f0.dataSrc + '?limit=1')\
     \      .done(function(json) {\
-    \        var state = that.state.state;\
+    \        var state = that.state;\
     \        state.visualState.fields.forEach(function(f1, i) {\
     \          if (f1.dataSrc === f0.dataSrc) {\
     \            state.visualState.fields[i].allFields = Object.keys(json);\
@@ -270,10 +270,10 @@ module SlamData.App.Notebook (notebook) where
     \  return function(bool) {\
     \    return function(str) {\
     \      return function() {\
-    \        var state = that.state.state;\
+    \        var state = that.state;\
     \        var vState = dataSrcUpdate(bool)(str)(state.visualState);\
     \        state.visualState = vState;\
-    \        that.replaceState({state: state});\
+    \        that.replaceState(state);\
     \        fieldswm(that);\
     \      }\
     \    }\

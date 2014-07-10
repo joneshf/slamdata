@@ -56,7 +56,7 @@ module SlamData.App.Notebook.Block (block) where
 
   foreign import state2Content
     "function state2Content(state) {\
-    \  return state.state.content;\
+    \  return state.content;\
     \}" :: BlockState -> String
 
   blockType :: BlockType -> UI
