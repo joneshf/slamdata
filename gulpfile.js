@@ -186,9 +186,11 @@ gulp.task('build-node-webkit', [
 
 gulp.task('dist-node-webkit', ['build-node-webkit'], function() {
     nw = new nwBuilder({
+        buildDir: 'dist',
         files: 'bin/node-webkit/**',
+        macIcns: 'imgs/slamdata.icns',
         platforms: ['linux64', 'osx', 'win'],
-        buildDir: 'dist'
+        winIco: 'imgs/slamdata.ico'
     });
     return nw.build();
 });
