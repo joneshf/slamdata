@@ -120,7 +120,6 @@ module SlamData.App.Notebook (notebook) where
                                       state <- readState
                                       let active = state.active `getOrElse` (maybe (NotebookID $ runUUID v4) (\(NotebookSpec ns) -> ns.ident) (head state.notebooks))
                                       createVisualBlock this Visual active $ visualContent vState.visualData
-                                      writeState state{visualState = initialState.visualState}
                                   ]
                                   [D.text "Create"]
                               , D.a
@@ -408,8 +407,10 @@ module SlamData.App.Notebook (notebook) where
     \    return function(ident) {\
     \      return function(content) {\
     \        var event = createBlock(ty)(ident)(content)();\
-    \        that.forceUpdate();\
-    \        return event;\
+    \        var state = event();\
+    \        state.visualState = initialState.visualState;\
+    \        that.replaceState(state);\
+    \        return function() { return state; };\
     \      }\
     \    }\
     \  }\
