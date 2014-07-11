@@ -26,8 +26,23 @@ module SlamData.App.Notebook (notebook) where
   import qualified React.DOM as D
   import qualified Browser.WebStorage as WS
 
+  eqNotebooks :: [NotebookSpec] -> [NotebookSpec] -> Boolean
+  eqNotebooks xs ys = xs == ys
+
+  eqActive :: Maybe NotebookID -> Maybe NotebookID -> Boolean
+  eqActive x y = x == y
+
+  foreign import scu
+    "function scu(p, s) {\
+    \  return s.visualState.visible ||\
+    \         (this.state.visualState.visible !== s.visualState.visible) ||\
+    \         (!eqNotebooks(this.state.notebooks)(s.notebooks)) ||\
+    \         (!eqActive(this.state.active)(s.active));\
+    \}" :: forall a. a
+
   notebook :: {files :: [FileType]} -> UI
   notebook = mkUI spec{ getInitialState = pure initialState
+                      , shouldComponentUpdate = scu
                       } do
     props <- getProps
     state <- readState
