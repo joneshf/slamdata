@@ -28,10 +28,14 @@ module SlamData.App.Notebook.Block (block) where
   eqEditor :: Editor -> Editor -> Boolean
   eqEditor ed ed' = ed == ed'
 
+  eqBlockID :: BlockID -> BlockID -> Boolean
+  eqBlockID ident ident' = ident == ident'
+
   foreign import scu
     "function scu(p, s) {\
     \  return (!eqEditor(this.state.edit)(s.edit)) ||\
-    \         (!isEval(s.edit) && this.state.content !== s.content);\
+    \         (!isEval(s.edit) && this.state.content !== s.content) ||\
+    \         (!eqBlockID(this.props.ident)(p.ident));\
     \}" :: forall a. a
 
   block :: forall eff state result extra. BlockProps eff state result extra -> UI
