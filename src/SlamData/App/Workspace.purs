@@ -62,7 +62,10 @@ module SlamData.App.Workspace (workspace) where
     \    oboe(serverURI_ + '/metadata/fs/')\
     \    .done(function(json) {\
     \      if (this.isMounted()) {\
-    \        this.setState({files: json.children});\
+    \        var sorted = json.children.sort(function(a, b) {\
+    \          return a.name.localeCompare(b.name);\
+    \        });\
+    \        this.setState({files: sorted});\
     \      }\
     \    }.bind(this));\
     \  }.bind(this);\
