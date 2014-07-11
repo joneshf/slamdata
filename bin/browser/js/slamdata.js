@@ -65421,7 +65421,7 @@ PS.SlamData_App_Notebook_Block_Visual = (function () {
     var Control_Monad_Eff = PS.Control_Monad_Eff;
     var SlamData_App_Notebook_Block_Common = PS.SlamData_App_Notebook_Block_Common;
     var React_DOM = PS.React_DOM;
-    function cdm() {  var defaultJson = '{"dataSrc": "", "field": "", "visualType": ""}';  var content = JSON.parse(getOrElse_(this.props.content)(defaultJson));  var opts = newOptions(this.props.ident)(content.field)(parseVisualType(content.visualType));  var chart = generate_(opts)();  var data = [];  oboe(serverURI_ + '/data/fs/' + content.dataSrc)    .node('!', function(json) {      data.push(json[content.field]);      chart.load({columns: [[content.field].concat(data)]});    });};
+    function cdm() {  var defaultJson = '{"dataSrc": "", "field": "", "visualType": ""}';  try {    var content = JSON.parse(getOrElse_(this.props.content)(defaultJson));  } catch (e) {    var content = JSON.parse(defaultJson);  }  var opts = newOptions(this.props.ident)(content.field)(parseVisualType(content.visualType));  var chart = generate_(opts)();  var data = [];  oboe(serverURI_ + '/data/fs/' + content.dataSrc)    .node('!', function(json) {      data.push(json[content.field]);      chart.load({columns: [[content.field].concat(data)]});    });};
     var serverURI_ = SlamData_Helpers.serverURI;
     var parseVisualType = function (_450) {
         if (_450 === "bar") {
@@ -65499,7 +65499,7 @@ PS.SlamData_App_Notebook_Block = (function () {
     var SlamData_App_Notebook_Block_Markdown = PS.SlamData_App_Notebook_Block_Markdown;
     var SlamData_App_Notebook_Block_SQL = PS.SlamData_App_Notebook_Block_SQL;
     var Data_Function = PS.Data_Function;
-    function scu(p, s) {  return (!eqEditor(this.state.edit)(s.edit)) ||         (!isEval(s.edit) && this.state.content !== s.content);};
+    function scu(p, s) {  return (!eqEditor(this.state.edit)(s.edit)) ||         (!isEval(s.edit) && this.state.content !== s.content) ||         (!eqBlockID(this.props.ident)(p.ident));};
     function state2Content(state) {  return state.content;};
     var toolbar = (function () {
         var specificButtons = function (_455) {
@@ -65545,6 +65545,11 @@ PS.SlamData_App_Notebook_Block = (function () {
     var eqEditor = function (ed) {
         return function (ed$prime) {
             return Prelude["=="](SlamData_App_Notebook_Block_Types.eqEditor({}))(ed)(ed$prime);
+        };
+    };
+    var eqBlockID = function (ident) {
+        return function (ident$prime) {
+            return Prelude["=="](SlamData_App_Notebook_Block_Types.eqBlockID({}))(ident)(ident$prime);
         };
     };
     var cwu = function (props) {
@@ -65948,7 +65953,7 @@ PS.SlamData_App_Notebook = (function () {
     function fieldswm(that) {    that.state.visualState.fields.forEach(function(f0) {      oboe(SlamData_Helpers.serverURI +'/data/fs/' + f0.dataSrc + '?limit=1')      .done(function(json) {        var state = that.state;        state.visualState.fields.forEach(function(f1, i) {          if (f1.dataSrc === f0.dataSrc) {            state.visualState.fields[i].allFields = Object.keys(json);          }        });        if (that.isMounted()) {          that.setState(state);        }      });    });};
     function bind(that) {  return function(f) {    return f.bind(that);  }};
     function modifyDataSrc(that) {  return function(bool) {    return function(str) {      return function() {        var state = that.state;        var vState = dataSrcUpdate(bool)(str)(state.visualState);        state.visualState = vState;        that.replaceState(state);        fieldswm(that);      }    }  }};
-    function createVisualBlock(that) {  return function(ty) {    return function(ident) {      return function(content) {        var event = createBlock(ty)(ident)(content)();        that.forceUpdate();        return event;      }    }  }};
+    function createVisualBlock(that) {  return function(ty) {    return function(ident) {      return function(content) {        var event = createBlock(ty)(ident)(content)();        var state = event();        state.visualState = initialState.visualState;        that.replaceState(state);        return function() { return state; };      }    }  }};
     var visuals = function (change) {
         return function (ty) {
             return [ React_DOM.li([ React_DOM.onClick(function (_) {
@@ -66505,31 +66510,19 @@ PS.SlamData_App_Notebook = (function () {
             var active = SlamData_Helpers.getOrElse(_87.active)(Data_Maybe.maybe(SlamData_App_Notebook_Types.NotebookID(Data_UUID.runUUID(Data_UUID.v4)))(function (_471) {
                 return (_471.values[0]).ident;
             })(Data_Array.head(_87.notebooks)));
-            return function __do() {
-                createVisualBlock(_88)(SlamData_App_Notebook_Block_Types.Visual)(active)(visualContent(_89.visualState.visualData))();
-                return React.writeState((function () {
-                    var _1511 = {};
-                    for (var _1512 in _87) {
-                        if (_87.hasOwnProperty(_1512)) {
-                            _1511[_1512] = _87[_1512];
-                        };
-                    };
-                    _1511.visualState = initialState.visualState;
-                    return _1511;
-                })())();
-            };
+            return createVisualBlock(_88)(SlamData_App_Notebook_Block_Types.Visual)(active)(visualContent(_89.visualState.visualData));
         })()();
     };
 }) ])([ React_DOM.text("Create") ]), React_DOM.a([ React_DOM.className("button secondary"), React_DOM.onClick(function (_) {
     return React.writeState((function () {
-        var _1513 = {};
-        for (var _1514 in _89) {
-            if (_89.hasOwnProperty(_1514)) {
-                _1513[_1514] = _89[_1514];
+        var _1511 = {};
+        for (var _1512 in _89) {
+            if (_89.hasOwnProperty(_1512)) {
+                _1511[_1512] = _89[_1512];
             };
         };
-        _1513.visualState = initialState.visualState;
-        return _1513;
+        _1511.visualState = initialState.visualState;
+        return _1511;
     })());
 }) ])([ React_DOM.text("Cancel") ]) ]) ]) ]) ]) ]) ] : [  ])));
         })()();
@@ -66589,18 +66582,18 @@ PS.SlamData_App_Workspace = (function () {
     function mkFn2Eff(f) {  return function(x, y) {    return f(x)(y)();  }};
     function eqObj(o1) {  return function(o2) {    for (var k in o1) {      if ((o1.hasOwnProperty(k) && o2.hasOwnProperty(k)) && (o1[k] !== o2[k])) {        return false;      } else if (o1.hasOwnProperty(k) && !o2.hasOwnProperty(k)) {        return false;      } else if (!o1.hasOwnProperty(k) && o2.hasOwnProperty(k)) {        return false;      }    }    return true;  }};
     var workspace = React.mkUI((function () {
-        var _1515 = {};
-        for (var _1516 in React.spec) {
-            if (React.spec.hasOwnProperty(_1516)) {
-                _1515[_1516] = React.spec[_1516];
+        var _1513 = {};
+        for (var _1514 in React.spec) {
+            if (React.spec.hasOwnProperty(_1514)) {
+                _1513[_1514] = React.spec[_1514];
             };
         };
-        _1515.getInitialState = Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
+        _1513.getInitialState = Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
             files: [  ]
         });
-        _1515.componentWillMount = cwm;
-        _1515.shouldComponentUpdate = scu;
-        return _1515;
+        _1513.componentWillMount = cwm;
+        _1513.shouldComponentUpdate = scu;
+        return _1513;
     })())(function __do() {
         var _103 = React.readState();
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div([ React_DOM.idProp("workspace") ])([ React_DOM.div([ React_DOM.className("row"), React_DOM.idProp("main-row") ])([ React_DOM.div([ React_DOM.className("large-2 medium-3 small-5 columns"), React_DOM.idProp("filesystem") ])([ SlamData_App_FileSystem.filesystem({
@@ -66619,10 +66612,10 @@ PS.SlamData_App_Workspace = (function () {
                 };
             };
             if (_496.length > 0) {
-                var _1523 = _496.slice(1);
+                var _1521 = _496.slice(1);
                 if (_497.length > 0) {
-                    var _1521 = _497.slice(1);
-                    return eqObj(_496[0])(_497[0]) && eqArr(_1523)(_1521);
+                    var _1519 = _497.slice(1);
+                    return eqObj(_496[0])(_497[0]) && eqArr(_1521)(_1519);
                 };
             };
             return false;
@@ -66778,16 +66771,16 @@ PS.SlamData_Login = (function () {
         })()();
     });
     var loginForm = React.mkUI((function () {
-        var _1538 = {};
-        for (var _1539 in React.spec) {
-            if (React.spec.hasOwnProperty(_1539)) {
-                _1538[_1539] = React.spec[_1539];
+        var _1536 = {};
+        for (var _1537 in React.spec) {
+            if (React.spec.hasOwnProperty(_1537)) {
+                _1536[_1537] = React.spec[_1537];
             };
         };
-        _1538.getInitialState = Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
+        _1536.getInitialState = Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
             newAccount: Existing
         });
-        return _1538;
+        return _1536;
     })())(function __do() {
         var _104 = React.readState();
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.form([  ])([ React_DOM.fieldset([  ])([ React_DOM.legend([  ])([ React_DOM.text("Login to SlamData") ]), SlamData_Helpers.row([ SlamData_Helpers.large("6")(newOrExisting({
