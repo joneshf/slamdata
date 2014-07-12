@@ -154,7 +154,7 @@ module SlamData.App.Notebook.Block.SQL (evalSQL) where
     \      extendState.call(this, {status: successful(xhr.responseText)});\
     \    }\
     \  }.bind(this);\
-    \  xhr.open('GET', serverURI_ + '/data/fs/' + location);\
+    \  xhr.open('GET', serverURI_ + '/data/fs/' + location + '?limit=' + pagingLimit);\
     \  xhr.send(null);\
     \}" :: forall a. a
 
