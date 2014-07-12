@@ -60762,7 +60762,7 @@ PS.SlamData_App_Menu = (function () {
     var menu = React_DOM.nav([ React_DOM.ClassName("top-bar"), React_DOM.Data({
         options: "is_hover: false", 
         topbar: true
-    }) ])([ React_DOM.ul([ React_DOM.ClassName("title-area") ])([ React_DOM["li'"]([  ]) ]), React_DOM.section([ React_DOM.ClassName("top-bar-section") ])([ React_DOM.ul([ React_DOM.ClassName("left") ])([ fileMenu, command("divider"), editMenu, command("divider"), helpMenu, command("divider") ]), React_DOM.ul([ React_DOM.className("right") ])([ React_DOM["li'"]([ React_DOM.img([ React_DOM.src("imgs/slamdata-logo.png") ])([  ]) ]) ]) ]) ]);
+    }) ])([ React_DOM.ul([ React_DOM.ClassName("title-area") ])([ React_DOM["li'"]([  ]) ]), React_DOM.section([ React_DOM.ClassName("top-bar-section") ])([ React_DOM.ul([ React_DOM.ClassName("left") ])([ fileMenu, command("divider"), editMenu, command("divider"), helpMenu, command("divider") ]), React_DOM.ul([ React_DOM.className("right") ])([ React_DOM["li'"]([ React_DOM.a([ React_DOM.href("http://slamdata.com/"), React_DOM.idProp("slamdata-logo"), React_DOM.target("_blank") ])([ React_DOM.img([ React_DOM.alt("SlamData home page"), React_DOM.src("imgs/slamdata-logo.png") ])([  ]) ]) ]) ]) ]) ]);
     return {
         menu: menu
     };
@@ -65299,7 +65299,7 @@ PS.SlamData_App_Notebook_Block_SQL = (function () {
     var React = PS.React;
     var SlamData_App_Notebook_Block_Common = PS.SlamData_App_Notebook_Block_Common;
     function cwm() {  extendState.call(this, {status: loading});  if (isJust_(this.state.location)) {    cdm.call(this, fromJust_(this.state.location));  } else {    runQuery.call(this, this.state.content);  }};
-    function cdm(location) {  var xhr = new XMLHttpRequest();  xhr.onerror = function() {    if (this.isMounted()) {      extendState.call(this, {status: error('Problem loading query')});    }  }.bind(this);  xhr.onload = function() {    if (this.isMounted()) {      extendState.call(this, {status: successful(xhr.responseText)});    }  }.bind(this);  xhr.open('GET', serverURI_ + '/data/fs/' + location);  xhr.send(null);};
+    function cdm(location) {  var xhr = new XMLHttpRequest();  xhr.onerror = function() {    if (this.isMounted()) {      extendState.call(this, {status: error('Problem loading query')});    }  }.bind(this);  xhr.onload = function() {    if (this.isMounted()) {      extendState.call(this, {status: successful(xhr.responseText)});    }  }.bind(this);  xhr.open('GET', serverURI_ + '/data/fs/' + location + '?limit=' + pagingLimit);  xhr.send(null);};
     function runQuery(query) {  var id = newID();  $.ajax({    type: 'POST',    url: serverURI_ + '/query/fs/?out=' + showBlockID(id),    data: query,    dataType: 'json',    success: function(data, status, jqXHR) {      /* Parse the location out of the response. */      var location = data.out;      if (this.isMounted()) {        extendState.call(this, {location: just_(location)});      }      saveLocal(this.props)(this.state);      cdm.call(this, location);    }.bind(this),    error: function() {      if (this.isMounted()) {        extendState.call(this, {status: error('Could not create query')});      }    }.bind(this)  });};
     function extendState(neu) {  return this.setState(extend(this.state)(neu));};
     function extend(old) {  return function(neu) {    return copy(neu)(copy(old)({}));  }};

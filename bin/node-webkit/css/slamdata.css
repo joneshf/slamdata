@@ -7130,6 +7130,10 @@ html, body {
 
 nav.top-bar .right {
   margin: 5px 15px; }
+  nav.top-bar .right #slamdata-logo {
+    background-color: transparent;
+    line-height: inherit;
+    padding: 0; }
   nav.top-bar .right img {
     height: 30px; }
 

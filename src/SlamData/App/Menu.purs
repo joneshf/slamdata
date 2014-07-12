@@ -26,7 +26,20 @@ module SlamData.App.Menu (menu) where
                   ]
               , D.ul
                   [D.className "right"]
-                  [D.li' [D.img [D.src "imgs/slamdata-logo.png"] []]]
+                  [D.li'
+                    [D.a
+                        [ D.href "http://slamdata.com/"
+                        , D.idProp "slamdata-logo"
+                        , D.target "_blank"
+                        ]
+                        [D.img
+                            [ D.alt "SlamData home page"
+                            , D.src "imgs/slamdata-logo.png"
+                            ]
+                            []
+                        ]
+                    ]
+                  ]
               ]
           ]
 
