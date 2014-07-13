@@ -59,6 +59,12 @@ module SlamData.App.Notebook.Types where
   instance showNotebookID :: Show NotebookID where
     show (NotebookID ident) = show ident
 
+  instance eqNotebookSpec :: Eq NotebookSpec where
+    (==) (NotebookSpec nr) (NotebookSpec nr') =
+      nr.name == nr'.name && nr.blocks == nr'.blocks && nr.ident == nr'.ident
+
+    (/=) ns ns' = not (ns == ns')
+
   instance showNotebookSpec :: Show NotebookSpec where
     show (NotebookSpec ns) =
       "{ \"blocks\": " ++ show (show <$> ns.blocks) ++

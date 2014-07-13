@@ -149,8 +149,8 @@ gulp.task('slamengine-jar', function() {
 });
 
 gulp.task('slamengine-js', function() {
-    return gulp.src('lib/node-webkit/js/slamengine.js')
-        .pipe(gulp.dest(paths.build['node-webkit'].js));
+    return gulp.src('lib/node-webkit/**/*')
+        .pipe(gulp.dest('bin/node-webkit'));
 });
 
 gulp.task('concat-js-browser', function() {return concatJs('browser');});
@@ -184,11 +184,13 @@ gulp.task('build-node-webkit', [
     'slamengine-js'
 ]);
 
-gulp.task('dist-node-webkit', function() {
+gulp.task('dist-node-webkit', ['build-node-webkit'], function() {
     nw = new nwBuilder({
+        buildDir: 'dist',
         files: 'bin/node-webkit/**',
+        macIcns: 'imgs/slamdata.icns',
         platforms: ['linux64', 'osx', 'win'],
-        buildDir: 'dist'
+        winIco: 'imgs/slamdata.ico'
     });
     return nw.build();
 });

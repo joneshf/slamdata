@@ -26,8 +26,23 @@ module SlamData.App.Notebook (notebook) where
   import qualified React.DOM as D
   import qualified Browser.WebStorage as WS
 
+  eqNotebooks :: [NotebookSpec] -> [NotebookSpec] -> Boolean
+  eqNotebooks xs ys = xs == ys
+
+  eqActive :: Maybe NotebookID -> Maybe NotebookID -> Boolean
+  eqActive x y = x == y
+
+  foreign import scu
+    "function scu(p, s) {\
+    \  return s.visualState.visible ||\
+    \         (this.state.visualState.visible !== s.visualState.visible) ||\
+    \         (!eqNotebooks(this.state.notebooks)(s.notebooks)) ||\
+    \         (!eqActive(this.state.active)(s.active));\
+    \}" :: forall a. a
+
   notebook :: {files :: [FileType]} -> UI
   notebook = mkUI spec{ getInitialState = pure initialState
+                      , shouldComponentUpdate = scu
                       } do
     props <- getProps
     state <- readState
@@ -105,7 +120,6 @@ module SlamData.App.Notebook (notebook) where
                                       state <- readState
                                       let active = state.active `getOrElse` (maybe (NotebookID $ runUUID v4) (\(NotebookSpec ns) -> ns.ident) (head state.notebooks))
                                       createVisualBlock this Visual active $ visualContent vState.visualData
-                                      writeState state{visualState = initialState.visualState}
                                   ]
                                   [D.text "Create"]
                               , D.a
@@ -170,10 +184,10 @@ module SlamData.App.Notebook (notebook) where
 
   foreign import fieldswm
     "function fieldswm(that) {\
-    \    that.state.state.visualState.fields.forEach(function(f0) {\
+    \    that.state.visualState.fields.forEach(function(f0) {\
     \      oboe(SlamData_Helpers.serverURI +'/data/fs/' + f0.dataSrc + '?limit=1')\
     \      .done(function(json) {\
-    \        var state = that.state.state;\
+    \        var state = that.state;\
     \        state.visualState.fields.forEach(function(f1, i) {\
     \          if (f1.dataSrc === f0.dataSrc) {\
     \            state.visualState.fields[i].allFields = Object.keys(json);\
@@ -270,10 +284,10 @@ module SlamData.App.Notebook (notebook) where
     \  return function(bool) {\
     \    return function(str) {\
     \      return function() {\
-    \        var state = that.state.state;\
+    \        var state = that.state;\
     \        var vState = dataSrcUpdate(bool)(str)(state.visualState);\
     \        state.visualState = vState;\
-    \        that.replaceState({state: state});\
+    \        that.replaceState(state);\
     \        fieldswm(that);\
     \      }\
     \    }\
@@ -393,8 +407,10 @@ module SlamData.App.Notebook (notebook) where
     \    return function(ident) {\
     \      return function(content) {\
     \        var event = createBlock(ty)(ident)(content)();\
-    \        that.forceUpdate();\
-    \        return event;\
+    \        var state = event();\
+    \        state.visualState = initialState.visualState;\
+    \        that.replaceState(state);\
+    \        return function() { return state; };\
     \      }\
     \    }\
     \  }\

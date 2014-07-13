@@ -21,11 +21,29 @@ module SlamData.App.Notebook.Block (block) where
   import qualified React.DOM as D
   import qualified Browser.WebStorage as WS
 
+  isEval :: Editor -> Boolean
+  isEval Eval = true
+  isEval _    = false
+
+  eqEditor :: Editor -> Editor -> Boolean
+  eqEditor ed ed' = ed == ed'
+
+  eqBlockID :: BlockID -> BlockID -> Boolean
+  eqBlockID ident ident' = ident == ident'
+
+  foreign import scu
+    "function scu(p, s) {\
+    \  return (!eqEditor(this.state.edit)(s.edit)) ||\
+    \         (!isEval(s.edit) && this.state.content !== s.content) ||\
+    \         (!eqBlockID(this.props.ident)(p.ident));\
+    \}" :: forall a. a
+
   block :: forall eff state result extra. BlockProps eff state result extra -> UI
   block =
     mkUI spec{ getInitialState = pure {edit: Edit, content: ""}
              , componentWillUpdate = mkFn2 cwu
              , componentWillMount = cwm
+             , shouldComponentUpdate = scu
              } do
       state <- readState
       props <- getProps
@@ -56,7 +74,7 @@ module SlamData.App.Notebook.Block (block) where
 
   foreign import state2Content
     "function state2Content(state) {\
-    \  return state.state.content;\
+    \  return state.content;\
     \}" :: BlockState -> String
 
   blockType :: BlockType -> UI

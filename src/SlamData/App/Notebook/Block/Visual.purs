@@ -31,7 +31,11 @@ module SlamData.App.Notebook.Block.Visual (evalVisual) where
   foreign import cdm
     "function cdm() {\
     \  var defaultJson = '{\"dataSrc\": \"\", \"field\": \"\", \"visualType\": \"\"}';\
-    \  var content = JSON.parse(getOrElse_(this.props.content)(defaultJson));\
+    \  try {\
+    \    var content = JSON.parse(getOrElse_(this.props.content)(defaultJson));\
+    \  } catch (e) {\
+    \    var content = JSON.parse(defaultJson);\
+    \  }\
     \  var opts = newOptions(this.props.ident)(content.field)(parseVisualType(content.visualType));\
     \  var chart = generate_(opts)();\
     \  var data = [];\

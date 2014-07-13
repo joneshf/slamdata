@@ -16,9 +16,9 @@ module SlamData.App.Workspace (workspace) where
   workspace :: {} -> UI
   workspace = mkUI spec{ getInitialState = pure {files: []}
                        , componentWillMount = cwm
-                       , shouldComponentUpdate = mkFn2Eff \_ s -> do
+                       , shouldComponentUpdate = scu{- mkFn2Eff \_ s -> do
                           state <- readState
-                          pure $ not $ state.files `eqArr` s.files
+                          pure $ not $ state.files `eqArr` s.files-}
                        } do
     state <- readState
     pure $ D.div
@@ -40,6 +40,11 @@ module SlamData.App.Workspace (workspace) where
           ]
       ]
 
+  foreign import scu
+    "function scu(p, s) {\
+    \  return !(eqArr(this.state.files)(s.files));\
+    \}" :: forall a. a
+
   eqArr :: forall r. [{ | r}] -> [{ | r}] -> Boolean
   eqArr []     []     = true
   eqArr (x:xs) (y:ys) = x `eqObj` y && xs `eqArr` ys
@@ -57,7 +62,10 @@ module SlamData.App.Workspace (workspace) where
     \    oboe(serverURI_ + '/metadata/fs/')\
     \    .done(function(json) {\
     \      if (this.isMounted()) {\
-    \        this.setState({files: json.children});\
+    \        var sorted = json.children.sort(function(a, b) {\
+    \          return a.name.localeCompare(b.name);\
+    \        });\
+    \        this.setState({files: sorted});\
     \      }\
     \    }.bind(this));\
     \  }.bind(this);\
