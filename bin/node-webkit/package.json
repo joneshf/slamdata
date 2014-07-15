@@ -9,8 +9,5 @@
     "title": "SlamData",
     "toolbar": false,
     "width": 1280
-  },
-  "dependencies": {
-    "find-java-home": "git://github.com/joneshf/node-find-java-home.git"
   }
 }

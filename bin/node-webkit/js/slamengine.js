@@ -1,12 +1,13 @@
 'use strict';
 
 // Requires.
-var fjm = require('find-java-home')
-  , fs = require('fs')
+var fs = require('fs')
   , gui = require('nw.gui')
   , guiWindow = gui.Window.get()
   , path = require('path')
   , spawn = require('child_process').spawn
+  , sdConfigName = 'slamdata-config.json'
+  , seConfigName = 'slamengine-config.json'
   ;
 
 // We need to resolve all of our environment variables.
@@ -16,23 +17,26 @@ var jre = path.join(path.dirname(process.execPath), 'jre')
 
 // Find the config dir for each os.
 if (process.platform === 'darwin') {
-  var config = path.join(process.env.HOME,  'Library', 'Preferences', 'slamdata', 'config.json');
+  var sdConfig = path.join(process.env.HOME,  'Library', 'Preferences', 'slamdata', sdConfigName);
+  var seConfig = path.join(process.env.HOME,  'Library', 'Preferences', 'slamdata', seConfigName);
 } else if (process.platform === 'linux') {
   var configDir = process.env.XDG_CONFIG_HOME || path.join(process.env.HOME, '.config')
-    , config = path.join(configDir, 'slamdata', 'config.json')
+    , sdConfig = path.join(configDir, 'slamdata', sdConfigName)
+    , seConfig = path.join(configDir, 'slamdata', seConfigName)
     ;
 } else if (process.platform === 'win32') {
-  var config = path.join(process.env.LOCALAPPDATA, 'slamdata', 'config.json');
+  var sdConfig = path.join(process.env.LOCALAPPDATA, 'slamdata', sdConfigName);
+  var seConfig = path.join(process.env.LOCALAPPDATA, 'slamdata', seConfigName);
 } // Should we do something for some other os, or do we not care?
 
 // Try the local jre first, it exists for a reason.
 if (fs.existsSync(jre)) {
   var java = path.join(jre, 'bin', 'java');
 } else {
-  var java = 'java';
+  var java = require(sdConfig)['node-webkit'].java;
 }
 
-var se = spawn(java, ['-jar', seJar, config]);
+var se = spawn(java, ['-jar', seJar, seConfig]);
 
 guiWindow.on('close', function() {
   se.kill();
