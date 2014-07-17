@@ -1,42 +1,34 @@
 'use strict';
 
 // Requires.
-var fs = require('fs')
-  , gui = require('nw.gui')
+var gui = require('nw.gui')
   , guiWindow = gui.Window.get()
   , path = require('path')
   , spawn = require('child_process').spawn
   , sdConfigName = 'slamdata-config.json'
   , seConfigName = 'slamengine-config.json'
-  ;
-
-// We need to resolve all of our environment variables.
-var jre = path.join(path.dirname(process.execPath), 'jre')
   , seJar = path.join('jar', 'slamengine_2.10-0.1-SNAPSHOT-one-jar.jar')
   ;
 
 // Find the config dir for each os.
 if (process.platform === 'darwin') {
-  var sdConfig = path.join(process.env.HOME,  'Library', 'Preferences', 'slamdata', sdConfigName);
-  var seConfig = path.join(process.env.HOME,  'Library', 'Preferences', 'slamdata', seConfigName);
+  var configDir = path.join(process.env.HOME,  'Library', 'Preferences', 'slamdata');
 } else if (process.platform === 'linux') {
-  var configDir = process.env.XDG_CONFIG_HOME || path.join(process.env.HOME, '.config')
-    , sdConfig = path.join(configDir, 'slamdata', sdConfigName)
-    , seConfig = path.join(configDir, 'slamdata', seConfigName)
+  var xdgConfigHome = process.env.XDG_CONFIG_HOME || path.join(process.env.HOME, '.config')
+    , configDir = path.join(xdgConfigHome, 'slamdata')
     ;
 } else if (process.platform === 'win32') {
-  var sdConfig = path.join(process.env.LOCALAPPDATA, 'slamdata', sdConfigName);
-  var seConfig = path.join(process.env.LOCALAPPDATA, 'slamdata', seConfigName);
+  var configDir = path.join(process.env.LOCALAPPDATA, 'slamdata');
 } // Should we do something for some other os, or do we not care?
 
-// Try the local jre first, it exists for a reason.
-if (fs.existsSync(jre)) {
-  var java = path.join(jre, 'bin', 'java');
-} else {
-  var java = require(sdConfig)['node-webkit'].java;
-}
-
-var se = spawn(java, ['-jar', seJar, seConfig]);
+var sdConfigFile = path.join(configDir, sdConfigName)
+  , seConfigFile = path.join(configDir, seConfigName)
+  , sdConfig = require(sdConfigFile)
+  // Grab the java location from the config file.
+  , java = sdConfig['node-webkit'].java
+  // Start up slamengine.
+  , se = spawn(java, ['-jar', seJar, seConfigFile])
+  ;
 
 guiWindow.on('close', function() {
   se.kill();
