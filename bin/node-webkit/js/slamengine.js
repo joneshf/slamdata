@@ -30,6 +30,12 @@ var sdConfigFile = path.join(configDir, sdConfigName)
   , se = spawn(java, ['-jar', seJar, seConfigFile])
   ;
 
+guiWindow.showDevTools();
+
+window.history.replaceState('', '',
+  '?serverLocation=' + sdConfig['server'].location +
+  '&serverPort=' + sdConfig['server'].port);
+
 guiWindow.on('close', function() {
   se.kill();
   this.close(true);

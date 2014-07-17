@@ -41,6 +41,8 @@
     "entypo": "*",
     "purescript-c3": "~0.1.0",
     "purescript-http": "~0.1.1",
-    "purescript-showdown": "~0.0.1"
+    "purescript-showdown": "~0.0.1",
+    "purescript-maps": "~0.0.4",
+    "purescript-parsing": "*"
   }
 }

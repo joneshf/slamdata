@@ -26,7 +26,6 @@ module SlamData.App.Notebook.Block.SQL (evalSQL) where
     , localGet
     , localSet
     , loadingIcon
-    , serverURI
     , toUI
     , LocalKey(..)
     )
@@ -122,7 +121,6 @@ module SlamData.App.Notebook.Block.SQL (evalSQL) where
   fromJust_ = fromJust
   newID :: Unit -> BlockID
   newID _ = BlockID $ runUUID v4
-  serverURI_ = serverURI
 
   pagingLimit = 20
 
@@ -154,7 +152,7 @@ module SlamData.App.Notebook.Block.SQL (evalSQL) where
     \      extendState.call(this, {status: successful(xhr.responseText)});\
     \    }\
     \  }.bind(this);\
-    \  xhr.open('GET', serverURI_ + '/data/fs/' + location + '?limit=' + pagingLimit);\
+    \  xhr.open('GET', this.props.serverURI + '/data/fs/' + location + '?limit=' + pagingLimit);\
     \  xhr.send(null);\
     \}" :: forall a. a
 
@@ -163,7 +161,7 @@ module SlamData.App.Notebook.Block.SQL (evalSQL) where
     \  var id = newID();\
     \  $.ajax({\
     \    type: 'POST',\
-    \    url: serverURI_ + '/query/fs/?out=' + showBlockID(id),\
+    \    url: this.props.serverURI + '/query/fs/?out=' + showBlockID(id),\
     \    data: query,\
     \    dataType: 'json',\
     \    success: function(data, status, jqXHR) {\

@@ -40,7 +40,7 @@ module SlamData.App.Notebook (notebook) where
     \         (!eqActive(this.state.active)(s.active));\
     \}" :: forall a. a
 
-  notebook :: {files :: [FileType]} -> UI
+  notebook :: {files :: [FileType], serverURI :: String} -> UI
   notebook = mkUI spec{ getInitialState = pure initialState
                       , shouldComponentUpdate = scu
                       } do
@@ -69,7 +69,7 @@ module SlamData.App.Notebook (notebook) where
               ])
       , D.div
           [D.className "tabs-content"]
-          (makeBlocks active (deferred <<< modalVisibility) <$> notebooks)
+          (makeBlocks props.serverURI active (deferred <<< modalVisibility) <$> notebooks)
       ] ++ if vState.visible
         then
           [D.div
@@ -185,7 +185,7 @@ module SlamData.App.Notebook (notebook) where
   foreign import fieldswm
     "function fieldswm(that) {\
     \    that.state.visualState.fields.forEach(function(f0) {\
-    \      oboe(SlamData_Helpers.serverURI +'/data/fs/' + f0.dataSrc + '?limit=1')\
+    \      oboe(that.props.serverURI +'/data/fs/' + f0.dataSrc + '?limit=1')\
     \      .done(function(json) {\
     \        var state = that.state;\
     \        state.visualState.fields.forEach(function(f1, i) {\
@@ -344,11 +344,13 @@ module SlamData.App.Notebook (notebook) where
         ]
     ]
 
-  makeBlocks :: forall eff. Maybe NotebookID
+  makeBlocks :: forall eff
+             .  String
+             -> Maybe NotebookID
              -> (Boolean -> NotebookEvent eff)
              -> NotebookSpec
              -> UI
-  makeBlocks active vis (NotebookSpec nb) = D.div
+  makeBlocks serverURI active vis (NotebookSpec nb) = D.div
     [D.className $ "content" ++ maybeActive nb.ident active]
     [ D.div
         [D.className "toolbar button-bar"]
@@ -356,7 +358,11 @@ module SlamData.App.Notebook (notebook) where
         , internalActions {notebook: nb, visibility: vis}
         ]
     , D.hr' []
-    , D.div [D.className "actual-content"] (zipWith block2UI (filter (\(BlockSpec bs) -> bs.ident `elem` nb.blocks) (localGet Blocks)) (0..length nb.blocks))
+    , D.div
+        [D.className "actual-content"]
+        (zipWith (block2UI serverURI)
+                 (filter (\(BlockSpec bs) -> bs.ident `elem` nb.blocks) (localGet Blocks))
+                 (0..length nb.blocks))
     ]
 
   maybeActive :: NotebookID -> Maybe NotebookID -> String
@@ -437,13 +443,14 @@ module SlamData.App.Notebook (notebook) where
     pure $ localSet Notebooks notebooks'
     pure $ writeState state{notebooks = notebooks'}
 
-  block2UI :: BlockSpec -> Number -> UI
-  block2UI (BlockSpec {blockType = ty, ident = n, content = c}) i =
+  block2UI :: String -> BlockSpec -> Number -> UI
+  block2UI s (BlockSpec {blockType = ty, ident = n, content = c}) i =
     block { blockType: ty
           , ident: n
           , close: deferred $ deleteBlock n
           , content: c
           , index: i
+          , serverURI: s
           }
 
   createNotebook :: forall eff. NotebookEvent eff

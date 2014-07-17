@@ -1,8 +1,24 @@
 module SlamData where
 
-  import React
-  import React.DOM
+  import Data.Either (either)
 
-  import SlamData.App
+  import React (renderToElementById)
 
-  main = renderToElementById "content" app
+  import SlamData.App (app)
+  import SlamData.Helpers
+    ( defaultServerURI
+    , getServerURI
+    , location
+    , parseQueryString
+    , search
+    , window
+    , QueryString()
+    )
+
+  import Text.Parsing.Parser (runParser)
+
+  main = do
+    let search' = window # location # search
+    let rawQueries = runParser search' parseQueryString
+    let server = either (const defaultServerURI) getServerURI rawQueries
+    renderToElementById "content" $ app {serverURI: server}

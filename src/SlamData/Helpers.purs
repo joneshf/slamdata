@@ -1,16 +1,24 @@
 module SlamData.Helpers where
 
+  import Control.Apply ((*>))
   import Control.Monad.Eff
 
   import Data.Either
   import Data.Foldable
   import Data.Foreign
   import Data.Maybe
+  import Data.String
+  import Data.Tuple
 
   import React
 
+  import Text.Parsing.Parser (Parser(), ParserT())
+  import Text.Parsing.Parser.Combinators ((<?>), many, many1, optional, sepBy, try)
+  import Text.Parsing.Parser.String (char, satisfy, string)
+
   import qualified Browser.WebStorage as WS
   import qualified Data.Array as A
+  import qualified Data.Map as M
   import qualified Graphics.C3 as C3
   import qualified React.DOM as D
 
@@ -33,9 +41,36 @@ module SlamData.Helpers where
   guardMaybe true  m = m
   guardMaybe false _ = Nothing
 
+  foreign import data Window :: *
+  foreign import data Location :: *
+
+  foreign import window :: Window
+
+  foreign import location
+    "function location(win) {\
+    \  return win.location;\
+    \}" :: Window -> Location
+
+  foreign import search
+    "function search(loc) {\
+    \  return loc.search;\
+    \}" :: Location -> String
+
   -- SlamData specific stuff.
 
-  serverURI = "http://localhost:8080"
+  -- | Server stuff.
+
+  defaultServerLocation = "http://localhost"
+  defaultServerPort = "8080"
+
+  defaultServerURI :: String
+  defaultServerURI = defaultServerLocation ++ ":" ++ defaultServerPort
+
+  getServerURI :: QueryString -> String
+  getServerURI qs = fromMaybe defaultServerURI do
+    loc <- M.lookup "serverLocation" qs
+    port <- M.lookup "serverPort" qs
+    pure $ loc ++ ":" ++ port
 
   actionButton :: forall eff props state result i. (Icon i)
                => { click :: EventHandlerContext eff props state result
@@ -158,6 +193,26 @@ module SlamData.Helpers where
   lineChartIcon {} = entypoIcon "icon-chart-line"
   pieChartIcon :: {} -> EntypoIcon
   pieChartIcon {} = entypoIcon "icon-chart-pie"
+
+  -- | Parsing stuff
+  type Query = Tuple String String
+  type QueryString = M.Map String String
+
+  noneOf :: forall s m a. (Monad m) => [String] -> ParserT String m String
+  noneOf ss = satisfy (flip notElem ss)
+
+  parseQueryString :: Parser String QueryString
+  parseQueryString = do
+    optional $ string "?"
+    queries <- parseQuery `sepBy` string "&"
+    pure $ M.fromList queries
+
+  parseQuery :: Parser String Query
+  parseQuery = do
+    key <- joinWith "" <$> many1 (try $ noneOf ["="])
+    string "="
+    val <- joinWith "" <$> many1 (try $ noneOf ["&"])
+    pure $ Tuple key val
 
   -- TODO: Move these to purescript-react.
 

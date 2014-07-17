@@ -7,8 +7,10 @@ module SlamData.App (app) where
 
   import qualified React.DOM as D
 
-  app :: UI
-  app = D.div'
-    [ menu
-    , workspace {}
-    ]
+  app :: {serverURI :: String} -> UI
+  app = mkUI spec $ do
+    props <- getProps
+    pure $ D.div'
+      [ menu
+      , workspace {serverURI: props.serverURI}
+      ]
