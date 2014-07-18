@@ -37,17 +37,32 @@ module SlamData.App.Notebook (notebook) where
     \  return s.visualState.visible ||\
     \         (this.state.visualState.visible !== s.visualState.visible) ||\
     \         (!eqNotebooks(this.state.notebooks)(s.notebooks)) ||\
-    \         (!eqActive(this.state.active)(s.active));\
+    \         (!eqActive(this.state.active)(s.active)) ||\
+    \         (this.props.settings !== p.settings);\
     \}" :: forall a. a
 
-  notebook :: {files :: [FileType], serverURI :: String} -> UI
+  notebook :: forall eff props state result
+           .  { files :: [FileType]
+              , serverURI :: String
+              , settings :: Boolean
+              , hideSettings :: EventHandlerContext eff props state result
+              }
+           -> UI
   notebook = mkUI spec{ getInitialState = pure initialState
                       , shouldComponentUpdate = scu
                       } do
     props <- getProps
     state <- readState
     this <- getSelf
-    let notebooks = state.notebooks
+    let settingId = state.settingId
+    let settingsPage = if props.settings
+          then [NotebookSpec { name: "Settings"
+                             , blocks: []
+                             , ident: settingId
+                             }
+               ]
+          else []
+    let notebooks = state.notebooks ++ settingsPage
     let vState = state.visualState
     let active = state.active
              <|> maybe Nothing (\(NotebookSpec nb) -> Just nb.ident) (head notebooks)
@@ -56,7 +71,12 @@ module SlamData.App.Notebook (notebook) where
       -- This can't be abstracted out, we'll lose the context if we try.
       ([ D.dl
           [D.className "tabs"]
-          ((makeNotebook active (deferred <<< activateTab) (deferred <<< deleteNotebook) <$> notebooks) `snoc`
+          ((makeNotebook active
+                         settingId
+                         props.hideSettings
+                         (deferred <<< activateTab)
+                         (deferred <<< deleteNotebook) <$> notebooks)
+          `snoc`
             D.dd
               [D.className "tab"]
               [D.div'
@@ -69,7 +89,7 @@ module SlamData.App.Notebook (notebook) where
               ])
       , D.div
           [D.className "tabs-content"]
-          (makeBlocks props.serverURI active (deferred <<< modalVisibility) <$> notebooks)
+          (makeBlocks props.serverURI settingId active (deferred <<< modalVisibility) <$> notebooks)
       ] ++ if vState.visible
         then
           [D.div
@@ -319,12 +339,34 @@ module SlamData.App.Notebook (notebook) where
   actVisualType VisualTypeTab = " active"
   actVisualType _             = ""
 
-  makeNotebook :: forall eff. Maybe NotebookID
+  makeNotebook :: forall eff eff' props state result
+               .  Maybe NotebookID
+               -> NotebookID
+               -> EventHandlerContext eff' props state result
                -> (NotebookID -> NotebookEvent eff)
                -> (NotebookID -> NotebookEvent eff)
                -> NotebookSpec
                -> UI
-  makeNotebook active activate close (NotebookSpec nb) = D.dd
+  makeNotebook active settingsId hide activate _ (NotebookSpec nb) = D.dd
+    [D.className $ "tab" ++ maybeActive nb.ident active]
+    [D.a
+        [ D.href $ "#" ++ tabize (getNotebookID nb.ident)
+        , D.onClick \e -> do
+            pure $ e.preventDefault {}
+            activate nb.ident
+        ]
+        [ D.text nb.name
+        , D.i
+            [ D.className "fa fa-times"
+            , D.onClick \e -> do
+                pure $ e.stopPropagation {}
+                pure $ e.preventDefault {}
+                hide
+            ]
+            []
+        ]
+    ]
+  makeNotebook active _ _ activate close (NotebookSpec nb) = D.dd
     [D.className $ "tab" ++ maybeActive nb.ident active]
     [D.a
         [ D.href $ "#" ++ tabize (getNotebookID nb.ident)
@@ -346,11 +388,16 @@ module SlamData.App.Notebook (notebook) where
 
   makeBlocks :: forall eff
              .  String
+             -> NotebookID
              -> Maybe NotebookID
              -> (Boolean -> NotebookEvent eff)
              -> NotebookSpec
              -> UI
-  makeBlocks serverURI active vis (NotebookSpec nb) = D.div
+  makeBlocks _ settingId active _ (NotebookSpec nb) | settingId == nb.ident =
+    D.div
+      [D.className $ "content" ++ maybeActive nb.ident active]
+      []
+  makeBlocks serverURI _ active vis (NotebookSpec nb) = D.div
     [D.className $ "content" ++ maybeActive nb.ident active]
     [ D.div
         [D.className "toolbar button-bar"]
@@ -484,6 +531,7 @@ module SlamData.App.Notebook (notebook) where
   initialState =
     { notebooks: localGet Notebooks
     , active: Nothing
+    , settingId: NotebookID $ runUUID v4
     , visualState: { active: DataSrcTab
                    , fields: []
                    , visualType: visualBar
