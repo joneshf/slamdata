@@ -85,3 +85,38 @@
 .button-group:last-of-type {
     margin-right: 0;
 }
+
+.tabs.vertical {
+    text-align: center;
+    width: 100%;
+    .tab a {
+        border: none;
+        border-bottom: 1px solid $slamdata-border-color;
+        font-size: 10pt;
+        margin-bottom: 0;
+        padding: 10px;
+    }
+    .tab:not(.active) a {
+        border-right: none;
+    }
+}
+
+@import "compass/layout/stretching";
+
+.tabs-content.vertical {
+    border: none;
+    height: 100%;
+    margin: 0;
+    overflow-x: hidden;
+    padding: 0;
+    width: 100%;
+    div {
+        min-height: 0;
+    }
+    .content {
+        padding: 10px;
+    }
+    .column, .columns {
+        @include stretch-y;
+    }
+}

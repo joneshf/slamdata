@@ -1,8 +1,10 @@
 var gulp = require('gulp')
   , clean = require('gulp-clean')
+  , compass = require('gulp-compass')
   , concat = require('gulp-concat')
   , es = require('event-stream')
   , nwBuilder = require('node-webkit-builder')
+  , path = require('path')
   , purescript = require('gulp-purescript')
   , sass = require('gulp-sass')
   ;
@@ -89,7 +91,11 @@ var concatJs = function(target) {
 var concatCss = function(target) {
     var fa = gulp.src(paths.concat.css);
     var styles = gulp.src(paths.style)
-        .pipe(sass());
+        .pipe(compass({
+            import_path: '.',
+            project: __dirname,
+            sass: 'style'
+        }));
 
     return es.concat(fa, styles)
         .pipe(concat(options.build.css))
@@ -131,15 +137,12 @@ gulp.task('clean-sass', function() {
 });
 
 gulp.task('sass', ['clean-sass'], function() {
-    var scss = sass();
-    scss.on('error', function(e) {
-        console.error(e.message);
-        scss.end();
-    });
-    // There's something wonky going on with gulp-sass.
-    // Removing the return allows things to operate more fluidly.
-    gulp.src(paths.style)
-        .pipe(scss)
+    return gulp.src(paths.style)
+        .pipe(compass({
+            import_path: '.',
+            project: __dirname,
+            sass: 'style'
+        }))
         .pipe(gulp.dest(paths.css));
 });
 

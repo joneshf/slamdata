@@ -18,6 +18,7 @@ module SlamData.App.Notebook (notebook) where
   import SlamData.App.Notebook.Block
   import SlamData.App.Notebook.Block.Common
   import SlamData.App.Notebook.Block.Types
+  import SlamData.App.Notebook.Settings (settings)
   import SlamData.App.Notebook.Types
   import SlamData.App.Panel
   import SlamData.App.Panel.Tab
@@ -396,7 +397,7 @@ module SlamData.App.Notebook (notebook) where
   makeBlocks _ settingId active _ (NotebookSpec nb) | settingId == nb.ident =
     D.div
       [D.className $ "content" ++ maybeActive nb.ident active]
-      []
+      [settings {}]
   makeBlocks serverURI _ active vis (NotebookSpec nb) = D.div
     [D.className $ "content" ++ maybeActive nb.ident active]
     [ D.div
