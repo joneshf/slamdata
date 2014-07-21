@@ -65,6 +65,15 @@ paths = {
             'bower_components/entypo/font/entypo.ttf',
             'bower_components/entypo/font/entypo.woff'
         ]
+    },
+    lib: {
+        'node-webkit': {
+            src: [
+                'lib/node-webkit/src/**/*.purs',
+                'lib/node-webkit/bower_components/purescript-*/src/**/*.purs'
+            ],
+            js: 'lib/node-webkit/js'
+        }
     }
 }
 
@@ -78,6 +87,12 @@ options = {
         css: 'slamdata.css',
         index: 'index.html',
         js: 'slamdata.js'
+    },
+    lib: {
+        'node-webkit': {
+            main: 'SlamData.SlamEngine',
+            output: 'slamengine.js'
+        }
     }
 }
 
@@ -127,8 +142,14 @@ gulp.task('compile', function() {
         psc.end();
     });
     return gulp.src(paths.src)
-        .pipe(psc)
+        .pipe(purescript.psc(options.compile))
         .pipe(gulp.dest(paths.dest));
+});
+
+gulp.task('compile-node-webkit', ['compile'], function() {
+    return gulp.src(paths.lib['node-webkit'].src)
+        .pipe(purescript.psc(options.lib['node-webkit']))
+        .pipe(gulp.dest(paths.lib['node-webkit'].js));
 });
 
 gulp.task('clean-sass', function() {
@@ -151,7 +172,7 @@ gulp.task('slamengine-jar', function() {
         .pipe(gulp.dest(paths.build['node-webkit'].jar));
 });
 
-gulp.task('slamengine-js', function() {
+gulp.task('slamengine-js', ['compile-node-webkit'], function() {
     return gulp.src('lib/node-webkit/**/*')
         .pipe(gulp.dest('bin/node-webkit'));
 });
@@ -162,7 +183,7 @@ gulp.task('fonts-browser', function() {return fonts('browser');});
 gulp.task('entypo-browser', function() {return entypo('browser');});
 gulp.task('imgs-browser', function() {return imgs('browser');});
 
-gulp.task('concat-js-node-webkit', function() {return concatJs('node-webkit');});
+gulp.task('concat-js-node-webkit', ['compile-node-webkit'], function() {return concatJs('node-webkit');});
 gulp.task('concat-css-node-webkit', function() {return concatCss('node-webkit');});
 gulp.task('fonts-node-webkit', function() {return fonts('node-webkit');});
 gulp.task('entypo-node-webkit', function() {return entypo('node-webkit');});
@@ -178,6 +199,7 @@ gulp.task('build-browser', [
 ]);
 gulp.task('build-node-webkit', [
     'compile',
+    'compile-node-webkit',
     'concat-js-node-webkit',
     'concat-css-node-webkit',
     'fonts-node-webkit',
@@ -187,7 +209,7 @@ gulp.task('build-node-webkit', [
     'slamengine-js'
 ]);
 
-gulp.task('dist-node-webkit', ['build-node-webkit'], function() {
+gulp.task('dist-node-webkit', ['compile-node-webkit', 'build-node-webkit'], function() {
     nw = new nwBuilder({
         buildDir: 'dist',
         files: 'bin/node-webkit/**',
