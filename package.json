@@ -24,12 +24,12 @@
   "devDependencies": {
     "event-stream": "^3.1.5",
     "gulp": "^3.8.5",
-    "gulp-clean": "^0.2.4",
     "gulp-compass": "^1.1.9",
     "gulp-concat": "^2.2.0",
     "gulp-purescript": "0.0.9",
-    "gulp-sass": "^0.7.1",
     "node-webkit-builder": "0.0.3",
-    "npm": "^1.4.20"
+    "npm": "^1.4.20",
+    "rimraf": "^2.2.8",
+    "run-sequence": "^0.3.6"
   }
 }

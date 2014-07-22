@@ -1,6 +1,6 @@
 {
   "main": "index.html",
-  "name": "slamdata",
+  "name": "SlamData",
   "description": "Front end for SlamData",
   "version": "0.1.0",
   "window": {

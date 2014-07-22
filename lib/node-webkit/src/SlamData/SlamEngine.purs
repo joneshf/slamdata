@@ -254,7 +254,9 @@ module SlamData.SlamEngine where
     let sdServer = sdConfig.server
     -- Pass down the config  to the web page.
     replaceState {} "" $
-      "?serverLocation=" ++ sdServer.location ++ "&serverPort=" ++ sdServer.port
+      "?serverLocation=" ++ sdServer.location ++
+      "&serverPort=" ++ sdServer.port ++
+      "&javaLocation=" ++ sdConfig."node-webkit".java
     -- Start up SlamEngine.
     se <- spawn sdConfig."node-webkit".java ["-jar", seJar, seConfigFile]
     -- Log out things.
