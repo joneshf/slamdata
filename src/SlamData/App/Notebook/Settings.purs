@@ -1,4 +1,7 @@
-module SlamData.App.Notebook.Settings (settings) where
+module SlamData.App.Notebook.Settings
+  ( settings
+  , SettingsTab()
+  ) where
 
   import React (mkUI, readState, spec, writeState, UI())
 

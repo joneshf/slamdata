@@ -1,4 +1,7 @@
-module SlamData.Login (loginForm) where
+module SlamData.Login
+  ( loginForm
+  , NewOrExisting()
+  ) where
 
   import Control.Monad.Eff
 

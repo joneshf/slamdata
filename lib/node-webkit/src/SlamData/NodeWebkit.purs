@@ -1,4 +1,4 @@
-module SlamData.SlamEngine where
+module SlamData.NodeWebkit where
 
   import Control.Apply ((*>))
   import Control.Monad.Eff (Eff(..))
@@ -8,6 +8,10 @@ module SlamData.SlamEngine where
   import Data.Maybe.Unsafe (fromJust)
 
   import Debug.Trace (trace)
+
+  import Prelude (($), (#), (<>), (>>=), (<<<), (<$>), (<|>), pure, unit, Unit())
+
+  import SlamData (slamData)
 
   type FilePath = String
 
@@ -252,16 +256,11 @@ module SlamData.SlamEngine where
   main = do
     let sdConfig = requireConfig sdConfigFile
     let sdServer = sdConfig.server
-    -- Pass down the config  to the web page.
-    replaceState {} "" $
-      "?serverLocation=" ++ sdServer.location ++
-      "&serverPort=" ++ sdServer.port ++
-      "&javaLocation=" ++ sdConfig."node-webkit".java
     -- Start up SlamEngine.
     se <- spawn sdConfig."node-webkit".java ["-jar", seJar, seConfigFile]
     -- Log out things.
-    stdout se # onData (trace <<< (++) "stdout: ")
-    stderr se # onData (trace <<< (++) "stderr: ")
+    stdout se # onData (trace <<< (<>) "stdout: ")
+    stderr se # onData (trace <<< (<>) "stderr: ")
 
     win <- guiWindow gui
     -- Open links in the user's default method, e.g. in the browser.
@@ -269,4 +268,8 @@ module SlamData.SlamEngine where
       (guiShell gui >>= openExternal url) *>
       ignore policy) win
     -- Cleanup after ourselves.
-    onCloseNWWindow (\_ -> kill se *> closeWindow win *> pure unit) win
+    onCloseNWWindow (\_ -> kill se *> closeWindow win *> trace "gone") win
+    -- Pass down the config  to the web page.
+    slamData { server: {location: sdServer.location, port: sdServer.port}
+             , nodeWebkit: Just {java: sdConfig."node-webkit".java}
+             }

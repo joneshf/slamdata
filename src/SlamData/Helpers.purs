@@ -12,6 +12,8 @@ module SlamData.Helpers where
 
   import React
 
+  import SlamData.Types (SlamDataConfig())
+
   import Text.Parsing.Parser (Parser(), ParserT())
   import Text.Parsing.Parser.Combinators ((<?>), many, many1, optional, sepBy, try)
   import Text.Parsing.Parser.String (char, satisfy, string)
@@ -66,11 +68,24 @@ module SlamData.Helpers where
   defaultServerURI :: String
   defaultServerURI = defaultServerLocation ++ ":" ++ defaultServerPort
 
+  defaultSDConfig :: SlamDataConfig
+  defaultSDConfig =
+    { server: {location: defaultServerLocation, port: defaultServerPort}
+    , nodeWebkit: Nothing
+    }
+
   getServerURI :: QueryString -> String
   getServerURI qs = fromMaybe defaultServerURI do
     loc <- M.lookup "serverLocation" qs
     port <- M.lookup "serverPort" qs
     pure $ loc ++ ":" ++ port
+
+  query2SDConfig :: QueryString -> SlamDataConfig
+  query2SDConfig qs = fromMaybe defaultSDConfig do
+    loc <- M.lookup "serverLocation" qs
+    port <- M.lookup "serverPort" qs
+    java <- M.lookup "javaLocation" qs
+    pure {server: {location: loc, port: port}, nodeWebkit: Just {java: java}}
 
   actionButton :: forall eff props state result i. (Icon i)
                => { click :: EventHandlerContext eff props state result
