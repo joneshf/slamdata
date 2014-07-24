@@ -9,13 +9,13 @@ module SlamData.App.Workspace (workspace) where
   import SlamData.App.FileSystem (filesystem)
   import SlamData.App.Notebook (notebook)
   import SlamData.Helpers (serverURI)
-  import SlamData.Types (SlamDataConfig())
+  import SlamData.Types (Settings())
 
   import qualified React.DOM as D
 
   workspace :: forall eff props state result
-            .  { sdConfig :: SlamDataConfig
-               , settings :: Boolean
+            .  { settings :: Settings
+               , showSettings :: Boolean
                , hideSettings :: EventHandlerContext eff props state result
                }
             -> UI
@@ -40,8 +40,8 @@ module SlamData.App.Workspace (workspace) where
               , D.idProp "notebook"
               ]
               [notebook { files: state.files
-                        , sdConfig: props.sdConfig
                         , settings: props.settings
+                        , showSettings: props.showSettings
                         , hideSettings: props.hideSettings
                         }
               ]
@@ -56,7 +56,7 @@ module SlamData.App.Workspace (workspace) where
   foreign import cwm
     "function cwm() {\
     \  var fetchFS = function() {\
-    \    oboe(serverURI_(this.props.sdConfig) + '/metadata/fs/')\
+    \    oboe(serverURI_(this.props.settings.sdConfig) + '/metadata/fs/')\
     \    .done(function(json) {\
     \      if (this.isMounted()) {\
     \        var sorted = json.children.sort(function(a, b) {\

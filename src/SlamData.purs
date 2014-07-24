@@ -7,7 +7,7 @@ module SlamData where
   import React (renderToElementById, UI())
 
   import SlamData.App (app)
-  import SlamData.Types (SlamDataConfig())
+  import SlamData.Types (Settings())
 
-  slamData :: forall eff. SlamDataConfig -> Eff (dom :: DOM | eff) UI
-  slamData config = renderToElementById "content" $ app {sdConfig: config}
+  slamData :: forall eff. Settings -> Eff (dom :: DOM | eff) UI
+  slamData settings = renderToElementById "content" $ app {settings: settings}

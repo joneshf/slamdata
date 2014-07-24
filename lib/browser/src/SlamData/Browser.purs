@@ -27,9 +27,11 @@ module SlamData.Browser where
   import SlamData.App (app)
   import SlamData.Helpers
     ( defaultSDConfig
+    , defaultSEConfig
     , location
     , parseQueryString
     , query2SDConfig
+    , query2SEConfig
     , search
     , window
     )
@@ -40,5 +42,6 @@ module SlamData.Browser where
   main = do
     let search' = window # location # search
     let rawQueries = runParser search' parseQueryString
-    let server = either (const defaultSDConfig) query2SDConfig rawQueries
-    slamData server
+    let sdConfig = either (const defaultSDConfig) query2SDConfig rawQueries
+    let seConfig = either (const defaultSEConfig) query2SEConfig rawQueries
+    slamData {sdConfig: sdConfig, seConfig: seConfig}

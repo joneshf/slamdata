@@ -38,6 +38,9 @@ module SlamData.NodeWebkit where
     )
 
   import SlamData (slamData)
+  import SlamData.Types (Mounting())
+
+  import qualified Data.Map as M
 
   type FilePath = String
 
@@ -261,6 +264,9 @@ module SlamData.NodeWebkit where
     \  return require(location);\
     \}" :: forall r. FilePath -> { | r}
 
+  foreign import seConfig2Mountings
+    "" :: forall r. { | r} -> M.Map String Mounting
+
   linuxConfigHome :: Maybe FilePath
   linuxConfigHome = env "XDG_CONFIG_HOME"
                 <|> (\home -> home </> ".config") <$> env "HOME"
@@ -281,6 +287,7 @@ module SlamData.NodeWebkit where
 
   main = do
     let sdConfig = requireConfig sdConfigFile
+    let seConfig = requireConfig seConfigFile
     let sdServer = sdConfig.server
     -- Start up SlamEngine.
     se <- spawn sdConfig."node-webkit".java ["-jar", seJar, seConfigFile]
@@ -296,6 +303,10 @@ module SlamData.NodeWebkit where
     -- Cleanup after ourselves.
     onCloseNWWindow (\_ -> kill se *> closeWindow win *> trace "gone") win
     -- Pass down the config  to the web page.
-    slamData { server: {location: sdServer.location, port: sdServer.port}
-             , nodeWebkit: {java: Just sdConfig."node-webkit".java}
+    slamData { sdConfig: { server: {location: sdServer.location, port: sdServer.port}
+                         , nodeWebkit: {java: Just sdConfig."node-webkit".java}
+                         }
+             , seConfig: { server: {port: seConfig.server.port}
+                         , mountings: seConfig2Mountings seConfig
+                         }
              }

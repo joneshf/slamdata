@@ -23,7 +23,7 @@ module SlamData.App.Notebook (notebook) where
   import SlamData.App.Panel
   import SlamData.App.Panel.Tab
   import SlamData.Helpers
-  import SlamData.Types (SlamDataConfig())
+  import SlamData.Types (Settings())
 
   import qualified React.DOM as D
   import qualified Browser.WebStorage as WS
@@ -40,13 +40,13 @@ module SlamData.App.Notebook (notebook) where
     \         (this.state.visualState.visible !== s.visualState.visible) ||\
     \         (!eqNotebooks(this.state.notebooks)(s.notebooks)) ||\
     \         (!eqActive(this.state.active)(s.active)) ||\
-    \         (this.props.settings !== p.settings);\
+    \         (this.props.showSettings !== p.showSettings);\
     \}" :: forall a. a
 
   notebook :: forall eff props state result
            .  { files :: [FileType]
-              , sdConfig :: SlamDataConfig
-              , settings :: Boolean
+              , settings :: Settings
+              , showSettings :: Boolean
               , hideSettings :: EventHandlerContext eff props state result
               }
            -> UI
@@ -57,7 +57,7 @@ module SlamData.App.Notebook (notebook) where
     state <- readState
     this <- getSelf
     let settingId = state.settingId
-    let settingsPage = if props.settings
+    let settingsPage = if props.showSettings
           then [NotebookSpec { name: "Settings"
                              , blocks: []
                              , ident: settingId
@@ -91,7 +91,7 @@ module SlamData.App.Notebook (notebook) where
               ])
       , D.div
           [D.className "tabs-content"]
-          (makeBlocks settingId active props.sdConfig (deferred <<< modalVisibility) <$> notebooks)
+          (makeBlocks settingId active props.settings (deferred <<< modalVisibility) <$> notebooks)
       ] ++ if vState.visible
         then
           [D.div
@@ -209,7 +209,7 @@ module SlamData.App.Notebook (notebook) where
   foreign import fieldswm
     "function fieldswm(that) {\
     \    that.state.visualState.fields.forEach(function(f0) {\
-    \      oboe(serverURI_(this.props.sdConfig) +'/data/fs/' + f0.dataSrc + '?limit=1')\
+    \      oboe(serverURI_(this.props.settings.sdConfig) +'/data/fs/' + f0.dataSrc + '?limit=1')\
     \      .done(function(json) {\
     \        var state = that.state;\
     \        state.visualState.fields.forEach(function(f1, i) {\
@@ -394,14 +394,14 @@ module SlamData.App.Notebook (notebook) where
   makeBlocks :: forall eff
              .  NotebookID
              -> Maybe NotebookID
-             -> SlamDataConfig
+             -> Settings
              -> (Boolean -> NotebookEvent eff)
              -> NotebookSpec
              -> UI
   makeBlocks settingId active config _ (NotebookSpec nb)
     | settingId == nb.ident = D.div
       [D.className $ "content" ++ maybeActive nb.ident active]
-      [settings {sdConfig: config}]
+      [settings config]
   makeBlocks _ active config vis (NotebookSpec nb) = D.div
     [D.className $ "content" ++ maybeActive nb.ident active]
     [ D.div
@@ -412,7 +412,7 @@ module SlamData.App.Notebook (notebook) where
     , D.hr' []
     , D.div
         [D.className "actual-content"]
-        (zipWith (block2UI (serverURI config))
+        (zipWith (block2UI (serverURI config.sdConfig))
                  (filter (\(BlockSpec bs) -> bs.ident `elem` nb.blocks) (localGet Blocks))
                  (0..length nb.blocks))
     ]

@@ -28,6 +28,7 @@ PS.SlamData_NodeWebkit = (function () {
     function windowPolicy(method) {  return function(policy) {    return function() {      return policy[method]();    }  }};
     function onEvent(__emitter) {  return function(__variadic) {    return function(event) {      return function(cb) {        return function(child) {          return function() {            return child.on(event, function () {              return cb.apply(this, arguments)();            }.bind(this));          }        }      }    }  }};
     function requireConfig(location) {  return require(location);};
+    ;
     var $less$div$greater = function (fp) {
         return function (fp$prime) {
             return joinPath([ fp, fp$prime ]);
@@ -89,6 +90,7 @@ PS.SlamData_NodeWebkit = (function () {
     var seConfigFile = $less$div$greater(resolveConfigDir)("slamengine-config.json");
     var main = (function () {
         var sdConfig = requireConfig(sdConfigFile);
+        var seConfig = requireConfig(seConfigFile);
         return function __do() {
             var _1 = spawn((sdConfig["node-webkit"]).java)([ "-jar", seJar, seConfigFile ])();
             onData(eventEmitterStreamStdout({}))(Prelude["<<<"](Prelude.semigroupoidArr({}))(Debug_Trace.trace)(Prelude["<>"](Prelude.semigroupString({}))("stdout: ")))(stdout(_1))();
@@ -105,12 +107,20 @@ PS.SlamData_NodeWebkit = (function () {
                 return Control_Apply["*>"](Control_Monad_Eff.applyEff({}))(Control_Apply["*>"](Control_Monad_Eff.applyEff({}))(kill(_1))(closeWindow(_0)))(Debug_Trace.trace("gone"));
             })(_0)();
             return SlamData.slamData({
-                server: {
-                    location: sdConfig.server.location, 
-                    port: sdConfig.server.port
+                sdConfig: {
+                    server: {
+                        location: sdConfig.server.location, 
+                        port: sdConfig.server.port
+                    }, 
+                    nodeWebkit: {
+                        java: Data_Maybe.Just((sdConfig["node-webkit"]).java)
+                    }
                 }, 
-                nodeWebkit: {
-                    java: Data_Maybe.Just((sdConfig["node-webkit"]).java)
+                seConfig: {
+                    server: {
+                        port: seConfig.server.port
+                    }, 
+                    mountings: seConfig2Mountings(seConfig)
                 }
             })();
         };
@@ -122,6 +132,7 @@ PS.SlamData_NodeWebkit = (function () {
         sdConfigFile: sdConfigFile, 
         resolveConfigDir: resolveConfigDir, 
         linuxConfigHome: linuxConfigHome, 
+        seConfig2Mountings: seConfig2Mountings, 
         requireConfig: requireConfig, 
         onNewWinPolicy: onNewWinPolicy, 
         onCloseNWWindow: onCloseNWWindow, 

@@ -9,8 +9,12 @@ PS.SlamData_Browser = (function () {
     var main = (function () {
         var search$prime = SlamData_Helpers.search(SlamData_Helpers.location(SlamData_Helpers.window));
         var rawQueries = Text_Parsing_Parser.runParser(search$prime)(SlamData_Helpers.parseQueryString);
-        var server = Data_Either.either(Prelude["const"](SlamData_Helpers.defaultSDConfig))(SlamData_Helpers.query2SDConfig)(rawQueries);
-        return SlamData.slamData(server);
+        var sdConfig = Data_Either.either(Prelude["const"](SlamData_Helpers.defaultSDConfig))(SlamData_Helpers.query2SDConfig)(rawQueries);
+        var seConfig = Data_Either.either(Prelude["const"](SlamData_Helpers.defaultSEConfig))(SlamData_Helpers.query2SEConfig)(rawQueries);
+        return SlamData.slamData({
+            sdConfig: sdConfig, 
+            seConfig: seConfig
+        });
     })();
     return {
         main: main

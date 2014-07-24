@@ -12,7 +12,7 @@ module SlamData.Helpers where
 
   import React
 
-  import SlamData.Types (SlamDataConfig())
+  import SlamData.Types (SlamDataConfig(), SlamEngineConfig())
 
   import Text.Parsing.Parser (Parser(), ParserT())
   import Text.Parsing.Parser.Combinators ((<?>), many, many1, optional, sepBy, try)
@@ -64,6 +64,9 @@ module SlamData.Helpers where
 
   defaultServerLocation = "http://localhost"
   defaultServerPort = "8080"
+  defaultMountPath = "/"
+  defaultMongoURI = "mongodb://localhost:27017"
+  defaultMongoDatabase = "test"
 
   defaultServerURI :: String
   defaultServerURI = defaultServerLocation ++ ":" ++ defaultServerPort
@@ -72,6 +75,16 @@ module SlamData.Helpers where
   defaultSDConfig =
     { server: {location: defaultServerLocation, port: defaultServerPort}
     , nodeWebkit: {java: Nothing}
+    }
+
+  defaultSEConfig :: SlamEngineConfig
+  defaultSEConfig =
+    { server: {port: defaultServerPort}
+    , mountings: M.singleton defaultMountPath
+        {mongodb: { connectionURI: defaultMongoURI
+                  , database: defaultMongoDatabase
+                  }
+        }
     }
 
   serverURI :: SlamDataConfig -> String
@@ -89,6 +102,19 @@ module SlamData.Helpers where
     port <- M.lookup "serverPort" qs
     java <- M.lookup "javaLocation" qs
     pure {server: {location: loc, port: port}, nodeWebkit: {java: Just java}}
+
+  query2SEConfig :: QueryString -> SlamEngineConfig
+  query2SEConfig qs = fromMaybe defaultSEConfig do
+    port <- M.lookup "sePort" qs
+    path <- M.lookup "seMountPath" qs
+    mongoURI <- M.lookup "seMongoURI" qs
+    database <- M.lookup "seDatabase" qs
+    pure { server: {port: port}
+         , mountings: M.singleton path {mongodb: { connectionURI: mongoURI
+                                                 , database: database
+                                                 }
+                                       }
+         }
 
   actionButton :: forall eff props state result i. (Icon i)
                => { click :: EventHandlerContext eff props state result
