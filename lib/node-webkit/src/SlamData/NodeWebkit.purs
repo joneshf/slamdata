@@ -1,5 +1,16 @@
 module SlamData.NodeWebkit where
 
+  -- |  This is the Node-Webkit runner for SlamData.
+  --    You will need to have the SlamData lib available (ps or js + externs).
+  --    It also expects a config file to exist for both SlamData and SlamEngine.
+  --    The config files should be named `slamdata-config.json` and
+  --    `slamengine-config.json` respectively.
+  --    It also requires a SlamEngine server jar located at
+  --    `./jar/slamengine_2.10-0.1-SNAPSHOT-one-jar.jar`
+
+  --    The way it works is that it spins up the SlamEngine server and
+  --    then starts SlamData.
+
   import Control.Apply ((*>))
   import Control.Monad.Eff (Eff(..))
 
@@ -9,7 +20,22 @@ module SlamData.NodeWebkit where
 
   import Debug.Trace (trace)
 
-  import Prelude (($), (#), (<>), (>>=), (<<<), (<$>), (<|>), pure, unit, Unit())
+  -- We need to explicitly import prelude stuff
+  -- and run psc with --no-prelude
+  -- because slamdata.js comes with prelude,
+  -- and psc doesn't want to play nice without this.
+  import Prelude
+    ( ($)
+    , (#)
+    , (<>)
+    , (>>=)
+    , (<<<)
+    , (<$>)
+    , (<|>)
+    , pure
+    , unit
+    , Unit()
+    )
 
   import SlamData (slamData)
 

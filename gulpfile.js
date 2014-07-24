@@ -109,14 +109,14 @@ var options = {
     },
     lib: {
         browser: {
+            codegen: 'SlamData.Browser',
             main: 'SlamData.Browser',
-            modules: 'SlamData.Browser',
             noPrelude: true,
             output: 'slamdata-browser.js'
         },
         'node-webkit': {
+            codegen: 'SlamData.NodeWebkit',
             main: 'SlamData.NodeWebkit',
-            modules: 'SlamData.NodeWebkit',
             noPrelude: true,
             output: 'slamdata-node-webkit.js'
         }
@@ -204,10 +204,11 @@ function sequence () {
 
 // Workhorse tasks.
 gulp.task('clean-build', clean('bin'));
+gulp.task('clean-compile', clean('js'));
 gulp.task('clean-dist', clean('dist'));
 gulp.task('clean-sass', clean(paths.css));
 
-gulp.task('compile', function() {
+gulp.task('compile', ['clean-compile'], function() {
     // We need this hack for now until gulp does something about
     // https://github.com/gulpjs/gulp/issues/71
     var psc = purescript.psc(options.compile);
