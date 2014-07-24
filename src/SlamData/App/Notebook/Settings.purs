@@ -3,7 +3,10 @@ module SlamData.App.Notebook.Settings
   , SettingsTab()
   ) where
 
-  import React (mkUI, readState, spec, writeState, UI())
+  import React (getProps, mkUI, readState, spec, writeState, UI())
+
+  import SlamData.Helpers (getOrElse)
+  import SlamData.Types (SlamDataConfig())
 
   import qualified React.DOM as D
 
@@ -21,9 +24,11 @@ module SlamData.App.Notebook.Settings
     show SlamDataTab   = "SlamData"
     show SlamEngineTab = "SlamEngine"
 
-  settings :: {} -> UI
+  settings :: {sdConfig :: SlamDataConfig} -> UI
   settings = mkUI spec{getInitialState = pure initialState} do
+    props <- getProps
     state <- readState
+    let sdConfig = props.sdConfig
     pure $ D.div
       [D.className "vertical"]
       [ D.div
@@ -61,6 +66,7 @@ module SlamData.App.Notebook.Settings
                               , D.input
                                   [ D.name "slamengine-location"
                                   , D.placeholder "http://localhost"
+                                  , D.value sdConfig.server.location
                                   ]
                                   []
                               , D.label
@@ -69,6 +75,7 @@ module SlamData.App.Notebook.Settings
                               , D.input
                                   [ D.name "slamengine-port"
                                   , D.placeholder "8080"
+                                  , D.value sdConfig.server.port
                                   ]
                                   []
                               ]
@@ -111,6 +118,7 @@ module SlamData.App.Notebook.Settings
                               , D.input
                                   [ D.name "java-binary"
                                   , D.placeholder "/usr/bin/java"
+                                  , D.value (sdConfig.nodeWebkit.java `getOrElse` "")
                                   ]
                                   []
                               ]
@@ -129,6 +137,7 @@ module SlamData.App.Notebook.Settings
                               , D.input
                                   [ D.name "server-location"
                                   , D.placeholder "http://localhost"
+                                  , D.value sdConfig.server.location
                                   ]
                                   []
                               ]
@@ -139,6 +148,7 @@ module SlamData.App.Notebook.Settings
                               , D.input
                                   [ D.name "server-port"
                                   , D.placeholder "8080"
+                                  , D.value sdConfig.server.port
                                   ]
                                   []
                               ]

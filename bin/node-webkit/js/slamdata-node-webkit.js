@@ -109,9 +109,9 @@ PS.SlamData_NodeWebkit = (function () {
                     location: sdConfig.server.location, 
                     port: sdConfig.server.port
                 }, 
-                nodeWebkit: Data_Maybe.Just({
-                    java: (sdConfig["node-webkit"]).java
-                })
+                nodeWebkit: {
+                    java: Data_Maybe.Just((sdConfig["node-webkit"]).java)
+                }
             })();
         };
     })();

@@ -4,5 +4,5 @@ module SlamData.Types where
 
   type SlamDataConfig =
     { server :: {location :: String, port :: String}
-    , nodeWebkit :: Maybe {java :: String}
+    , nodeWebkit :: {java :: Maybe String}
     }

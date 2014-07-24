@@ -297,5 +297,5 @@ module SlamData.NodeWebkit where
     onCloseNWWindow (\_ -> kill se *> closeWindow win *> trace "gone") win
     -- Pass down the config  to the web page.
     slamData { server: {location: sdServer.location, port: sdServer.port}
-             , nodeWebkit: Just {java: sdConfig."node-webkit".java}
+             , nodeWebkit: {java: Just sdConfig."node-webkit".java}
              }

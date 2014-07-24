@@ -71,7 +71,7 @@ module SlamData.Helpers where
   defaultSDConfig :: SlamDataConfig
   defaultSDConfig =
     { server: {location: defaultServerLocation, port: defaultServerPort}
-    , nodeWebkit: Nothing
+    , nodeWebkit: {java: Nothing}
     }
 
   serverURI :: SlamDataConfig -> String
@@ -88,7 +88,7 @@ module SlamData.Helpers where
     loc <- M.lookup "serverLocation" qs
     port <- M.lookup "serverPort" qs
     java <- M.lookup "javaLocation" qs
-    pure {server: {location: loc, port: port}, nodeWebkit: Just {java: java}}
+    pure {server: {location: loc, port: port}, nodeWebkit: {java: Just java}}
 
   actionButton :: forall eff props state result i. (Icon i)
                => { click :: EventHandlerContext eff props state result

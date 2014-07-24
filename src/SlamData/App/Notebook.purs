@@ -91,7 +91,7 @@ module SlamData.App.Notebook (notebook) where
               ])
       , D.div
           [D.className "tabs-content"]
-          (makeBlocks (serverURI props.sdConfig) settingId active (deferred <<< modalVisibility) <$> notebooks)
+          (makeBlocks settingId active props.sdConfig (deferred <<< modalVisibility) <$> notebooks)
       ] ++ if vState.visible
         then
           [D.div
@@ -392,17 +392,17 @@ module SlamData.App.Notebook (notebook) where
     ]
 
   makeBlocks :: forall eff
-             .  String
-             -> NotebookID
+             .  NotebookID
              -> Maybe NotebookID
+             -> SlamDataConfig
              -> (Boolean -> NotebookEvent eff)
              -> NotebookSpec
              -> UI
-  makeBlocks _ settingId active _ (NotebookSpec nb) | settingId == nb.ident =
-    D.div
+  makeBlocks settingId active config _ (NotebookSpec nb)
+    | settingId == nb.ident = D.div
       [D.className $ "content" ++ maybeActive nb.ident active]
-      [settings {}]
-  makeBlocks serverURI _ active vis (NotebookSpec nb) = D.div
+      [settings {sdConfig: config}]
+  makeBlocks _ active config vis (NotebookSpec nb) = D.div
     [D.className $ "content" ++ maybeActive nb.ident active]
     [ D.div
         [D.className "toolbar button-bar"]
@@ -412,7 +412,7 @@ module SlamData.App.Notebook (notebook) where
     , D.hr' []
     , D.div
         [D.className "actual-content"]
-        (zipWith (block2UI serverURI)
+        (zipWith (block2UI (serverURI config))
                  (filter (\(BlockSpec bs) -> bs.ident `elem` nb.blocks) (localGet Blocks))
                  (0..length nb.blocks))
     ]
