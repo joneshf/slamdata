@@ -351,7 +351,8 @@ module SlamData.App.Notebook (notebook) where
                -> (NotebookID -> NotebookEvent eff)
                -> NotebookSpec
                -> UI
-  makeNotebook active settingsId hide activate _ (NotebookSpec nb) = D.dd
+  makeNotebook active settingsId hide activate _ (NotebookSpec nb)
+    | settingsId == nb.ident = D.dd
     [D.className $ "tab" ++ maybeActive nb.ident active]
     [D.a
         [ D.href $ "#" ++ tabize (getNotebookID nb.ident)

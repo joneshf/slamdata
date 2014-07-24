@@ -67717,6 +67717,20 @@ PS.SlamData_App_Notebook = (function () {
                 return function (_583) {
                     return function (_584) {
                         return function (_585) {
+                            if (Prelude["=="](SlamData_App_Notebook_Types.eqNotebookID({}))(_581)((_585.values[0]).ident)) {
+                                return React_DOM.dd([ React_DOM.className("tab" + maybeActive((_585.values[0]).ident)(_580)) ])([ React_DOM.a([ React_DOM.href("#" + SlamData_App_Panel_Tab.tabize(getNotebookID((_585.values[0]).ident))), React_DOM.onClick(function (e) {
+                                    return function __do() {
+                                        Prelude.pure(Control_Monad_Eff.applicativeEff({}))(e.preventDefault({}))();
+                                        return _583((_585.values[0]).ident)();
+                                    };
+                                }) ])([ React_DOM.text((_585.values[0]).name), React_DOM.i([ React_DOM.className("fa fa-times"), React_DOM.onClick(function (e) {
+                                    return function __do() {
+                                        Prelude.pure(Control_Monad_Eff.applicativeEff({}))(e.stopPropagation({}))();
+                                        Prelude.pure(Control_Monad_Eff.applicativeEff({}))(e.preventDefault({}))();
+                                        return _582();
+                                    };
+                                }) ])([  ]) ]) ]);
+                            };
                             return React_DOM.dd([ React_DOM.className("tab" + maybeActive((_585.values[0]).ident)(_580)) ])([ React_DOM.a([ React_DOM.href("#" + SlamData_App_Panel_Tab.tabize(getNotebookID((_585.values[0]).ident))), React_DOM.onClick(function (e) {
                                 return function __do() {
                                     Prelude.pure(Control_Monad_Eff.applicativeEff({}))(e.preventDefault({}))();
@@ -67726,7 +67740,7 @@ PS.SlamData_App_Notebook = (function () {
                                 return function __do() {
                                     Prelude.pure(Control_Monad_Eff.applicativeEff({}))(e.stopPropagation({}))();
                                     Prelude.pure(Control_Monad_Eff.applicativeEff({}))(e.preventDefault({}))();
-                                    return _582();
+                                    return _584((_585.values[0]).ident)();
                                 };
                             }) ])([  ]) ]) ]);
                         };
