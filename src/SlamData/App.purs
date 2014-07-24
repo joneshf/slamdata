@@ -6,16 +6,20 @@ module SlamData.App (app) where
 
   import SlamData.App.Menu
   import SlamData.App.Workspace
+  import SlamData.Types (SlamDataConfig())
 
   import qualified React.DOM as D
 
-  app :: {serverURI :: String} -> UI
+  app :: {sdConfig :: SlamDataConfig} -> UI
   app = mkUI spec {getInitialState = pure {settings: false}} $ do
     state <- readState
     props <- getProps
     pure $ D.div'
       [ menu {showSettings: deferred $ showSettings true}
-      , workspace {serverURI: props.serverURI, settings: state.settings, hideSettings: deferred $ showSettings false}
+      , workspace { sdConfig: props.sdConfig
+                  , settings: state.settings
+                  , hideSettings: deferred $ showSettings false
+                  }
       ]
 
   type AppState = {settings :: Boolean}

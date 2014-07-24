@@ -10,5 +10,4 @@ module SlamData where
   import SlamData.Types (SlamDataConfig())
 
   slamData :: forall eff. SlamDataConfig -> Eff (dom :: DOM | eff) UI
-  slamData {server = {location = loc, port = port}} =
-    renderToElementById "content" $ app {serverURI: loc ++ ":" ++ port}
+  slamData config = renderToElementById "content" $ app {sdConfig: config}

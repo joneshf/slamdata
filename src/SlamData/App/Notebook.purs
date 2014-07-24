@@ -23,6 +23,7 @@ module SlamData.App.Notebook (notebook) where
   import SlamData.App.Panel
   import SlamData.App.Panel.Tab
   import SlamData.Helpers
+  import SlamData.Types (SlamDataConfig())
 
   import qualified React.DOM as D
   import qualified Browser.WebStorage as WS
@@ -44,7 +45,7 @@ module SlamData.App.Notebook (notebook) where
 
   notebook :: forall eff props state result
            .  { files :: [FileType]
-              , serverURI :: String
+              , sdConfig :: SlamDataConfig
               , settings :: Boolean
               , hideSettings :: EventHandlerContext eff props state result
               }
@@ -90,7 +91,7 @@ module SlamData.App.Notebook (notebook) where
               ])
       , D.div
           [D.className "tabs-content"]
-          (makeBlocks props.serverURI settingId active (deferred <<< modalVisibility) <$> notebooks)
+          (makeBlocks (serverURI props.sdConfig) settingId active (deferred <<< modalVisibility) <$> notebooks)
       ] ++ if vState.visible
         then
           [D.div
@@ -203,10 +204,12 @@ module SlamData.App.Notebook (notebook) where
     , D.ul' (field2UI modify props.dataSrc props.selectedFields <$> props.allFields)
     ]
 
+  serverURI_ = serverURI
+
   foreign import fieldswm
     "function fieldswm(that) {\
     \    that.state.visualState.fields.forEach(function(f0) {\
-    \      oboe(that.props.serverURI +'/data/fs/' + f0.dataSrc + '?limit=1')\
+    \      oboe(serverURI_(this.props.sdConfig) +'/data/fs/' + f0.dataSrc + '?limit=1')\
     \      .done(function(json) {\
     \        var state = that.state;\
     \        state.visualState.fields.forEach(function(f1, i) {\

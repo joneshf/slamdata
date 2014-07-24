@@ -74,6 +74,9 @@ module SlamData.Helpers where
     , nodeWebkit: Nothing
     }
 
+  serverURI :: SlamDataConfig -> String
+  serverURI {server = {location = l, port = p}} = l ++ ":" ++ p
+
   getServerURI :: QueryString -> String
   getServerURI qs = fromMaybe defaultServerURI do
     loc <- M.lookup "serverLocation" qs

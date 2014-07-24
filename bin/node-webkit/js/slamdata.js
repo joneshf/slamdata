@@ -66606,41 +66606,44 @@ PS.SlamData_Helpers = (function () {
     };
     var showLocalKey = function (_) {
         return {
-            show: function (_538) {
-                if (_538.ctor === "SlamData.Helpers.Blocks") {
+            show: function (_539) {
+                if (_539.ctor === "SlamData.Helpers.Blocks") {
                     return "blocks";
                 };
-                if (_538.ctor === "SlamData.Helpers.Notebooks") {
+                if (_539.ctor === "SlamData.Helpers.Notebooks") {
                     return "notebooks";
                 };
-                if (_538.ctor === "SlamData.Helpers.EvalSQLBlocks") {
+                if (_539.ctor === "SlamData.Helpers.EvalSQLBlocks") {
                     return "evalsqlblocks";
                 };
                 throw "Failed pattern match";
             }
         };
     };
+    var serverURI = function (_519) {
+        return _519.server.location + ":" + _519.server.port;
+    };
     var select = function (_514) {
         return function (_515) {
             return function (_516) {
                 if (_514(_515)) {
-                    var _2068 = {};
-                    for (var _2069 in _516) {
-                        if (_516.hasOwnProperty(_2069)) {
-                            _2068[_2069] = _516[_2069];
+                    var _2072 = {};
+                    for (var _2073 in _516) {
+                        if (_516.hasOwnProperty(_2073)) {
+                            _2072[_2073] = _516[_2073];
                         };
                     };
-                    _2068.fst = Prelude[":"](_515)(_516.fst);
-                    return _2068;
+                    _2072.fst = Prelude[":"](_515)(_516.fst);
+                    return _2072;
                 };
-                var _2070 = {};
-                for (var _2071 in _516) {
-                    if (_516.hasOwnProperty(_2071)) {
-                        _2070[_2071] = _516[_2071];
+                var _2074 = {};
+                for (var _2075 in _516) {
+                    if (_516.hasOwnProperty(_2075)) {
+                        _2074[_2075] = _516[_2075];
                     };
                 };
-                _2070.snd = Prelude[":"](_515)(_516.snd);
-                return _2070;
+                _2074.snd = Prelude[":"](_515)(_516.snd);
+                return _2074;
             };
         };
     };
@@ -66689,15 +66692,15 @@ PS.SlamData_Helpers = (function () {
     };
     var iconFA = function (_) {
         return {
-            toUI: function (_539) {
-                return _539.values[0];
+            toUI: function (_540) {
+                return _540.values[0];
             }
         };
     };
     var iconEntypo = function (_) {
         return {
-            toUI: function (_540) {
-                return _540.values[0];
+            toUI: function (_541) {
+                return _541.values[0];
             }
         };
     };
@@ -66716,52 +66719,52 @@ PS.SlamData_Helpers = (function () {
     var faIcon = function (name) {
         return FAIcon(React_DOM.i([ React_DOM.className(name) ])([  ]));
     };
-    var fileIcon = function (_529) {
+    var fileIcon = function (_530) {
         return faIcon("fa fa-file-o");
     };
-    var loadingIcon = function (_531) {
+    var loadingIcon = function (_532) {
         return faIcon("fa fa-circle-o-notch fa-spin");
     };
-    var markdownIcon = function (_524) {
+    var markdownIcon = function (_525) {
         return faIcon("fa fa-file-text");
     };
-    var newIcon = function (_520) {
+    var newIcon = function (_521) {
         return faIcon("fa fa-file");
     };
-    var newNotebookIcon = function (_530) {
+    var newNotebookIcon = function (_531) {
         return faIcon("fa fa-plus");
     };
-    var openIcon = function (_521) {
+    var openIcon = function (_522) {
         return faIcon("fa fa-folder-open");
     };
-    var publishIcon = function (_523) {
+    var publishIcon = function (_524) {
         return faIcon("fa fa-book");
     };
-    var saveIcon = function (_522) {
+    var saveIcon = function (_523) {
         return faIcon("fa fa-save");
     };
-    var sqlIcon = function (_525) {
+    var sqlIcon = function (_526) {
         return faIcon("fa fa-database");
     };
-    var visualIcon = function (_526) {
+    var visualIcon = function (_527) {
         return faIcon("fa fa-bar-chart-o");
     };
     var eqLocalKey = function (_) {
         return {
-            "==": function (_536) {
-                return function (_537) {
-                    if (_536.ctor === "SlamData.Helpers.Blocks") {
-                        if (_537.ctor === "SlamData.Helpers.Blocks") {
+            "==": function (_537) {
+                return function (_538) {
+                    if (_537.ctor === "SlamData.Helpers.Blocks") {
+                        if (_538.ctor === "SlamData.Helpers.Blocks") {
                             return true;
                         };
                     };
-                    if (_536.ctor === "SlamData.Helpers.Notebooks") {
-                        if (_537.ctor === "SlamData.Helpers.Notebooks") {
+                    if (_537.ctor === "SlamData.Helpers.Notebooks") {
+                        if (_538.ctor === "SlamData.Helpers.Notebooks") {
                             return true;
                         };
                     };
-                    if (_536.ctor === "SlamData.Helpers.EvalSQLBlocks") {
-                        if (_537.ctor === "SlamData.Helpers.EvalSQLBlocks") {
+                    if (_537.ctor === "SlamData.Helpers.EvalSQLBlocks") {
+                        if (_538.ctor === "SlamData.Helpers.EvalSQLBlocks") {
                             return true;
                         };
                     };
@@ -66778,16 +66781,16 @@ PS.SlamData_Helpers = (function () {
     var entypoIcon = function (name) {
         return EntypoIcon(React_DOM.i([ React_DOM.className(name) ])([  ]));
     };
-    var lineChartIcon = function (_534) {
+    var lineChartIcon = function (_535) {
         return entypoIcon("icon-chart-line");
     };
-    var pieChartIcon = function (_535) {
+    var pieChartIcon = function (_536) {
         return entypoIcon("icon-chart-pie");
     };
-    var dirOpenIcon = function (_527) {
+    var dirOpenIcon = function (_528) {
         return faIcon("fa fa-folder-open-o");
     };
-    var dirClosedIcon = function (_528) {
+    var dirClosedIcon = function (_529) {
         return faIcon("fa fa-folder-o");
     };
     var defaultServerPort = "8080";
@@ -66824,13 +66827,13 @@ PS.SlamData_Helpers = (function () {
             });
         }));
     };
-    var closeIcon = function (_519) {
+    var closeIcon = function (_520) {
         return faIcon("fa fa-times");
     };
-    var barChartIcon = function (_533) {
+    var barChartIcon = function (_534) {
         return entypoIcon("icon-chart-bar");
     };
-    var areaChartIcon = function (_532) {
+    var areaChartIcon = function (_533) {
         return entypoIcon("icon-chart-area");
     };
     var actionButton = function (__dict_Icon_367) {
@@ -66883,6 +66886,7 @@ PS.SlamData_Helpers = (function () {
         actionButton: actionButton, 
         query2SDConfig: query2SDConfig, 
         getServerURI: getServerURI, 
+        serverURI: serverURI, 
         defaultSDConfig: defaultSDConfig, 
         defaultServerURI: defaultServerURI, 
         defaultServerPort: defaultServerPort, 
@@ -66914,29 +66918,29 @@ PS.SlamData_App_Notebook_Block_Common = (function () {
         var _94 = React.getRefs();
         var _93 = React.readState();
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-            var _2107 = {};
-            for (var _2108 in _93) {
-                if (_93.hasOwnProperty(_2108)) {
-                    _2107[_2108] = _93[_2108];
+            var _2111 = {};
+            for (var _2112 in _93) {
+                if (_93.hasOwnProperty(_2112)) {
+                    _2111[_2112] = _93[_2112];
                 };
             };
-            _2107.edit = SlamData_App_Notebook_Block_Types.Eval;
-            _2107.content = (SlamData_Helpers.getDOMNode(_94.editor)).value;
-            return _2107;
+            _2111.edit = SlamData_App_Notebook_Block_Types.Eval;
+            _2111.content = (SlamData_Helpers.getDOMNode(_94.editor)).value;
+            return _2111;
         })()))();
     };
     var edit = function __do() {
         var _95 = React.readState();
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-            var _2110 = {};
-            for (var _2111 in _95) {
-                if (_95.hasOwnProperty(_2111)) {
-                    _2110[_2111] = _95[_2111];
+            var _2114 = {};
+            for (var _2115 in _95) {
+                if (_95.hasOwnProperty(_2115)) {
+                    _2114[_2115] = _95[_2115];
                 };
             };
-            _2110.edit = SlamData_App_Notebook_Block_Types.Edit;
-            _2110.content = _95.content;
-            return _2110;
+            _2114.edit = SlamData_App_Notebook_Block_Types.Edit;
+            _2114.content = _95.content;
+            return _2114;
         })()))();
     };
     var blockRow = function (styles) {
@@ -67005,8 +67009,8 @@ PS.SlamData_App_Notebook_Block_SQL = (function () {
                 content: state.content, 
                 location: state.location
             });
-            var go = function (_546) {
-                return Prelude["=="](SlamData_App_Notebook_Block_Types.eqBlockID({}))((_546.values[0]).ident)(props.ident) ? rec : _546;
+            var go = function (_547) {
+                return Prelude["=="](SlamData_App_Notebook_Block_Types.eqBlockID({}))((_547.values[0]).ident)(props.ident) ? rec : _547;
             };
             var blocks = SlamData_Helpers.localGet(SlamData_App_Notebook_Block_Types.readEvalSQLSpec({}))(SlamData_Helpers.EvalSQLBlocks);
             var blocks$prime = Prelude["<$>"](Data_Array.functorArray({}))(go)(blocks);
@@ -67016,7 +67020,7 @@ PS.SlamData_App_Notebook_Block_SQL = (function () {
     };
     var parseRaw = Prelude[">>>"](Prelude.semigroupoidArr({}))(Data_String.trim)(Data_String.split("\\n"));
     var pagingLimit = 20;
-    var newID = function (_545) {
+    var newID = function (_546) {
         return SlamData_App_Notebook_Block_Types.BlockID(Data_UUID.runUUID(Data_UUID.v4));
     };
     var loading = SlamData_App_Notebook_Block_Types.Loading;
@@ -67026,14 +67030,14 @@ PS.SlamData_App_Notebook_Block_SQL = (function () {
     var format = function (str) {
         return React_DOM["li'"]([ React_DOM["span'"]([ React_DOM.text(str) ]) ]);
     };
-    var essLocation = function (_544) {
-        return (_544.values[0]).location;
+    var essLocation = function (_545) {
+        return (_545.values[0]).location;
     };
-    var essIdent = function (_542) {
-        return (_542.values[0]).ident;
+    var essIdent = function (_543) {
+        return (_543.values[0]).ident;
     };
-    var essContent = function (_543) {
-        return (_543.values[0]).content;
+    var essContent = function (_544) {
+        return (_544.values[0]).content;
     };
     var getLocation = function (props) {
         return function (content) {
@@ -67047,28 +67051,28 @@ PS.SlamData_App_Notebook_Block_SQL = (function () {
     var error = function (str) {
         return SlamData_App_Notebook_Block_Types.Error(str);
     };
-    var actualContent = function (_541) {
-        if (_541.ctor === "SlamData.App.Notebook.Block.Types.Loading") {
+    var actualContent = function (_542) {
+        if (_542.ctor === "SlamData.App.Notebook.Block.Types.Loading") {
             return SlamData_Helpers.toUI(SlamData_Helpers.iconFA({}))(SlamData_Helpers.loadingIcon({}));
         };
-        if (_541.ctor === "SlamData.App.Notebook.Block.Types.Error") {
-            return React_DOM["span'"]([ React_DOM.text(_541.values[0]) ]);
+        if (_542.ctor === "SlamData.App.Notebook.Block.Types.Error") {
+            return React_DOM["span'"]([ React_DOM.text(_542.values[0]) ]);
         };
-        if (_541.ctor === "SlamData.App.Notebook.Block.Types.Successful") {
-            return React_DOM["ul'"](Prelude["<$>"](Data_Array.functorArray({}))(format)(parseRaw(_541.values[0])));
+        if (_542.ctor === "SlamData.App.Notebook.Block.Types.Successful") {
+            return React_DOM["ul'"](Prelude["<$>"](Data_Array.functorArray({}))(format)(parseRaw(_542.values[0])));
         };
         throw "Failed pattern match";
     };
     var evalSQL = function (ed) {
         return function (content) {
             return React.mkUI((function () {
-                var _2126 = {};
-                for (var _2127 in React.spec) {
-                    if (React.spec.hasOwnProperty(_2127)) {
-                        _2126[_2127] = React.spec[_2127];
+                var _2130 = {};
+                for (var _2131 in React.spec) {
+                    if (React.spec.hasOwnProperty(_2131)) {
+                        _2130[_2131] = React.spec[_2131];
                     };
                 };
-                _2126.getInitialState = function __do() {
+                _2130.getInitialState = function __do() {
                     var _96 = React.getProps();
                     return (function () {
                         var blocks = SlamData_Helpers.localGet(SlamData_App_Notebook_Block_Types.readEvalSQLSpec({}))(SlamData_Helpers.EvalSQLBlocks);
@@ -67080,8 +67084,8 @@ PS.SlamData_App_Notebook_Block_SQL = (function () {
                         });
                     })()();
                 };
-                _2126.componentWillMount = cwm;
-                return _2126;
+                _2130.componentWillMount = cwm;
+                return _2130;
             })())(function __do() {
                 var _98 = React.getProps();
                 var _97 = React.readState();
@@ -67110,14 +67114,14 @@ PS.SlamData_App_Notebook_Block_Visual = (function () {
     var SlamData_App_Notebook_Block_Common = PS.SlamData_App_Notebook_Block_Common;
     var React_DOM = PS.React_DOM;
     function cdm() {  var defaultJson = '{"dataSrc": "", "field": "", "visualType": ""}';  try {    var content = JSON.parse(getOrElse_(this.props.content)(defaultJson));  } catch (e) {    var content = JSON.parse(defaultJson);  }  var opts = newOptions(this.props.ident)(content.field)(parseVisualType(content.visualType));  var chart = generate_(opts)();  var data = [];  oboe(this.props.serverURI + '/data/fs/' + content.dataSrc)    .node('!', function(json) {      data.push(json[content.field]);      chart.load({columns: [[content.field].concat(data)]});    });};
-    var parseVisualType = function (_547) {
-        if (_547 === "bar") {
+    var parseVisualType = function (_548) {
+        if (_548 === "bar") {
             return Graphics_C3.Bar;
         };
-        if (_547 === "line") {
+        if (_548 === "line") {
             return Graphics_C3.Line;
         };
-        if (_547 === "pie") {
+        if (_548 === "pie") {
             return Graphics_C3.Pie;
         };
         return Graphics_C3.Bar;
@@ -67125,25 +67129,25 @@ PS.SlamData_App_Notebook_Block_Visual = (function () {
     var newOptions = function (ident) {
         return function (name) {
             return function (ty) {
-                var _2133 = {};
-                for (var _2134 in Graphics_C3.options) {
-                    if (Graphics_C3.options.hasOwnProperty(_2134)) {
-                        _2133[_2134] = Graphics_C3.options[_2134];
+                var _2137 = {};
+                for (var _2138 in Graphics_C3.options) {
+                    if (Graphics_C3.options.hasOwnProperty(_2138)) {
+                        _2137[_2138] = Graphics_C3.options[_2138];
                     };
                 };
-                _2133.bindto = "#chart-" + Prelude.show(SlamData_App_Notebook_Block_Types.showBlockID({}))(ident);
-                _2133.c3Data = [ (function () {
-                    var _2131 = {};
-                    for (var _2132 in Graphics_C3.c3Data) {
-                        if (Graphics_C3.c3Data.hasOwnProperty(_2132)) {
-                            _2131[_2132] = Graphics_C3.c3Data[_2132];
+                _2137.bindto = "#chart-" + Prelude.show(SlamData_App_Notebook_Block_Types.showBlockID({}))(ident);
+                _2137.c3Data = [ (function () {
+                    var _2135 = {};
+                    for (var _2136 in Graphics_C3.c3Data) {
+                        if (Graphics_C3.c3Data.hasOwnProperty(_2136)) {
+                            _2135[_2136] = Graphics_C3.c3Data[_2136];
                         };
                     };
-                    _2131.name = name;
-                    _2131.c3Type = ty;
-                    return _2131;
+                    _2135.name = name;
+                    _2135.c3Type = ty;
+                    return _2135;
                 })() ];
-                return _2133;
+                return _2137;
             };
         };
     };
@@ -67151,14 +67155,14 @@ PS.SlamData_App_Notebook_Block_Visual = (function () {
     var generate_ = Graphics_C3.generate;
     var evalVisual = function (content) {
         return React.mkUI((function () {
-            var _2135 = {};
-            for (var _2136 in React.spec) {
-                if (React.spec.hasOwnProperty(_2136)) {
-                    _2135[_2136] = React.spec[_2136];
+            var _2139 = {};
+            for (var _2140 in React.spec) {
+                if (React.spec.hasOwnProperty(_2140)) {
+                    _2139[_2140] = React.spec[_2140];
                 };
             };
-            _2135.componentDidMount = cdm;
-            return _2135;
+            _2139.componentDidMount = cdm;
+            return _2139;
         })())(function __do() {
             var _100 = React.getProps();
             return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_App_Notebook_Block_Common.blockRow("block-content")([  ])([ React_DOM.div([ React_DOM.className("evaled-block") ])([ React_DOM.div([ React_DOM.idProp("chart-" + Prelude.show(SlamData_App_Notebook_Block_Types.showBlockID({}))(_100.ident)) ])([  ]) ]) ]))();
@@ -67189,14 +67193,14 @@ PS.SlamData_App_Notebook_Block = (function () {
     function scu(p, s) {  return (!eqEditor(this.state.edit)(s.edit)) ||         (!isEval(s.edit) && this.state.content !== s.content) ||         (!eqBlockID(this.props.ident)(p.ident));};
     function state2Content(state) {  return state.content;};
     var toolbar = (function () {
-        var specificButtons = function (_552) {
-            if (_552.ctor === "SlamData.App.Notebook.Block.Types.Markdown") {
+        var specificButtons = function (_553) {
+            if (_553.ctor === "SlamData.App.Notebook.Block.Types.Markdown") {
                 return [  ];
             };
-            if (_552.ctor === "SlamData.App.Notebook.Block.Types.SQL") {
+            if (_553.ctor === "SlamData.App.Notebook.Block.Types.SQL") {
                 return [  ];
             };
-            if (_552.ctor === "SlamData.App.Notebook.Block.Types.Visual") {
+            if (_553.ctor === "SlamData.App.Notebook.Block.Types.Visual") {
                 return [  ];
             };
             throw "Failed pattern match";
@@ -67210,8 +67214,8 @@ PS.SlamData_App_Notebook_Block = (function () {
             }) ]) ]))();
         });
     })();
-    var isEval = function (_548) {
-        if (_548.ctor === "SlamData.App.Notebook.Block.Types.Eval") {
+    var isEval = function (_549) {
+        if (_549.ctor === "SlamData.App.Notebook.Block.Types.Eval") {
             return true;
         };
         return false;
@@ -67246,8 +67250,8 @@ PS.SlamData_App_Notebook_Block = (function () {
                 content: Data_Maybe.Just(state2Content(state)), 
                 ident: props.ident
             });
-            var go = function (_551) {
-                return Prelude["=="](SlamData_App_Notebook_Block_Types.eqBlockID({}))((_551.values[0]).ident)(props.ident) ? rec : SlamData_App_Notebook_Block_Types.BlockSpec(_551.values[0]);
+            var go = function (_552) {
+                return Prelude["=="](SlamData_App_Notebook_Block_Types.eqBlockID({}))((_552.values[0]).ident)(props.ident) ? rec : SlamData_App_Notebook_Block_Types.BlockSpec(_552.values[0]);
             };
             var blocks = SlamData_Helpers.localGet(SlamData_App_Notebook_Block_Types.readBlockSpec({}))(SlamData_Helpers.Blocks);
             var blocks$prime = Prelude["<$>"](Data_Array.functorArray({}))(go)(blocks);
@@ -67258,14 +67262,14 @@ PS.SlamData_App_Notebook_Block = (function () {
         var _104 = React.getProps();
         var _103 = React.readState();
         Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-            var _2145 = {};
-            for (var _2146 in _103) {
-                if (_103.hasOwnProperty(_2146)) {
-                    _2145[_2146] = _103[_2146];
+            var _2149 = {};
+            for (var _2150 in _103) {
+                if (_103.hasOwnProperty(_2150)) {
+                    _2149[_2150] = _103[_2150];
                 };
             };
-            _2145.content = SlamData_Helpers.getOrElse(_104.content)("");
-            return _2145;
+            _2149.content = SlamData_Helpers.getOrElse(_104.content)("");
+            return _2149;
         })()))();
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))({})();
     };
@@ -67282,27 +67286,27 @@ PS.SlamData_App_Notebook_Block = (function () {
             }));
         }), React_DOM.onKeyPress(handleKeyPress), React_DOM.ref("editor"), React_DOM.value(content) ])([  ]) ]) ]);
     };
-    var evalOrEdit = function (_549) {
-        return function (_550) {
-            if (_550.blockType.ctor === "SlamData.App.Notebook.Block.Types.Visual") {
+    var evalOrEdit = function (_550) {
+        return function (_551) {
+            if (_551.blockType.ctor === "SlamData.App.Notebook.Block.Types.Visual") {
                 return function (s) {
-                    return SlamData_App_Notebook_Block_Visual.evalVisual(s)(_550);
+                    return SlamData_App_Notebook_Block_Visual.evalVisual(s)(_551);
                 };
             };
-            if (_549.ctor === "SlamData.App.Notebook.Block.Types.Edit") {
+            if (_550.ctor === "SlamData.App.Notebook.Block.Types.Edit") {
                 return blockEditor;
             };
-            if (_549.ctor === "SlamData.App.Notebook.Block.Types.Eval") {
-                if (_550.blockType.ctor === "SlamData.App.Notebook.Block.Types.Markdown") {
+            if (_550.ctor === "SlamData.App.Notebook.Block.Types.Eval") {
+                if (_551.blockType.ctor === "SlamData.App.Notebook.Block.Types.Markdown") {
                     return function (s) {
                         return SlamData_App_Notebook_Block_Markdown.evalMarkdown(s)({});
                     };
                 };
             };
-            if (_549.ctor === "SlamData.App.Notebook.Block.Types.Eval") {
-                if (_550.blockType.ctor === "SlamData.App.Notebook.Block.Types.SQL") {
+            if (_550.ctor === "SlamData.App.Notebook.Block.Types.Eval") {
+                if (_551.blockType.ctor === "SlamData.App.Notebook.Block.Types.SQL") {
                     return function (s) {
-                        return SlamData_App_Notebook_Block_SQL.evalSQL(React.deferred(SlamData_App_Notebook_Block_Common.edit))(s)(_550);
+                        return SlamData_App_Notebook_Block_SQL.evalSQL(React.deferred(SlamData_App_Notebook_Block_Common.edit))(s)(_551);
                     };
                 };
             };
@@ -67310,20 +67314,20 @@ PS.SlamData_App_Notebook_Block = (function () {
         };
     };
     var block = React.mkUI((function () {
-        var _2152 = {};
-        for (var _2153 in React.spec) {
-            if (React.spec.hasOwnProperty(_2153)) {
-                _2152[_2153] = React.spec[_2153];
+        var _2156 = {};
+        for (var _2157 in React.spec) {
+            if (React.spec.hasOwnProperty(_2157)) {
+                _2156[_2157] = React.spec[_2157];
             };
         };
-        _2152.getInitialState = Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
+        _2156.getInitialState = Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
             edit: SlamData_App_Notebook_Block_Types.Edit, 
             content: ""
         });
-        _2152.componentWillUpdate = Data_Function.mkFn2(cwu);
-        _2152.componentWillMount = cwm;
-        _2152.shouldComponentUpdate = scu;
-        return _2152;
+        _2156.componentWillUpdate = Data_Function.mkFn2(cwu);
+        _2156.componentWillMount = cwm;
+        _2156.shouldComponentUpdate = scu;
+        return _2156;
     })())(function __do() {
         var _102 = React.readState();
         var _101 = React.getProps();
@@ -67368,14 +67372,14 @@ PS.SlamData_App_Notebook_Types = (function () {
     function showVisualData(vd) {  return JSON.stringify(vd);};
     var showVisualTab = function (_) {
         return {
-            show: function (_553) {
-                if (_553.ctor === "SlamData.App.Notebook.Types.DataSrcTab") {
+            show: function (_554) {
+                if (_554.ctor === "SlamData.App.Notebook.Types.DataSrcTab") {
                     return "Data Source";
                 };
-                if (_553.ctor === "SlamData.App.Notebook.Types.FieldsTab") {
+                if (_554.ctor === "SlamData.App.Notebook.Types.FieldsTab") {
                     return "Fields";
                 };
-                if (_553.ctor === "SlamData.App.Notebook.Types.VisualTypeTab") {
+                if (_554.ctor === "SlamData.App.Notebook.Types.VisualTypeTab") {
                     return "Type";
                 };
                 throw "Failed pattern match";
@@ -67384,15 +67388,15 @@ PS.SlamData_App_Notebook_Types = (function () {
     };
     var showNotebookID = function (_) {
         return {
-            show: function (_556) {
-                return Prelude.show(Data_UUID.showUUID({}))(_556.values[0]);
+            show: function (_557) {
+                return Prelude.show(Data_UUID.showUUID({}))(_557.values[0]);
             }
         };
     };
     var showNotebookSpec = function (_) {
         return {
-            show: function (_559) {
-                return "{ \"blocks\": " + Prelude.show(Prelude.showArray(Prelude.showString({})))(Prelude["<$>"](Data_Array.functorArray({}))(Prelude.show(SlamData_App_Notebook_Block_Types.showBlockID({})))((_559.values[0]).blocks)) + ", \"ident\": \"" + Prelude.show(showNotebookID({}))((_559.values[0]).ident) + "\"" + ", \"name\": \"" + (_559.values[0]).name + "\"" + "}";
+            show: function (_560) {
+                return "{ \"blocks\": " + Prelude.show(Prelude.showArray(Prelude.showString({})))(Prelude["<$>"](Data_Array.functorArray({}))(Prelude.show(SlamData_App_Notebook_Block_Types.showBlockID({})))((_560.values[0]).blocks)) + ", \"ident\": \"" + Prelude.show(showNotebookID({}))((_560.values[0]).ident) + "\"" + ", \"name\": \"" + (_560.values[0]).name + "\"" + "}";
             }
         };
     };
@@ -67413,9 +67417,9 @@ PS.SlamData_App_Notebook_Types = (function () {
     };
     var eqNotebookID = function (_) {
         return {
-            "==": function (_554) {
-                return function (_555) {
-                    return Prelude["=="](Data_UUID.eqUUID({}))(_554.values[0])(_555.values[0]);
+            "==": function (_555) {
+                return function (_556) {
+                    return Prelude["=="](Data_UUID.eqUUID({}))(_555.values[0])(_556.values[0]);
                 };
             }, 
             "/=": function (b) {
@@ -67427,9 +67431,9 @@ PS.SlamData_App_Notebook_Types = (function () {
     };
     var eqNotebookSpec = function (_) {
         return {
-            "==": function (_557) {
-                return function (_558) {
-                    return (_557.values[0]).name === (_558.values[0]).name && Prelude["=="](Prelude.eqArray(SlamData_App_Notebook_Block_Types.eqBlockID({})))((_557.values[0]).blocks)((_558.values[0]).blocks) && Prelude["=="](eqNotebookID({}))((_557.values[0]).ident)((_558.values[0]).ident);
+            "==": function (_558) {
+                return function (_559) {
+                    return (_558.values[0]).name === (_559.values[0]).name && Prelude["=="](Prelude.eqArray(SlamData_App_Notebook_Block_Types.eqBlockID({})))((_558.values[0]).blocks)((_559.values[0]).blocks) && Prelude["=="](eqNotebookID({}))((_558.values[0]).ident)((_559.values[0]).ident);
                 };
             }, 
             "/=": function (ns) {
@@ -67470,48 +67474,48 @@ PS.SlamData_App_Panel = (function () {
         return function __do() {
             var _111 = React.readState();
             return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-                var _2173 = {};
-                for (var _2174 in _111) {
-                    if (_111.hasOwnProperty(_2174)) {
-                        _2173[_2174] = _111[_2174];
+                var _2177 = {};
+                for (var _2178 in _111) {
+                    if (_111.hasOwnProperty(_2178)) {
+                        _2177[_2178] = _111[_2178];
                     };
                 };
-                _2173.activeTab = Data_Maybe.Just(ident);
-                return _2173;
+                _2177.activeTab = Data_Maybe.Just(ident);
+                return _2177;
             })()))();
         };
     };
-    var injectMakeActive = function (_564) {
-        return function (_565) {
+    var injectMakeActive = function (_565) {
+        return function (_566) {
             return SlamData_App_Panel_Tab.makeTabName({
-                name: _565.name, 
-                external: _565.external, 
-                internal: _565.internal, 
-                content: _565.content, 
-                active: Prelude["=="](Data_Maybe.eqMaybe(Data_UUID.eqUUID({})))(_564)(Data_Maybe.Just(_565.ident)), 
-                ident: _565.ident, 
-                activate: React.deferred(makeActive(_565.ident))
+                name: _566.name, 
+                external: _566.external, 
+                internal: _566.internal, 
+                content: _566.content, 
+                active: Prelude["=="](Data_Maybe.eqMaybe(Data_UUID.eqUUID({})))(_565)(Data_Maybe.Just(_566.ident)), 
+                ident: _566.ident, 
+                activate: React.deferred(makeActive(_566.ident))
             });
         };
     };
-    var _name = function (_560) {
-        return _560.name;
+    var _name = function (_561) {
+        return _561.name;
     };
-    var _ident = function (_563) {
-        return _563.ident;
+    var _ident = function (_564) {
+        return _564.ident;
     };
     var panel$prime = React.mkUI((function () {
-        var _2186 = {};
-        for (var _2187 in React.spec) {
-            if (React.spec.hasOwnProperty(_2187)) {
-                _2186[_2187] = React.spec[_2187];
+        var _2190 = {};
+        for (var _2191 in React.spec) {
+            if (React.spec.hasOwnProperty(_2191)) {
+                _2190[_2191] = React.spec[_2191];
             };
         };
-        _2186.getInitialState = Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
+        _2190.getInitialState = Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
             tabs: [  ], 
             activeTab: Data_Maybe.Nothing
         });
-        return _2186;
+        return _2190;
     })())(function __do() {
         var _110 = React.getProps();
         var _109 = React.readState();
@@ -67529,11 +67533,11 @@ PS.SlamData_App_Panel = (function () {
             tabs: tabs
         });
     };
-    var _content = function (_561) {
-        return _561.content;
+    var _content = function (_562) {
+        return _562.content;
     };
-    var _active = function (_562) {
-        return _562.active;
+    var _active = function (_563) {
+        return _563.active;
     };
     return {
         panel: panel
@@ -67580,12 +67584,12 @@ PS.SlamData_App_FileSystem = (function () {
     var SlamData_App_Panel = PS.SlamData_App_Panel;
     var Data_Array = PS.Data_Array;
     var Data_UUID = PS.Data_UUID;
-    var ft2UI = function (_566) {
-        if (_566.type === "directory") {
-            return React_DOM["ul'"]([ SlamData_Helpers.toUI(SlamData_Helpers.iconFA({}))(SlamData_Helpers.dirOpenIcon({})), React_DOM.text(_566.name) ]);
+    var ft2UI = function (_567) {
+        if (_567.type === "directory") {
+            return React_DOM["ul'"]([ SlamData_Helpers.toUI(SlamData_Helpers.iconFA({}))(SlamData_Helpers.dirOpenIcon({})), React_DOM.text(_567.name) ]);
         };
-        if (_566.type === "file") {
-            return React_DOM["li'"]([ SlamData_Helpers.toUI(SlamData_Helpers.iconFA({}))(SlamData_Helpers.fileIcon({})), React_DOM.text(_566.name) ]);
+        if (_567.type === "file") {
+            return React_DOM["li'"]([ SlamData_Helpers.toUI(SlamData_Helpers.iconFA({}))(SlamData_Helpers.fileIcon({})), React_DOM.text(_567.name) ]);
         };
         throw "Failed pattern match";
     };
@@ -67632,7 +67636,7 @@ PS.SlamData_App_Notebook = (function () {
     var SlamData_App_Notebook_Settings = PS.SlamData_App_Notebook_Settings;
     function scu(p, s) {  return s.visualState.visible ||         (this.state.visualState.visible !== s.visualState.visible) ||         (!eqNotebooks(this.state.notebooks)(s.notebooks)) ||         (!eqActive(this.state.active)(s.active)) ||         (this.props.settings !== p.settings);};
     function targetValue(e) {  return function(ty) {    return {      dataSrc: e.target.selectedOptions[0].parentNode.label,      field: e.target.value,      visualType: showVisualType_(ty)    }  }};
-    function fieldswm(that) {    that.state.visualState.fields.forEach(function(f0) {      oboe(that.props.serverURI +'/data/fs/' + f0.dataSrc + '?limit=1')      .done(function(json) {        var state = that.state;        state.visualState.fields.forEach(function(f1, i) {          if (f1.dataSrc === f0.dataSrc) {            state.visualState.fields[i].allFields = Object.keys(json);          }        });        if (that.isMounted()) {          that.setState(state);        }      });    });};
+    function fieldswm(that) {    that.state.visualState.fields.forEach(function(f0) {      oboe(serverURI_(this.props.sdConfig) +'/data/fs/' + f0.dataSrc + '?limit=1')      .done(function(json) {        var state = that.state;        state.visualState.fields.forEach(function(f1, i) {          if (f1.dataSrc === f0.dataSrc) {            state.visualState.fields[i].allFields = Object.keys(json);          }        });        if (that.isMounted()) {          that.setState(state);        }      });    });};
     function bind(that) {  return function(f) {    return f.bind(that);  }};
     function modifyDataSrc(that) {  return function(bool) {    return function(str) {      return function() {        var state = that.state;        var vState = dataSrcUpdate(bool)(str)(state.visualState);        state.visualState = vState;        that.replaceState(state);        fieldswm(that);      }    }  }};
     function createVisualBlock(that) {  return function(ty) {    return function(ident) {      return function(content) {        var event = createBlock(ty)(ident)(content)();        var state = event();        state.visualState = initialState.visualState;        that.replaceState(state);        return function() { return state; };      }    }  }};
@@ -67654,6 +67658,7 @@ PS.SlamData_App_Notebook = (function () {
     var showVisualType_ = function (ty) {
         return Prelude.show(Graphics_C3.showC3Type({}))(ty);
     };
+    var serverURI_ = SlamData_Helpers.serverURI;
     var optionify = function (vsf) {
         return React_DOM.optgroup([ React_DOM.labelProp(vsf.dataSrc) ])(Prelude["<$>"](Data_Array.functorArray({}))(function (s) {
             return React_DOM.option([ React_DOM.value(s) ])([ React_DOM.text(s) ]);
@@ -67664,24 +67669,24 @@ PS.SlamData_App_Notebook = (function () {
             var _120 = React.readState();
             return (function () {
                 var visualState$prime = (function () {
-                    var _2201 = {};
-                    for (var _2202 in _120.visualState) {
-                        if (_120.visualState.hasOwnProperty(_2202)) {
-                            _2201[_2202] = _120.visualState[_2202];
+                    var _2205 = {};
+                    for (var _2206 in _120.visualState) {
+                        if (_120.visualState.hasOwnProperty(_2206)) {
+                            _2205[_2206] = _120.visualState[_2206];
                         };
                     };
-                    _2201.visible = vis;
-                    return _2201;
+                    _2205.visible = vis;
+                    return _2205;
                 })();
                 return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-                    var _2203 = {};
-                    for (var _2204 in _120) {
-                        if (_120.hasOwnProperty(_2204)) {
-                            _2203[_2204] = _120[_2204];
+                    var _2207 = {};
+                    for (var _2208 in _120) {
+                        if (_120.hasOwnProperty(_2208)) {
+                            _2207[_2208] = _120[_2208];
                         };
                     };
-                    _2203.visualState = visualState$prime;
-                    return _2203;
+                    _2207.visualState = visualState$prime;
+                    return _2207;
                 })()));
             })()();
         };
@@ -67703,25 +67708,25 @@ PS.SlamData_App_Notebook = (function () {
             visible: false
         }
     };
-    var getNotebookID = function (_595) {
-        return _595.values[0];
+    var getNotebookID = function (_596) {
+        return _596.values[0];
     };
-    var makeNotebook = function (_579) {
-        return function (_580) {
-            return function (_581) {
-                return function (_582) {
-                    return function (_583) {
-                        return function (_584) {
-                            return React_DOM.dd([ React_DOM.className("tab" + maybeActive((_584.values[0]).ident)(_579)) ])([ React_DOM.a([ React_DOM.href("#" + SlamData_App_Panel_Tab.tabize(getNotebookID((_584.values[0]).ident))), React_DOM.onClick(function (e) {
+    var makeNotebook = function (_580) {
+        return function (_581) {
+            return function (_582) {
+                return function (_583) {
+                    return function (_584) {
+                        return function (_585) {
+                            return React_DOM.dd([ React_DOM.className("tab" + maybeActive((_585.values[0]).ident)(_580)) ])([ React_DOM.a([ React_DOM.href("#" + SlamData_App_Panel_Tab.tabize(getNotebookID((_585.values[0]).ident))), React_DOM.onClick(function (e) {
                                 return function __do() {
                                     Prelude.pure(Control_Monad_Eff.applicativeEff({}))(e.preventDefault({}))();
-                                    return _582((_584.values[0]).ident)();
+                                    return _583((_585.values[0]).ident)();
                                 };
-                            }) ])([ React_DOM.text((_584.values[0]).name), React_DOM.i([ React_DOM.className("fa fa-times"), React_DOM.onClick(function (e) {
+                            }) ])([ React_DOM.text((_585.values[0]).name), React_DOM.i([ React_DOM.className("fa fa-times"), React_DOM.onClick(function (e) {
                                 return function __do() {
                                     Prelude.pure(Control_Monad_Eff.applicativeEff({}))(e.stopPropagation({}))();
                                     Prelude.pure(Control_Monad_Eff.applicativeEff({}))(e.preventDefault({}))();
-                                    return _581();
+                                    return _582();
                                 };
                             }) ])([  ]) ]) ]);
                         };
@@ -67747,7 +67752,7 @@ PS.SlamData_App_Notebook = (function () {
             return React_DOM["li'"]([ React_DOM.text(props.dataSrc), React_DOM["ul'"](Prelude["<$>"](Data_Array.functorArray({}))(field2UI(modify)(props.dataSrc)(props.selectedFields))(props.allFields)) ]);
         };
     };
-    var externalActions = function (_590) {
+    var externalActions = function (_591) {
         return React_DOM.ul([ React_DOM.className("button-group") ])([ SlamData_Helpers.actionButton(SlamData_Helpers.iconFA({}))({
             tooltip: "Save", 
             icon: SlamData_Helpers.saveIcon({}), 
@@ -67772,28 +67777,28 @@ PS.SlamData_App_Notebook = (function () {
         return function __do() {
             var _128 = React.readState();
             return (function () {
-                var o = SlamData_Helpers.partition(function (_571) {
-                    return Prelude["=="](SlamData_App_Notebook_Types.eqNotebookID({}))((_571.values[0]).ident)(ident);
+                var o = SlamData_Helpers.partition(function (_572) {
+                    return Prelude["=="](SlamData_App_Notebook_Types.eqNotebookID({}))((_572.values[0]).ident)(ident);
                 })(_128.notebooks);
                 var blocks = SlamData_Helpers.localGet(SlamData_App_Notebook_Block_Types.readBlockSpec({}))(SlamData_Helpers.Blocks);
                 return function __do() {
                     var _127 = Prelude.pure(Control_Monad_Eff.applicativeEff({}))(Data_Maybe.fromMaybe(blocks)(Prelude[">>="](Data_Maybe.bindMaybe({}))(Data_Array.head(o.fst))(function (_126) {
-                        return Prelude.pure(Data_Maybe.applicativeMaybe({}))(Data_Array.filter(function (_572) {
-                            return Data_Foldable.notElem(SlamData_App_Notebook_Block_Types.eqBlockID({}))(Data_Foldable.foldableArray({}))((_572.values[0]).ident)((_126.values[0]).blocks);
+                        return Prelude.pure(Data_Maybe.applicativeMaybe({}))(Data_Array.filter(function (_573) {
+                            return Data_Foldable.notElem(SlamData_App_Notebook_Block_Types.eqBlockID({}))(Data_Foldable.foldableArray({}))((_573.values[0]).ident)((_126.values[0]).blocks);
                         })(blocks));
                     })))();
                     Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_Helpers.localSet(Prelude.showArray(SlamData_App_Notebook_Block_Types.showBlockSpec({})))(SlamData_Helpers.Blocks)(_127))();
                     Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_Helpers.localSet(Prelude.showArray(SlamData_App_Notebook_Types.showNotebookSpec({})))(SlamData_Helpers.Notebooks)(o.snd))();
                     return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-                        var _2224 = {};
-                        for (var _2225 in _128) {
-                            if (_128.hasOwnProperty(_2225)) {
-                                _2224[_2225] = _128[_2225];
+                        var _2228 = {};
+                        for (var _2229 in _128) {
+                            if (_128.hasOwnProperty(_2229)) {
+                                _2228[_2229] = _128[_2229];
                             };
                         };
-                        _2224.notebooks = o.snd;
-                        _2224.active = Data_Maybe.Nothing;
-                        return _2224;
+                        _2228.notebooks = o.snd;
+                        _2228.active = Data_Maybe.Nothing;
+                        return _2228;
                     })()))();
                 };
             })()();
@@ -67803,19 +67808,19 @@ PS.SlamData_App_Notebook = (function () {
         return function __do() {
             var _124 = React.readState();
             return (function () {
-                var blocks$prime = Data_Array.filter(function (_570) {
-                    return Prelude["/="](SlamData_App_Notebook_Block_Types.eqBlockID({}))((_570.values[0]).ident)(ident);
+                var blocks$prime = Data_Array.filter(function (_571) {
+                    return Prelude["/="](SlamData_App_Notebook_Block_Types.eqBlockID({}))((_571.values[0]).ident)(ident);
                 })(SlamData_Helpers.localGet(SlamData_App_Notebook_Block_Types.readBlockSpec({}))(SlamData_Helpers.Blocks));
-                var go = function (_597) {
+                var go = function (_598) {
                     return SlamData_App_Notebook_Types.NotebookSpec((function () {
-                        var _2230 = {};
-                        for (var _2231 in _597.values[0]) {
-                            if ((_597.values[0]).hasOwnProperty(_2231)) {
-                                _2230[_2231] = _597.values[0][_2231];
+                        var _2234 = {};
+                        for (var _2235 in _598.values[0]) {
+                            if ((_598.values[0]).hasOwnProperty(_2235)) {
+                                _2234[_2235] = _598.values[0][_2235];
                             };
                         };
-                        _2230.blocks = Data_Array["delete"](SlamData_App_Notebook_Block_Types.eqBlockID({}))(ident)((_597.values[0]).blocks);
-                        return _2230;
+                        _2234.blocks = Data_Array["delete"](SlamData_App_Notebook_Block_Types.eqBlockID({}))(ident)((_598.values[0]).blocks);
+                        return _2234;
                     })());
                 };
                 var notebooks$prime = Prelude["<$>"](Data_Array.functorArray({}))(go)(_124.notebooks);
@@ -67823,14 +67828,14 @@ PS.SlamData_App_Notebook = (function () {
                     Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_Helpers.localSet(Prelude.showArray(SlamData_App_Notebook_Block_Types.showBlockSpec({})))(SlamData_Helpers.Blocks)(blocks$prime))();
                     Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_Helpers.localSet(Prelude.showArray(SlamData_App_Notebook_Types.showNotebookSpec({})))(SlamData_Helpers.Notebooks)(notebooks$prime))();
                     return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-                        var _2233 = {};
-                        for (var _2234 in _124) {
-                            if (_124.hasOwnProperty(_2234)) {
-                                _2233[_2234] = _124[_2234];
+                        var _2237 = {};
+                        for (var _2238 in _124) {
+                            if (_124.hasOwnProperty(_2238)) {
+                                _2237[_2238] = _124[_2238];
                             };
                         };
-                        _2233.notebooks = notebooks$prime;
-                        return _2233;
+                        _2237.notebooks = notebooks$prime;
+                        return _2237;
                     })()))();
                 };
             })()();
@@ -67844,14 +67849,14 @@ PS.SlamData_App_Notebook = (function () {
                 return function __do() {
                     Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_Helpers.localSet(Prelude.showArray(SlamData_App_Notebook_Types.showNotebookSpec({})))(SlamData_Helpers.Notebooks)(notebooks))();
                     return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-                        var _2236 = {};
-                        for (var _2237 in _122) {
-                            if (_122.hasOwnProperty(_2237)) {
-                                _2236[_2237] = _122[_2237];
+                        var _2240 = {};
+                        for (var _2241 in _122) {
+                            if (_122.hasOwnProperty(_2241)) {
+                                _2240[_2241] = _122[_2241];
                             };
                         };
-                        _2236.notebooks = Prelude["<$>"](Data_Array.functorArray({}))(f)(_122.notebooks);
-                        return _2236;
+                        _2240.notebooks = Prelude["<$>"](Data_Array.functorArray({}))(f)(_122.notebooks);
+                        return _2240;
                     })()))();
                 };
             })()();
@@ -67869,15 +67874,15 @@ PS.SlamData_App_Notebook = (function () {
             return function __do() {
                 Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_Helpers.localSet(Prelude.showArray(SlamData_App_Notebook_Types.showNotebookSpec({})))(SlamData_Helpers.Notebooks)(notebooks$prime))();
                 return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-                    var _2239 = {};
-                    for (var _2240 in _125) {
-                        if (_125.hasOwnProperty(_2240)) {
-                            _2239[_2240] = _125[_2240];
+                    var _2243 = {};
+                    for (var _2244 in _125) {
+                        if (_125.hasOwnProperty(_2244)) {
+                            _2243[_2244] = _125[_2244];
                         };
                     };
-                    _2239.notebooks = notebooks$prime;
-                    _2239.active = Data_Maybe.Just(i);
-                    return _2239;
+                    _2243.notebooks = notebooks$prime;
+                    _2243.active = Data_Maybe.Just(i);
+                    return _2243;
                 })()))();
             };
         })()();
@@ -67895,31 +67900,31 @@ PS.SlamData_App_Notebook = (function () {
                             ident: i
                         });
                         var blocks$prime = Data_Array.snoc(SlamData_Helpers.localGet(SlamData_App_Notebook_Block_Types.readBlockSpec({}))(SlamData_Helpers.Blocks))(block);
-                        var go = function (_596) {
-                            return Prelude["=="](SlamData_App_Notebook_Types.eqNotebookID({}))((_596.values[0]).ident)(ident) ? SlamData_App_Notebook_Types.NotebookSpec((function () {
-    var _2243 = {};
-    for (var _2244 in _596.values[0]) {
-        if ((_596.values[0]).hasOwnProperty(_2244)) {
-            _2243[_2244] = _596.values[0][_2244];
+                        var go = function (_597) {
+                            return Prelude["=="](SlamData_App_Notebook_Types.eqNotebookID({}))((_597.values[0]).ident)(ident) ? SlamData_App_Notebook_Types.NotebookSpec((function () {
+    var _2247 = {};
+    for (var _2248 in _597.values[0]) {
+        if ((_597.values[0]).hasOwnProperty(_2248)) {
+            _2247[_2248] = _597.values[0][_2248];
         };
     };
-    _2243.blocks = Data_Array.snoc((_596.values[0]).blocks)(i);
-    return _2243;
-})()) : SlamData_App_Notebook_Types.NotebookSpec(_596.values[0]);
+    _2247.blocks = Data_Array.snoc((_597.values[0]).blocks)(i);
+    return _2247;
+})()) : SlamData_App_Notebook_Types.NotebookSpec(_597.values[0]);
                         };
                         var notebooks$prime = Prelude["<$>"](Data_Array.functorArray({}))(go)(_123.notebooks);
                         return function __do() {
                             Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_Helpers.localSet(Prelude.showArray(SlamData_App_Notebook_Block_Types.showBlockSpec({})))(SlamData_Helpers.Blocks)(blocks$prime))();
                             Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_Helpers.localSet(Prelude.showArray(SlamData_App_Notebook_Types.showNotebookSpec({})))(SlamData_Helpers.Notebooks)(notebooks$prime))();
                             return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-                                var _2246 = {};
-                                for (var _2247 in _123) {
-                                    if (_123.hasOwnProperty(_2247)) {
-                                        _2246[_2247] = _123[_2247];
+                                var _2250 = {};
+                                for (var _2251 in _123) {
+                                    if (_123.hasOwnProperty(_2251)) {
+                                        _2250[_2251] = _123[_2251];
                                     };
                                 };
-                                _2246.notebooks = notebooks$prime;
-                                return _2246;
+                                _2250.notebooks = notebooks$prime;
+                                return _2250;
                             })()))();
                         };
                     })()();
@@ -67927,19 +67932,19 @@ PS.SlamData_App_Notebook = (function () {
             };
         };
     };
-    var internalActions = function (_591) {
+    var internalActions = function (_592) {
         return React_DOM.ul([ React_DOM.className("button-group") ])([ SlamData_Helpers.actionButton(SlamData_Helpers.iconFA({}))({
             tooltip: Prelude.show(SlamData_App_Notebook_Block_Types.showBlockType({}))(SlamData_App_Notebook_Block_Types.Markdown), 
             icon: SlamData_Helpers.markdownIcon({}), 
-            click: createBlock(SlamData_App_Notebook_Block_Types.Markdown)(_591.notebook.ident)(Data_Maybe.Nothing)
+            click: createBlock(SlamData_App_Notebook_Block_Types.Markdown)(_592.notebook.ident)(Data_Maybe.Nothing)
         }), SlamData_Helpers.actionButton(SlamData_Helpers.iconFA({}))({
             tooltip: Prelude.show(SlamData_App_Notebook_Block_Types.showBlockType({}))(SlamData_App_Notebook_Block_Types.SQL), 
             icon: SlamData_Helpers.sqlIcon({}), 
-            click: createBlock(SlamData_App_Notebook_Block_Types.SQL)(_591.notebook.ident)(Data_Maybe.Nothing)
+            click: createBlock(SlamData_App_Notebook_Block_Types.SQL)(_592.notebook.ident)(Data_Maybe.Nothing)
         }), SlamData_Helpers.actionButton(SlamData_Helpers.iconFA({}))({
             tooltip: Prelude.show(SlamData_App_Notebook_Block_Types.showBlockType({}))(SlamData_App_Notebook_Block_Types.Visual), 
             icon: SlamData_Helpers.visualIcon({}), 
-            click: _591.visibility(true)
+            click: _592.visibility(true)
         }) ]);
     };
     var changeVisual = function (ty) {
@@ -67947,56 +67952,56 @@ PS.SlamData_App_Notebook = (function () {
             var _117 = React.readState();
             return (function () {
                 var vState$prime = (function () {
-                    var _2252 = {};
-                    for (var _2253 in _117.visualState) {
-                        if (_117.visualState.hasOwnProperty(_2253)) {
-                            _2252[_2253] = _117.visualState[_2253];
+                    var _2256 = {};
+                    for (var _2257 in _117.visualState) {
+                        if (_117.visualState.hasOwnProperty(_2257)) {
+                            _2256[_2257] = _117.visualState[_2257];
                         };
                     };
-                    _2252.visualType = ty;
-                    return _2252;
+                    _2256.visualType = ty;
+                    return _2256;
                 })();
                 return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-                    var _2254 = {};
-                    for (var _2255 in _117) {
-                        if (_117.hasOwnProperty(_2255)) {
-                            _2254[_2255] = _117[_2255];
+                    var _2258 = {};
+                    for (var _2259 in _117) {
+                        if (_117.hasOwnProperty(_2259)) {
+                            _2258[_2259] = _117[_2259];
                         };
                     };
-                    _2254.visualState = vState$prime;
-                    return _2254;
+                    _2258.visualState = vState$prime;
+                    return _2258;
                 })()));
             })()();
         };
     };
-    var block2UI = function (_592) {
-        return function (_593) {
-            return function (_594) {
+    var block2UI = function (_593) {
+        return function (_594) {
+            return function (_595) {
                 return SlamData_App_Notebook_Block.block({
-                    blockType: (_593.values[0]).blockType, 
-                    ident: (_593.values[0]).ident, 
-                    close: React.deferred(deleteBlock((_593.values[0]).ident)), 
-                    content: (_593.values[0]).content, 
-                    index: _594, 
-                    serverURI: _592
+                    blockType: (_594.values[0]).blockType, 
+                    ident: (_594.values[0]).ident, 
+                    close: React.deferred(deleteBlock((_594.values[0]).ident)), 
+                    content: (_594.values[0]).content, 
+                    index: _595, 
+                    serverURI: _593
                 });
             };
         };
     };
-    var makeBlocks = function (_585) {
-        return function (_586) {
-            return function (_587) {
-                return function (_588) {
-                    return function (_589) {
-                        if (Prelude["=="](SlamData_App_Notebook_Types.eqNotebookID({}))(_586)((_589.values[0]).ident)) {
-                            return React_DOM.div([ React_DOM.className("content" + maybeActive((_589.values[0]).ident)(_587)) ])([ SlamData_App_Notebook_Settings.settings({}) ]);
+    var makeBlocks = function (_586) {
+        return function (_587) {
+            return function (_588) {
+                return function (_589) {
+                    return function (_590) {
+                        if (Prelude["=="](SlamData_App_Notebook_Types.eqNotebookID({}))(_587)((_590.values[0]).ident)) {
+                            return React_DOM.div([ React_DOM.className("content" + maybeActive((_590.values[0]).ident)(_588)) ])([ SlamData_App_Notebook_Settings.settings({}) ]);
                         };
-                        return React_DOM.div([ React_DOM.className("content" + maybeActive((_589.values[0]).ident)(_587)) ])([ React_DOM.div([ React_DOM.className("toolbar button-bar") ])([ externalActions({}), internalActions({
-                            notebook: _589.values[0], 
-                            visibility: _588
-                        }) ]), React_DOM["hr'"]([  ]), React_DOM.div([ React_DOM.className("actual-content") ])(Data_Array.zipWith(block2UI(_585))(Data_Array.filter(function (_569) {
-                            return Data_Foldable.elem(SlamData_App_Notebook_Block_Types.eqBlockID({}))(Data_Foldable.foldableArray({}))((_569.values[0]).ident)((_589.values[0]).blocks);
-                        })(SlamData_Helpers.localGet(SlamData_App_Notebook_Block_Types.readBlockSpec({}))(SlamData_Helpers.Blocks)))(SlamData_Helpers[".."](0)(Data_Array.length((_589.values[0]).blocks)))) ]);
+                        return React_DOM.div([ React_DOM.className("content" + maybeActive((_590.values[0]).ident)(_588)) ])([ React_DOM.div([ React_DOM.className("toolbar button-bar") ])([ externalActions({}), internalActions({
+                            notebook: _590.values[0], 
+                            visibility: _589
+                        }) ]), React_DOM["hr'"]([  ]), React_DOM.div([ React_DOM.className("actual-content") ])(Data_Array.zipWith(block2UI(_586))(Data_Array.filter(function (_570) {
+                            return Data_Foldable.elem(SlamData_App_Notebook_Block_Types.eqBlockID({}))(Data_Foldable.foldableArray({}))((_570.values[0]).ident)((_590.values[0]).blocks);
+                        })(SlamData_Helpers.localGet(SlamData_App_Notebook_Block_Types.readBlockSpec({}))(SlamData_Helpers.Blocks)))(SlamData_Helpers[".."](0)(Data_Array.length((_590.values[0]).blocks)))) ]);
                     };
                 };
             };
@@ -68007,24 +68012,24 @@ PS.SlamData_App_Notebook = (function () {
             var _119 = React.readState();
             return (function () {
                 var visualState$prime = (function () {
-                    var _2273 = {};
-                    for (var _2274 in _119.visualState) {
-                        if (_119.visualState.hasOwnProperty(_2274)) {
-                            _2273[_2274] = _119.visualState[_2274];
+                    var _2277 = {};
+                    for (var _2278 in _119.visualState) {
+                        if (_119.visualState.hasOwnProperty(_2278)) {
+                            _2277[_2278] = _119.visualState[_2278];
                         };
                     };
-                    _2273.active = visualTab;
-                    return _2273;
+                    _2277.active = visualTab;
+                    return _2277;
                 })();
                 return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-                    var _2275 = {};
-                    for (var _2276 in _119) {
-                        if (_119.hasOwnProperty(_2276)) {
-                            _2275[_2276] = _119[_2276];
+                    var _2279 = {};
+                    for (var _2280 in _119) {
+                        if (_119.hasOwnProperty(_2280)) {
+                            _2279[_2280] = _119[_2280];
                         };
                     };
-                    _2275.visualState = visualState$prime;
-                    return _2275;
+                    _2279.visualState = visualState$prime;
+                    return _2279;
                 })()));
             })()();
         };
@@ -68033,31 +68038,31 @@ PS.SlamData_App_Notebook = (function () {
         return function __do() {
             var _118 = React.readState();
             return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-                var _2278 = {};
-                for (var _2279 in _118) {
-                    if (_118.hasOwnProperty(_2279)) {
-                        _2278[_2279] = _118[_2279];
+                var _2282 = {};
+                for (var _2283 in _118) {
+                    if (_118.hasOwnProperty(_2283)) {
+                        _2282[_2283] = _118[_2283];
                     };
                 };
-                _2278.active = Data_Maybe.Just(ident);
-                return _2278;
+                _2282.active = Data_Maybe.Just(ident);
+                return _2282;
             })()))();
         };
     };
-    var actVisualType = function (_578) {
-        if (_578.ctor === "SlamData.App.Notebook.Types.VisualTypeTab") {
+    var actVisualType = function (_579) {
+        if (_579.ctor === "SlamData.App.Notebook.Types.VisualTypeTab") {
             return " active";
         };
         return "";
     };
-    var actFields = function (_577) {
-        if (_577.ctor === "SlamData.App.Notebook.Types.FieldsTab") {
+    var actFields = function (_578) {
+        if (_578.ctor === "SlamData.App.Notebook.Types.FieldsTab") {
             return " active";
         };
         return "";
     };
-    var actData = function (_576) {
-        if (_576.ctor === "SlamData.App.Notebook.Types.DataSrcTab") {
+    var actData = function (_577) {
+        if (_577.ctor === "SlamData.App.Notebook.Types.DataSrcTab") {
             return " active";
         };
         return "";
@@ -68080,25 +68085,25 @@ PS.SlamData_App_Notebook = (function () {
                     selectedFields: [  ]
                 };
                 var fields$prime = $$new ? Prelude[":"](newField)(vState.fields) : Data_Array.filter(Prelude[">>>"](Prelude.semigroupoidArr({}))(_dataSrc)(Prelude["/="](Prelude.eqString({}))(ident)))(vState.fields);
-                var _2283 = {};
-                for (var _2284 in vState) {
-                    if (vState.hasOwnProperty(_2284)) {
-                        _2283[_2284] = vState[_2284];
+                var _2287 = {};
+                for (var _2288 in vState) {
+                    if (vState.hasOwnProperty(_2288)) {
+                        _2287[_2288] = vState[_2288];
                     };
                 };
-                _2283.fields = fields$prime;
-                return _2283;
+                _2287.fields = fields$prime;
+                return _2287;
             };
         };
     };
-    var ft2UI = function (_573) {
-        return function (_574) {
-            return function (_575) {
-                if (_575.type === "file") {
-                    var checked = Data_Foldable.elem(Prelude.eqString({}))(Data_Foldable.foldableArray({}))(_575.name)(Prelude["<$>"](Data_Array.functorArray({}))(_dataSrc)(_574));
+    var ft2UI = function (_574) {
+        return function (_575) {
+            return function (_576) {
+                if (_576.type === "file") {
+                    var checked = Data_Foldable.elem(Prelude.eqString({}))(Data_Foldable.foldableArray({}))(_576.name)(Prelude["<$>"](Data_Array.functorArray({}))(_dataSrc)(_575));
                     return React_DOM["li'"]([ React_DOM.input([ React_DOM.typeProp("checkbox"), React_DOM.onChange(function (_) {
-                        return _573(!checked)(_575.name);
-                    }), React_DOM.checked(checked) ])([  ]), React_DOM.text(_575.name) ]);
+                        return _574(!checked)(_576.name);
+                    }), React_DOM.checked(checked) ])([  ]), React_DOM.text(_576.name) ]);
                 };
                 throw "Failed pattern match";
             };
@@ -68111,50 +68116,50 @@ PS.SlamData_App_Notebook = (function () {
                 return (function () {
                     var fields$prime = Prelude["<$>"](Data_Array.functorArray({}))(function (f) {
                         return ident === _dataSrc(f) ? (function () {
-    var _2291 = {};
-    for (var _2292 in f) {
-        if (f.hasOwnProperty(_2292)) {
-            _2291[_2292] = f[_2292];
+    var _2295 = {};
+    for (var _2296 in f) {
+        if (f.hasOwnProperty(_2296)) {
+            _2295[_2296] = f[_2296];
         };
     };
-    _2291.selectedFields = fields;
-    return _2291;
+    _2295.selectedFields = fields;
+    return _2295;
 })() : f;
                     })(_121.visualState.fields);
                     var vState$prime = (function () {
-                        var _2293 = {};
-                        for (var _2294 in _121.visualState) {
-                            if (_121.visualState.hasOwnProperty(_2294)) {
-                                _2293[_2294] = _121.visualState[_2294];
+                        var _2297 = {};
+                        for (var _2298 in _121.visualState) {
+                            if (_121.visualState.hasOwnProperty(_2298)) {
+                                _2297[_2298] = _121.visualState[_2298];
                             };
                         };
-                        _2293.fields = fields$prime;
-                        return _2293;
+                        _2297.fields = fields$prime;
+                        return _2297;
                     })();
                     return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-                        var _2295 = {};
-                        for (var _2296 in _121) {
-                            if (_121.hasOwnProperty(_2296)) {
-                                _2295[_2296] = _121[_2296];
+                        var _2299 = {};
+                        for (var _2300 in _121) {
+                            if (_121.hasOwnProperty(_2300)) {
+                                _2299[_2300] = _121[_2300];
                             };
                         };
-                        _2295.visualState = vState$prime;
-                        return _2295;
+                        _2299.visualState = vState$prime;
+                        return _2299;
                     })()));
                 })()();
             };
         };
     };
     var notebook = React.mkUI((function () {
-        var _2297 = {};
-        for (var _2298 in React.spec) {
-            if (React.spec.hasOwnProperty(_2298)) {
-                _2297[_2298] = React.spec[_2298];
+        var _2301 = {};
+        for (var _2302 in React.spec) {
+            if (React.spec.hasOwnProperty(_2302)) {
+                _2301[_2302] = React.spec[_2302];
             };
         };
-        _2297.getInitialState = Prelude.pure(Control_Monad_Eff.applicativeEff({}))(initialState);
-        _2297.shouldComponentUpdate = scu;
-        return _2297;
+        _2301.getInitialState = Prelude.pure(Control_Monad_Eff.applicativeEff({}))(initialState);
+        _2301.shouldComponentUpdate = scu;
+        return _2301;
     })())(function __do() {
         var _116 = React.getProps();
         var _115 = React.readState();
@@ -68166,12 +68171,12 @@ PS.SlamData_App_Notebook = (function () {
     ident: _115.settingId
 }) ] : [  ];
             var notebooks = Prelude["++"](Data_Array.semigroupArray({}))(_115.notebooks)(settingsPage);
-            var active = Prelude["<|>"](Data_Maybe.alternativeMaybe({}))(_115.active)(Data_Maybe.maybe(Data_Maybe.Nothing)(function (_567) {
-                return Data_Maybe.Just((_567.values[0]).ident);
+            var active = Prelude["<|>"](Data_Maybe.alternativeMaybe({}))(_115.active)(Data_Maybe.maybe(Data_Maybe.Nothing)(function (_568) {
+                return Data_Maybe.Just((_568.values[0]).ident);
             })(Data_Array.head(notebooks)));
             return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div([ React_DOM.className("slamdata-panel") ])(Prelude["++"](Data_Array.semigroupArray({}))([ React_DOM.dl([ React_DOM.className("tabs") ])(Data_Array.snoc(Prelude["<$>"](Data_Array.functorArray({}))(makeNotebook(active)(_115.settingId)(_116.hideSettings)(Prelude["<<<"](Prelude.semigroupoidArr({}))(React.deferred)(activateTab))(Prelude["<<<"](Prelude.semigroupoidArr({}))(React.deferred)(deleteNotebook)))(notebooks))(React_DOM.dd([ React_DOM.className("tab") ])([ React_DOM["div'"]([ React_DOM.a([ React_DOM.onClick(function (_) {
                 return createNotebook;
-            }), React_DOM.idProp("add-notebook") ])([ SlamData_Helpers.toUI(SlamData_Helpers.iconFA({}))(SlamData_Helpers.newNotebookIcon({})) ]) ]) ]))), React_DOM.div([ React_DOM.className("tabs-content") ])(Prelude["<$>"](Data_Array.functorArray({}))(makeBlocks(_116.serverURI)(_115.settingId)(active)(Prelude["<<<"](Prelude.semigroupoidArr({}))(React.deferred)(modalVisibility)))(notebooks)) ])(_115.visualState.visible ? [ React_DOM.div([ React_DOM.idProp("visual-modal") ])([ React_DOM.div([ React_DOM.idProp("visual-modal-content") ])([ React_DOM.dl([ React_DOM.className("tabs vertical") ])([ React_DOM.dd([ React_DOM.className("tab" + actData(_115.visualState.active)) ])([ React_DOM.a([ React_DOM.onClick(function (_) {
+            }), React_DOM.idProp("add-notebook") ])([ SlamData_Helpers.toUI(SlamData_Helpers.iconFA({}))(SlamData_Helpers.newNotebookIcon({})) ]) ]) ]))), React_DOM.div([ React_DOM.className("tabs-content") ])(Prelude["<$>"](Data_Array.functorArray({}))(makeBlocks(SlamData_Helpers.serverURI(_116.sdConfig))(_115.settingId)(active)(Prelude["<<<"](Prelude.semigroupoidArr({}))(React.deferred)(modalVisibility)))(notebooks)) ])(_115.visualState.visible ? [ React_DOM.div([ React_DOM.idProp("visual-modal") ])([ React_DOM.div([ React_DOM.idProp("visual-modal-content") ])([ React_DOM.dl([ React_DOM.className("tabs vertical") ])([ React_DOM.dd([ React_DOM.className("tab" + actData(_115.visualState.active)) ])([ React_DOM.a([ React_DOM.onClick(function (_) {
     return activateVisualTab(SlamData_App_Notebook_Types.DataSrcTab);
 }) ])([ React_DOM.text("Data Source") ]) ]), React_DOM.dd([ React_DOM.className("tab" + actFields(_115.visualState.active)) ])([ React_DOM.a([ React_DOM.onClick(function (_) {
     return activateVisualTab(SlamData_App_Notebook_Types.FieldsTab);
@@ -68187,155 +68192,51 @@ PS.SlamData_App_Notebook = (function () {
     };
 }))(_115.visualState.fields)), React_DOM.div([ React_DOM.className("content" + actVisualType(_115.visualState.active)) ])([ React_DOM.ul([ React_DOM.className("chart-type small-block-grid-5") ])(visuals(Prelude["<<<"](Prelude.semigroupoidArr({}))(React.deferred)(changeVisual))(_115.visualState.visualType)), React_DOM.select([ React_DOM.onChange(function (e) {
     var vState$prime = (function () {
-        var _2304 = {};
-        for (var _2305 in _115.visualState) {
-            if (_115.visualState.hasOwnProperty(_2305)) {
-                _2304[_2305] = _115.visualState[_2305];
+        var _2308 = {};
+        for (var _2309 in _115.visualState) {
+            if (_115.visualState.hasOwnProperty(_2309)) {
+                _2308[_2309] = _115.visualState[_2309];
             };
         };
-        _2304.visualData = [ targetValue(e)(_115.visualState.visualType) ];
-        return _2304;
+        _2308.visualData = [ targetValue(e)(_115.visualState.visualType) ];
+        return _2308;
     })();
     return React.writeState((function () {
-        var _2306 = {};
-        for (var _2307 in _115) {
-            if (_115.hasOwnProperty(_2307)) {
-                _2306[_2307] = _115[_2307];
+        var _2310 = {};
+        for (var _2311 in _115) {
+            if (_115.hasOwnProperty(_2311)) {
+                _2310[_2311] = _115[_2311];
             };
         };
-        _2306.visualState = vState$prime;
-        return _2306;
+        _2310.visualState = vState$prime;
+        return _2310;
     })());
 }) ])(Prelude["<$>"](Data_Array.functorArray({}))(optionify)(_115.visualState.fields)), React_DOM.div([ React_DOM.className("actions") ])([ React_DOM.a([ React_DOM.className("button"), React_DOM.onClick(function (_) {
     return function __do() {
         var _113 = React.readState();
         return (function () {
-            var active = SlamData_Helpers.getOrElse(_113.active)(Data_Maybe.maybe(SlamData_App_Notebook_Types.NotebookID(Data_UUID.runUUID(Data_UUID.v4)))(function (_568) {
-                return (_568.values[0]).ident;
+            var active = SlamData_Helpers.getOrElse(_113.active)(Data_Maybe.maybe(SlamData_App_Notebook_Types.NotebookID(Data_UUID.runUUID(Data_UUID.v4)))(function (_569) {
+                return (_569.values[0]).ident;
             })(Data_Array.head(_113.notebooks)));
             return createVisualBlock(_114)(SlamData_App_Notebook_Block_Types.Visual)(active)(visualContent(_115.visualState.visualData));
         })()();
     };
 }) ])([ React_DOM.text("Create") ]), React_DOM.a([ React_DOM.className("button secondary"), React_DOM.onClick(function (_) {
     return React.writeState((function () {
-        var _2311 = {};
-        for (var _2312 in _115) {
-            if (_115.hasOwnProperty(_2312)) {
-                _2311[_2312] = _115[_2312];
+        var _2315 = {};
+        for (var _2316 in _115) {
+            if (_115.hasOwnProperty(_2316)) {
+                _2315[_2316] = _115[_2316];
             };
         };
-        _2311.visualState = initialState.visualState;
-        return _2311;
+        _2315.visualState = initialState.visualState;
+        return _2315;
     })());
 }) ])([ React_DOM.text("Cancel") ]) ]) ]) ]) ]) ]) ] : [  ])));
         })()();
     });
     return {
         notebook: notebook
-    };
-})();
-var PS = PS || {};
-PS.SlamData_App_Workspace = (function () {
-    "use strict";
-    var React = PS.React;
-    var Prelude = PS.Prelude;
-    var Control_Monad_Eff = PS.Control_Monad_Eff;
-    var React_DOM = PS.React_DOM;
-    var SlamData_App_FileSystem = PS.SlamData_App_FileSystem;
-    var SlamData_App_Notebook = PS.SlamData_App_Notebook;
-    function cwm() {  var fetchFS = function() {    oboe(this.props.serverURI + '/metadata/fs/')    .done(function(json) {      if (this.isMounted()) {        var sorted = json.children.sort(function(a, b) {          return a.name.localeCompare(b.name);        });        this.setState({files: sorted});      }    }.bind(this));  }.bind(this);  fetchFS();  setInterval(fetchFS, pollRate);};
-    var workspace = React.mkUI((function () {
-        var _2313 = {};
-        for (var _2314 in React.spec) {
-            if (React.spec.hasOwnProperty(_2314)) {
-                _2313[_2314] = React.spec[_2314];
-            };
-        };
-        _2313.getInitialState = Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
-            files: [  ]
-        });
-        _2313.componentWillMount = cwm;
-        return _2313;
-    })())(function __do() {
-        var _130 = React.getProps();
-        var _129 = React.readState();
-        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div([ React_DOM.idProp("workspace") ])([ React_DOM.div([ React_DOM.className("row"), React_DOM.idProp("main-row") ])([ React_DOM.div([ React_DOM.className("large-2 medium-3 small-5 columns"), React_DOM.idProp("filesystem") ])([ SlamData_App_FileSystem.filesystem({
-            files: _129.files
-        }) ]), React_DOM.div([ React_DOM.className("large-10 medium-9 small-7 columns"), React_DOM.idProp("notebook") ])([ SlamData_App_Notebook.notebook({
-            files: _129.files, 
-            serverURI: _130.serverURI, 
-            settings: _130.settings, 
-            hideSettings: _130.hideSettings
-        }) ]) ]) ]))();
-    });
-    var pollRate = 5000;
-    return {
-        workspace: workspace
-    };
-})();
-var PS = PS || {};
-PS.SlamData_App = (function () {
-    "use strict";
-    var Prelude = PS.Prelude;
-    var Control_Monad_Eff = PS.Control_Monad_Eff;
-    var React = PS.React;
-    var React_DOM = PS.React_DOM;
-    var SlamData_App_Menu = PS.SlamData_App_Menu;
-    var SlamData_App_Workspace = PS.SlamData_App_Workspace;
-    var showSettings = function (bool) {
-        return function __do() {
-            var _133 = React.readState();
-            return React.writeState((function () {
-                var _2318 = {};
-                for (var _2319 in _133) {
-                    if (_133.hasOwnProperty(_2319)) {
-                        _2318[_2319] = _133[_2319];
-                    };
-                };
-                _2318.settings = bool;
-                return _2318;
-            })())();
-        };
-    };
-    var app = React.mkUI((function () {
-        var _2320 = {};
-        for (var _2321 in React.spec) {
-            if (React.spec.hasOwnProperty(_2321)) {
-                _2320[_2321] = React.spec[_2321];
-            };
-        };
-        _2320.getInitialState = Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
-            settings: false
-        });
-        return _2320;
-    })())(function __do() {
-        var _132 = React.readState();
-        var _131 = React.getProps();
-        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM["div'"]([ SlamData_App_Menu.menu({
-            showSettings: React.deferred(showSettings(true))
-        }), SlamData_App_Workspace.workspace({
-            serverURI: _131.serverURI, 
-            settings: _132.settings, 
-            hideSettings: React.deferred(showSettings(false))
-        }) ]))();
-    });
-    return {
-        app: app
-    };
-})();
-var PS = PS || {};
-PS.SlamData = (function () {
-    "use strict";
-    var Prelude = PS.Prelude;
-    var React = PS.React;
-    var SlamData_App = PS.SlamData_App;
-    var slamData = function (_598) {
-        return React.renderToElementById("content")(SlamData_App.app({
-            serverURI: _598.server.location + ":" + _598.server.port
-        }));
-    };
-    return {
-        slamData: slamData
     };
 })();
 var PS = PS || {};
@@ -68372,6 +68273,112 @@ PS.SlamData_App_Reference = (function () {
     var reference = refPanel;
     return {
         reference: reference
+    };
+})();
+var PS = PS || {};
+PS.SlamData_App_Workspace = (function () {
+    "use strict";
+    var React = PS.React;
+    var Prelude = PS.Prelude;
+    var Control_Monad_Eff = PS.Control_Monad_Eff;
+    var React_DOM = PS.React_DOM;
+    var SlamData_App_FileSystem = PS.SlamData_App_FileSystem;
+    var SlamData_App_Notebook = PS.SlamData_App_Notebook;
+    var SlamData_Helpers = PS.SlamData_Helpers;
+    function cwm() {  var fetchFS = function() {    oboe(serverURI_(this.props.sdConfig) + '/metadata/fs/')    .done(function(json) {      if (this.isMounted()) {        var sorted = json.children.sort(function(a, b) {          return a.name.localeCompare(b.name);        });        this.setState({files: sorted});      }    }.bind(this));  }.bind(this);  fetchFS();  setInterval(fetchFS, pollRate);};
+    var workspace = React.mkUI((function () {
+        var _2317 = {};
+        for (var _2318 in React.spec) {
+            if (React.spec.hasOwnProperty(_2318)) {
+                _2317[_2318] = React.spec[_2318];
+            };
+        };
+        _2317.getInitialState = Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
+            files: [  ]
+        });
+        _2317.componentWillMount = cwm;
+        return _2317;
+    })())(function __do() {
+        var _130 = React.getProps();
+        var _129 = React.readState();
+        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div([ React_DOM.idProp("workspace") ])([ React_DOM.div([ React_DOM.className("row"), React_DOM.idProp("main-row") ])([ React_DOM.div([ React_DOM.className("large-2 medium-3 small-5 columns"), React_DOM.idProp("filesystem") ])([ SlamData_App_FileSystem.filesystem({
+            files: _129.files
+        }) ]), React_DOM.div([ React_DOM.className("large-10 medium-9 small-7 columns"), React_DOM.idProp("notebook") ])([ SlamData_App_Notebook.notebook({
+            files: _129.files, 
+            sdConfig: _130.sdConfig, 
+            settings: _130.settings, 
+            hideSettings: _130.hideSettings
+        }) ]) ]) ]))();
+    });
+    var serverURI_ = SlamData_Helpers.serverURI;
+    var pollRate = 5000;
+    return {
+        workspace: workspace
+    };
+})();
+var PS = PS || {};
+PS.SlamData_App = (function () {
+    "use strict";
+    var Prelude = PS.Prelude;
+    var Control_Monad_Eff = PS.Control_Monad_Eff;
+    var React = PS.React;
+    var React_DOM = PS.React_DOM;
+    var SlamData_App_Menu = PS.SlamData_App_Menu;
+    var SlamData_App_Workspace = PS.SlamData_App_Workspace;
+    var showSettings = function (bool) {
+        return function __do() {
+            var _133 = React.readState();
+            return React.writeState((function () {
+                var _2322 = {};
+                for (var _2323 in _133) {
+                    if (_133.hasOwnProperty(_2323)) {
+                        _2322[_2323] = _133[_2323];
+                    };
+                };
+                _2322.settings = bool;
+                return _2322;
+            })())();
+        };
+    };
+    var app = React.mkUI((function () {
+        var _2324 = {};
+        for (var _2325 in React.spec) {
+            if (React.spec.hasOwnProperty(_2325)) {
+                _2324[_2325] = React.spec[_2325];
+            };
+        };
+        _2324.getInitialState = Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
+            settings: false
+        });
+        return _2324;
+    })())(function __do() {
+        var _132 = React.readState();
+        var _131 = React.getProps();
+        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM["div'"]([ SlamData_App_Menu.menu({
+            showSettings: React.deferred(showSettings(true))
+        }), SlamData_App_Workspace.workspace({
+            sdConfig: _131.sdConfig, 
+            settings: _132.settings, 
+            hideSettings: React.deferred(showSettings(false))
+        }) ]))();
+    });
+    return {
+        app: app
+    };
+})();
+var PS = PS || {};
+PS.SlamData = (function () {
+    "use strict";
+    var Prelude = PS.Prelude;
+    var React = PS.React;
+    var SlamData_App = PS.SlamData_App;
+    var slamData = function (config) {
+        return React.renderToElementById("content")(SlamData_App.app({
+            sdConfig: config
+        }));
+    };
+    return {
+        slamData: slamData
     };
 })();
 var PS = PS || {};
