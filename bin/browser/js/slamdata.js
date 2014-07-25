@@ -66732,7 +66732,7 @@ PS.SlamData_Helpers = (function () {
         }, 
         mountings: Data_Map.singleton(defaultMountPath)({
             mongodb: {
-                connectionURI: defaultMongoURI, 
+                connectionUri: defaultMongoURI, 
                 database: defaultMongoDatabase
             }
         })
@@ -66748,7 +66748,7 @@ PS.SlamData_Helpers = (function () {
                             }, 
                             mountings: Data_Map.singleton(_91)({
                                 mongodb: {
-                                    connectionURI: _90, 
+                                    connectionUri: _90, 
                                     database: _89
                                 }
                             })
@@ -67276,14 +67276,14 @@ PS.SlamData_App_Notebook_Block = (function () {
 var PS = PS || {};
 PS.SlamData_App_Notebook_Settings = (function () {
     "use strict";
-    var Data_Maybe = PS.Data_Maybe;
     var Prelude = PS.Prelude;
+    var Data_Maybe = PS.Data_Maybe;
+    var Data_Map = PS.Data_Map;
     var Control_Monad_Eff = PS.Control_Monad_Eff;
     var React = PS.React;
-    var Data_Map = PS.Data_Map;
+    var SlamData_Helpers = PS.SlamData_Helpers;
     var React_DOM = PS.React_DOM;
     var Data_Array = PS.Data_Array;
-    var SlamData_Helpers = PS.SlamData_Helpers;
     var SlamDataTab = {
         ctor: "SlamData.App.Notebook.Settings.SlamDataTab", 
         values: [  ]
@@ -67292,132 +67292,262 @@ PS.SlamData_App_Notebook_Settings = (function () {
         ctor: "SlamData.App.Notebook.Settings.SlamEngineTab", 
         values: [  ]
     };
-    var updateServerLocation = function (state) {
+    var updateSEServerPort = function (state) {
         return function (x) {
-            var server$prime = (function () {
-                var _2157 = {};
-                for (var _2158 in state.sdConfig.server) {
-                    if (state.sdConfig.server.hasOwnProperty(_2158)) {
-                        _2157[_2158] = state.sdConfig.server[_2158];
+            var seConfig$prime = Prelude[">>="](Data_Maybe.bindMaybe({}))(state.seConfig)(function (seConfig) {
+                var server$prime = (function () {
+                    var _2157 = {};
+                    for (var _2158 in seConfig.server) {
+                        if (seConfig.server.hasOwnProperty(_2158)) {
+                            _2157[_2158] = seConfig.server[_2158];
+                        };
                     };
-                };
-                _2157.location = x;
-                return _2157;
-            })();
-            var sdConfig$prime = (function () {
-                var _2159 = {};
-                for (var _2160 in state.sdConfig) {
-                    if (state.sdConfig.hasOwnProperty(_2160)) {
-                        _2159[_2160] = state.sdConfig[_2160];
+                    _2157.port = x;
+                    return _2157;
+                })();
+                return Prelude.pure(Data_Maybe.applicativeMaybe({}))((function () {
+                    var _2159 = {};
+                    for (var _2160 in seConfig) {
+                        if (seConfig.hasOwnProperty(_2160)) {
+                            _2159[_2160] = seConfig[_2160];
+                        };
                     };
-                };
-                _2159.server = server$prime;
-                return _2159;
-            })();
+                    _2159.server = server$prime;
+                    return _2159;
+                })());
+            });
             var _2161 = {};
             for (var _2162 in state) {
                 if (state.hasOwnProperty(_2162)) {
                     _2161[_2162] = state[_2162];
                 };
             };
-            _2161.sdConfig = sdConfig$prime;
+            _2161.seConfig = seConfig$prime;
             return _2161;
         };
     };
-    var updateSEServerPort = function (state) {
-        return function (x) {
-            var server$prime = (function () {
-                var _2163 = {};
-                for (var _2164 in state.seConfig.server) {
-                    if (state.seConfig.server.hasOwnProperty(_2164)) {
-                        _2163[_2164] = state.seConfig.server[_2164];
+    var updateSEMountPath = function (state) {
+        return function (old) {
+            return function (mounting) {
+                return function ($$new) {
+                    var seConfig$prime = Prelude[">>="](Data_Maybe.bindMaybe({}))(state.seConfig)(function (seConfig) {
+                        var deleted = Data_Map["delete"](Prelude.ordString({}))(old)(seConfig.mountings);
+                        var mountings$prime = Data_Map.insert(Prelude.ordString({}))($$new)(mounting)(deleted);
+                        return Prelude.pure(Data_Maybe.applicativeMaybe({}))((function () {
+                            var _2163 = {};
+                            for (var _2164 in seConfig) {
+                                if (seConfig.hasOwnProperty(_2164)) {
+                                    _2163[_2164] = seConfig[_2164];
+                                };
+                            };
+                            _2163.mountings = mountings$prime;
+                            return _2163;
+                        })());
+                    });
+                    var _2165 = {};
+                    for (var _2166 in state) {
+                        if (state.hasOwnProperty(_2166)) {
+                            _2165[_2166] = state[_2166];
+                        };
                     };
-                };
-                _2163.port = x;
-                return _2163;
-            })();
-            var seConfig$prime = (function () {
-                var _2165 = {};
-                for (var _2166 in state.seConfig) {
-                    if (state.seConfig.hasOwnProperty(_2166)) {
-                        _2165[_2166] = state.seConfig[_2166];
-                    };
-                };
-                _2165.server = server$prime;
-                return _2165;
-            })();
-            var _2167 = {};
-            for (var _2168 in state) {
-                if (state.hasOwnProperty(_2168)) {
-                    _2167[_2168] = state[_2168];
+                    _2165.seConfig = seConfig$prime;
+                    return _2165;
                 };
             };
-            _2167.seConfig = seConfig$prime;
-            return _2167;
+        };
+    };
+    var updateSEMongoUri = function (state) {
+        return function (path) {
+            return function (mounting) {
+                return function (uri) {
+                    var seConfig$prime = Prelude[">>="](Data_Maybe.bindMaybe({}))(state.seConfig)(function (seConfig) {
+                        var mongodb$prime = (function () {
+                            var _2167 = {};
+                            for (var _2168 in mounting.mongodb) {
+                                if (mounting.mongodb.hasOwnProperty(_2168)) {
+                                    _2167[_2168] = mounting.mongodb[_2168];
+                                };
+                            };
+                            _2167.connectionUri = uri;
+                            return _2167;
+                        })();
+                        var mounting$prime = (function () {
+                            var _2169 = {};
+                            for (var _2170 in mounting) {
+                                if (mounting.hasOwnProperty(_2170)) {
+                                    _2169[_2170] = mounting[_2170];
+                                };
+                            };
+                            _2169.mongodb = mongodb$prime;
+                            return _2169;
+                        })();
+                        var mountings$prime = Data_Map.insert(Prelude.ordString({}))(path)(mounting$prime)(seConfig.mountings);
+                        return Prelude.pure(Data_Maybe.applicativeMaybe({}))((function () {
+                            var _2171 = {};
+                            for (var _2172 in seConfig) {
+                                if (seConfig.hasOwnProperty(_2172)) {
+                                    _2171[_2172] = seConfig[_2172];
+                                };
+                            };
+                            _2171.mountings = mountings$prime;
+                            return _2171;
+                        })());
+                    });
+                    var _2173 = {};
+                    for (var _2174 in state) {
+                        if (state.hasOwnProperty(_2174)) {
+                            _2173[_2174] = state[_2174];
+                        };
+                    };
+                    _2173.seConfig = seConfig$prime;
+                    return _2173;
+                };
+            };
+        };
+    };
+    var updateSEMongoDatabase = function (state) {
+        return function (path) {
+            return function (mounting) {
+                return function (db) {
+                    var seConfig$prime = Prelude[">>="](Data_Maybe.bindMaybe({}))(state.seConfig)(function (seConfig) {
+                        var mongodb$prime = (function () {
+                            var _2175 = {};
+                            for (var _2176 in mounting.mongodb) {
+                                if (mounting.mongodb.hasOwnProperty(_2176)) {
+                                    _2175[_2176] = mounting.mongodb[_2176];
+                                };
+                            };
+                            _2175.database = db;
+                            return _2175;
+                        })();
+                        var mounting$prime = (function () {
+                            var _2177 = {};
+                            for (var _2178 in mounting) {
+                                if (mounting.hasOwnProperty(_2178)) {
+                                    _2177[_2178] = mounting[_2178];
+                                };
+                            };
+                            _2177.mongodb = mongodb$prime;
+                            return _2177;
+                        })();
+                        var mountings$prime = Data_Map.insert(Prelude.ordString({}))(path)(mounting$prime)(seConfig.mountings);
+                        return Prelude.pure(Data_Maybe.applicativeMaybe({}))((function () {
+                            var _2179 = {};
+                            for (var _2180 in seConfig) {
+                                if (seConfig.hasOwnProperty(_2180)) {
+                                    _2179[_2180] = seConfig[_2180];
+                                };
+                            };
+                            _2179.mountings = mountings$prime;
+                            return _2179;
+                        })());
+                    });
+                    var _2181 = {};
+                    for (var _2182 in state) {
+                        if (state.hasOwnProperty(_2182)) {
+                            _2181[_2182] = state[_2182];
+                        };
+                    };
+                    _2181.seConfig = seConfig$prime;
+                    return _2181;
+                };
+            };
         };
     };
     var updateSDServerPort = function (state) {
         return function (x) {
             var server$prime = (function () {
-                var _2169 = {};
-                for (var _2170 in state.sdConfig.server) {
-                    if (state.sdConfig.server.hasOwnProperty(_2170)) {
-                        _2169[_2170] = state.sdConfig.server[_2170];
+                var _2183 = {};
+                for (var _2184 in state.sdConfig.server) {
+                    if (state.sdConfig.server.hasOwnProperty(_2184)) {
+                        _2183[_2184] = state.sdConfig.server[_2184];
                     };
                 };
-                _2169.port = x;
-                return _2169;
+                _2183.port = x;
+                return _2183;
             })();
             var sdConfig$prime = (function () {
-                var _2171 = {};
-                for (var _2172 in state.sdConfig) {
-                    if (state.sdConfig.hasOwnProperty(_2172)) {
-                        _2171[_2172] = state.sdConfig[_2172];
+                var _2185 = {};
+                for (var _2186 in state.sdConfig) {
+                    if (state.sdConfig.hasOwnProperty(_2186)) {
+                        _2185[_2186] = state.sdConfig[_2186];
                     };
                 };
-                _2171.server = server$prime;
-                return _2171;
+                _2185.server = server$prime;
+                return _2185;
             })();
-            var _2173 = {};
-            for (var _2174 in state) {
-                if (state.hasOwnProperty(_2174)) {
-                    _2173[_2174] = state[_2174];
+            var _2187 = {};
+            for (var _2188 in state) {
+                if (state.hasOwnProperty(_2188)) {
+                    _2187[_2188] = state[_2188];
                 };
             };
-            _2173.sdConfig = sdConfig$prime;
-            return _2173;
+            _2187.sdConfig = sdConfig$prime;
+            return _2187;
+        };
+    };
+    var updateSDServerLocation = function (state) {
+        return function (x) {
+            var server$prime = (function () {
+                var _2189 = {};
+                for (var _2190 in state.sdConfig.server) {
+                    if (state.sdConfig.server.hasOwnProperty(_2190)) {
+                        _2189[_2190] = state.sdConfig.server[_2190];
+                    };
+                };
+                _2189.location = x;
+                return _2189;
+            })();
+            var sdConfig$prime = (function () {
+                var _2191 = {};
+                for (var _2192 in state.sdConfig) {
+                    if (state.sdConfig.hasOwnProperty(_2192)) {
+                        _2191[_2192] = state.sdConfig[_2192];
+                    };
+                };
+                _2191.server = server$prime;
+                return _2191;
+            })();
+            var _2193 = {};
+            for (var _2194 in state) {
+                if (state.hasOwnProperty(_2194)) {
+                    _2193[_2194] = state[_2194];
+                };
+            };
+            _2193.sdConfig = sdConfig$prime;
+            return _2193;
         };
     };
     var updateNWJava = function (state) {
         return function (x) {
             var nodeWebkit$prime = (function () {
-                var _2175 = {};
-                for (var _2176 in state.sdConfig.nodeWebkit) {
-                    if (state.sdConfig.nodeWebkit.hasOwnProperty(_2176)) {
-                        _2175[_2176] = state.sdConfig.nodeWebkit[_2176];
+                var _2195 = {};
+                for (var _2196 in state.sdConfig.nodeWebkit) {
+                    if (state.sdConfig.nodeWebkit.hasOwnProperty(_2196)) {
+                        _2195[_2196] = state.sdConfig.nodeWebkit[_2196];
                     };
                 };
-                _2175.java = Data_Maybe.Just(x);
-                return _2175;
+                _2195.java = Data_Maybe.Just(x);
+                return _2195;
             })();
             var sdConfig$prime = (function () {
-                var _2177 = {};
-                for (var _2178 in state.sdConfig) {
-                    if (state.sdConfig.hasOwnProperty(_2178)) {
-                        _2177[_2178] = state.sdConfig[_2178];
+                var _2197 = {};
+                for (var _2198 in state.sdConfig) {
+                    if (state.sdConfig.hasOwnProperty(_2198)) {
+                        _2197[_2198] = state.sdConfig[_2198];
                     };
                 };
-                _2177.nodeWebkit = nodeWebkit$prime;
-                return _2177;
+                _2197.nodeWebkit = nodeWebkit$prime;
+                return _2197;
             })();
-            var _2179 = {};
-            for (var _2180 in state) {
-                if (state.hasOwnProperty(_2180)) {
-                    _2179[_2180] = state[_2180];
+            var _2199 = {};
+            for (var _2200 in state) {
+                if (state.hasOwnProperty(_2200)) {
+                    _2199[_2200] = state[_2200];
                 };
             };
-            _2179.sdConfig = sdConfig$prime;
-            return _2179;
+            _2199.sdConfig = sdConfig$prime;
+            return _2199;
         };
     };
     var showSettingsTab = function (_) {
@@ -67476,48 +67606,60 @@ PS.SlamData_App_Notebook_Settings = (function () {
         };
     };
     var settings = React.mkUI((function () {
-        var _2186 = {};
-        for (var _2187 in React.spec) {
-            if (React.spec.hasOwnProperty(_2187)) {
-                _2186[_2187] = React.spec[_2187];
+        var _2206 = {};
+        for (var _2207 in React.spec) {
+            if (React.spec.hasOwnProperty(_2207)) {
+                _2206[_2207] = React.spec[_2207];
             };
         };
-        _2186.getInitialState = initialState;
-        return _2186;
+        _2206.getInitialState = initialState;
+        return _2206;
     })())(function __do() {
         var _109 = React.readState();
         return (function () {
-            var mountings = Data_Map.toList(_109.seConfig.mountings);
+            var seConfig = SlamData_Helpers.getOrElse(_109.seConfig)({
+                mountings: Data_Map.empty, 
+                server: {
+                    port: _109.sdConfig.server.port
+                }
+            });
+            var mountings = Data_Map.toList(seConfig.mountings);
             return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div([ React_DOM.className("vertical") ])([ React_DOM.div([ React_DOM.className("small-1  columns") ])([ React_DOM.dl([ React_DOM.className("tabs vertical") ])([ React_DOM.dd([ React_DOM.className("tab" + activate(eqSettingsTab({}))(SlamEngineTab)(_109.active)) ])([ React_DOM.a([ React_DOM.onClick(function (_) {
                 return React.writeState((function () {
-                    var _2189 = {};
-                    for (var _2190 in _109) {
-                        if (_109.hasOwnProperty(_2190)) {
-                            _2189[_2190] = _109[_2190];
+                    var _2209 = {};
+                    for (var _2210 in _109) {
+                        if (_109.hasOwnProperty(_2210)) {
+                            _2209[_2210] = _109[_2210];
                         };
                     };
-                    _2189.active = SlamEngineTab;
-                    return _2189;
+                    _2209.active = SlamEngineTab;
+                    return _2209;
                 })());
             }) ])([ React_DOM.text(Prelude.show(showSettingsTab({}))(SlamEngineTab)) ]) ]), React_DOM.dd([ React_DOM.className("tab" + activate(eqSettingsTab({}))(SlamDataTab)(_109.active)) ])([ React_DOM.a([ React_DOM.onClick(function (_) {
                 return React.writeState((function () {
-                    var _2191 = {};
-                    for (var _2192 in _109) {
-                        if (_109.hasOwnProperty(_2192)) {
-                            _2191[_2192] = _109[_2192];
+                    var _2211 = {};
+                    for (var _2212 in _109) {
+                        if (_109.hasOwnProperty(_2212)) {
+                            _2211[_2212] = _109[_2212];
                         };
                     };
-                    _2191.active = SlamDataTab;
-                    return _2191;
+                    _2211.active = SlamDataTab;
+                    return _2211;
                 })());
             }) ])([ React_DOM.text(Prelude.show(showSettingsTab({}))(SlamDataTab)) ]) ]) ]) ]), React_DOM.div([ React_DOM.className("small-11 columns") ])([ React_DOM.div([ React_DOM.className("tabs-content vertical") ])([ React_DOM.div([ React_DOM.className("content" + activate(eqSettingsTab({}))(SlamEngineTab)(_109.active)) ])([ React_DOM["h6'"]([ React_DOM.text("Settings for the local instance of SlamEngine") ]), React_DOM["form'"]([ React_DOM["fieldset'"]([ React_DOM["legend'"]([ React_DOM.text("Server") ]), React_DOM["div'"]([ React_DOM.label([ React_DOM.htmlFor("slamengine-port") ])([ React_DOM.text("Port") ]), React_DOM.input([ React_DOM.name("slamengine-port"), React_DOM.placeholder("8080"), React_DOM.onChange(function (e) {
                 return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState(updateSEServerPort(_109)(e.target.value)));
-            }), React_DOM.value(_109.seConfig.server.port) ])([  ]) ]) ]), React_DOM["fieldset'"]([ React_DOM["legend'"]([ React_DOM.text("MongoDB mountings") ]), React_DOM["div'"](Prelude[">>="](Data_Array.bindArray({}))(mountings)(function (_553) {
-                return [ React_DOM.label([ React_DOM.htmlFor("mongodb-path") ])([ React_DOM.text("Path") ]), React_DOM.input([ React_DOM.name("mongodb-mongouri"), React_DOM.placeholder("/"), React_DOM.value(_553.values[0]) ])([  ]), React_DOM.label([ React_DOM.htmlFor("mongodb-mongouri") ])([ React_DOM.text("MongoURI") ]), React_DOM.input([ React_DOM.name("mongodb-mongouri"), React_DOM.placeholder("mongodb://localhost:27017"), React_DOM.value((_553.values[1]).mongodb.connectionURI) ])([  ]), React_DOM.label([ React_DOM.htmlFor("mongodb-database") ])([ React_DOM.text("Database") ]), React_DOM.input([ React_DOM.name("mongodb-database"), React_DOM.placeholder("test"), React_DOM.value((_553.values[1]).mongodb.database) ])([  ]) ];
+            }), React_DOM.value(seConfig.server.port) ])([  ]) ]) ]), React_DOM["fieldset'"]([ React_DOM["legend'"]([ React_DOM.text("MongoDB mountings") ]), React_DOM["div'"](Prelude[">>="](Data_Array.bindArray({}))(mountings)(function (_553) {
+                return [ React_DOM.label([ React_DOM.htmlFor("mongodb-path") ])([ React_DOM.text("Path") ]), React_DOM.input([ React_DOM.name("mongodb-mongouri"), React_DOM.placeholder("/"), React_DOM.onChange(function (e) {
+                    return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState(updateSEMountPath(_109)(_553.values[0])(_553.values[1])(e.target.value)));
+                }), React_DOM.value(_553.values[0]) ])([  ]), React_DOM.label([ React_DOM.htmlFor("mongodb-mongouri") ])([ React_DOM.text("MongoUri") ]), React_DOM.input([ React_DOM.name("mongodb-mongouri"), React_DOM.placeholder("mongodb://localhost:27017"), React_DOM.onChange(function (e) {
+                    return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState(updateSEMongoUri(_109)(_553.values[0])(_553.values[1])(e.target.value)));
+                }), React_DOM.value((_553.values[1]).mongodb.connectionUri) ])([  ]), React_DOM.label([ React_DOM.htmlFor("mongodb-database") ])([ React_DOM.text("Database") ]), React_DOM.input([ React_DOM.name("mongodb-database"), React_DOM.placeholder("test"), React_DOM.onChange(function (e) {
+                    return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState(updateSEMongoDatabase(_109)(_553.values[0])(_553.values[1])(e.target.value)));
+                }), React_DOM.value((_553.values[1]).mongodb.database) ])([  ]) ];
             })) ]), React_DOM["fieldset'"]([ React_DOM["legend'"]([ React_DOM.text("Java") ]), React_DOM["div'"]([ React_DOM.label([ React_DOM.htmlFor("java-binary") ])([ React_DOM.text("Binary") ]), React_DOM.input([ React_DOM.name("java-binary"), React_DOM.placeholder("/usr/bin/java"), React_DOM.onChange(function (e) {
                 return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState(updateNWJava(_109)(e.target.value)));
             }), React_DOM.value(SlamData_Helpers.getOrElse(_109.sdConfig.nodeWebkit.java)("")) ])([  ]) ]) ]) ]) ]), React_DOM.div([ React_DOM.className("content" + activate(eqSettingsTab({}))(SlamDataTab)(_109.active)) ])([ React_DOM["form'"]([ React_DOM["fieldset'"]([ React_DOM["legend'"]([ React_DOM.text("SlamEngine server") ]), React_DOM["div'"]([ React_DOM.label([ React_DOM.htmlFor("server-location") ])([ React_DOM.text("Location") ]), React_DOM.input([ React_DOM.name("server-location"), React_DOM.placeholder("http://localhost"), React_DOM.onChange(function (e) {
-                return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState(updateServerLocation(_109)(e.target.value)));
+                return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState(updateSDServerLocation(_109)(e.target.value)));
             }), React_DOM.value(_109.sdConfig.server.location) ])([  ]) ]), React_DOM["div'"]([ React_DOM.label([ React_DOM.htmlFor("server-port") ])([ React_DOM.text("Post") ]), React_DOM.input([ React_DOM.name("server-port"), React_DOM.placeholder("8080"), React_DOM.onChange(function (e) {
                 return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState(updateSDServerPort(_109)(e.target.value)));
             }), React_DOM.value(_109.sdConfig.server.port) ])([  ]) ]) ]) ]) ]) ]) ]) ]));
@@ -67666,14 +67808,14 @@ PS.SlamData_App_Panel = (function () {
         return function __do() {
             var _115 = React.readState();
             return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-                var _2213 = {};
-                for (var _2214 in _115) {
-                    if (_115.hasOwnProperty(_2214)) {
-                        _2213[_2214] = _115[_2214];
+                var _2233 = {};
+                for (var _2234 in _115) {
+                    if (_115.hasOwnProperty(_2234)) {
+                        _2233[_2234] = _115[_2234];
                     };
                 };
-                _2213.activeTab = Data_Maybe.Just(ident);
-                return _2213;
+                _2233.activeTab = Data_Maybe.Just(ident);
+                return _2233;
             })()))();
         };
     };
@@ -67697,17 +67839,17 @@ PS.SlamData_App_Panel = (function () {
         return _569.ident;
     };
     var panel$prime = React.mkUI((function () {
-        var _2226 = {};
-        for (var _2227 in React.spec) {
-            if (React.spec.hasOwnProperty(_2227)) {
-                _2226[_2227] = React.spec[_2227];
+        var _2246 = {};
+        for (var _2247 in React.spec) {
+            if (React.spec.hasOwnProperty(_2247)) {
+                _2246[_2247] = React.spec[_2247];
             };
         };
-        _2226.getInitialState = Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
+        _2246.getInitialState = Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
             tabs: [  ], 
             activeTab: Data_Maybe.Nothing
         });
-        return _2226;
+        return _2246;
     })())(function __do() {
         var _114 = React.getProps();
         var _113 = React.readState();
@@ -67861,24 +68003,24 @@ PS.SlamData_App_Notebook = (function () {
             var _124 = React.readState();
             return (function () {
                 var visualState$prime = (function () {
-                    var _2241 = {};
-                    for (var _2242 in _124.visualState) {
-                        if (_124.visualState.hasOwnProperty(_2242)) {
-                            _2241[_2242] = _124.visualState[_2242];
+                    var _2261 = {};
+                    for (var _2262 in _124.visualState) {
+                        if (_124.visualState.hasOwnProperty(_2262)) {
+                            _2261[_2262] = _124.visualState[_2262];
                         };
                     };
-                    _2241.visible = vis;
-                    return _2241;
+                    _2261.visible = vis;
+                    return _2261;
                 })();
                 return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-                    var _2243 = {};
-                    for (var _2244 in _124) {
-                        if (_124.hasOwnProperty(_2244)) {
-                            _2243[_2244] = _124[_2244];
+                    var _2263 = {};
+                    for (var _2264 in _124) {
+                        if (_124.hasOwnProperty(_2264)) {
+                            _2263[_2264] = _124[_2264];
                         };
                     };
-                    _2243.visualState = visualState$prime;
-                    return _2243;
+                    _2263.visualState = visualState$prime;
+                    return _2263;
                 })()));
             })()();
         };
@@ -67996,15 +68138,15 @@ PS.SlamData_App_Notebook = (function () {
                     Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_Helpers.localSet(Prelude.showArray(SlamData_App_Notebook_Block_Types.showBlockSpec({})))(SlamData_Helpers.Blocks)(_131))();
                     Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_Helpers.localSet(Prelude.showArray(SlamData_App_Notebook_Types.showNotebookSpec({})))(SlamData_Helpers.Notebooks)(o.snd))();
                     return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-                        var _2264 = {};
-                        for (var _2265 in _132) {
-                            if (_132.hasOwnProperty(_2265)) {
-                                _2264[_2265] = _132[_2265];
+                        var _2284 = {};
+                        for (var _2285 in _132) {
+                            if (_132.hasOwnProperty(_2285)) {
+                                _2284[_2285] = _132[_2285];
                             };
                         };
-                        _2264.notebooks = o.snd;
-                        _2264.active = Data_Maybe.Nothing;
-                        return _2264;
+                        _2284.notebooks = o.snd;
+                        _2284.active = Data_Maybe.Nothing;
+                        return _2284;
                     })()))();
                 };
             })()();
@@ -68019,14 +68161,14 @@ PS.SlamData_App_Notebook = (function () {
                 })(SlamData_Helpers.localGet(SlamData_App_Notebook_Block_Types.readBlockSpec({}))(SlamData_Helpers.Blocks));
                 var go = function (_603) {
                     return SlamData_App_Notebook_Types.NotebookSpec((function () {
-                        var _2270 = {};
-                        for (var _2271 in _603.values[0]) {
-                            if ((_603.values[0]).hasOwnProperty(_2271)) {
-                                _2270[_2271] = _603.values[0][_2271];
+                        var _2290 = {};
+                        for (var _2291 in _603.values[0]) {
+                            if ((_603.values[0]).hasOwnProperty(_2291)) {
+                                _2290[_2291] = _603.values[0][_2291];
                             };
                         };
-                        _2270.blocks = Data_Array["delete"](SlamData_App_Notebook_Block_Types.eqBlockID({}))(ident)((_603.values[0]).blocks);
-                        return _2270;
+                        _2290.blocks = Data_Array["delete"](SlamData_App_Notebook_Block_Types.eqBlockID({}))(ident)((_603.values[0]).blocks);
+                        return _2290;
                     })());
                 };
                 var notebooks$prime = Prelude["<$>"](Data_Array.functorArray({}))(go)(_128.notebooks);
@@ -68034,14 +68176,14 @@ PS.SlamData_App_Notebook = (function () {
                     Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_Helpers.localSet(Prelude.showArray(SlamData_App_Notebook_Block_Types.showBlockSpec({})))(SlamData_Helpers.Blocks)(blocks$prime))();
                     Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_Helpers.localSet(Prelude.showArray(SlamData_App_Notebook_Types.showNotebookSpec({})))(SlamData_Helpers.Notebooks)(notebooks$prime))();
                     return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-                        var _2273 = {};
-                        for (var _2274 in _128) {
-                            if (_128.hasOwnProperty(_2274)) {
-                                _2273[_2274] = _128[_2274];
+                        var _2293 = {};
+                        for (var _2294 in _128) {
+                            if (_128.hasOwnProperty(_2294)) {
+                                _2293[_2294] = _128[_2294];
                             };
                         };
-                        _2273.notebooks = notebooks$prime;
-                        return _2273;
+                        _2293.notebooks = notebooks$prime;
+                        return _2293;
                     })()))();
                 };
             })()();
@@ -68055,14 +68197,14 @@ PS.SlamData_App_Notebook = (function () {
                 return function __do() {
                     Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_Helpers.localSet(Prelude.showArray(SlamData_App_Notebook_Types.showNotebookSpec({})))(SlamData_Helpers.Notebooks)(notebooks))();
                     return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-                        var _2276 = {};
-                        for (var _2277 in _126) {
-                            if (_126.hasOwnProperty(_2277)) {
-                                _2276[_2277] = _126[_2277];
+                        var _2296 = {};
+                        for (var _2297 in _126) {
+                            if (_126.hasOwnProperty(_2297)) {
+                                _2296[_2297] = _126[_2297];
                             };
                         };
-                        _2276.notebooks = Prelude["<$>"](Data_Array.functorArray({}))(f)(_126.notebooks);
-                        return _2276;
+                        _2296.notebooks = Prelude["<$>"](Data_Array.functorArray({}))(f)(_126.notebooks);
+                        return _2296;
                     })()))();
                 };
             })()();
@@ -68080,15 +68222,15 @@ PS.SlamData_App_Notebook = (function () {
             return function __do() {
                 Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_Helpers.localSet(Prelude.showArray(SlamData_App_Notebook_Types.showNotebookSpec({})))(SlamData_Helpers.Notebooks)(notebooks$prime))();
                 return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-                    var _2279 = {};
-                    for (var _2280 in _129) {
-                        if (_129.hasOwnProperty(_2280)) {
-                            _2279[_2280] = _129[_2280];
+                    var _2299 = {};
+                    for (var _2300 in _129) {
+                        if (_129.hasOwnProperty(_2300)) {
+                            _2299[_2300] = _129[_2300];
                         };
                     };
-                    _2279.notebooks = notebooks$prime;
-                    _2279.active = Data_Maybe.Just(i);
-                    return _2279;
+                    _2299.notebooks = notebooks$prime;
+                    _2299.active = Data_Maybe.Just(i);
+                    return _2299;
                 })()))();
             };
         })()();
@@ -68108,14 +68250,14 @@ PS.SlamData_App_Notebook = (function () {
                         var blocks$prime = Data_Array.snoc(SlamData_Helpers.localGet(SlamData_App_Notebook_Block_Types.readBlockSpec({}))(SlamData_Helpers.Blocks))(block);
                         var go = function (_602) {
                             return Prelude["=="](SlamData_App_Notebook_Types.eqNotebookID({}))((_602.values[0]).ident)(ident) ? SlamData_App_Notebook_Types.NotebookSpec((function () {
-    var _2283 = {};
-    for (var _2284 in _602.values[0]) {
-        if ((_602.values[0]).hasOwnProperty(_2284)) {
-            _2283[_2284] = _602.values[0][_2284];
+    var _2303 = {};
+    for (var _2304 in _602.values[0]) {
+        if ((_602.values[0]).hasOwnProperty(_2304)) {
+            _2303[_2304] = _602.values[0][_2304];
         };
     };
-    _2283.blocks = Data_Array.snoc((_602.values[0]).blocks)(i);
-    return _2283;
+    _2303.blocks = Data_Array.snoc((_602.values[0]).blocks)(i);
+    return _2303;
 })()) : SlamData_App_Notebook_Types.NotebookSpec(_602.values[0]);
                         };
                         var notebooks$prime = Prelude["<$>"](Data_Array.functorArray({}))(go)(_127.notebooks);
@@ -68123,14 +68265,14 @@ PS.SlamData_App_Notebook = (function () {
                             Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_Helpers.localSet(Prelude.showArray(SlamData_App_Notebook_Block_Types.showBlockSpec({})))(SlamData_Helpers.Blocks)(blocks$prime))();
                             Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_Helpers.localSet(Prelude.showArray(SlamData_App_Notebook_Types.showNotebookSpec({})))(SlamData_Helpers.Notebooks)(notebooks$prime))();
                             return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-                                var _2286 = {};
-                                for (var _2287 in _127) {
-                                    if (_127.hasOwnProperty(_2287)) {
-                                        _2286[_2287] = _127[_2287];
+                                var _2306 = {};
+                                for (var _2307 in _127) {
+                                    if (_127.hasOwnProperty(_2307)) {
+                                        _2306[_2307] = _127[_2307];
                                     };
                                 };
-                                _2286.notebooks = notebooks$prime;
-                                return _2286;
+                                _2306.notebooks = notebooks$prime;
+                                return _2306;
                             })()))();
                         };
                     })()();
@@ -68158,24 +68300,24 @@ PS.SlamData_App_Notebook = (function () {
             var _121 = React.readState();
             return (function () {
                 var vState$prime = (function () {
-                    var _2292 = {};
-                    for (var _2293 in _121.visualState) {
-                        if (_121.visualState.hasOwnProperty(_2293)) {
-                            _2292[_2293] = _121.visualState[_2293];
+                    var _2312 = {};
+                    for (var _2313 in _121.visualState) {
+                        if (_121.visualState.hasOwnProperty(_2313)) {
+                            _2312[_2313] = _121.visualState[_2313];
                         };
                     };
-                    _2292.visualType = ty;
-                    return _2292;
+                    _2312.visualType = ty;
+                    return _2312;
                 })();
                 return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-                    var _2294 = {};
-                    for (var _2295 in _121) {
-                        if (_121.hasOwnProperty(_2295)) {
-                            _2294[_2295] = _121[_2295];
+                    var _2314 = {};
+                    for (var _2315 in _121) {
+                        if (_121.hasOwnProperty(_2315)) {
+                            _2314[_2315] = _121[_2315];
                         };
                     };
-                    _2294.visualState = vState$prime;
-                    return _2294;
+                    _2314.visualState = vState$prime;
+                    return _2314;
                 })()));
             })()();
         };
@@ -68218,24 +68360,24 @@ PS.SlamData_App_Notebook = (function () {
             var _123 = React.readState();
             return (function () {
                 var visualState$prime = (function () {
-                    var _2313 = {};
-                    for (var _2314 in _123.visualState) {
-                        if (_123.visualState.hasOwnProperty(_2314)) {
-                            _2313[_2314] = _123.visualState[_2314];
+                    var _2333 = {};
+                    for (var _2334 in _123.visualState) {
+                        if (_123.visualState.hasOwnProperty(_2334)) {
+                            _2333[_2334] = _123.visualState[_2334];
                         };
                     };
-                    _2313.active = visualTab;
-                    return _2313;
+                    _2333.active = visualTab;
+                    return _2333;
                 })();
                 return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-                    var _2315 = {};
-                    for (var _2316 in _123) {
-                        if (_123.hasOwnProperty(_2316)) {
-                            _2315[_2316] = _123[_2316];
+                    var _2335 = {};
+                    for (var _2336 in _123) {
+                        if (_123.hasOwnProperty(_2336)) {
+                            _2335[_2336] = _123[_2336];
                         };
                     };
-                    _2315.visualState = visualState$prime;
-                    return _2315;
+                    _2335.visualState = visualState$prime;
+                    return _2335;
                 })()));
             })()();
         };
@@ -68244,14 +68386,14 @@ PS.SlamData_App_Notebook = (function () {
         return function __do() {
             var _122 = React.readState();
             return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-                var _2318 = {};
-                for (var _2319 in _122) {
-                    if (_122.hasOwnProperty(_2319)) {
-                        _2318[_2319] = _122[_2319];
+                var _2338 = {};
+                for (var _2339 in _122) {
+                    if (_122.hasOwnProperty(_2339)) {
+                        _2338[_2339] = _122[_2339];
                     };
                 };
-                _2318.active = Data_Maybe.Just(ident);
-                return _2318;
+                _2338.active = Data_Maybe.Just(ident);
+                return _2338;
             })()))();
         };
     };
@@ -68291,14 +68433,14 @@ PS.SlamData_App_Notebook = (function () {
                     selectedFields: [  ]
                 };
                 var fields$prime = $$new ? Prelude[":"](newField)(vState.fields) : Data_Array.filter(Prelude[">>>"](Prelude.semigroupoidArr({}))(_dataSrc)(Prelude["/="](Prelude.eqString({}))(ident)))(vState.fields);
-                var _2323 = {};
-                for (var _2324 in vState) {
-                    if (vState.hasOwnProperty(_2324)) {
-                        _2323[_2324] = vState[_2324];
+                var _2343 = {};
+                for (var _2344 in vState) {
+                    if (vState.hasOwnProperty(_2344)) {
+                        _2343[_2344] = vState[_2344];
                     };
                 };
-                _2323.fields = fields$prime;
-                return _2323;
+                _2343.fields = fields$prime;
+                return _2343;
             };
         };
     };
@@ -68322,50 +68464,50 @@ PS.SlamData_App_Notebook = (function () {
                 return (function () {
                     var fields$prime = Prelude["<$>"](Data_Array.functorArray({}))(function (f) {
                         return ident === _dataSrc(f) ? (function () {
-    var _2331 = {};
-    for (var _2332 in f) {
-        if (f.hasOwnProperty(_2332)) {
-            _2331[_2332] = f[_2332];
+    var _2351 = {};
+    for (var _2352 in f) {
+        if (f.hasOwnProperty(_2352)) {
+            _2351[_2352] = f[_2352];
         };
     };
-    _2331.selectedFields = fields;
-    return _2331;
+    _2351.selectedFields = fields;
+    return _2351;
 })() : f;
                     })(_125.visualState.fields);
                     var vState$prime = (function () {
-                        var _2333 = {};
-                        for (var _2334 in _125.visualState) {
-                            if (_125.visualState.hasOwnProperty(_2334)) {
-                                _2333[_2334] = _125.visualState[_2334];
+                        var _2353 = {};
+                        for (var _2354 in _125.visualState) {
+                            if (_125.visualState.hasOwnProperty(_2354)) {
+                                _2353[_2354] = _125.visualState[_2354];
                             };
                         };
-                        _2333.fields = fields$prime;
-                        return _2333;
+                        _2353.fields = fields$prime;
+                        return _2353;
                     })();
                     return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-                        var _2335 = {};
-                        for (var _2336 in _125) {
-                            if (_125.hasOwnProperty(_2336)) {
-                                _2335[_2336] = _125[_2336];
+                        var _2355 = {};
+                        for (var _2356 in _125) {
+                            if (_125.hasOwnProperty(_2356)) {
+                                _2355[_2356] = _125[_2356];
                             };
                         };
-                        _2335.visualState = vState$prime;
-                        return _2335;
+                        _2355.visualState = vState$prime;
+                        return _2355;
                     })()));
                 })()();
             };
         };
     };
     var notebook = React.mkUI((function () {
-        var _2337 = {};
-        for (var _2338 in React.spec) {
-            if (React.spec.hasOwnProperty(_2338)) {
-                _2337[_2338] = React.spec[_2338];
+        var _2357 = {};
+        for (var _2358 in React.spec) {
+            if (React.spec.hasOwnProperty(_2358)) {
+                _2357[_2358] = React.spec[_2358];
             };
         };
-        _2337.getInitialState = Prelude.pure(Control_Monad_Eff.applicativeEff({}))(initialState);
-        _2337.shouldComponentUpdate = scu;
-        return _2337;
+        _2357.getInitialState = Prelude.pure(Control_Monad_Eff.applicativeEff({}))(initialState);
+        _2357.shouldComponentUpdate = scu;
+        return _2357;
     })())(function __do() {
         var _120 = React.getProps();
         var _119 = React.readState();
@@ -68398,24 +68540,24 @@ PS.SlamData_App_Notebook = (function () {
     };
 }))(_119.visualState.fields)), React_DOM.div([ React_DOM.className("content" + actVisualType(_119.visualState.active)) ])([ React_DOM.ul([ React_DOM.className("chart-type small-block-grid-5") ])(visuals(Prelude["<<<"](Prelude.semigroupoidArr({}))(React.deferred)(changeVisual))(_119.visualState.visualType)), React_DOM.select([ React_DOM.onChange(function (e) {
     var vState$prime = (function () {
-        var _2344 = {};
-        for (var _2345 in _119.visualState) {
-            if (_119.visualState.hasOwnProperty(_2345)) {
-                _2344[_2345] = _119.visualState[_2345];
+        var _2364 = {};
+        for (var _2365 in _119.visualState) {
+            if (_119.visualState.hasOwnProperty(_2365)) {
+                _2364[_2365] = _119.visualState[_2365];
             };
         };
-        _2344.visualData = [ targetValue(e)(_119.visualState.visualType) ];
-        return _2344;
+        _2364.visualData = [ targetValue(e)(_119.visualState.visualType) ];
+        return _2364;
     })();
     return React.writeState((function () {
-        var _2346 = {};
-        for (var _2347 in _119) {
-            if (_119.hasOwnProperty(_2347)) {
-                _2346[_2347] = _119[_2347];
+        var _2366 = {};
+        for (var _2367 in _119) {
+            if (_119.hasOwnProperty(_2367)) {
+                _2366[_2367] = _119[_2367];
             };
         };
-        _2346.visualState = vState$prime;
-        return _2346;
+        _2366.visualState = vState$prime;
+        return _2366;
     })());
 }) ])(Prelude["<$>"](Data_Array.functorArray({}))(optionify)(_119.visualState.fields)), React_DOM.div([ React_DOM.className("actions") ])([ React_DOM.a([ React_DOM.className("button"), React_DOM.onClick(function (_) {
     return function __do() {
@@ -68429,14 +68571,14 @@ PS.SlamData_App_Notebook = (function () {
     };
 }) ])([ React_DOM.text("Create") ]), React_DOM.a([ React_DOM.className("button secondary"), React_DOM.onClick(function (_) {
     return React.writeState((function () {
-        var _2351 = {};
-        for (var _2352 in _119) {
-            if (_119.hasOwnProperty(_2352)) {
-                _2351[_2352] = _119[_2352];
+        var _2371 = {};
+        for (var _2372 in _119) {
+            if (_119.hasOwnProperty(_2372)) {
+                _2371[_2372] = _119[_2372];
             };
         };
-        _2351.visualState = initialState.visualState;
-        return _2351;
+        _2371.visualState = initialState.visualState;
+        return _2371;
     })());
 }) ])([ React_DOM.text("Cancel") ]) ]) ]) ]) ]) ]) ] : [  ])));
         })()();
@@ -68493,17 +68635,17 @@ PS.SlamData_App_Workspace = (function () {
     var SlamData_Helpers = PS.SlamData_Helpers;
     function cwm() {  var fetchFS = function() {    oboe(serverURI_(this.props.settings.sdConfig) + '/metadata/fs/')    .done(function(json) {      if (this.isMounted()) {        var sorted = json.children.sort(function(a, b) {          return a.name.localeCompare(b.name);        });        this.setState({files: sorted});      }    }.bind(this));  }.bind(this);  fetchFS();  setInterval(fetchFS, pollRate);};
     var workspace = React.mkUI((function () {
-        var _2353 = {};
-        for (var _2354 in React.spec) {
-            if (React.spec.hasOwnProperty(_2354)) {
-                _2353[_2354] = React.spec[_2354];
+        var _2373 = {};
+        for (var _2374 in React.spec) {
+            if (React.spec.hasOwnProperty(_2374)) {
+                _2373[_2374] = React.spec[_2374];
             };
         };
-        _2353.getInitialState = Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
+        _2373.getInitialState = Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
             files: [  ]
         });
-        _2353.componentWillMount = cwm;
-        return _2353;
+        _2373.componentWillMount = cwm;
+        return _2373;
     })())(function __do() {
         var _134 = React.getProps();
         var _133 = React.readState();
@@ -68535,28 +68677,28 @@ PS.SlamData_App = (function () {
         return function __do() {
             var _137 = React.readState();
             return React.writeState((function () {
-                var _2358 = {};
-                for (var _2359 in _137) {
-                    if (_137.hasOwnProperty(_2359)) {
-                        _2358[_2359] = _137[_2359];
+                var _2378 = {};
+                for (var _2379 in _137) {
+                    if (_137.hasOwnProperty(_2379)) {
+                        _2378[_2379] = _137[_2379];
                     };
                 };
-                _2358.settingsVisible = bool;
-                return _2358;
+                _2378.settingsVisible = bool;
+                return _2378;
             })())();
         };
     };
     var app = React.mkUI((function () {
-        var _2360 = {};
-        for (var _2361 in React.spec) {
-            if (React.spec.hasOwnProperty(_2361)) {
-                _2360[_2361] = React.spec[_2361];
+        var _2380 = {};
+        for (var _2381 in React.spec) {
+            if (React.spec.hasOwnProperty(_2381)) {
+                _2380[_2381] = React.spec[_2381];
             };
         };
-        _2360.getInitialState = Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
+        _2380.getInitialState = Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
             settingsVisible: false
         });
-        return _2360;
+        return _2380;
     })())(function __do() {
         var _136 = React.readState();
         var _135 = React.getProps();
@@ -68710,16 +68852,16 @@ PS.SlamData_Login = (function () {
         })()();
     });
     var loginForm = React.mkUI((function () {
-        var _2378 = {};
-        for (var _2379 in React.spec) {
-            if (React.spec.hasOwnProperty(_2379)) {
-                _2378[_2379] = React.spec[_2379];
+        var _2398 = {};
+        for (var _2399 in React.spec) {
+            if (React.spec.hasOwnProperty(_2399)) {
+                _2398[_2399] = React.spec[_2399];
             };
         };
-        _2378.getInitialState = Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
+        _2398.getInitialState = Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
             newAccount: Existing
         });
-        return _2378;
+        return _2398;
     })())(function __do() {
         var _138 = React.readState();
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.form([  ])([ React_DOM.fieldset([  ])([ React_DOM.legend([  ])([ React_DOM.text("Login to SlamData") ]), SlamData_Helpers.row([ SlamData_Helpers.large("6")(newOrExisting({

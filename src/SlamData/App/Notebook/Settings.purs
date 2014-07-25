@@ -9,7 +9,12 @@ module SlamData.App.Notebook.Settings
   import React (getProps, mkUI, readState, spec, writeState, ReadProps(), UI())
 
   import SlamData.Helpers (defaultSEConfig, getOrElse)
-  import SlamData.Types (Settings(), SlamDataConfig(), SlamEngineConfig())
+  import SlamData.Types
+    ( Mounting()
+    , Settings()
+    , SlamDataConfig()
+    , SlamEngineConfig()
+    )
 
   import qualified Data.Map as M
   import qualified React.DOM as D
@@ -31,14 +36,14 @@ module SlamData.App.Notebook.Settings
   type SettingsState =
     { active :: SettingsTab
     , sdConfig :: SlamDataConfig
-    , seConfig :: SlamEngineConfig
+    , seConfig :: Maybe SlamEngineConfig
     }
 
   settings :: Settings -> UI
   settings = mkUI spec{getInitialState = initialState} do
     state <- readState
     let sdConfig = state.sdConfig
-    let seConfig = state.seConfig
+    let seConfig = state.seConfig `getOrElse` {mountings: M.empty, server: {port: sdConfig.server.port}}
     let mountings = M.toList seConfig.mountings
     pure $ D.div
       [D.className "vertical"]
@@ -88,28 +93,27 @@ module SlamData.App.Notebook.Settings
                       -- rather than just one.
                       , D.fieldset'
                           [ D.legend' [D.text "MongoDB mountings"]
-                          , D.div' $
-                              mountings >>= \(Tuple path mounting) ->
+                          , D.div' $ mountings >>= \(Tuple path mounting) ->
                               [ D.label
                                   [D.htmlFor "mongodb-path"]
                                   [D.text "Path"]
                               , D.input
                                   [ D.name "mongodb-mongouri"
                                   , D.placeholder "/"
-                                  -- , D.onChange \e -> pure $
-                                  --   writeState $ updateSEMountPath state e.target.value
+                                  , D.onChange \e -> pure $
+                                    writeState $ updateSEMountPath state path mounting e.target.value
                                   , D.value path
                                   ]
                                   []
                               , D.label
                                   [D.htmlFor "mongodb-mongouri"]
-                                  [D.text "MongoURI"]
+                                  [D.text "MongoUri"]
                               , D.input
                                   [ D.name "mongodb-mongouri"
                                   , D.placeholder "mongodb://localhost:27017"
-                                  -- , D.onChange \e -> pure $
-                                  --   writeState $ updateSEMongoURI state e.target.value
-                                  , D.value mounting.mongodb.connectionURI
+                                  , D.onChange \e -> pure $
+                                    writeState $ updateSEMongoUri state path mounting e.target.value
+                                  , D.value mounting.mongodb.connectionUri
                                   ]
                                   []
                               , D.label
@@ -118,8 +122,8 @@ module SlamData.App.Notebook.Settings
                               , D.input
                                   [ D.name "mongodb-database"
                                   , D.placeholder "test"
-                                  -- , D.onChange \e -> pure $
-                                  --   writeState $ updateSEMongoDatabase state e.target.value
+                                  , D.onChange \e -> pure $
+                                    writeState $ updateSEMongoDatabase state path mounting e.target.value
                                   , D.value mounting.mongodb.database
                                   ]
                                   []
@@ -156,7 +160,7 @@ module SlamData.App.Notebook.Settings
                                   [ D.name "server-location"
                                   , D.placeholder "http://localhost"
                                   , D.onChange \e -> pure $
-                                    writeState $ updateServerLocation state e.target.value
+                                    writeState $ updateSDServerLocation state e.target.value
                                   , D.value sdConfig.server.location
                                   ]
                                   []
@@ -196,8 +200,14 @@ module SlamData.App.Notebook.Settings
 
   -- TODO: Replace this with lenses. This is ridiculous.
 
-  updateServerLocation :: SettingsState -> String -> SettingsState
-  updateServerLocation state x =
+  updateNWJava :: SettingsState -> String -> SettingsState
+  updateNWJava state x =
+    let nodeWebkit' = state.sdConfig.nodeWebkit{java = Just x}
+        sdConfig'   = state.sdConfig{nodeWebkit = nodeWebkit'}
+    in state{sdConfig = sdConfig'}
+
+  updateSDServerLocation :: SettingsState -> String -> SettingsState
+  updateSDServerLocation state x =
     let server'   = state.sdConfig.server{location = x}
         sdConfig' = state.sdConfig{server = server'}
     in state{sdConfig = sdConfig'}
@@ -210,12 +220,45 @@ module SlamData.App.Notebook.Settings
 
   updateSEServerPort :: SettingsState -> String -> SettingsState
   updateSEServerPort state x =
-    let server'   = state.seConfig.server{port = x}
-        seConfig' = state.seConfig{server = server'}
+    let seConfig' = state.seConfig >>= \seConfig ->
+      let server' = seConfig.server{port = x} in
+      pure seConfig{server = server'}
     in state{seConfig = seConfig'}
 
-  updateNWJava :: SettingsState -> String -> SettingsState
-  updateNWJava state x =
-    let nodeWebkit' = state.sdConfig.nodeWebkit{java = Just x}
-        sdConfig'   = state.sdConfig{nodeWebkit = nodeWebkit'}
-    in state{sdConfig = sdConfig'}
+  updateSEMongoUri :: SettingsState
+                   -> String
+                   -> Mounting
+                   -> String
+                   -> SettingsState
+  updateSEMongoUri state path mounting uri =
+    let seConfig' = state.seConfig >>= \seConfig ->
+      let mongodb' = mounting.mongodb{connectionUri = uri} in
+      let mounting' = mounting{mongodb = mongodb'} in
+      let mountings' = M.insert path mounting' seConfig.mountings in
+      pure seConfig{mountings = mountings'}
+    in state{seConfig = seConfig'}
+
+  updateSEMongoDatabase :: SettingsState
+                        -> String
+                        -> Mounting
+                        -> String
+                        -> SettingsState
+  updateSEMongoDatabase state path mounting db =
+    let seConfig' = state.seConfig >>= \seConfig ->
+      let mongodb' = mounting.mongodb{database = db} in
+      let mounting' = mounting{mongodb = mongodb'} in
+      let mountings' = M.insert path mounting' seConfig.mountings in
+      pure seConfig{mountings = mountings'}
+    in state{seConfig = seConfig'}
+
+  updateSEMountPath :: SettingsState
+                     -> String
+                     -> Mounting
+                     -> String
+                     -> SettingsState
+  updateSEMountPath state old mounting new =
+    let seConfig' = state.seConfig >>= \seConfig ->
+      let deleted = M.delete old seConfig.mountings in
+      let mountings' = M.insert new mounting deleted in
+      pure seConfig{mountings = mountings'}
+    in state{seConfig = seConfig'}

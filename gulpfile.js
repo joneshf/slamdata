@@ -307,6 +307,4 @@ gulp.task('test', ['build']);
 gulp.task('watch', function() {
     gulp.watch(paths.src, ['compile']);
     gulp.watch(paths.style, ['sass']);
-    gulp.watch(paths.lib.browser.src, ['build-browser']);
-    gulp.watch(paths.lib['node-webkit'].src, ['build-node-webkit']);
 });

@@ -81,7 +81,7 @@ module SlamData.Helpers where
   defaultSEConfig =
     { server: {port: defaultServerPort}
     , mountings: M.singleton defaultMountPath
-        {mongodb: { connectionURI: defaultMongoURI
+        {mongodb: { connectionUri: defaultMongoURI
                   , database: defaultMongoDatabase
                   }
         }
@@ -110,7 +110,7 @@ module SlamData.Helpers where
     mongoURI <- M.lookup "seMongoURI" qs
     database <- M.lookup "seDatabase" qs
     pure { server: {port: port}
-         , mountings: M.singleton path {mongodb: { connectionURI: mongoURI
+         , mountings: M.singleton path {mongodb: { connectionUri: mongoURI
                                                  , database: database
                                                  }
                                        }

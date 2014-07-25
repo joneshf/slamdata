@@ -3,6 +3,7 @@ PS.SlamData_NodeWebkit = (function () {
     "use strict";
     var Prelude = PS.Prelude;
     var Data_Function = PS.Data_Function;
+    var Data_Map = PS.Data_Map;
     var Data_Maybe = PS.Data_Maybe;
     var Data_Maybe_Unsafe = PS.Data_Maybe_Unsafe;
     var Control_Monad_Eff = PS.Control_Monad_Eff;
@@ -28,7 +29,7 @@ PS.SlamData_NodeWebkit = (function () {
     function windowPolicy(method) {  return function(policy) {    return function() {      return policy[method]();    }  }};
     function onEvent(__emitter) {  return function(__variadic) {    return function(event) {      return function(cb) {        return function(child) {          return function() {            return child.on(event, function () {              return cb.apply(this, arguments)();            }.bind(this));          }        }      }    }  }};
     function requireConfig(location) {  return require(location);};
-    ;
+    function rawMountings2Mountings(raw) {  var mountings = mEmpty_;  for (var path in raw) {    mountings = mInsert(path)(raw[path])(mountings);  }  return mountings;};
     var $less$div$greater = function (fp) {
         return function (fp$prime) {
             return joinPath([ fp, fp$prime ]);
@@ -51,6 +52,8 @@ PS.SlamData_NodeWebkit = (function () {
     var onData = function (__dict_EventEmitter_0) {
         return Prelude["<<<"](Prelude.semigroupoidArr({}))(onEvent(__dict_EventEmitter_0)(variadicFn1({}))("data"))(Data_Function.mkFn1);
     };
+    var mInsert = Data_Map.insert(Prelude.ordString({}));
+    var mEmpty_ = Data_Map.empty;
     var ignore = windowPolicy("ignore");
     var forceNewWindow = windowPolicy("forceNewWindow");
     var forceNewPopup = windowPolicy("forceNewPopup");
@@ -116,12 +119,12 @@ PS.SlamData_NodeWebkit = (function () {
                         java: Data_Maybe.Just((sdConfig["node-webkit"]).java)
                     }
                 }, 
-                seConfig: {
+                seConfig: Data_Maybe.Just({
                     server: {
                         port: seConfig.server.port
                     }, 
-                    mountings: seConfig2Mountings(seConfig)
-                }
+                    mountings: rawMountings2Mountings(seConfig.mountings)
+                })
             })();
         };
     })();
@@ -132,8 +135,10 @@ PS.SlamData_NodeWebkit = (function () {
         sdConfigFile: sdConfigFile, 
         resolveConfigDir: resolveConfigDir, 
         linuxConfigHome: linuxConfigHome, 
-        seConfig2Mountings: seConfig2Mountings, 
+        rawMountings2Mountings: rawMountings2Mountings, 
         requireConfig: requireConfig, 
+        mInsert: mInsert, 
+        "mEmpty_": mEmpty_, 
         onNewWinPolicy: onNewWinPolicy, 
         onCloseNWWindow: onCloseNWWindow, 
         onData: onData, 

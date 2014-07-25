@@ -5,7 +5,10 @@ module SlamData.Types where
 
   -- TODO: These ports should be their own type, not strings.
 
-  type Settings = {sdConfig :: SlamDataConfig, seConfig :: SlamEngineConfig}
+  type Settings =
+    { sdConfig :: SlamDataConfig
+    , seConfig :: Maybe SlamEngineConfig
+    }
 
   type SlamDataConfig =
     { server :: {location :: String, port :: String}
@@ -18,7 +21,7 @@ module SlamData.Types where
     }
 
   type Mounting =
-    {mongodb :: { connectionURI :: String
+    {mongodb :: { connectionUri :: String
                 , database :: String
                 }
     }

@@ -6,6 +6,7 @@ PS.SlamData_Browser = (function () {
     var Text_Parsing_Parser = PS.Text_Parsing_Parser;
     var Data_Either = PS.Data_Either;
     var SlamData = PS.SlamData;
+    var Data_Maybe = PS.Data_Maybe;
     var main = (function () {
         var search$prime = SlamData_Helpers.search(SlamData_Helpers.location(SlamData_Helpers.window));
         var rawQueries = Text_Parsing_Parser.runParser(search$prime)(SlamData_Helpers.parseQueryString);
@@ -13,7 +14,7 @@ PS.SlamData_Browser = (function () {
         var seConfig = Data_Either.either(Prelude["const"](SlamData_Helpers.defaultSEConfig))(SlamData_Helpers.query2SEConfig)(rawQueries);
         return SlamData.slamData({
             sdConfig: sdConfig, 
-            seConfig: seConfig
+            seConfig: Data_Maybe.Just(seConfig)
         });
     })();
     return {

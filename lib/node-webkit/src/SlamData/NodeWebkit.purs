@@ -257,6 +257,12 @@ module SlamData.NodeWebkit where
           -> Eff eff NWWindow
   onNewWinPolicy = onEvent "new-win-policy" <<< mkFn3
 
+  mEmpty_ :: M.Map String Mounting
+  mEmpty_ = M.empty
+
+  mInsert :: String -> Mounting -> M.Map String Mounting -> M.Map String Mounting
+  mInsert = M.insert
+
   -- Finally, our actual logic!
 
   foreign import requireConfig
@@ -264,8 +270,14 @@ module SlamData.NodeWebkit where
     \  return require(location);\
     \}" :: forall r. FilePath -> { | r}
 
-  foreign import seConfig2Mountings
-    "" :: forall r. { | r} -> M.Map String Mounting
+  foreign import rawMountings2Mountings
+    "function rawMountings2Mountings(raw) {\
+    \  var mountings = mEmpty_;\
+    \  for (var path in raw) {\
+    \    mountings = mInsert(path)(raw[path])(mountings);\
+    \  }\
+    \  return mountings;\
+    \}" :: forall r. { | r} -> M.Map String Mounting
 
   linuxConfigHome :: Maybe FilePath
   linuxConfigHome = env "XDG_CONFIG_HOME"
@@ -306,7 +318,7 @@ module SlamData.NodeWebkit where
     slamData { sdConfig: { server: {location: sdServer.location, port: sdServer.port}
                          , nodeWebkit: {java: Just sdConfig."node-webkit".java}
                          }
-             , seConfig: { server: {port: seConfig.server.port}
-                         , mountings: seConfig2Mountings seConfig
-                         }
+             , seConfig: Just { server: {port: seConfig.server.port}
+                              , mountings: rawMountings2Mountings seConfig.mountings
+                              }
              }

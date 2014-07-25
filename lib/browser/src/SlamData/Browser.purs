@@ -12,6 +12,7 @@ module SlamData.Browser where
   import Control.Monad.Eff (Eff())
 
   import Data.Either (either)
+  import Data.Maybe (Maybe(..))
 
   import DOM (DOM())
 
@@ -44,4 +45,4 @@ module SlamData.Browser where
     let rawQueries = runParser search' parseQueryString
     let sdConfig = either (const defaultSDConfig) query2SDConfig rawQueries
     let seConfig = either (const defaultSEConfig) query2SEConfig rawQueries
-    slamData {sdConfig: sdConfig, seConfig: seConfig}
+    slamData {sdConfig: sdConfig, seConfig: Just seConfig}
