@@ -1,8 +1,10 @@
 module SlamData.App.Notebook.Settings
   ( settings
+  , SettingsProps()
   , SettingsTab()
   ) where
 
+  import Data.Function (runFn3, Fn3())
   import Data.Maybe (Maybe(..))
   import Data.Tuple (Tuple(..))
 
@@ -11,6 +13,7 @@ module SlamData.App.Notebook.Settings
   import SlamData.Helpers (defaultSEConfig, getOrElse)
   import SlamData.Types
     ( Mounting()
+    , SaveSettings()
     , Settings()
     , SlamDataConfig()
     , SlamEngineConfig()
@@ -33,14 +36,21 @@ module SlamData.App.Notebook.Settings
     show SlamDataTab   = "SlamData"
     show SlamEngineTab = "SlamEngine"
 
+  type SettingsProps eff =
+    { saveSettings :: SaveSettings eff
+    , sdConfig :: SlamDataConfig
+    , seConfig :: Maybe SlamEngineConfig
+    }
+
   type SettingsState =
     { active :: SettingsTab
     , sdConfig :: SlamDataConfig
     , seConfig :: Maybe SlamEngineConfig
     }
 
-  settings :: Settings -> UI
+  settings :: forall eff. SettingsProps eff -> UI
   settings = mkUI spec{getInitialState = initialState} do
+    props <- getProps
     state <- readState
     let sdConfig = state.sdConfig
     let seConfig = state.seConfig `getOrElse` {mountings: M.empty, server: {port: sdConfig.server.port}}
@@ -82,8 +92,12 @@ module SlamData.App.Notebook.Settings
                               , D.input
                                   [ D.name "slamengine-port"
                                   , D.placeholder "8080"
-                                  , D.onChange \e -> pure $
-                                    writeState $ updateSEServerPort state e.target.value
+                                  , D.onChange \e -> do
+                                    let state' = updateSEServerPort state e.target.value
+                                    Debug.Trace.trace "changed"
+                                    -- writeState state'
+                                    -- props.saveSettings {sdConfig: state'.sdConfig, seConfig: state'.seConfig}
+                                    runFn3 wtfIsUpWithEvents writeState props.saveSettings state'
                                   , D.value seConfig.server.port
                                   ]
                                   []
@@ -185,9 +199,20 @@ module SlamData.App.Notebook.Settings
           ]
       ]
 
+  foreign import wtfIsUpWithEvents
+    "function wtfIsUpWithEvents(write, save, state) {\
+    \  console.log('should be doing things');\
+    \  write(state);\
+    \  save({sdConfig: state.sdConfig, seConfig: state.seConfig})();\
+    \  return function() {\
+    \    console.log('return the state');\
+    \    return state;\
+    \  };\
+    \}" :: forall a b c d. Fn3 a b c d
+
   -- Use the props to set up the state.
   -- Anti-pattern or not, this is the only thing that makes sense.
-  initialState :: ReadProps Settings {} SettingsState
+  initialState :: forall eff. ReadProps (SettingsProps eff) {} SettingsState
   initialState = getProps >>= \props ->
     pure { active: SlamEngineTab
          , sdConfig: props.sdConfig

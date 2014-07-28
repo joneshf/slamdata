@@ -12,10 +12,12 @@ module SlamData.NodeWebkit where
   --    then starts SlamData.
 
   import Control.Apply ((*>))
+  import Control.Monad (when)
   import Control.Monad.Eff (Eff(..))
+  import Control.Monad.Cont.Trans (runContT, ContT(..))
 
   import Data.Function (mkFn0, mkFn1, mkFn2, mkFn3, Fn0(), Fn1(), Fn2(), Fn3())
-  import Data.Maybe (Maybe(..))
+  import Data.Maybe (isJust, Maybe(..))
   import Data.Maybe.Unsafe (fromJust)
 
   import Debug.Trace (trace)
@@ -38,11 +40,9 @@ module SlamData.NodeWebkit where
     )
 
   import SlamData (slamData)
-  import SlamData.Types (Mounting())
+  import SlamData.Types (FilePath(), FS(), FSWrite(), Mounting())
 
   import qualified Data.Map as M
-
-  type FilePath = String
 
   -- TODO: The majority of this needs to be moved to separate modules.
   -- There's about 200 lines of ffi boilerplate here.
@@ -82,6 +82,7 @@ module SlamData.NodeWebkit where
 
   foreign import child_process
     "var child_process = require('child_process');" :: ChildProcess
+  foreign import fs "var fs = require('fs');" :: FS
   foreign import gui "var gui = require('nw.gui');" :: NWGUI
   foreign import path "var path = require('path');" :: Path
   foreign import platform "var platform = process.platform;" :: String
@@ -90,6 +91,15 @@ module SlamData.NodeWebkit where
 
   windowHistory :: WindowHistory
   windowHistory = window.history
+
+  foreign import writeFileSync
+    "function writeFileSync(path) {\
+    \  return function(data) {\
+    \    return function() {\
+    \      fs.writeFileSync(path, data);\
+    \    }\
+    \  }\
+    \}" :: forall eff. FilePath -> String -> Eff (fsWrite :: FSWrite | eff) Unit
 
   foreign import replaceState
     "function replaceState(state) {\
@@ -265,6 +275,11 @@ module SlamData.NodeWebkit where
 
   -- Finally, our actual logic!
 
+  foreign import stringify
+    "function stringify(obj) {\
+    \  return JSON.stringify(obj, null, 2);\
+    \}" :: forall r. { | r} -> String
+
   foreign import requireConfig
     "function requireConfig(location) {\
     \  return require(location);\
@@ -302,12 +317,13 @@ module SlamData.NodeWebkit where
     let seConfig = requireConfig seConfigFile
     let sdServer = sdConfig.server
     -- Start up SlamEngine.
-    se <- spawn sdConfig."node-webkit".java ["-jar", seJar, seConfigFile]
+    se <- spawn sdConfig."nodeWebkit".java ["-jar", seJar, seConfigFile]
     -- Log out things.
     stdout se # onData (trace <<< (<>) "stdout: ")
     stderr se # onData (trace <<< (<>) "stderr: ")
 
     win <- guiWindow gui
+    showDevTools win
     -- Open links in the user's default method, e.g. in the browser.
     onNewWinPolicy (\_ url policy ->
       (guiShell gui >>= openExternal url) *>
@@ -315,10 +331,15 @@ module SlamData.NodeWebkit where
     -- Cleanup after ourselves.
     onCloseNWWindow (\_ -> kill se *> closeWindow win *> trace "gone") win
     -- Pass down the config  to the web page.
-    slamData { sdConfig: { server: {location: sdServer.location, port: sdServer.port}
-                         , nodeWebkit: {java: Just sdConfig."node-webkit".java}
+    runContT (slamData
+             { sdConfig: { server: {location: sdServer.location, port: sdServer.port}
+                         , nodeWebkit: {java: Just sdConfig."nodeWebkit".java}
                          }
              , seConfig: Just { server: {port: seConfig.server.port}
                               , mountings: rawMountings2Mountings seConfig.mountings
                               }
-             }
+             })
+             \{sdConfig = sdC, seConfig = seC} -> do
+                writeFileSync sdConfigFile (stringify sdC)
+                when (isJust seC) $
+                  writeFileSync seConfigFile $ stringify $ fromJust seC

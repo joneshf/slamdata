@@ -44,6 +44,7 @@
     "purescript-showdown": "~0.0.1",
     "purescript-maps": "~0.0.4",
     "purescript-parsing": "*",
-    "purescript-control": "~0.1.1"
+    "purescript-control": "~0.1.1",
+    "purescript-transformers": "master"
   }
 }

@@ -18,12 +18,12 @@ module SlamData.App.Notebook (notebook) where
   import SlamData.App.Notebook.Block
   import SlamData.App.Notebook.Block.Common
   import SlamData.App.Notebook.Block.Types
-  import SlamData.App.Notebook.Settings (settings)
+  import SlamData.App.Notebook.Settings (settings, SettingsProps())
   import SlamData.App.Notebook.Types
   import SlamData.App.Panel
   import SlamData.App.Panel.Tab
   import SlamData.Helpers
-  import SlamData.Types (Settings())
+  import SlamData.Types (SaveSettings(), Settings())
 
   import qualified React.DOM as D
   import qualified Browser.WebStorage as WS
@@ -46,6 +46,7 @@ module SlamData.App.Notebook (notebook) where
   notebook :: forall eff props state result
            .  { files :: [FileType]
               , settings :: Settings
+              , saveSettings :: SaveSettings eff
               , showSettings :: Boolean
               , hideSettings :: EventHandlerContext eff props state result
               }
@@ -91,7 +92,7 @@ module SlamData.App.Notebook (notebook) where
               ])
       , D.div
           [D.className "tabs-content"]
-          (makeBlocks settingId active props.settings (deferred <<< modalVisibility) <$> notebooks)
+          (makeBlocks settingId active props.settings props.saveSettings (deferred <<< modalVisibility) <$> notebooks)
       ] ++ if vState.visible
         then
           [D.div
@@ -391,18 +392,19 @@ module SlamData.App.Notebook (notebook) where
         ]
     ]
 
-  makeBlocks :: forall eff
+  makeBlocks :: forall r eff
              .  NotebookID
              -> Maybe NotebookID
              -> Settings
+             -> SaveSettings eff
              -> (Boolean -> NotebookEvent eff)
              -> NotebookSpec
              -> UI
-  makeBlocks settingId active config _ (NotebookSpec nb)
+  makeBlocks settingId active config saveSettings _ (NotebookSpec nb)
     | settingId == nb.ident = D.div
       [D.className $ "content" ++ maybeActive nb.ident active]
-      [settings config]
-  makeBlocks _ active config vis (NotebookSpec nb) = D.div
+      [settings {sdConfig: config.sdConfig, seConfig: config.seConfig, saveSettings: saveSettings}]
+  makeBlocks _ active config _ vis (NotebookSpec nb) = D.div
     [D.className $ "content" ++ maybeActive nb.ident active]
     [ D.div
         [D.className "toolbar button-bar"]

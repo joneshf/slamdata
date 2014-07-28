@@ -25,3 +25,10 @@ module SlamData.Types where
                 , database :: String
                 }
     }
+
+  type SaveSettings eff = Settings -> Control.Monad.Eff.Eff (fsWrite :: FSWrite | eff) Unit
+
+  -- TODO: Move this to the appropriate library.
+  foreign import data FS :: *
+  foreign import data FSWrite :: !
+  type FilePath = String

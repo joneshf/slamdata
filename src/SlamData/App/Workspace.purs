@@ -9,12 +9,13 @@ module SlamData.App.Workspace (workspace) where
   import SlamData.App.FileSystem (filesystem)
   import SlamData.App.Notebook (notebook)
   import SlamData.Helpers (serverURI)
-  import SlamData.Types (Settings())
+  import SlamData.Types (SaveSettings(), Settings())
 
   import qualified React.DOM as D
 
   workspace :: forall eff props state result
             .  { settings :: Settings
+               , saveSettings :: SaveSettings eff
                , showSettings :: Boolean
                , hideSettings :: EventHandlerContext eff props state result
                }
@@ -41,6 +42,7 @@ module SlamData.App.Workspace (workspace) where
               ]
               [notebook { files: state.files
                         , settings: props.settings
+                        , saveSettings: props.saveSettings
                         , showSettings: props.showSettings
                         , hideSettings: props.hideSettings
                         }

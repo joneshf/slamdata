@@ -9,11 +9,15 @@ PS.SlamData_NodeWebkit = (function () {
     var Control_Monad_Eff = PS.Control_Monad_Eff;
     var Debug_Trace = PS.Debug_Trace;
     var Control_Apply = PS.Control_Apply;
+    var Control_Monad_Cont_Trans = PS.Control_Monad_Cont_Trans;
     var SlamData = PS.SlamData;
+    var Control_Monad = PS.Control_Monad;
     var child_process = require('child_process');;
+    var fs = require('fs');;
     var gui = require('nw.gui');;
     var path = require('path');;
     var platform = process.platform;;
+    function writeFileSync(path) {  return function(data) {    return function() {      fs.writeFileSync(path, data);    }  }};
     function replaceState(state) {  return function(title) {    return function(url) {      return function() {        window.history.replaceState(state, title, url);      }    }  }};
     function unsafeEnv(nothing) {  return function(just) {    return function(key) {      var val = process.env[key];      return val === null || val === undefined ? nothing : just(val);    }  }};
     function spawn(proc) {  return function(args) {    return function() {      return child_process.spawn(proc, args);    }  }};
@@ -28,6 +32,7 @@ PS.SlamData_NodeWebkit = (function () {
     function stderr(child) {  return child.stderr;};
     function windowPolicy(method) {  return function(policy) {    return function() {      return policy[method]();    }  }};
     function onEvent(__emitter) {  return function(__variadic) {    return function(event) {      return function(cb) {        return function(child) {          return function() {            return child.on(event, function () {              return cb.apply(this, arguments)();            }.bind(this));          }        }      }    }  }};
+    function stringify(obj) {  return JSON.stringify(obj, null, 2);};
     function requireConfig(location) {  return require(location);};
     function rawMountings2Mountings(raw) {  var mountings = mEmpty_;  for (var path in raw) {    mountings = mInsert(path)(raw[path])(mountings);  }  return mountings;};
     var $less$div$greater = function (fp) {
@@ -77,14 +82,14 @@ PS.SlamData_NodeWebkit = (function () {
     var linuxConfigHome = Prelude["<|>"](Data_Maybe.alternativeMaybe({}))(env("XDG_CONFIG_HOME"))(Prelude["<$>"](Data_Maybe.functorMaybe({}))(function (home) {
         return $less$div$greater(home)(".config");
     })(env("HOME")));
-    var resolveConfigDir = (function (_2) {
-        if (_2 === "darwin") {
+    var resolveConfigDir = (function (_3) {
+        if (_3 === "darwin") {
             return $less$div$greater($less$div$greater($less$div$greater(Data_Maybe_Unsafe.fromJust(env("HOME")))("Library"))("Application Support"))("slamdata");
         };
-        if (_2 === "linux") {
+        if (_3 === "linux") {
             return $less$div$greater(Data_Maybe_Unsafe.fromJust(linuxConfigHome))("slamdata");
         };
-        if (_2 === "win32") {
+        if (_3 === "win32") {
             return $less$div$greater(Data_Maybe_Unsafe.fromJust(env("LOCALAPPDATA")))("slamdata");
         };
         throw "Failed pattern match";
@@ -95,10 +100,11 @@ PS.SlamData_NodeWebkit = (function () {
         var sdConfig = requireConfig(sdConfigFile);
         var seConfig = requireConfig(seConfigFile);
         return function __do() {
-            var _1 = spawn((sdConfig["node-webkit"]).java)([ "-jar", seJar, seConfigFile ])();
+            var _1 = spawn(sdConfig.nodeWebkit.java)([ "-jar", seJar, seConfigFile ])();
             onData(eventEmitterStreamStdout({}))(Prelude["<<<"](Prelude.semigroupoidArr({}))(Debug_Trace.trace)(Prelude["<>"](Prelude.semigroupString({}))("stdout: ")))(stdout(_1))();
             onData(eventEmitterStreamStderr({}))(Prelude["<<<"](Prelude.semigroupoidArr({}))(Debug_Trace.trace)(Prelude["<>"](Prelude.semigroupString({}))("stderr: ")))(stderr(_1))();
             var _0 = guiWindow(gui)();
+            showDevTools(_0)();
             onNewWinPolicy(function (_) {
                 return function (url) {
                     return function (policy) {
@@ -109,14 +115,14 @@ PS.SlamData_NodeWebkit = (function () {
             onCloseNWWindow(function (_) {
                 return Control_Apply["*>"](Control_Monad_Eff.applyEff({}))(Control_Apply["*>"](Control_Monad_Eff.applyEff({}))(kill(_1))(closeWindow(_0)))(Debug_Trace.trace("gone"));
             })(_0)();
-            return SlamData.slamData({
+            return Control_Monad_Cont_Trans.runContT(SlamData.slamData({
                 sdConfig: {
                     server: {
                         location: sdConfig.server.location, 
                         port: sdConfig.server.port
                     }, 
                     nodeWebkit: {
-                        java: Data_Maybe.Just((sdConfig["node-webkit"]).java)
+                        java: Data_Maybe.Just(sdConfig.nodeWebkit.java)
                     }
                 }, 
                 seConfig: Data_Maybe.Just({
@@ -125,6 +131,11 @@ PS.SlamData_NodeWebkit = (function () {
                     }, 
                     mountings: rawMountings2Mountings(seConfig.mountings)
                 })
+            }))(function (_2) {
+                return function __do() {
+                    writeFileSync(sdConfigFile)(stringify(_2.sdConfig))();
+                    return Control_Monad.when(Control_Monad_Eff.monadEff({}))(Data_Maybe.isJust(_2.seConfig))(writeFileSync(seConfigFile)(stringify(Data_Maybe_Unsafe.fromJust(_2.seConfig))))();
+                };
             })();
         };
     })();
@@ -137,6 +148,7 @@ PS.SlamData_NodeWebkit = (function () {
         linuxConfigHome: linuxConfigHome, 
         rawMountings2Mountings: rawMountings2Mountings, 
         requireConfig: requireConfig, 
+        stringify: stringify, 
         mInsert: mInsert, 
         "mEmpty_": mEmpty_, 
         onNewWinPolicy: onNewWinPolicy, 
@@ -163,12 +175,14 @@ PS.SlamData_NodeWebkit = (function () {
         env: env, 
         unsafeEnv: unsafeEnv, 
         replaceState: replaceState, 
+        writeFileSync: writeFileSync, 
         windowHistory: windowHistory, 
         window: window, 
         process: process, 
         platform: platform, 
         path: path, 
         gui: gui, 
+        fs: fs, 
         "child_process": child_process, 
         eventEmitterChildProcess: eventEmitterChildProcess, 
         eventEmitterNWWindow: eventEmitterNWWindow, 

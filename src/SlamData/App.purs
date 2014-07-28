@@ -6,17 +6,22 @@ module SlamData.App (app) where
 
   import SlamData.App.Menu
   import SlamData.App.Workspace
-  import SlamData.Types (Settings())
+  import SlamData.Types (SaveSettings(), Settings())
 
   import qualified React.DOM as D
 
-  app :: {settings :: Settings} -> UI
+  app :: forall eff
+      .  { settings :: Settings
+         , saveSettings :: SaveSettings eff
+         }
+      -> UI
   app = mkUI spec {getInitialState = pure {settingsVisible: false}} $ do
     state <- readState
     props <- getProps
     pure $ D.div'
       [ menu {showSettings: deferred $ showSettings true}
       , workspace { settings: props.settings
+                  , saveSettings: props.saveSettings
                   , showSettings: state.settingsVisible
                   , hideSettings: deferred $ showSettings false
                   }
