@@ -4,7 +4,7 @@ module SlamData.App.Notebook.Settings
   , SettingsTab()
   ) where
 
-  import Data.Function (runFn3, Fn3())
+  import Data.Function (runFn2, Fn2(), runFn3, Fn3())
   import Data.Maybe (Maybe(..))
   import Data.Tuple (Tuple(..))
 
@@ -94,10 +94,10 @@ module SlamData.App.Notebook.Settings
                                   , D.placeholder "8080"
                                   , D.onChange \e -> do
                                     let state' = updateSEServerPort state e.target.value
-                                    -- writeState state'
-                                    -- props.saveSettings {sdConfig: state'.sdConfig, seConfig: state'.seConfig}
+                                  --   -- writeState state'
+                                  --   -- props.saveSettings {sdConfig: state'.sdConfig, seConfig: state'.seConfig}
                                     runFn3 wtfIsUpWithEvents writeState props.saveSettings state'
-                                  , D.value seConfig.server.port
+                                  , D.value $ show seConfig.server.port
                                   ]
                                   []
                               ]
@@ -172,8 +172,9 @@ module SlamData.App.Notebook.Settings
                               , D.input
                                   [ D.name "server-location"
                                   , D.placeholder "http://localhost"
-                                  , D.onChange \e -> pure $
-                                    writeState $ updateSDServerLocation state e.target.value
+                                  , D.onChange \e -> do
+                                    let state' = updateSDServerLocation state e.target.value
+                                    runFn3 wtfIsUpWithEvents writeState props.saveSettings state'
                                   , D.value sdConfig.server.location
                                   ]
                                   []
@@ -185,9 +186,10 @@ module SlamData.App.Notebook.Settings
                               , D.input
                                   [ D.name "server-port"
                                   , D.placeholder "8080"
-                                  , D.onChange \e -> pure $
-                                    writeState $ updateSDServerPort state e.target.value
-                                  , D.value sdConfig.server.port
+                                  , D.onChange \e -> do
+                                    let state' = updateSDServerPort state e.target.value
+                                    runFn3 wtfIsUpWithEvents writeState props.saveSettings state'
+                                  , D.value $ show sdConfig.server.port
                                   ]
                                   []
                               ]
@@ -206,6 +208,8 @@ module SlamData.App.Notebook.Settings
     \    return state;\
     \  };\
     \}" :: forall a b c d. Fn3 a b c d
+
+  foreign import parseInt :: Fn2 String Number Number
 
   -- Use the props to set up the state.
   -- Anti-pattern or not, this is the only thing that makes sense.
@@ -236,14 +240,14 @@ module SlamData.App.Notebook.Settings
 
   updateSDServerPort :: SettingsState -> String -> SettingsState
   updateSDServerPort state x =
-    let server'   = state.sdConfig.server{port = x}
+    let server'   = state.sdConfig.server{port = runFn2 parseInt x 10}
         sdConfig' = state.sdConfig{server = server'}
     in state{sdConfig = sdConfig'}
 
   updateSEServerPort :: SettingsState -> String -> SettingsState
   updateSEServerPort state x =
     let seConfig' = state.seConfig >>= \seConfig ->
-      let server' = seConfig.server{port = x} in
+      let server' = seConfig.server{port = runFn2 parseInt x 10} in
       pure seConfig{server = server'}
     in state{seConfig = seConfig'}
 

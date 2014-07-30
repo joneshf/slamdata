@@ -6,6 +6,7 @@ module SlamData.Helpers where
   import Data.Either
   import Data.Foldable
   import Data.Foreign
+  import Data.Function
   import Data.Maybe
   import Data.String
   import Data.Tuple
@@ -63,13 +64,13 @@ module SlamData.Helpers where
   -- | Server stuff.
 
   defaultServerLocation = "http://localhost"
-  defaultServerPort = "8080"
+  defaultServerPort = 8080
   defaultMountPath = "/"
   defaultMongoURI = "mongodb://localhost:27017"
   defaultMongoDatabase = "test"
 
   defaultServerURI :: String
-  defaultServerURI = defaultServerLocation ++ ":" ++ defaultServerPort
+  defaultServerURI = defaultServerLocation ++ ":" ++ show defaultServerPort
 
   defaultSDConfig :: SlamDataConfig
   defaultSDConfig =
@@ -88,7 +89,7 @@ module SlamData.Helpers where
     }
 
   serverURI :: SlamDataConfig -> String
-  serverURI {server = {location = l, port = p}} = l ++ ":" ++ p
+  serverURI {server = {location = l, port = p}} = l ++ ":" ++ show p
 
   getServerURI :: QueryString -> String
   getServerURI qs = fromMaybe defaultServerURI do
@@ -96,12 +97,15 @@ module SlamData.Helpers where
     port <- M.lookup "serverPort" qs
     pure $ loc ++ ":" ++ port
 
+  foreign import parseInt :: Fn2 String Number Number
+
   query2SDConfig :: QueryString -> SlamDataConfig
   query2SDConfig qs = fromMaybe defaultSDConfig do
     loc <- M.lookup "serverLocation" qs
     port <- M.lookup "serverPort" qs
     java <- M.lookup "javaLocation" qs
-    pure {server: {location: loc, port: port}, nodeWebkit: {java: Just java}}
+    pure { server: {location: loc, port: runFn2 parseInt port 10}
+         , nodeWebkit: {java: Just java}}
 
   query2SEConfig :: QueryString -> SlamEngineConfig
   query2SEConfig qs = fromMaybe defaultSEConfig do
@@ -109,7 +113,7 @@ module SlamData.Helpers where
     path <- M.lookup "seMountPath" qs
     mongoURI <- M.lookup "seMongoURI" qs
     database <- M.lookup "seDatabase" qs
-    pure { server: {port: port}
+    pure { server: {port: runFn2 parseInt port 10}
          , mountings: M.singleton path {mongodb: { connectionUri: mongoURI
                                                  , database: database
                                                  }

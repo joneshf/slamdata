@@ -6,11 +6,19 @@ PS.SlamData_NodeWebkit = (function () {
     var Data_Map = PS.Data_Map;
     var Data_Maybe = PS.Data_Maybe;
     var Data_Maybe_Unsafe = PS.Data_Maybe_Unsafe;
+    var Control_Lens = PS.Control_Lens;
+    var SlamData_Types = PS.SlamData_Types;
+    var Data_Argonaut_Parser = PS.Data_Argonaut_Parser;
+    var Data_Argonaut_Decode = PS.Data_Argonaut_Decode;
+    var SlamData_Helpers = PS.SlamData_Helpers;
+    var Data_Const = PS.Data_Const;
     var Control_Monad_Eff = PS.Control_Monad_Eff;
     var Debug_Trace = PS.Debug_Trace;
     var Control_Apply = PS.Control_Apply;
     var Control_Monad_Cont_Trans = PS.Control_Monad_Cont_Trans;
     var SlamData = PS.SlamData;
+    var Data_Argonaut_Printer = PS.Data_Argonaut_Printer;
+    var Data_Argonaut_Encode = PS.Data_Argonaut_Encode;
     var Control_Monad = PS.Control_Monad;
     function EventEmitter() {
 
@@ -88,25 +96,39 @@ PS.SlamData_NodeWebkit = (function () {
     var linuxConfigHome = Prelude["<|>"](Data_Maybe.alternativeMaybe({}))(env("XDG_CONFIG_HOME"))(Prelude["<$>"](Data_Maybe.functorMaybe({}))(function (home) {
         return $less$div$greater(home)(".config");
     })(env("HOME")));
-    var resolveConfigDir = (function (_3) {
-        if (_3 === "darwin") {
+    var resolveConfigDir = (function (_4) {
+        if (_4 === "darwin") {
             return $less$div$greater($less$div$greater($less$div$greater(Data_Maybe_Unsafe.fromJust(env("HOME")))("Library"))("Application Support"))("slamdata");
         };
-        if (_3 === "linux") {
+        if (_4 === "linux") {
             return $less$div$greater(Data_Maybe_Unsafe.fromJust(linuxConfigHome))("slamdata");
         };
-        if (_3 === "win32") {
+        if (_4 === "win32") {
             return $less$div$greater(Data_Maybe_Unsafe.fromJust(env("LOCALAPPDATA")))("slamdata");
         };
         throw new Error("Failed pattern match");
     })(platform);
     var sdConfigFile = $less$div$greater(resolveConfigDir)("slamdata-config.json");
     var seConfigFile = $less$div$greater(resolveConfigDir)("slamengine-config.json");
+    var _sdConfig = function (__dict_Functor_1) {
+        return Control_Lens.lens(function (_2) {
+            return _2;
+        })(function (_) {
+            return function (config) {
+                return config;
+            };
+        })(__dict_Functor_1);
+    };
     var main = (function () {
-        var sdConfig = requireConfig(sdConfigFile);
+        var sdConfigStr = stringify(requireConfig(sdConfigFile));
+        var sdConfigM = Prelude[">>="](Data_Maybe.bindMaybe({}))(Data_Argonaut_Parser.parseMaybe(Data_Argonaut_Parser.parserIdParseResultString({}))(sdConfigStr))(Data_Argonaut_Decode.decodeMaybe(SlamData_Types.decodeSDConfig({})));
+        var sdConfig = Data_Maybe.maybe(SlamData_Helpers.defaultSDConfig)(function (w) {
+            return Control_Lens["^."](w)(_sdConfig(Data_Const.functorConst({})));
+        })(sdConfigM);
         var seConfig = requireConfig(seConfigFile);
+        var java = Data_Maybe.maybe("java")(Prelude.id(Prelude.categoryArr({})))(sdConfig.nodeWebkit.java);
         return function __do() {
-            var _1 = spawn(sdConfig.nodeWebkit.java)([ "-jar", seJar, seConfigFile ])();
+            var _1 = spawn(java)([ "-jar", seJar, seConfigFile ])();
             onData(eventEmitterStreamStdout({}))(Prelude["<<<"](Prelude.semigroupoidArr({}))(Debug_Trace.trace)(Prelude["<>"](Prelude.semigroupString({}))("stdout: ")))(stdout(_1))();
             onData(eventEmitterStreamStderr({}))(Prelude["<<<"](Prelude.semigroupoidArr({}))(Debug_Trace.trace)(Prelude["<>"](Prelude.semigroupString({}))("stderr: ")))(stderr(_1))();
             var _0 = guiWindow(gui)();
@@ -121,25 +143,17 @@ PS.SlamData_NodeWebkit = (function () {
                 return Control_Apply["*>"](Control_Monad_Eff.applyEff({}))(Control_Apply["*>"](Control_Monad_Eff.applyEff({}))(kill(_1))(closeWindow(_0)))(Debug_Trace.trace("gone"));
             })(_0)();
             return Control_Monad_Cont_Trans.runContT(SlamData.slamData({
-                sdConfig: {
-                    server: {
-                        location: sdConfig.server.location, 
-                        port: sdConfig.server.port
-                    }, 
-                    nodeWebkit: {
-                        java: new Data_Maybe.Just(sdConfig.nodeWebkit.java)
-                    }
-                }, 
+                sdConfig: sdConfig, 
                 seConfig: new Data_Maybe.Just({
                     server: {
                         port: seConfig.server.port
                     }, 
                     mountings: rawMountings2Mountings(seConfig.mountings)
                 })
-            }))(function (_2) {
+            }))(function (_3) {
                 return function __do() {
-                    writeFileSync(sdConfigFile)(stringify(_2.sdConfig))();
-                    return Control_Monad.when(Control_Monad_Eff.monadEff({}))(Data_Maybe.isJust(_2.seConfig))(writeFileSync(seConfigFile)(stringify(Data_Maybe_Unsafe.fromJust(_2.seConfig))))();
+                    writeFileSync(sdConfigFile)(Data_Argonaut_Printer.printToString(Data_Argonaut_Encode.encodeIdentity(SlamData_Types.encodeSDConfig({}))(_3.sdConfig)))();
+                    return Control_Monad.when(Control_Monad_Eff.monadEff({}))(Data_Maybe.isJust(_3.seConfig))(writeFileSync(seConfigFile)(stringify(Data_Maybe_Unsafe.fromJust(_3.seConfig))))();
                 };
             })();
         };
@@ -153,6 +167,7 @@ PS.SlamData_NodeWebkit = (function () {
         sdConfigFile: sdConfigFile, 
         resolveConfigDir: resolveConfigDir, 
         linuxConfigHome: linuxConfigHome, 
+        _sdConfig: _sdConfig, 
         rawMountings2Mountings: rawMountings2Mountings, 
         requireConfig: requireConfig, 
         stringify: stringify, 

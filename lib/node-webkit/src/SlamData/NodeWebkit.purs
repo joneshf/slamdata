@@ -12,12 +12,17 @@ module SlamData.NodeWebkit where
   --    then starts SlamData.
 
   import Control.Apply ((*>))
+  import Control.Lens ((^.), lens, LensP())
   import Control.Monad (when)
   import Control.Monad.Eff (Eff(..))
   import Control.Monad.Cont.Trans (runContT, ContT(..))
 
+  import Data.Argonaut.Encode
+  import Data.Argonaut.Decode
+  import Data.Argonaut.Parser
+  import Data.Argonaut.Printer (printToString)
   import Data.Function (mkFn0, mkFn1, mkFn2, mkFn3, Fn0(), Fn1(), Fn2(), Fn3())
-  import Data.Maybe (isJust, Maybe(..))
+  import Data.Maybe (isJust, maybe, Maybe(..))
   import Data.Maybe.Unsafe (fromJust)
 
   import Debug.Trace (trace)
@@ -32,15 +37,27 @@ module SlamData.NodeWebkit where
     , (<>)
     , (>>=)
     , (<<<)
+    , (>>>)
     , (<$>)
     , (<|>)
+    , const
+    , flip
+    , id
     , pure
     , unit
     , Unit()
     )
 
   import SlamData (slamData)
-  import SlamData.Types (FilePath(), FS(), FSWrite(), Mounting())
+  import SlamData.Helpers (defaultSDConfig)
+  import SlamData.Types
+    ( FilePath()
+    , FS()
+    , FSWrite()
+    , Mounting()
+    , SDConfigWrapper(..)
+    , SlamDataConfig()
+    )
 
   import qualified Data.Map as M
 
@@ -294,6 +311,9 @@ module SlamData.NodeWebkit where
     \  return mountings;\
     \}" :: forall r. { | r} -> M.Map String Mounting
 
+  _sdConfig :: LensP SDConfigWrapper SlamDataConfig
+  _sdConfig = lens (\(SDConfigWrapper config) -> config) (\_ config -> SDConfigWrapper config)
+
   linuxConfigHome :: Maybe FilePath
   linuxConfigHome = env "XDG_CONFIG_HOME"
                 <|> (\home -> home </> ".config") <$> env "HOME"
@@ -313,11 +333,13 @@ module SlamData.NodeWebkit where
   seJar = "jar" </> "slamengine_2.10-0.1-SNAPSHOT-one-jar.jar"
 
   main = do
-    let sdConfig = requireConfig sdConfigFile
+    let sdConfigStr = stringify $ requireConfig sdConfigFile
+    let sdConfigM = parseMaybe sdConfigStr >>= decodeMaybe
+    let sdConfig = maybe defaultSDConfig (\w -> w^._sdConfig) sdConfigM
     let seConfig = requireConfig seConfigFile
-    let sdServer = sdConfig.server
+    let java = maybe "java" id sdConfig.nodeWebkit.java
     -- Start up SlamEngine.
-    se <- spawn sdConfig.nodeWebkit.java ["-jar", seJar, seConfigFile]
+    se <- spawn java ["-jar", seJar, seConfigFile]
     -- Log out things.
     stdout se # onData (trace <<< (<>) "stdout: ")
     stderr se # onData (trace <<< (<>) "stderr: ")
@@ -331,14 +353,12 @@ module SlamData.NodeWebkit where
     onCloseNWWindow (\_ -> kill se *> closeWindow win *> trace "gone") win
     -- Pass down the config  to the web page.
     runContT (slamData
-             { sdConfig: { server: {location: sdServer.location, port: sdServer.port}
-                         , nodeWebkit: {java: Just sdConfig.nodeWebkit.java}
-                         }
+             { sdConfig: sdConfig
              , seConfig: Just { server: {port: seConfig.server.port}
                               , mountings: rawMountings2Mountings seConfig.mountings
                               }
              })
              \{sdConfig = sdC, seConfig = seC} -> do
-                writeFileSync sdConfigFile (stringify sdC)
+                writeFileSync sdConfigFile (printToString $ encodeIdentity $ SDConfigWrapper sdC)
                 when (isJust seC) $
                   writeFileSync seConfigFile $ stringify $ fromJust seC
