@@ -53,7 +53,7 @@ module SlamData.App.Notebook.Settings
     props <- getProps
     state <- readState
     let sdConfig = state.sdConfig
-    let seConfig = state.seConfig `getOrElse` {mountings: M.empty, server: {port: sdConfig.server.port}}
+    let seConfig = state.seConfig `getOrElse` {mountings: M.empty :: M.Map String Mounting, server: {port: sdConfig.server.port}}
     let mountings = M.toList seConfig.mountings
     pure $ D.div
       [D.className "vertical"]
@@ -94,7 +94,6 @@ module SlamData.App.Notebook.Settings
                                   , D.placeholder "8080"
                                   , D.onChange \e -> do
                                     let state' = updateSEServerPort state e.target.value
-                                    Debug.Trace.trace "changed"
                                     -- writeState state'
                                     -- props.saveSettings {sdConfig: state'.sdConfig, seConfig: state'.seConfig}
                                     runFn3 wtfIsUpWithEvents writeState props.saveSettings state'
@@ -201,11 +200,9 @@ module SlamData.App.Notebook.Settings
 
   foreign import wtfIsUpWithEvents
     "function wtfIsUpWithEvents(write, save, state) {\
-    \  console.log('should be doing things');\
     \  write(state);\
     \  save({sdConfig: state.sdConfig, seConfig: state.seConfig})();\
     \  return function() {\
-    \    console.log('return the state');\
     \    return state;\
     \  };\
     \}" :: forall a b c d. Fn3 a b c d

@@ -317,13 +317,12 @@ module SlamData.NodeWebkit where
     let seConfig = requireConfig seConfigFile
     let sdServer = sdConfig.server
     -- Start up SlamEngine.
-    se <- spawn sdConfig."nodeWebkit".java ["-jar", seJar, seConfigFile]
+    se <- spawn sdConfig.nodeWebkit.java ["-jar", seJar, seConfigFile]
     -- Log out things.
     stdout se # onData (trace <<< (<>) "stdout: ")
     stderr se # onData (trace <<< (<>) "stderr: ")
 
     win <- guiWindow gui
-    showDevTools win
     -- Open links in the user's default method, e.g. in the browser.
     onNewWinPolicy (\_ url policy ->
       (guiShell gui >>= openExternal url) *>
@@ -333,7 +332,7 @@ module SlamData.NodeWebkit where
     -- Pass down the config  to the web page.
     runContT (slamData
              { sdConfig: { server: {location: sdServer.location, port: sdServer.port}
-                         , nodeWebkit: {java: Just sdConfig."nodeWebkit".java}
+                         , nodeWebkit: {java: Just sdConfig.nodeWebkit.java}
                          }
              , seConfig: Just { server: {port: seConfig.server.port}
                               , mountings: rawMountings2Mountings seConfig.mountings

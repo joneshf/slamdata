@@ -12,6 +12,12 @@ PS.SlamData_NodeWebkit = (function () {
     var Control_Monad_Cont_Trans = PS.Control_Monad_Cont_Trans;
     var SlamData = PS.SlamData;
     var Control_Monad = PS.Control_Monad;
+    function EventEmitter() {
+
+    };
+    function Variadic() {
+
+    };
     var child_process = require('child_process');;
     var fs = require('fs');;
     var gui = require('nw.gui');;
@@ -42,16 +48,16 @@ PS.SlamData_NodeWebkit = (function () {
     };
     var windowHistory = window.history;
     var variadicFn3 = function (_) {
-        return {};
+        return new Variadic();
     };
     var variadicFn2 = function (_) {
-        return {};
+        return new Variadic();
     };
     var variadicFn1 = function (_) {
-        return {};
+        return new Variadic();
     };
     var variadicFn0 = function (_) {
-        return {};
+        return new Variadic();
     };
     var seJar = $less$div$greater("jar")("slamengine_2.10-0.1-SNAPSHOT-one-jar.jar");
     var onData = function (__dict_EventEmitter_0) {
@@ -65,20 +71,20 @@ PS.SlamData_NodeWebkit = (function () {
     var forceDownload = windowPolicy("forceDownload");
     var forceCurrent = windowPolicy("forceCurrent");
     var eventEmitterStreamStdout = function (_) {
-        return {};
+        return new EventEmitter();
     };
     var eventEmitterStreamStderr = function (_) {
-        return {};
+        return new EventEmitter();
     };
     var eventEmitterNWWindow = function (_) {
-        return {};
+        return new EventEmitter();
     };
     var onCloseNWWindow = Prelude["<<<"](Prelude.semigroupoidArr({}))(onEvent(eventEmitterNWWindow({}))(variadicFn0({}))("close"))(Data_Function.mkFn0);
     var onNewWinPolicy = Prelude["<<<"](Prelude.semigroupoidArr({}))(onEvent(eventEmitterNWWindow({}))(variadicFn3({}))("new-win-policy"))(Data_Function.mkFn3);
     var eventEmitterChildProcess = function (_) {
-        return {};
+        return new EventEmitter();
     };
-    var env = unsafeEnv(Data_Maybe.Nothing)(Data_Maybe.Just);
+    var env = unsafeEnv(Data_Maybe.Nothing.value)(Data_Maybe.Just.create);
     var linuxConfigHome = Prelude["<|>"](Data_Maybe.alternativeMaybe({}))(env("XDG_CONFIG_HOME"))(Prelude["<$>"](Data_Maybe.functorMaybe({}))(function (home) {
         return $less$div$greater(home)(".config");
     })(env("HOME")));
@@ -92,7 +98,7 @@ PS.SlamData_NodeWebkit = (function () {
         if (_3 === "win32") {
             return $less$div$greater(Data_Maybe_Unsafe.fromJust(env("LOCALAPPDATA")))("slamdata");
         };
-        throw "Failed pattern match";
+        throw new Error("Failed pattern match");
     })(platform);
     var sdConfigFile = $less$div$greater(resolveConfigDir)("slamdata-config.json");
     var seConfigFile = $less$div$greater(resolveConfigDir)("slamengine-config.json");
@@ -104,7 +110,6 @@ PS.SlamData_NodeWebkit = (function () {
             onData(eventEmitterStreamStdout({}))(Prelude["<<<"](Prelude.semigroupoidArr({}))(Debug_Trace.trace)(Prelude["<>"](Prelude.semigroupString({}))("stdout: ")))(stdout(_1))();
             onData(eventEmitterStreamStderr({}))(Prelude["<<<"](Prelude.semigroupoidArr({}))(Debug_Trace.trace)(Prelude["<>"](Prelude.semigroupString({}))("stderr: ")))(stderr(_1))();
             var _0 = guiWindow(gui)();
-            showDevTools(_0)();
             onNewWinPolicy(function (_) {
                 return function (url) {
                     return function (policy) {
@@ -122,10 +127,10 @@ PS.SlamData_NodeWebkit = (function () {
                         port: sdConfig.server.port
                     }, 
                     nodeWebkit: {
-                        java: Data_Maybe.Just(sdConfig.nodeWebkit.java)
+                        java: new Data_Maybe.Just(sdConfig.nodeWebkit.java)
                     }
                 }, 
-                seConfig: Data_Maybe.Just({
+                seConfig: new Data_Maybe.Just({
                     server: {
                         port: seConfig.server.port
                     }, 
@@ -140,6 +145,8 @@ PS.SlamData_NodeWebkit = (function () {
         };
     })();
     return {
+        Variadic: Variadic, 
+        EventEmitter: EventEmitter, 
         main: main, 
         seJar: seJar, 
         seConfigFile: seConfigFile, 
@@ -150,7 +157,7 @@ PS.SlamData_NodeWebkit = (function () {
         requireConfig: requireConfig, 
         stringify: stringify, 
         mInsert: mInsert, 
-        "mEmpty_": mEmpty_, 
+        mEmpty_: mEmpty_, 
         onNewWinPolicy: onNewWinPolicy, 
         onCloseNWWindow: onCloseNWWindow, 
         onData: onData, 
@@ -183,7 +190,7 @@ PS.SlamData_NodeWebkit = (function () {
         path: path, 
         gui: gui, 
         fs: fs, 
-        "child_process": child_process, 
+        child_process: child_process, 
         eventEmitterChildProcess: eventEmitterChildProcess, 
         eventEmitterNWWindow: eventEmitterNWWindow, 
         eventEmitterStreamStdout: eventEmitterStreamStdout, 

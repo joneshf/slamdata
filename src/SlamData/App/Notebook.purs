@@ -529,7 +529,7 @@ module SlamData.App.Notebook (notebook) where
       pure $ filter (\(BlockSpec bs) -> bs.ident `notElem` nb.blocks) $ blocks
     pure $ localSet Blocks blocks'
     pure $ localSet Notebooks notebooks'
-    pure $ writeState state{notebooks = notebooks', active = Nothing}
+    pure $ writeState state{notebooks = notebooks', active = (Nothing :: Maybe NotebookID)}
 
   getNotebookID :: NotebookID -> UUID
   getNotebookID (NotebookID i) = i
