@@ -13,7 +13,7 @@ module SlamData.Helpers where
 
   import React
 
-  import SlamData.Types (SlamDataConfig(), SlamEngineConfig())
+  import SlamData.Types (Mounting(..), SDConfig(..), SEConfig(..))
 
   import Text.Parsing.Parser (Parser(), ParserT())
   import Text.Parsing.Parser.Combinators ((<?>), many, many1, optional, sepBy, try)
@@ -72,24 +72,24 @@ module SlamData.Helpers where
   defaultServerURI :: String
   defaultServerURI = defaultServerLocation ++ ":" ++ show defaultServerPort
 
-  defaultSDConfig :: SlamDataConfig
-  defaultSDConfig =
+  defaultSDConfig :: SDConfig
+  defaultSDConfig = SDConfig
     { server: {location: defaultServerLocation, port: defaultServerPort}
-    , nodeWebkit: {java: Nothing}
+    , nodeWebkit: {java: "java"}
     }
 
-  defaultSEConfig :: SlamEngineConfig
-  defaultSEConfig =
+  defaultSEConfig :: SEConfig
+  defaultSEConfig = SEConfig
     { server: {port: defaultServerPort}
-    , mountings: M.singleton defaultMountPath
-        {mongodb: { connectionUri: defaultMongoURI
-                  , database: defaultMongoDatabase
-                  }
+    , mountings: M.singleton defaultMountPath $ MountMongo
+        { connectionUri: defaultMongoURI
+        , database: defaultMongoDatabase
         }
     }
 
-  serverURI :: SlamDataConfig -> String
-  serverURI {server = {location = l, port = p}} = l ++ ":" ++ show p
+  serverURI :: SDConfig -> String
+  serverURI (SDConfig {server = {location = l, port = p}}) =
+    l ++ ":" ++ show p
 
   getServerURI :: QueryString -> String
   getServerURI qs = fromMaybe defaultServerURI do
@@ -99,26 +99,29 @@ module SlamData.Helpers where
 
   foreign import parseInt :: Fn2 String Number Number
 
-  query2SDConfig :: QueryString -> SlamDataConfig
+  query2SDConfig :: QueryString -> SDConfig
   query2SDConfig qs = fromMaybe defaultSDConfig do
     loc <- M.lookup "serverLocation" qs
     port <- M.lookup "serverPort" qs
     java <- M.lookup "javaLocation" qs
-    pure { server: {location: loc, port: runFn2 parseInt port 10}
-         , nodeWebkit: {java: Just java}}
+    pure $ SDConfig
+      { server: {location: loc, port: runFn2 parseInt port 10}
+      , nodeWebkit: {java: java}
+      }
 
-  query2SEConfig :: QueryString -> SlamEngineConfig
+  query2SEConfig :: QueryString -> SEConfig
   query2SEConfig qs = fromMaybe defaultSEConfig do
     port <- M.lookup "sePort" qs
     path <- M.lookup "seMountPath" qs
     mongoURI <- M.lookup "seMongoURI" qs
     database <- M.lookup "seDatabase" qs
-    pure { server: {port: runFn2 parseInt port 10}
-         , mountings: M.singleton path {mongodb: { connectionUri: mongoURI
-                                                 , database: database
-                                                 }
-                                       }
+    pure $ SEConfig
+      { server: {port: runFn2 parseInt port 10}
+      , mountings: M.singleton path $ MountMongo
+         { connectionUri: mongoURI
+         , database: database
          }
+      }
 
   actionButton :: forall eff props state result i. (Icon i)
                => { click :: EventHandlerContext eff props state result

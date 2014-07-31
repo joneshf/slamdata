@@ -1,5 +1,6 @@
 module SlamData.App.Notebook (notebook) where
 
+  import Control.Lens ((^.), (..))
   import Control.Monad.Eff
 
   import Data.Array
@@ -23,6 +24,30 @@ module SlamData.App.Notebook (notebook) where
   import SlamData.App.Panel
   import SlamData.App.Panel.Tab
   import SlamData.Helpers
+    ( actionButton
+    , getOrElse
+    , newNotebookIcon
+    , barChartIcon
+    , lineChartIcon
+    , localGet
+    , localSet
+    , pieChartIcon
+    , markdownIcon
+    , partition
+    , publishIcon
+    , saveIcon
+    , serverURI
+    , sqlIcon
+    , toUI
+    , visualBar
+    , visualIcon
+    , visualLine
+    , visualPie
+    , FileType()
+    , LocalKey(..)
+    , VisualType()
+    )
+  import SlamData.Lens
   import SlamData.Types (SaveSettings(), Settings())
 
   import qualified React.DOM as D
@@ -403,7 +428,7 @@ module SlamData.App.Notebook (notebook) where
   makeBlocks settingId active config saveSettings _ (NotebookSpec nb)
     | settingId == nb.ident = D.div
       [D.className $ "content" ++ maybeActive nb.ident active]
-      [settings {sdConfig: config.sdConfig, seConfig: config.seConfig, saveSettings: saveSettings}]
+      [settings {settings: config, saveSettings: saveSettings}]
   makeBlocks _ active config _ vis (NotebookSpec nb) = D.div
     [D.className $ "content" ++ maybeActive nb.ident active]
     [ D.div
@@ -414,9 +439,9 @@ module SlamData.App.Notebook (notebook) where
     , D.hr' []
     , D.div
         [D.className "actual-content"]
-        (zipWith (block2UI (serverURI config.sdConfig))
+        (zipWith (block2UI (serverURI $ config^._settingsRec.._sdConfig))
                  (filter (\(BlockSpec bs) -> bs.ident `elem` nb.blocks) (localGet Blocks))
-                 (0..length nb.blocks))
+                 (range 0 $ length nb.blocks))
     ]
 
   maybeActive :: NotebookID -> Maybe NotebookID -> String

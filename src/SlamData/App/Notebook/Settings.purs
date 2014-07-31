@@ -4,6 +4,8 @@ module SlamData.App.Notebook.Settings
   , SettingsTab()
   ) where
 
+  import Control.Lens ((.~), (..), (^.), LensP())
+
   import Data.Function (runFn2, Fn2(), runFn3, Fn3())
   import Data.Maybe (Maybe(..))
   import Data.Tuple (Tuple(..))
@@ -11,12 +13,13 @@ module SlamData.App.Notebook.Settings
   import React (getProps, mkUI, readState, spec, writeState, ReadProps(), UI())
 
   import SlamData.Helpers (defaultSEConfig, getOrElse)
+  import SlamData.Lens
   import SlamData.Types
     ( Mounting()
     , SaveSettings()
     , Settings()
-    , SlamDataConfig()
-    , SlamEngineConfig()
+    , SDConfig()
+    , SEConfig()
     )
 
   import qualified Data.Map as M
@@ -38,23 +41,34 @@ module SlamData.App.Notebook.Settings
 
   type SettingsProps eff =
     { saveSettings :: SaveSettings eff
-    , sdConfig :: SlamDataConfig
-    , seConfig :: Maybe SlamEngineConfig
+    , settings :: Settings
     }
 
   type SettingsState =
     { active :: SettingsTab
-    , sdConfig :: SlamDataConfig
-    , seConfig :: Maybe SlamEngineConfig
+    , settings :: Settings
     }
+
+  sdConfig :: forall a r r'. LensP {settings :: Settings | r} SDConfig
+  sdConfig = _settings.._settingsRec.._sdConfig
+
+  seConfig :: forall a r r'. LensP {settings :: Settings | r} SEConfig
+  seConfig = _settings.._settingsRec.._seConfig
+
+  sdServer :: forall r. LensP {settings :: Settings | r} {location :: String, port :: Number}
+  sdServer = sdConfig.._sdConfigRec.._server
+
+  seServer :: forall r. LensP {settings :: Settings | r} {port :: Number}
+  seServer = seConfig.._seConfigRec.._server
+
+  nodeWebkit :: forall r. LensP {settings :: Settings | r} {java :: String}
+  nodeWebkit = sdConfig.._sdConfigRec.._nodeWebkit
 
   settings :: forall eff. SettingsProps eff -> UI
   settings = mkUI spec{getInitialState = initialState} do
     props <- getProps
     state <- readState
-    let sdConfig = state.sdConfig
-    let seConfig = state.seConfig `getOrElse` {mountings: M.empty :: M.Map String Mounting, server: {port: sdConfig.server.port}}
-    let mountings = M.toList seConfig.mountings
+    let mountings = M.toList $ state^.seConfig.._seConfigRec.._mountings
     pure $ D.div
       [D.className "vertical"]
       [ D.div
@@ -93,11 +107,9 @@ module SlamData.App.Notebook.Settings
                                   [ D.name "slamengine-port"
                                   , D.placeholder "8080"
                                   , D.onChange \e -> do
-                                    let state' = updateSEServerPort state e.target.value
-                                  --   -- writeState state'
-                                  --   -- props.saveSettings {sdConfig: state'.sdConfig, seConfig: state'.seConfig}
+                                    let state' = state # seServer.._port .~ e.target.value
                                     runFn3 wtfIsUpWithEvents writeState props.saveSettings state'
-                                  , D.value $ show seConfig.server.port
+                                  , D.value $ show $ state^.seServer.._port
                                   ]
                                   []
                               ]
@@ -113,8 +125,8 @@ module SlamData.App.Notebook.Settings
                               , D.input
                                   [ D.name "mongodb-mongouri"
                                   , D.placeholder "/"
-                                  , D.onChange \e -> pure $
-                                    writeState $ updateSEMountPath state path mounting e.target.value
+                                  -- , D.onChange \e -> pure $
+                                  --   writeState $ updateSEMountPath state path mounting e.target.value
                                   , D.value path
                                   ]
                                   []
@@ -124,9 +136,9 @@ module SlamData.App.Notebook.Settings
                               , D.input
                                   [ D.name "mongodb-mongouri"
                                   , D.placeholder "mongodb://localhost:27017"
-                                  , D.onChange \e -> pure $
-                                    writeState $ updateSEMongoUri state path mounting e.target.value
-                                  , D.value mounting.mongodb.connectionUri
+                                  -- , D.onChange \e -> pure $
+                                  --   writeState $ updateSEMongoUri state path mounting e.target.value
+                                  , D.value $ mounting^._mountingRec.._connectionUri
                                   ]
                                   []
                               , D.label
@@ -135,9 +147,9 @@ module SlamData.App.Notebook.Settings
                               , D.input
                                   [ D.name "mongodb-database"
                                   , D.placeholder "test"
-                                  , D.onChange \e -> pure $
-                                    writeState $ updateSEMongoDatabase state path mounting e.target.value
-                                  , D.value mounting.mongodb.database
+                                  -- , D.onChange \e -> pure $
+                                  --   writeState $ updateSEMongoDatabase state path mounting e.target.value
+                                  , D.value $ mounting^._mountingRec.._database
                                   ]
                                   []
                               ]
@@ -151,9 +163,10 @@ module SlamData.App.Notebook.Settings
                               , D.input
                                   [ D.name "java-binary"
                                   , D.placeholder "/usr/bin/java"
-                                  , D.onChange \e -> pure $
-                                    writeState $ updateNWJava state e.target.value
-                                  , D.value (sdConfig.nodeWebkit.java `getOrElse` "")
+                                  , D.onChange \e -> do
+                                    let state' = state # nodeWebkit.._java .~ e.target.value
+                                    runFn3 wtfIsUpWithEvents writeState props.saveSettings state'
+                                  , D.value $ state^.nodeWebkit.._java
                                   ]
                                   []
                               ]
@@ -173,9 +186,9 @@ module SlamData.App.Notebook.Settings
                                   [ D.name "server-location"
                                   , D.placeholder "http://localhost"
                                   , D.onChange \e -> do
-                                    let state' = updateSDServerLocation state e.target.value
+                                    let state' = state # sdServer.._location .~ e.target.value
                                     runFn3 wtfIsUpWithEvents writeState props.saveSettings state'
-                                  , D.value sdConfig.server.location
+                                  , D.value $ state^.sdServer.._location
                                   ]
                                   []
                               ]
@@ -187,9 +200,9 @@ module SlamData.App.Notebook.Settings
                                   [ D.name "server-port"
                                   , D.placeholder "8080"
                                   , D.onChange \e -> do
-                                    let state' = updateSDServerPort state e.target.value
+                                    let state' = state # sdServer.._port .~ e.target.value
                                     runFn3 wtfIsUpWithEvents writeState props.saveSettings state'
-                                  , D.value $ show sdConfig.server.port
+                                  , D.value $ show $ state^.sdServer.._port
                                   ]
                                   []
                               ]
@@ -216,75 +229,9 @@ module SlamData.App.Notebook.Settings
   initialState :: forall eff. ReadProps (SettingsProps eff) {} SettingsState
   initialState = getProps >>= \props ->
     pure { active: SlamEngineTab
-         , sdConfig: props.sdConfig
-         , seConfig: props.seConfig
+         , settings: props.settings
          }
 
   activate :: forall a. (Eq a) => a -> a -> String
   activate x y | x == y = " active"
   activate _ _          = ""
-
-  -- TODO: Replace this with lenses. This is ridiculous.
-
-  updateNWJava :: SettingsState -> String -> SettingsState
-  updateNWJava state x =
-    let nodeWebkit' = state.sdConfig.nodeWebkit{java = Just x}
-        sdConfig'   = state.sdConfig{nodeWebkit = nodeWebkit'}
-    in state{sdConfig = sdConfig'}
-
-  updateSDServerLocation :: SettingsState -> String -> SettingsState
-  updateSDServerLocation state x =
-    let server'   = state.sdConfig.server{location = x}
-        sdConfig' = state.sdConfig{server = server'}
-    in state{sdConfig = sdConfig'}
-
-  updateSDServerPort :: SettingsState -> String -> SettingsState
-  updateSDServerPort state x =
-    let server'   = state.sdConfig.server{port = runFn2 parseInt x 10}
-        sdConfig' = state.sdConfig{server = server'}
-    in state{sdConfig = sdConfig'}
-
-  updateSEServerPort :: SettingsState -> String -> SettingsState
-  updateSEServerPort state x =
-    let seConfig' = state.seConfig >>= \seConfig ->
-      let server' = seConfig.server{port = runFn2 parseInt x 10} in
-      pure seConfig{server = server'}
-    in state{seConfig = seConfig'}
-
-  updateSEMongoUri :: SettingsState
-                   -> String
-                   -> Mounting
-                   -> String
-                   -> SettingsState
-  updateSEMongoUri state path mounting uri =
-    let seConfig' = state.seConfig >>= \seConfig ->
-      let mongodb' = mounting.mongodb{connectionUri = uri} in
-      let mounting' = mounting{mongodb = mongodb'} in
-      let mountings' = M.insert path mounting' seConfig.mountings in
-      pure seConfig{mountings = mountings'}
-    in state{seConfig = seConfig'}
-
-  updateSEMongoDatabase :: SettingsState
-                        -> String
-                        -> Mounting
-                        -> String
-                        -> SettingsState
-  updateSEMongoDatabase state path mounting db =
-    let seConfig' = state.seConfig >>= \seConfig ->
-      let mongodb' = mounting.mongodb{database = db} in
-      let mounting' = mounting{mongodb = mongodb'} in
-      let mountings' = M.insert path mounting' seConfig.mountings in
-      pure seConfig{mountings = mountings'}
-    in state{seConfig = seConfig'}
-
-  updateSEMountPath :: SettingsState
-                     -> String
-                     -> Mounting
-                     -> String
-                     -> SettingsState
-  updateSEMountPath state old mounting new =
-    let seConfig' = state.seConfig >>= \seConfig ->
-      let deleted = M.delete old seConfig.mountings in
-      let mountings' = M.insert new mounting deleted in
-      pure seConfig{mountings = mountings'}
-    in state{seConfig = seConfig'}
