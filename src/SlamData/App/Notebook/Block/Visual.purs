@@ -38,7 +38,7 @@ module SlamData.App.Notebook.Block.Visual (evalVisual) where
     \  var opts = newOptions(this.props.ident)(content.field)(parseVisualType(content.visualType));\
     \  var chart = generate_(opts)();\
     \  var data = [];\
-    \  oboe(this.props.serverURI + '/data/fs/' + content.dataSrc)\
+    \  oboe(this.props.serverURI + '/data/fs' + this.props.serverFS + content.dataSrc)\
     \    .node('!', function(json) {\
     \      data.push(json[content.field]);\
     \      chart.load({columns: [[content.field].concat(data)]});\

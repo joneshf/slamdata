@@ -11,6 +11,7 @@ module SlamData.App.Workspace (workspace) where
   import SlamData.Helpers (serverURI)
   import SlamData.Types (SaveSettings(), Settings())
 
+  import qualified Data.Map as M
   import qualified React.DOM as D
 
   workspace :: forall eff props state result
@@ -54,11 +55,13 @@ module SlamData.App.Workspace (workspace) where
   pollRate :: Number
   pollRate = 5000
   serverURI_ = serverURI
+  keys_ = M.keys
 
   foreign import cwm
     "function cwm() {\
     \  var fetchFS = function() {\
-    \    oboe(serverURI_(this.props.settings.sdConfig) + '/metadata/fs/')\
+    \    var settings = this.props.settings;\
+    \    oboe(serverURI_(settings.sdConfig) + '/metadata/fs' + keys_(settings.seConfig.mountings)[0])\
     \    .done(function(json) {\
     \      if (this.isMounted()) {\
     \        var sorted = json.children.sort(function(a, b) {\

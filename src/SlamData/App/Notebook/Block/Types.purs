@@ -26,6 +26,7 @@ module SlamData.App.Notebook.Block.Types where
     , close :: EventHandlerContext eff {} state result
     , content :: Maybe String
     , serverURI :: String
+    , serverFS :: String
     | extra
     }
 

@@ -56,8 +56,7 @@ module SlamData.NodeWebkit where
     , FS()
     , FSWrite()
     , Mounting()
-    , Settings(..)
-    , SettingsRec()
+    , Settings()
     , SDConfig(..)
     , SEConfig(..)
     )
@@ -335,12 +334,11 @@ module SlamData.NodeWebkit where
   main = do
     let sdConfigStr = stringify $ requireConfig sdConfigFile
     let sdConfigM = parseMaybe sdConfigStr >>= decodeMaybe
-    let sdConfig = maybe defaultSDConfig (\w -> w^._sdConfig) sdConfigM
+    let sdConfig = maybe defaultSDConfig id sdConfigM
     let seConfigStr = stringify $ requireConfig seConfigFile
     let seConfigM = parseMaybe seConfigStr >>= decodeMaybe
-    let seConfig = maybe defaultSEConfig (\w -> w^._seConfig) seConfigM
+    let seConfig = maybe defaultSEConfig id seConfigM
     let java = sdConfig^._sdConfigRec.._nodeWebkit.._java
-    let settingsRec = {sdConfig: sdConfig, seConfig: seConfig} :: SettingsRec
     -- Start up SlamEngine.
     se <- spawn java ["-jar", seJar, seConfigFile]
     -- Log out things.
@@ -355,8 +353,7 @@ module SlamData.NodeWebkit where
     -- Cleanup after ourselves.
     onCloseNWWindow (\_ -> kill se *> closeWindow win *> trace "gone") win
     -- Pass down the config  to the web page.
-    runContT (slamData (Settings settingsRec))
+    runContT (slamData {sdConfig: sdConfig, seConfig: seConfig})
              \{sdConfig = sdC, seConfig = seC} -> do
                 writeFileSync sdConfigFile (printToString $ encodeIdentity $ sdC)
-                when (isJust seC) $
-                  writeFileSync seConfigFile $ stringify $ fromJust seC
+                writeFileSync seConfigFile (printToString $ encodeIdentity $ seC)

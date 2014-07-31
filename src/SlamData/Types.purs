@@ -16,8 +16,7 @@ module SlamData.Types where
   import qualified Data.Map as M
 
   -- TODO: These ports should be their own type, not `Number`.
-  newtype Settings = Settings SettingsRec
-  type SettingsRec =
+  type Settings =
     { sdConfig :: SDConfig
     , seConfig :: SEConfig
     }

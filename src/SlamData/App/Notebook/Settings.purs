@@ -4,7 +4,7 @@ module SlamData.App.Notebook.Settings
   , SettingsTab()
   ) where
 
-  import Control.Lens ((.~), (..), (^.), LensP())
+  import Control.Lens ((.~), (%~), (..), (^.), LensP())
 
   import Data.Function (runFn2, Fn2(), runFn3, Fn3())
   import Data.Maybe (Maybe(..))
@@ -50,10 +50,10 @@ module SlamData.App.Notebook.Settings
     }
 
   sdConfig :: forall a r r'. LensP {settings :: Settings | r} SDConfig
-  sdConfig = _settings.._settingsRec.._sdConfig
+  sdConfig = _settings.._sdConfig
 
   seConfig :: forall a r r'. LensP {settings :: Settings | r} SEConfig
-  seConfig = _settings.._settingsRec.._seConfig
+  seConfig = _settings.._seConfig
 
   sdServer :: forall r. LensP {settings :: Settings | r} {location :: String, port :: Number}
   sdServer = sdConfig.._sdConfigRec.._server
@@ -64,6 +64,9 @@ module SlamData.App.Notebook.Settings
   nodeWebkit :: forall r. LensP {settings :: Settings | r} {java :: String}
   nodeWebkit = sdConfig.._sdConfigRec.._nodeWebkit
 
+  seMountings :: forall r. LensP {settings :: Settings | r} (M.Map String Mounting)
+  seMountings = seConfig.._seConfigRec.._mountings
+
   settings :: forall eff. SettingsProps eff -> UI
   settings = mkUI spec{getInitialState = initialState} do
     props <- getProps
@@ -72,7 +75,9 @@ module SlamData.App.Notebook.Settings
     pure $ D.div
       [D.className "vertical"]
       [ D.div
-          [D.className "small-1  columns"]
+          [ D.className "small-1  columns"
+          , D.idProp "settings-category"
+          ]
           [D.dl
               [D.className "tabs vertical"]
               [ D.dd
@@ -90,7 +95,9 @@ module SlamData.App.Notebook.Settings
               ]
           ]
       , D.div
-          [D.className "small-11 columns"]
+          [ D.className "small-11 columns"
+          , D.idProp "settings-content"
+          ]
           [D.div
               [D.className "tabs-content vertical"]
               [ D.div
@@ -125,8 +132,10 @@ module SlamData.App.Notebook.Settings
                               , D.input
                                   [ D.name "mongodb-mongouri"
                                   , D.placeholder "/"
-                                  -- , D.onChange \e -> pure $
-                                  --   writeState $ updateSEMountPath state path mounting e.target.value
+                                  , D.onChange \e -> do
+                                    let state' = state # seMountings%~ (M.delete path)
+                                    let state'' = state' # seMountings%~ (M.insert e.target.value mounting)
+                                    runFn3 wtfIsUpWithEvents writeState props.saveSettings state''
                                   , D.value path
                                   ]
                                   []
@@ -136,8 +145,9 @@ module SlamData.App.Notebook.Settings
                               , D.input
                                   [ D.name "mongodb-mongouri"
                                   , D.placeholder "mongodb://localhost:27017"
-                                  -- , D.onChange \e -> pure $
-                                  --   writeState $ updateSEMongoUri state path mounting e.target.value
+                                  , D.onChange \e -> do
+                                    let state' = state # seMountings%~ (M.update (\m -> Just (m # _mountingRec.._connectionUri.~ e.target.value)) path)
+                                    runFn3 wtfIsUpWithEvents writeState props.saveSettings state'
                                   , D.value $ mounting^._mountingRec.._connectionUri
                                   ]
                                   []
@@ -147,8 +157,9 @@ module SlamData.App.Notebook.Settings
                               , D.input
                                   [ D.name "mongodb-database"
                                   , D.placeholder "test"
-                                  -- , D.onChange \e -> pure $
-                                  --   writeState $ updateSEMongoDatabase state path mounting e.target.value
+                                  , D.onChange \e -> do
+                                    let state' = state # seMountings%~ (M.update (\m -> Just (m # _mountingRec.._database.~ e.target.value)) path)
+                                    runFn3 wtfIsUpWithEvents writeState props.saveSettings state'
                                   , D.value $ mounting^._mountingRec.._database
                                   ]
                                   []
@@ -175,7 +186,8 @@ module SlamData.App.Notebook.Settings
                   ]
               , D.div
                   [D.className $ "content" ++ activate SlamDataTab state.active]
-                  [D.form'
+                  [ D.h6' [D.text "SlamEngine server to connect to"]
+                  , D.form'
                       [D.fieldset'
                           [ D.legend' [D.text "SlamEngine server"]
                           , D.div'
@@ -216,7 +228,7 @@ module SlamData.App.Notebook.Settings
   foreign import wtfIsUpWithEvents
     "function wtfIsUpWithEvents(write, save, state) {\
     \  write(state);\
-    \  save({sdConfig: state.sdConfig, seConfig: state.seConfig})();\
+    \  save({sdConfig: state.settings.sdConfig, seConfig: state.settings.seConfig})();\
     \  return function() {\
     \    return state;\
     \  };\

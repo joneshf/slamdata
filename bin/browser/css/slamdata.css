@@ -10205,49 +10205,54 @@ th.hide-for-touch {
   z-index: 200;
 }
 /* line 95, ../style/_notebook.scss */
+#visual-modal #visual-modal-content .tabs.vertical {
+  width: 15%;
+}
+/* line 99, ../style/_notebook.scss */
 #visual-modal #visual-modal-content .tabs-content {
   height: 100%;
   overflow-x: hidden;
+  width: 85%;
 }
-/* line 98, ../style/_notebook.scss */
+/* line 103, ../style/_notebook.scss */
 #visual-modal #visual-modal-content .tabs-content ul {
   list-style-type: none;
   width: auto;
 }
-/* line 103, ../style/_notebook.scss */
+/* line 108, ../style/_notebook.scss */
 #visual-modal #visual-modal-content .tabs-content .chart-type li {
   border: 1px solid lightgrey;
   color: #ff8000;
   margin: 10px;
   text-align: center;
 }
-/* line 108, ../style/_notebook.scss */
+/* line 113, ../style/_notebook.scss */
 #visual-modal #visual-modal-content .tabs-content .chart-type li.selected {
   box-shadow: 0 0 5px #ff8000;
 }
-/* line 111, ../style/_notebook.scss */
+/* line 116, ../style/_notebook.scss */
 #visual-modal #visual-modal-content .tabs-content .chart-type li:hover {
   color: #d66c00;
   cursor: pointer;
 }
-/* line 115, ../style/_notebook.scss */
+/* line 120, ../style/_notebook.scss */
 #visual-modal #visual-modal-content .tabs-content .chart-type li span {
   display: block;
   color: #222;
 }
-/* line 119, ../style/_notebook.scss */
+/* line 124, ../style/_notebook.scss */
 #visual-modal #visual-modal-content .tabs-content .chart-type li a {
   color: inherit;
 }
-/* line 122, ../style/_notebook.scss */
+/* line 127, ../style/_notebook.scss */
 #visual-modal #visual-modal-content .tabs-content .chart-type li i {
   font-size: 72px;
 }
-/* line 127, ../style/_notebook.scss */
+/* line 132, ../style/_notebook.scss */
 #visual-modal #visual-modal-content .tabs-content .actions {
   float: right;
 }
-/* line 129, ../style/_notebook.scss */
+/* line 134, ../style/_notebook.scss */
 #visual-modal #visual-modal-content .tabs-content .actions a {
   margin: 10px;
 }
@@ -10371,6 +10376,17 @@ th.hide-for-touch {
 }
 
 /* line 106, ../style/_tabs.scss */
+#settings-category {
+  border-top: 1px solid lightgrey;
+}
+
+/* line 109, ../style/_tabs.scss */
+#settings-content {
+  border: 1px solid lightgrey;
+  border-right: none;
+}
+
+/* line 114, ../style/_tabs.scss */
 .tabs-content.vertical {
   border: none;
   height: 100%;
@@ -10379,15 +10395,15 @@ th.hide-for-touch {
   padding: 0;
   width: 100%;
 }
-/* line 113, ../style/_tabs.scss */
+/* line 121, ../style/_tabs.scss */
 .tabs-content.vertical div {
   min-height: 0;
 }
-/* line 116, ../style/_tabs.scss */
+/* line 124, ../style/_tabs.scss */
 .tabs-content.vertical .content {
   padding: 10px;
 }
-/* line 119, ../style/_tabs.scss */
+/* line 127, ../style/_tabs.scss */
 .tabs-content.vertical .column, .tabs-content.vertical .columns {
   position: absolute;
   top: 0;

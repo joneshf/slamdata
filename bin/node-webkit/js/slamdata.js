@@ -66895,11 +66895,6 @@ PS.SlamData_Types = (function () {
             return value;
         }
     };
-    var Settings = {
-        create: function (value) {
-            return value;
-        }
-    };
     var foldableMap = function (_) {
         return new Data_Foldable.Foldable(function (__dict_Monoid_529) {
             return function (f) {
@@ -67030,7 +67025,6 @@ PS.SlamData_Types = (function () {
         MountMongo: MountMongo, 
         SEConfig: SEConfig, 
         SDConfig: SDConfig, 
-        Settings: Settings, 
         "encodeMounting'": encodeMounting$prime, 
         encodeSDConfig: encodeSDConfig, 
         decodeSDConfig: decodeSDConfig, 
@@ -67049,217 +67043,208 @@ PS.SlamData_Lens = (function () {
     var Prelude = PS.Prelude;
     var Control_Lens = PS.Control_Lens;
     var SlamData_Types = PS.SlamData_Types;
-    var _settingsRec = function (__dict_Functor_531) {
-        return Control_Lens.lens(function (_659) {
-            return _659;
-        })(function (_) {
-            return function (rec) {
-                return rec;
-            };
-        })(__dict_Functor_531);
-    };
-    var _settings = function (__dict_Functor_532) {
+    var _settings = function (__dict_Functor_531) {
         return Control_Lens.lens(function (o) {
             return o.settings;
         })(function (o) {
             return function (x) {
-                var _2456 = {};
-                for (var _2457 in o) {
-                    if (o.hasOwnProperty(_2457)) {
-                        _2456[_2457] = o[_2457];
+                var _2455 = {};
+                for (var _2456 in o) {
+                    if (o.hasOwnProperty(_2456)) {
+                        _2455[_2456] = o[_2456];
                     };
                 };
-                _2456.settings = x;
-                return _2456;
+                _2455.settings = x;
+                return _2455;
             };
-        })(__dict_Functor_532);
+        })(__dict_Functor_531);
     };
-    var _server = function (__dict_Functor_533) {
+    var _server = function (__dict_Functor_532) {
         return Control_Lens.lens(function (o) {
             return o.server;
         })(function (o) {
             return function (x) {
-                var _2458 = {};
-                for (var _2459 in o) {
-                    if (o.hasOwnProperty(_2459)) {
-                        _2458[_2459] = o[_2459];
+                var _2457 = {};
+                for (var _2458 in o) {
+                    if (o.hasOwnProperty(_2458)) {
+                        _2457[_2458] = o[_2458];
                     };
                 };
-                _2458.server = x;
-                return _2458;
+                _2457.server = x;
+                return _2457;
             };
-        })(__dict_Functor_533);
+        })(__dict_Functor_532);
     };
-    var _seConfigRec = function (__dict_Functor_534) {
-        return Control_Lens.lens(function (_661) {
-            return _661;
-        })(function (_) {
-            return function (rec) {
-                return rec;
-            };
-        })(__dict_Functor_534);
-    };
-    var _seConfig = function (__dict_Functor_535) {
-        return Control_Lens.lens(function (o) {
-            return o.seConfig;
-        })(function (o) {
-            return function (x) {
-                var _2461 = {};
-                for (var _2462 in o) {
-                    if (o.hasOwnProperty(_2462)) {
-                        _2461[_2462] = o[_2462];
-                    };
-                };
-                _2461.seConfig = x;
-                return _2461;
-            };
-        })(__dict_Functor_535);
-    };
-    var _sdConfigRec = function (__dict_Functor_536) {
+    var _seConfigRec = function (__dict_Functor_533) {
         return Control_Lens.lens(function (_660) {
             return _660;
         })(function (_) {
             return function (rec) {
                 return rec;
             };
-        })(__dict_Functor_536);
+        })(__dict_Functor_533);
     };
-    var _sdConfig = function (__dict_Functor_537) {
+    var _seConfig = function (__dict_Functor_534) {
+        return Control_Lens.lens(function (o) {
+            return o.seConfig;
+        })(function (o) {
+            return function (x) {
+                var _2460 = {};
+                for (var _2461 in o) {
+                    if (o.hasOwnProperty(_2461)) {
+                        _2460[_2461] = o[_2461];
+                    };
+                };
+                _2460.seConfig = x;
+                return _2460;
+            };
+        })(__dict_Functor_534);
+    };
+    var _sdConfigRec = function (__dict_Functor_535) {
+        return Control_Lens.lens(function (_659) {
+            return _659;
+        })(function (_) {
+            return function (rec) {
+                return rec;
+            };
+        })(__dict_Functor_535);
+    };
+    var _sdConfig = function (__dict_Functor_536) {
         return Control_Lens.lens(function (o) {
             return o.sdConfig;
         })(function (o) {
             return function (x) {
-                var _2464 = {};
-                for (var _2465 in o) {
-                    if (o.hasOwnProperty(_2465)) {
-                        _2464[_2465] = o[_2465];
+                var _2463 = {};
+                for (var _2464 in o) {
+                    if (o.hasOwnProperty(_2464)) {
+                        _2463[_2464] = o[_2464];
                     };
                 };
-                _2464.sdConfig = x;
-                return _2464;
+                _2463.sdConfig = x;
+                return _2463;
             };
-        })(__dict_Functor_537);
+        })(__dict_Functor_536);
     };
-    var _port = function (__dict_Functor_538) {
+    var _port = function (__dict_Functor_537) {
         return Control_Lens.lens(function (o) {
             return o.port;
         })(function (o) {
             return function (x) {
-                var _2466 = {};
-                for (var _2467 in o) {
-                    if (o.hasOwnProperty(_2467)) {
-                        _2466[_2467] = o[_2467];
+                var _2465 = {};
+                for (var _2466 in o) {
+                    if (o.hasOwnProperty(_2466)) {
+                        _2465[_2466] = o[_2466];
                     };
                 };
-                _2466.port = x;
-                return _2466;
+                _2465.port = x;
+                return _2465;
             };
-        })(__dict_Functor_538);
+        })(__dict_Functor_537);
     };
-    var _nodeWebkit = function (__dict_Functor_539) {
+    var _nodeWebkit = function (__dict_Functor_538) {
         return Control_Lens.lens(function (o) {
             return o.nodeWebkit;
         })(function (o) {
             return function (x) {
-                var _2468 = {};
-                for (var _2469 in o) {
-                    if (o.hasOwnProperty(_2469)) {
-                        _2468[_2469] = o[_2469];
+                var _2467 = {};
+                for (var _2468 in o) {
+                    if (o.hasOwnProperty(_2468)) {
+                        _2467[_2468] = o[_2468];
                     };
                 };
-                _2468.nodeWebkit = x;
-                return _2468;
+                _2467.nodeWebkit = x;
+                return _2467;
             };
-        })(__dict_Functor_539);
+        })(__dict_Functor_538);
     };
-    var _mountings = function (__dict_Functor_540) {
+    var _mountings = function (__dict_Functor_539) {
         return Control_Lens.lens(function (o) {
             return o.mountings;
         })(function (o) {
             return function (x) {
-                var _2470 = {};
-                for (var _2471 in o) {
-                    if (o.hasOwnProperty(_2471)) {
-                        _2470[_2471] = o[_2471];
+                var _2469 = {};
+                for (var _2470 in o) {
+                    if (o.hasOwnProperty(_2470)) {
+                        _2469[_2470] = o[_2470];
                     };
                 };
-                _2470.mountings = x;
-                return _2470;
+                _2469.mountings = x;
+                return _2469;
             };
-        })(__dict_Functor_540);
+        })(__dict_Functor_539);
     };
-    var _mountingRec = function (__dict_Functor_541) {
-        return Control_Lens.lens(function (_662) {
-            return _662.value0;
+    var _mountingRec = function (__dict_Functor_540) {
+        return Control_Lens.lens(function (_661) {
+            return _661.value0;
         })(function (_) {
             return function (rec) {
                 return new SlamData_Types.MountMongo(rec);
             };
-        })(__dict_Functor_541);
+        })(__dict_Functor_540);
     };
-    var _location = function (__dict_Functor_542) {
+    var _location = function (__dict_Functor_541) {
         return Control_Lens.lens(function (o) {
             return o.location;
         })(function (o) {
             return function (x) {
-                var _2474 = {};
-                for (var _2475 in o) {
-                    if (o.hasOwnProperty(_2475)) {
-                        _2474[_2475] = o[_2475];
+                var _2473 = {};
+                for (var _2474 in o) {
+                    if (o.hasOwnProperty(_2474)) {
+                        _2473[_2474] = o[_2474];
                     };
                 };
-                _2474.location = x;
-                return _2474;
+                _2473.location = x;
+                return _2473;
             };
-        })(__dict_Functor_542);
+        })(__dict_Functor_541);
     };
-    var _java = function (__dict_Functor_543) {
+    var _java = function (__dict_Functor_542) {
         return Control_Lens.lens(function (o) {
             return o.java;
         })(function (o) {
             return function (x) {
-                var _2476 = {};
-                for (var _2477 in o) {
-                    if (o.hasOwnProperty(_2477)) {
-                        _2476[_2477] = o[_2477];
+                var _2475 = {};
+                for (var _2476 in o) {
+                    if (o.hasOwnProperty(_2476)) {
+                        _2475[_2476] = o[_2476];
                     };
                 };
-                _2476.java = x;
-                return _2476;
+                _2475.java = x;
+                return _2475;
             };
-        })(__dict_Functor_543);
+        })(__dict_Functor_542);
     };
-    var _database = function (__dict_Functor_544) {
+    var _database = function (__dict_Functor_543) {
         return Control_Lens.lens(function (o) {
             return o.database;
         })(function (o) {
             return function (x) {
-                var _2478 = {};
-                for (var _2479 in o) {
-                    if (o.hasOwnProperty(_2479)) {
-                        _2478[_2479] = o[_2479];
+                var _2477 = {};
+                for (var _2478 in o) {
+                    if (o.hasOwnProperty(_2478)) {
+                        _2477[_2478] = o[_2478];
                     };
                 };
-                _2478.database = x;
-                return _2478;
+                _2477.database = x;
+                return _2477;
             };
-        })(__dict_Functor_544);
+        })(__dict_Functor_543);
     };
-    var _connectionUri = function (__dict_Functor_545) {
+    var _connectionUri = function (__dict_Functor_544) {
         return Control_Lens.lens(function (o) {
             return o.connectionUri;
         })(function (o) {
             return function (x) {
-                var _2480 = {};
-                for (var _2481 in o) {
-                    if (o.hasOwnProperty(_2481)) {
-                        _2480[_2481] = o[_2481];
+                var _2479 = {};
+                for (var _2480 in o) {
+                    if (o.hasOwnProperty(_2480)) {
+                        _2479[_2480] = o[_2480];
                     };
                 };
-                _2480.connectionUri = x;
-                return _2480;
+                _2479.connectionUri = x;
+                return _2479;
             };
-        })(__dict_Functor_545);
+        })(__dict_Functor_544);
     };
     return {
         _settings: _settings, 
@@ -67275,8 +67260,7 @@ PS.SlamData_Lens = (function () {
         _sdConfig: _sdConfig, 
         _mountingRec: _mountingRec, 
         _seConfigRec: _seConfigRec, 
-        _sdConfigRec: _sdConfigRec, 
-        _settingsRec: _settingsRec
+        _sdConfigRec: _sdConfigRec
     };
 })();
 var PS = PS || {};
@@ -67319,14 +67303,14 @@ PS.Text_Parsing_Parser_Expr = (function () {
     Postfix.create = function (value0) {
         return new Postfix(value0);
     };
-    var termP = function (__dict_Monad_546) {
+    var termP = function (__dict_Monad_545) {
         return function (prefixP) {
             return function (term) {
                 return function (postfixP) {
-                    return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_546))(prefixP)(function (_97) {
-                        return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_546))(term)(function (_96) {
-                            return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_546))(postfixP)(function (_95) {
-                                return Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_546))(_95(_97(_96)));
+                    return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_545))(prefixP)(function (_97) {
+                        return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_545))(term)(function (_96) {
+                            return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_545))(postfixP)(function (_95) {
+                                return Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_545))(_95(_97(_96)));
                             });
                         });
                     });
@@ -67334,72 +67318,72 @@ PS.Text_Parsing_Parser_Expr = (function () {
             };
         };
     };
-    var splitOp = function (_663) {
-        return function (_664) {
-            if (_663 instanceof Infix && _663.value1 instanceof AssocNone) {
-                var _2487 = {};
-                for (var _2488 in _664) {
-                    if (_664.hasOwnProperty(_2488)) {
-                        _2487[_2488] = _664[_2488];
+    var splitOp = function (_662) {
+        return function (_663) {
+            if (_662 instanceof Infix && _662.value1 instanceof AssocNone) {
+                var _2486 = {};
+                for (var _2487 in _663) {
+                    if (_663.hasOwnProperty(_2487)) {
+                        _2486[_2487] = _663[_2487];
                     };
                 };
-                _2487.nassoc = Prelude[":"](_663.value0)(_664.nassoc);
-                return _2487;
+                _2486.nassoc = Prelude[":"](_662.value0)(_663.nassoc);
+                return _2486;
             };
-            if (_663 instanceof Infix && _663.value1 instanceof AssocLeft) {
-                var _2491 = {};
-                for (var _2492 in _664) {
-                    if (_664.hasOwnProperty(_2492)) {
-                        _2491[_2492] = _664[_2492];
+            if (_662 instanceof Infix && _662.value1 instanceof AssocLeft) {
+                var _2490 = {};
+                for (var _2491 in _663) {
+                    if (_663.hasOwnProperty(_2491)) {
+                        _2490[_2491] = _663[_2491];
                     };
                 };
-                _2491.lassoc = Prelude[":"](_663.value0)(_664.lassoc);
-                return _2491;
+                _2490.lassoc = Prelude[":"](_662.value0)(_663.lassoc);
+                return _2490;
             };
-            if (_663 instanceof Infix && _663.value1 instanceof AssocRight) {
-                var _2495 = {};
-                for (var _2496 in _664) {
-                    if (_664.hasOwnProperty(_2496)) {
-                        _2495[_2496] = _664[_2496];
+            if (_662 instanceof Infix && _662.value1 instanceof AssocRight) {
+                var _2494 = {};
+                for (var _2495 in _663) {
+                    if (_663.hasOwnProperty(_2495)) {
+                        _2494[_2495] = _663[_2495];
                     };
                 };
-                _2495.rassoc = Prelude[":"](_663.value0)(_664.rassoc);
-                return _2495;
+                _2494.rassoc = Prelude[":"](_662.value0)(_663.rassoc);
+                return _2494;
             };
-            if (_663 instanceof Prefix) {
-                var _2499 = {};
-                for (var _2500 in _664) {
-                    if (_664.hasOwnProperty(_2500)) {
-                        _2499[_2500] = _664[_2500];
+            if (_662 instanceof Prefix) {
+                var _2498 = {};
+                for (var _2499 in _663) {
+                    if (_663.hasOwnProperty(_2499)) {
+                        _2498[_2499] = _663[_2499];
                     };
                 };
-                _2499.prefix = Prelude[":"](_663.value0)(_664.prefix);
-                return _2499;
+                _2498.prefix = Prelude[":"](_662.value0)(_663.prefix);
+                return _2498;
             };
-            if (_663 instanceof Postfix) {
-                var _2502 = {};
-                for (var _2503 in _664) {
-                    if (_664.hasOwnProperty(_2503)) {
-                        _2502[_2503] = _664[_2503];
+            if (_662 instanceof Postfix) {
+                var _2501 = {};
+                for (var _2502 in _663) {
+                    if (_663.hasOwnProperty(_2502)) {
+                        _2501[_2502] = _663[_2502];
                     };
                 };
-                _2502.postfix = Prelude[":"](_663.value0)(_664.postfix);
-                return _2502;
+                _2501.postfix = Prelude[":"](_662.value0)(_663.postfix);
+                return _2501;
             };
             throw new Error("Failed pattern match");
         };
     };
-    var rassocP = function (__dict_Monad_547) {
+    var rassocP = function (__dict_Monad_546) {
         return function (x) {
             return function (rassocOp) {
                 return function (prefixP) {
                     return function (term) {
                         return function (postfixP) {
-                            return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_547))(rassocOp)(function (_90) {
-                                return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_547))(Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_547))(termP(__dict_Monad_547)(prefixP)(term)(postfixP))(function (_88) {
-                                    return rassocP1(__dict_Monad_547)(_88)(rassocOp)(prefixP)(term)(postfixP);
+                            return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_546))(rassocOp)(function (_90) {
+                                return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_546))(Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_546))(termP(__dict_Monad_546)(prefixP)(term)(postfixP))(function (_88) {
+                                    return rassocP1(__dict_Monad_546)(_88)(rassocOp)(prefixP)(term)(postfixP);
                                 }))(function (_89) {
-                                    return Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_547))(_90(x)(_89));
+                                    return Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_546))(_90(x)(_89));
                                 });
                             });
                         };
@@ -67408,28 +67392,28 @@ PS.Text_Parsing_Parser_Expr = (function () {
             };
         };
     };
-    var rassocP1 = function (__dict_Monad_548) {
+    var rassocP1 = function (__dict_Monad_547) {
         return function (x) {
             return function (rassocOp) {
                 return function (prefixP) {
                     return function (term) {
                         return function (postfixP) {
-                            return Prelude["<|>"](Text_Parsing_Parser.alternativeParserT(__dict_Monad_548))(rassocP(__dict_Monad_548)(x)(rassocOp)(prefixP)(term)(postfixP))(Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_548))(x));
+                            return Prelude["<|>"](Text_Parsing_Parser.alternativeParserT(__dict_Monad_547))(rassocP(__dict_Monad_547)(x)(rassocOp)(prefixP)(term)(postfixP))(Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_547))(x));
                         };
                     };
                 };
             };
         };
     };
-    var nassocP = function (__dict_Monad_549) {
+    var nassocP = function (__dict_Monad_548) {
         return function (x) {
             return function (nassocOp) {
                 return function (prefixP) {
                     return function (term) {
                         return function (postfixP) {
-                            return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_549))(nassocOp)(function (_94) {
-                                return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_549))(termP(__dict_Monad_549)(prefixP)(term)(postfixP))(function (_93) {
-                                    return Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_549))(_94(x)(_93));
+                            return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_548))(nassocOp)(function (_94) {
+                                return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_548))(termP(__dict_Monad_548)(prefixP)(term)(postfixP))(function (_93) {
+                                    return Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_548))(_94(x)(_93));
                                 });
                             });
                         };
@@ -67438,15 +67422,15 @@ PS.Text_Parsing_Parser_Expr = (function () {
             };
         };
     };
-    var lassocP = function (__dict_Monad_550) {
+    var lassocP = function (__dict_Monad_549) {
         return function (x) {
             return function (lassocOp) {
                 return function (prefixP) {
                     return function (term) {
                         return function (postfixP) {
-                            return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_550))(lassocOp)(function (_92) {
-                                return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_550))(termP(__dict_Monad_550)(prefixP)(term)(postfixP))(function (_91) {
-                                    return lassocP1(__dict_Monad_550)(_92(x)(_91))(lassocOp)(prefixP)(term)(postfixP);
+                            return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_549))(lassocOp)(function (_92) {
+                                return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_549))(termP(__dict_Monad_549)(prefixP)(term)(postfixP))(function (_91) {
+                                    return lassocP1(__dict_Monad_549)(_92(x)(_91))(lassocOp)(prefixP)(term)(postfixP);
                                 });
                             });
                         };
@@ -67455,20 +67439,20 @@ PS.Text_Parsing_Parser_Expr = (function () {
             };
         };
     };
-    var lassocP1 = function (__dict_Monad_551) {
+    var lassocP1 = function (__dict_Monad_550) {
         return function (x) {
             return function (lassocOp) {
                 return function (prefixP) {
                     return function (term) {
                         return function (postfixP) {
-                            return Prelude["<|>"](Text_Parsing_Parser.alternativeParserT(__dict_Monad_551))(lassocP(__dict_Monad_551)(x)(lassocOp)(prefixP)(term)(postfixP))(Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_551))(x));
+                            return Prelude["<|>"](Text_Parsing_Parser.alternativeParserT(__dict_Monad_550))(lassocP(__dict_Monad_550)(x)(lassocOp)(prefixP)(term)(postfixP))(Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_550))(x));
                         };
                     };
                 };
             };
         };
     };
-    var buildExprParser = function (__dict_Monad_552) {
+    var buildExprParser = function (__dict_Monad_551) {
         return function (operators) {
             return function (simpleExpr) {
                 var makeParser = function (term) {
@@ -67480,15 +67464,15 @@ PS.Text_Parsing_Parser_Expr = (function () {
                             prefix: [  ], 
                             postfix: [  ]
                         })(ops);
-                        var rassocOp = Text_Parsing_Parser_Combinators.choice(__dict_Monad_552)(accum.rassoc);
-                        var lassocOp = Text_Parsing_Parser_Combinators.choice(__dict_Monad_552)(accum.lassoc);
-                        var nassocOp = Text_Parsing_Parser_Combinators.choice(__dict_Monad_552)(accum.nassoc);
-                        var prefixOp = Text_Parsing_Parser_Combinators["<?>"](__dict_Monad_552)(Text_Parsing_Parser_Combinators.choice(__dict_Monad_552)(accum.prefix))("");
-                        var postfixOp = Text_Parsing_Parser_Combinators["<?>"](__dict_Monad_552)(Text_Parsing_Parser_Combinators.choice(__dict_Monad_552)(accum.postfix))("");
-                        var postfixP = Prelude["<|>"](Text_Parsing_Parser.alternativeParserT(__dict_Monad_552))(postfixOp)(Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_552))(Prelude.id(Prelude.categoryArr({}))));
-                        var prefixP = Prelude["<|>"](Text_Parsing_Parser.alternativeParserT(__dict_Monad_552))(prefixOp)(Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_552))(Prelude.id(Prelude.categoryArr({}))));
-                        return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_552))(termP(__dict_Monad_552)(prefixP)(term)(postfixP))(function (_98) {
-                            return Text_Parsing_Parser_Combinators["<?>"](__dict_Monad_552)(Prelude["<|>"](Text_Parsing_Parser.alternativeParserT(__dict_Monad_552))(Prelude["<|>"](Text_Parsing_Parser.alternativeParserT(__dict_Monad_552))(Prelude["<|>"](Text_Parsing_Parser.alternativeParserT(__dict_Monad_552))(rassocP(__dict_Monad_552)(_98)(rassocOp)(prefixP)(term)(postfixP))(lassocP(__dict_Monad_552)(_98)(lassocOp)(prefixP)(term)(postfixP)))(nassocP(__dict_Monad_552)(_98)(nassocOp)(prefixP)(term)(postfixP)))(Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_552))(_98)))("operator");
+                        var rassocOp = Text_Parsing_Parser_Combinators.choice(__dict_Monad_551)(accum.rassoc);
+                        var lassocOp = Text_Parsing_Parser_Combinators.choice(__dict_Monad_551)(accum.lassoc);
+                        var nassocOp = Text_Parsing_Parser_Combinators.choice(__dict_Monad_551)(accum.nassoc);
+                        var prefixOp = Text_Parsing_Parser_Combinators["<?>"](__dict_Monad_551)(Text_Parsing_Parser_Combinators.choice(__dict_Monad_551)(accum.prefix))("");
+                        var postfixOp = Text_Parsing_Parser_Combinators["<?>"](__dict_Monad_551)(Text_Parsing_Parser_Combinators.choice(__dict_Monad_551)(accum.postfix))("");
+                        var postfixP = Prelude["<|>"](Text_Parsing_Parser.alternativeParserT(__dict_Monad_551))(postfixOp)(Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_551))(Prelude.id(Prelude.categoryArr({}))));
+                        var prefixP = Prelude["<|>"](Text_Parsing_Parser.alternativeParserT(__dict_Monad_551))(prefixOp)(Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_551))(Prelude.id(Prelude.categoryArr({}))));
+                        return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_551))(termP(__dict_Monad_551)(prefixP)(term)(postfixP))(function (_98) {
+                            return Text_Parsing_Parser_Combinators["<?>"](__dict_Monad_551)(Prelude["<|>"](Text_Parsing_Parser.alternativeParserT(__dict_Monad_551))(Prelude["<|>"](Text_Parsing_Parser.alternativeParserT(__dict_Monad_551))(Prelude["<|>"](Text_Parsing_Parser.alternativeParserT(__dict_Monad_551))(rassocP(__dict_Monad_551)(_98)(rassocOp)(prefixP)(term)(postfixP))(lassocP(__dict_Monad_551)(_98)(lassocOp)(prefixP)(term)(postfixP)))(nassocP(__dict_Monad_551)(_98)(nassocOp)(prefixP)(term)(postfixP)))(Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_551))(_98)))("operator");
                         });
                     };
                 };
@@ -67524,11 +67508,11 @@ PS.Text_Parsing_Parser_String = (function () {
     var Text_Parsing_Parser_Combinators = PS.Text_Parsing_Parser_Combinators;
     var Data_Foldable = PS.Data_Foldable;
     var Data_Monoid = PS.Data_Monoid;
-    var string = function (__dict_Monad_553) {
+    var string = function (__dict_Monad_552) {
         return function (s) {
             return Text_Parsing_Parser.ParserT.create(function (s$prime) {
-                return Prelude["return"](__dict_Monad_553)((function (_2513) {
-                    if (_2513 === 0) {
+                return Prelude["return"](__dict_Monad_552)((function (_2512) {
+                    if (_2512 === 0) {
                         return {
                             consumed: true, 
                             input: Data_String.drop(Data_String.length(s))(s$prime), 
@@ -67544,15 +67528,15 @@ PS.Text_Parsing_Parser_String = (function () {
             });
         };
     };
-    var whiteSpace = function (__dict_Monad_554) {
-        return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_554))(Text_Parsing_Parser_Combinators.many(__dict_Monad_554)(Prelude["<|>"](Text_Parsing_Parser.alternativeParserT(__dict_Monad_554))(Prelude["<|>"](Text_Parsing_Parser.alternativeParserT(__dict_Monad_554))(Prelude["<|>"](Text_Parsing_Parser.alternativeParserT(__dict_Monad_554))(string(__dict_Monad_554)("\n"))(string(__dict_Monad_554)("\r")))(string(__dict_Monad_554)(" ")))(string(__dict_Monad_554)("\t"))))(function (_100) {
-            return Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_554))(Data_Foldable.foldMap(Data_Foldable.foldableArray({}))(Data_Monoid.monoidString({}))(Prelude.id(Prelude.categoryArr({})))(_100));
+    var whiteSpace = function (__dict_Monad_553) {
+        return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_553))(Text_Parsing_Parser_Combinators.many(__dict_Monad_553)(Prelude["<|>"](Text_Parsing_Parser.alternativeParserT(__dict_Monad_553))(Prelude["<|>"](Text_Parsing_Parser.alternativeParserT(__dict_Monad_553))(Prelude["<|>"](Text_Parsing_Parser.alternativeParserT(__dict_Monad_553))(string(__dict_Monad_553)("\n"))(string(__dict_Monad_553)("\r")))(string(__dict_Monad_553)(" ")))(string(__dict_Monad_553)("\t"))))(function (_100) {
+            return Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_553))(Data_Foldable.foldMap(Data_Foldable.foldableArray({}))(Data_Monoid.monoidString({}))(Prelude.id(Prelude.categoryArr({})))(_100));
         });
     };
-    var eof = function (__dict_Monad_555) {
+    var eof = function (__dict_Monad_554) {
         return Text_Parsing_Parser.ParserT.create(function (s) {
-            return Prelude["return"](__dict_Monad_555)((function (_2515) {
-                if (_2515 === "") {
+            return Prelude["return"](__dict_Monad_554)((function (_2514) {
+                if (_2514 === "") {
                     return {
                         consumed: false, 
                         input: s, 
@@ -67567,10 +67551,10 @@ PS.Text_Parsing_Parser_String = (function () {
             })(s));
         });
     };
-    var $$char = function (__dict_Monad_556) {
+    var $$char = function (__dict_Monad_555) {
         return Text_Parsing_Parser.ParserT.create(function (s$prime) {
-            return Prelude["return"](__dict_Monad_556)((function (_2516) {
-                if (_2516 === "") {
+            return Prelude["return"](__dict_Monad_555)((function (_2515) {
+                if (_2515 === "") {
                     return {
                         consumed: false, 
                         input: s$prime, 
@@ -67585,10 +67569,10 @@ PS.Text_Parsing_Parser_String = (function () {
             })(s$prime));
         });
     };
-    var satisfy = function (__dict_Monad_557) {
+    var satisfy = function (__dict_Monad_556) {
         return function (f) {
-            return Text_Parsing_Parser_Combinators["try"](((__dict_Monad_557["__superclass_Prelude.Applicative_0"]({}))["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_557))($$char(__dict_Monad_557))(function (_99) {
-                return f(_99) ? Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_557))(_99) : Text_Parsing_Parser.fail(__dict_Monad_557)("Character did not satisfy predicate");
+            return Text_Parsing_Parser_Combinators["try"](((__dict_Monad_556["__superclass_Prelude.Applicative_0"]({}))["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_556))($$char(__dict_Monad_556))(function (_99) {
+                return f(_99) ? Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_556))(_99) : Text_Parsing_Parser.fail(__dict_Monad_556)("Character did not satisfy predicate");
             }));
         };
     };
@@ -67634,116 +67618,116 @@ PS.Data_Argonaut_Parser = (function () {
     function Parser(parseJson) {
         this.parseJson = parseJson;
     };
-    var toEither = function (_673) {
-        if (_673 instanceof ParseFailure) {
-            return new Data_Either.Left(_673.value0);
+    var toEither = function (_672) {
+        if (_672 instanceof ParseFailure) {
+            return new Data_Either.Left(_672.value0);
         };
-        if (_673 instanceof ParseSuccess) {
-            return new Data_Either.Right(_673.value0);
+        if (_672 instanceof ParseSuccess) {
+            return new Data_Either.Right(_672.value0);
         };
         throw new Error("Failed pattern match");
     };
     var solidus = "/";
     var skipSpaces = Control_Apply["*>"](Text_Parsing_Parser.applyParserT(Control_Monad_Identity.monadIdentity({})))(Text_Parsing_Parser_String.whiteSpace(Control_Monad_Identity.monadIdentity({})))(Prelude.pure(Text_Parsing_Parser.applicativeParserT(Control_Monad_Identity.monadIdentity({})))({}));
-    var skipMany = function (__dict_Monad_558) {
+    var skipMany = function (__dict_Monad_557) {
         return function (p) {
-            return Prelude["<|>"](Text_Parsing_Parser.alternativeParserT(__dict_Monad_558))(skipMany1(__dict_Monad_558)(p))(Prelude.pure(Text_Parsing_Parser.applicativeParserT(__dict_Monad_558))({}));
+            return Prelude["<|>"](Text_Parsing_Parser.alternativeParserT(__dict_Monad_557))(skipMany1(__dict_Monad_557)(p))(Prelude.pure(Text_Parsing_Parser.applicativeParserT(__dict_Monad_557))({}));
         };
     };
-    var skipMany1 = function (__dict_Monad_559) {
+    var skipMany1 = function (__dict_Monad_558) {
         return function (p) {
-            return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_559))(p)(function (_123) {
-                return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_559))(skipMany(__dict_Monad_559)(p))(function (_122) {
-                    return Prelude.pure(Text_Parsing_Parser.applicativeParserT(__dict_Monad_559))({});
+            return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_558))(p)(function (_123) {
+                return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_558))(skipMany(__dict_Monad_558)(p))(function (_122) {
+                    return Prelude.pure(Text_Parsing_Parser.applicativeParserT(__dict_Monad_558))({});
                 });
             });
         };
     };
-    var showParseResult = function (__dict_Show_560) {
-        return new Prelude.Show(function (_677) {
-            if (_677 instanceof ParseFailure) {
-                return _677.value0;
+    var showParseResult = function (__dict_Show_559) {
+        return new Prelude.Show(function (_676) {
+            if (_676 instanceof ParseFailure) {
+                return _676.value0;
             };
-            if (_677 instanceof ParseSuccess) {
-                return Prelude.show(__dict_Show_560)(_677.value0);
+            if (_676 instanceof ParseSuccess) {
+                return Prelude.show(__dict_Show_559)(_676.value0);
             };
             throw new Error("Failed pattern match");
         });
     };
     var showParseError = function (_) {
-        return new Prelude.Show(function (_679) {
-            return _679.value0.message;
+        return new Prelude.Show(function (_678) {
+            return _678.value0.message;
         });
     };
     var reverseSolidus = "\\";
     var parseJson = function (dict) {
         return dict.parseJson;
     };
-    var parseMaybe = function (__dict_Parser_561) {
+    var parseMaybe = function (__dict_Parser_560) {
         return function (x) {
-            return (function (_2528) {
-                if (_2528 instanceof ParseFailure) {
+            return (function (_2527) {
+                if (_2527 instanceof ParseFailure) {
                     return Data_Maybe.Nothing.value;
                 };
-                if (_2528 instanceof ParseSuccess) {
-                    return new Data_Maybe.Just(_2528.value0);
+                if (_2527 instanceof ParseSuccess) {
+                    return new Data_Maybe.Just(_2527.value0);
                 };
                 throw new Error("Failed pattern match");
-            })(parseJson(__dict_Parser_561)(new Control_Monad_Identity.Identity(x)));
+            })(parseJson(__dict_Parser_560)(new Control_Monad_Identity.Identity(x)));
         };
     };
-    var parseFrom = function (__dict_Parser_562) {
-        return parseJson(__dict_Parser_562);
+    var parseFrom = function (__dict_Parser_561) {
+        return parseJson(__dict_Parser_561);
     };
     var ord = Data_String.charCodeAt(0);
     var openBracket = "[";
     var openBrace = "{";
     var nullParser = Control_Apply["*>"](Text_Parsing_Parser.applyParserT(Control_Monad_Identity.monadIdentity({})))(Control_Apply["*>"](Text_Parsing_Parser.applyParserT(Control_Monad_Identity.monadIdentity({})))(skipSpaces)(Text_Parsing_Parser_String.string(Control_Monad_Identity.monadIdentity({}))("null")))(Prelude.pure(Text_Parsing_Parser.applicativeParserT(Control_Monad_Identity.monadIdentity({})))(Data_Argonaut_Core.jsonNull));
-    var noneOf = function (__dict_Monad_563) {
+    var noneOf = function (__dict_Monad_562) {
         return function (ss) {
-            return Text_Parsing_Parser_String.satisfy(__dict_Monad_563)(Prelude.flip(Data_Foldable.notElem(Prelude.eqString({}))(Data_Foldable.foldableArray({})))(ss));
+            return Text_Parsing_Parser_String.satisfy(__dict_Monad_562)(Prelude.flip(Data_Foldable.notElem(Prelude.eqString({}))(Data_Foldable.foldableArray({})))(ss));
         };
     };
     var newline = "n";
-    var manyTill = function (__dict_Monad_564) {
+    var manyTill = function (__dict_Monad_563) {
         return function (p) {
             return function (end) {
-                var scan = Prelude["<|>"](Text_Parsing_Parser.alternativeParserT(__dict_Monad_564))(Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_564))(end)(function (_) {
-                    return Prelude.pure(Text_Parsing_Parser.applicativeParserT(__dict_Monad_564))([  ]);
-                }))(Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_564))(p)(function (_126) {
-                    return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_564))(scan)(function (_125) {
-                        return Prelude.pure(Text_Parsing_Parser.applicativeParserT(__dict_Monad_564))(Prelude[":"](_126)(_125));
+                var scan = Prelude["<|>"](Text_Parsing_Parser.alternativeParserT(__dict_Monad_563))(Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_563))(end)(function (_) {
+                    return Prelude.pure(Text_Parsing_Parser.applicativeParserT(__dict_Monad_563))([  ]);
+                }))(Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_563))(p)(function (_126) {
+                    return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_563))(scan)(function (_125) {
+                        return Prelude.pure(Text_Parsing_Parser.applicativeParserT(__dict_Monad_563))(Prelude[":"](_126)(_125));
                     });
                 }));
                 return scan;
             };
         };
     };
-    var many1Till = function (__dict_Monad_565) {
+    var many1Till = function (__dict_Monad_564) {
         return function (p) {
             return function (end) {
-                return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_565))(p)(function (_128) {
-                    return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_565))(manyTill(__dict_Monad_565)(p)(end))(function (_127) {
-                        return Prelude.pure(Text_Parsing_Parser.applicativeParserT(__dict_Monad_565))(Prelude[":"](_128)(_127));
+                return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_564))(p)(function (_128) {
+                    return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_564))(manyTill(__dict_Monad_564)(p)(end))(function (_127) {
+                        return Prelude.pure(Text_Parsing_Parser.applicativeParserT(__dict_Monad_564))(Prelude[":"](_128)(_127));
                     });
                 });
             };
         };
     };
-    var lookAhead = function (__dict_Monad_566) {
-        return function (_672) {
+    var lookAhead = function (__dict_Monad_565) {
+        return function (_671) {
             return new Text_Parsing_Parser.ParserT(function (s) {
-                return Prelude[">>="](__dict_Monad_566["__superclass_Prelude.Bind_1"]({}))(_672.value0(s))(function (_124) {
-                    return Prelude.pure(__dict_Monad_566["__superclass_Prelude.Applicative_0"]({}))((function () {
-                        var _2537 = {};
-                        for (var _2538 in _124) {
-                            if (_124.hasOwnProperty(_2538)) {
-                                _2537[_2538] = _124[_2538];
+                return Prelude[">>="](__dict_Monad_565["__superclass_Prelude.Bind_1"]({}))(_671.value0(s))(function (_124) {
+                    return Prelude.pure(__dict_Monad_565["__superclass_Prelude.Applicative_0"]({}))((function () {
+                        var _2536 = {};
+                        for (var _2537 in _124) {
+                            if (_124.hasOwnProperty(_2537)) {
+                                _2536[_2537] = _124[_2537];
                             };
                         };
-                        _2537.input = s;
-                        _2537.consumed = false;
-                        return _2537;
+                        _2536.input = s;
+                        _2536.consumed = false;
+                        return _2536;
                     })());
                 });
             });
@@ -67753,8 +67737,8 @@ PS.Data_Argonaut_Parser = (function () {
         var n = ord(str);
         return 65 <= n && n <= 70 || 97 <= n && n <= 102;
     };
-    var isDigit = function (_671) {
-        if (48 <= ord(_671) && ord(_671) <= 57) {
+    var isDigit = function (_670) {
+        if (48 <= ord(_670) && ord(_670) <= 57) {
             return true;
         };
         return false;
@@ -67790,12 +67774,12 @@ PS.Data_Argonaut_Parser = (function () {
             });
         });
     });
-    var fromEither = function (_674) {
-        if (_674 instanceof Data_Either.Left) {
-            return new ParseFailure(_674.value0);
+    var fromEither = function (_673) {
+        if (_673 instanceof Data_Either.Left) {
+            return new ParseFailure(_673.value0);
         };
-        if (_674 instanceof Data_Either.Right) {
-            return new ParseSuccess(_674.value0);
+        if (_673 instanceof Data_Either.Right) {
+            return new ParseSuccess(_673.value0);
         };
         throw new Error("Failed pattern match");
     };
@@ -67806,32 +67790,32 @@ PS.Data_Argonaut_Parser = (function () {
             };
         });
     };
-    var isoParseEither = function (__dict_Functor_567) {
-        return function (__dict_Profunctor_568) {
-            return Control_Lens.iso(__dict_Profunctor_568)(__dict_Functor_567)(toEither)(fromEither);
+    var isoParseEither = function (__dict_Functor_566) {
+        return function (__dict_Profunctor_567) {
+            return Control_Lens.iso(__dict_Profunctor_567)(__dict_Functor_566)(toEither)(fromEither);
         };
     };
     var formfeed = "f";
-    var eqParseResult = function (__dict_Eq_569) {
+    var eqParseResult = function (__dict_Eq_568) {
         return new Prelude.Eq(function (pr) {
             return function (pr$prime) {
-                return !Prelude["=="](eqParseResult(__dict_Eq_569))(pr)(pr$prime);
+                return !Prelude["=="](eqParseResult(__dict_Eq_568))(pr)(pr$prime);
             };
-        }, function (_675) {
-            return function (_676) {
-                if (_675 instanceof ParseFailure && _676 instanceof ParseFailure) {
-                    return _675.value0 === _676.value0;
+        }, function (_674) {
+            return function (_675) {
+                if (_674 instanceof ParseFailure && _675 instanceof ParseFailure) {
+                    return _674.value0 === _675.value0;
                 };
-                if (_675 instanceof ParseSuccess && _676 instanceof ParseSuccess) {
-                    return Prelude["=="](__dict_Eq_569)(_675.value0)(_676.value0);
+                if (_674 instanceof ParseSuccess && _675 instanceof ParseSuccess) {
+                    return Prelude["=="](__dict_Eq_568)(_674.value0)(_675.value0);
                 };
                 throw new Error("Failed pattern match");
             };
         });
     };
     var doubleQuote = "\"";
-    var quoted = function (__dict_Monad_570) {
-        return Text_Parsing_Parser_Combinators.between(__dict_Monad_570)(Text_Parsing_Parser_String.string(__dict_Monad_570)(doubleQuote))(Text_Parsing_Parser_String.string(__dict_Monad_570)(doubleQuote));
+    var quoted = function (__dict_Monad_569) {
+        return Text_Parsing_Parser_Combinators.between(__dict_Monad_569)(Text_Parsing_Parser_String.string(__dict_Monad_569)(doubleQuote))(Text_Parsing_Parser_String.string(__dict_Monad_569)(doubleQuote));
     };
     var emptyStringParser = Control_Apply["*>"](Text_Parsing_Parser.applyParserT(Control_Monad_Identity.monadIdentity({})))(skipSpaces)(quoted(Control_Monad_Identity.monadIdentity({}))(Prelude.pure(Text_Parsing_Parser.applicativeParserT(Control_Monad_Identity.monadIdentity({})))("")));
     var digit = Text_Parsing_Parser_String.satisfy(Control_Monad_Identity.monadIdentity({}))(isDigit);
@@ -67851,8 +67835,8 @@ PS.Data_Argonaut_Parser = (function () {
     var numberParser = Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(skipSpaces)(function (_) {
         return Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(Text_Parsing_Parser_Combinators.option(Control_Monad_Identity.monadIdentity({}))("")(Text_Parsing_Parser_String.string(Control_Monad_Identity.monadIdentity({}))("-")))(function (_109) {
             return Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(lookAhead(Control_Monad_Identity.monadIdentity({}))(Text_Parsing_Parser_String["char"](Control_Monad_Identity.monadIdentity({}))))(function (_108) {
-                return Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))((function (_2563) {
-                    if (_2563 === "0") {
+                return Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))((function (_2562) {
+                    if (_2562 === "0") {
                         return Text_Parsing_Parser_String["char"](Control_Monad_Identity.monadIdentity({}));
                     };
                     if (oneToNine(_108)) {
@@ -67886,12 +67870,12 @@ PS.Data_Argonaut_Parser = (function () {
     var closeBracket = "]";
     var closeBrace = "}";
     var carriageReturn = "r";
-    var brackets = function (__dict_Monad_571) {
-        return Text_Parsing_Parser_Combinators.between(__dict_Monad_571)(Text_Parsing_Parser_String.string(__dict_Monad_571)(openBracket))(Text_Parsing_Parser_String.string(__dict_Monad_571)(closeBracket));
+    var brackets = function (__dict_Monad_570) {
+        return Text_Parsing_Parser_Combinators.between(__dict_Monad_570)(Text_Parsing_Parser_String.string(__dict_Monad_570)(openBracket))(Text_Parsing_Parser_String.string(__dict_Monad_570)(closeBracket));
     };
     var emptyArrayParser = Control_Apply["*>"](Text_Parsing_Parser.applyParserT(Control_Monad_Identity.monadIdentity({})))(skipSpaces)(brackets(Control_Monad_Identity.monadIdentity({}))(Control_Apply["*>"](Text_Parsing_Parser.applyParserT(Control_Monad_Identity.monadIdentity({})))(skipSpaces)(Prelude.pure(Text_Parsing_Parser.applicativeParserT(Control_Monad_Identity.monadIdentity({})))(Data_Argonaut_Core.jsonEmptyArray))));
-    var braces = function (__dict_Monad_572) {
-        return Text_Parsing_Parser_Combinators.between(__dict_Monad_572)(Text_Parsing_Parser_String.string(__dict_Monad_572)(openBrace))(Text_Parsing_Parser_String.string(__dict_Monad_572)(closeBrace));
+    var braces = function (__dict_Monad_571) {
+        return Text_Parsing_Parser_Combinators.between(__dict_Monad_571)(Text_Parsing_Parser_String.string(__dict_Monad_571)(openBrace))(Text_Parsing_Parser_String.string(__dict_Monad_571)(closeBrace));
     };
     var emptyObjectParser = Control_Apply["*>"](Text_Parsing_Parser.applyParserT(Control_Monad_Identity.monadIdentity({})))(skipSpaces)(braces(Control_Monad_Identity.monadIdentity({}))(Control_Apply["*>"](Text_Parsing_Parser.applyParserT(Control_Monad_Identity.monadIdentity({})))(skipSpaces)(Prelude.pure(Text_Parsing_Parser.applicativeParserT(Control_Monad_Identity.monadIdentity({})))(Data_Argonaut_Core.jsonEmptyObject))));
     var booleanParser = Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(skipSpaces)(function (_) {
@@ -67906,25 +67890,25 @@ PS.Data_Argonaut_Parser = (function () {
         });
     });
     var backspace = "b";
-    var arrayParser = function (_666) {
+    var arrayParser = function (_665) {
         return Prelude["<|>"](Text_Parsing_Parser.alternativeParserT(Control_Monad_Identity.monadIdentity({})))(Text_Parsing_Parser_Combinators["try"](Control_Monad_Identity.functorIdentity({}))(emptyArrayParser))(nonEmptyArrayParser);
     };
     var nonEmptyArrayParser = Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(skipSpaces)(function (_) {
         return Prelude["<$>"](Text_Parsing_Parser.functorParserT(Control_Monad_Identity.functorIdentity({})))(Data_Argonaut_Core.fromArray)(brackets(Control_Monad_Identity.monadIdentity({}))(Control_Apply["<*"](Text_Parsing_Parser.applyParserT(Control_Monad_Identity.monadIdentity({})))(Control_Apply["*>"](Text_Parsing_Parser.applyParserT(Control_Monad_Identity.monadIdentity({})))(skipSpaces)(Text_Parsing_Parser_Combinators.sepBy(Control_Monad_Identity.monadIdentity({}))(valueParser(Prelude.unit))(Text_Parsing_Parser_String.string(Control_Monad_Identity.monadIdentity({}))(comma))))(skipSpaces)));
     });
-    var valueParser = function (_670) {
+    var valueParser = function (_669) {
         return Text_Parsing_Parser_Combinators.choice(Control_Monad_Identity.monadIdentity({}))(Prelude["<$>"](Data_Array.functorArray({}))(Text_Parsing_Parser_Combinators["try"](Control_Monad_Identity.functorIdentity({})))([ nullParser, booleanParser, stringParser, objectParser(Prelude.unit), arrayParser(Prelude.unit), numberParser ]));
     };
-    var objectParser = function (_665) {
+    var objectParser = function (_664) {
         return Prelude["<|>"](Text_Parsing_Parser.alternativeParserT(Control_Monad_Identity.monadIdentity({})))(Text_Parsing_Parser_Combinators["try"](Control_Monad_Identity.functorIdentity({}))(emptyObjectParser))(nonEmptyObjectParser(Prelude.unit));
     };
-    var nonEmptyObjectParser = function (_667) {
+    var nonEmptyObjectParser = function (_666) {
         return Control_Apply["*>"](Text_Parsing_Parser.applyParserT(Control_Monad_Identity.monadIdentity({})))(skipSpaces)(braces(Control_Monad_Identity.monadIdentity({}))(Control_Apply["<*"](Text_Parsing_Parser.applyParserT(Control_Monad_Identity.monadIdentity({})))(Control_Apply["*>"](Text_Parsing_Parser.applyParserT(Control_Monad_Identity.monadIdentity({})))(skipSpaces)(membersParser(Prelude.unit)))(skipSpaces)));
     };
-    var membersParser = function (_668) {
+    var membersParser = function (_667) {
         return Prelude["<$>"](Text_Parsing_Parser.functorParserT(Control_Monad_Identity.functorIdentity({})))(Prelude[">>>"](Prelude.semigroupoidArr({}))(Data_Map.fromList(Prelude.ordString({})))(Data_Argonaut_Core.fromObject))(Text_Parsing_Parser_Combinators.sepBy1(Control_Monad_Identity.monadIdentity({}))(memberParser(Prelude.unit))(Text_Parsing_Parser_String.string(Control_Monad_Identity.monadIdentity({}))(comma)));
     };
-    var memberParser = function (_669) {
+    var memberParser = function (_668) {
         return Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(skipSpaces)(function (_) {
             return Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(rawStringParser)(function (_103) {
                 return Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(skipSpaces)(function (_) {
@@ -67951,19 +67935,19 @@ PS.Data_Argonaut_Parser = (function () {
         });
     });
     var parseString = function (str) {
-        return (function (_2583) {
-            if (_2583 instanceof Data_Either.Left) {
-                return new ParseFailure(_2583.value0.value0.message);
+        return (function (_2582) {
+            if (_2582 instanceof Data_Either.Left) {
+                return new ParseFailure(_2582.value0.value0.message);
             };
-            if (_2583 instanceof Data_Either.Right) {
-                return new ParseSuccess(_2583.value0);
+            if (_2582 instanceof Data_Either.Right) {
+                return new ParseSuccess(_2582.value0);
             };
             throw new Error("Failed pattern match");
         })(Text_Parsing_Parser.runParser(str)(jsonParser));
     };
     var parserIdParseResultString = function (_) {
-        return new Parser(function (_678) {
-            return parseString(_678.value0);
+        return new Parser(function (_677) {
+            return parseString(_677.value0);
         });
     };
     var applyParseResult = function (_) {
@@ -68428,542 +68412,542 @@ PS.Network_HTTP = (function () {
             return new Header(value0, value1);
         };
     };
-    var string2Head = function (_680) {
-        if (_680 === "Accept") {
+    var string2Head = function (_679) {
+        if (_679 === "Accept") {
             return Accept.value;
         };
-        if (_680 === "Accept-Charset") {
+        if (_679 === "Accept-Charset") {
             return AcceptCharset.value;
         };
-        if (_680 === "Accept-Encoding") {
+        if (_679 === "Accept-Encoding") {
             return AcceptEncoding.value;
         };
-        if (_680 === "Accept-Language") {
+        if (_679 === "Accept-Language") {
             return AcceptLanguage.value;
         };
-        if (_680 === "Allow") {
+        if (_679 === "Allow") {
             return Allow.value;
         };
-        if (_680 === "Authorization") {
+        if (_679 === "Authorization") {
             return Authorization.value;
         };
-        if (_680 === "Cache-Control") {
+        if (_679 === "Cache-Control") {
             return CacheControl.value;
         };
-        if (_680 === "Connection") {
+        if (_679 === "Connection") {
             return Connection.value;
         };
-        if (_680 === "Content-Encoding") {
+        if (_679 === "Content-Encoding") {
             return ContentEncoding.value;
         };
-        if (_680 === "Content-Language") {
+        if (_679 === "Content-Language") {
             return ContentLanguage.value;
         };
-        if (_680 === "Content-Length") {
+        if (_679 === "Content-Length") {
             return ContentLength.value;
         };
-        if (_680 === "Content-Location") {
+        if (_679 === "Content-Location") {
             return ContentLocation.value;
         };
-        if (_680 === "Content-MD5") {
+        if (_679 === "Content-MD5") {
             return ContentMD5.value;
         };
-        if (_680 === "Content-Range") {
+        if (_679 === "Content-Range") {
             return ContentRange.value;
         };
-        if (_680 === "Content-Type") {
+        if (_679 === "Content-Type") {
             return ContentType.value;
         };
-        if (_680 === "Date") {
+        if (_679 === "Date") {
             return Date.value;
         };
-        if (_680 === "Expect") {
+        if (_679 === "Expect") {
             return Expect.value;
         };
-        if (_680 === "Expires") {
+        if (_679 === "Expires") {
             return Expires.value;
         };
-        if (_680 === "From") {
+        if (_679 === "From") {
             return From.value;
         };
-        if (_680 === "Host") {
+        if (_679 === "Host") {
             return Host.value;
         };
-        if (_680 === "If-Match") {
+        if (_679 === "If-Match") {
             return IfMatch.value;
         };
-        if (_680 === "If-Modified-Since") {
+        if (_679 === "If-Modified-Since") {
             return IfModifiedSince.value;
         };
-        if (_680 === "If-None-Match") {
+        if (_679 === "If-None-Match") {
             return IfNoneMatch.value;
         };
-        if (_680 === "If-Range") {
+        if (_679 === "If-Range") {
             return IfRange.value;
         };
-        if (_680 === "If-Unmodified-Since") {
+        if (_679 === "If-Unmodified-Since") {
             return IfUnmodifiedSince.value;
         };
-        if (_680 === "Last-Modified") {
+        if (_679 === "Last-Modified") {
             return LastModified.value;
         };
-        if (_680 === "Max-Forwards") {
+        if (_679 === "Max-Forwards") {
             return MaxForwards.value;
         };
-        if (_680 === "Pragma") {
+        if (_679 === "Pragma") {
             return Pragma.value;
         };
-        if (_680 === "Proxy-Authorization") {
+        if (_679 === "Proxy-Authorization") {
             return ProxyAuthorization.value;
         };
-        if (_680 === "Range") {
+        if (_679 === "Range") {
             return Range.value;
         };
-        if (_680 === "Referer") {
+        if (_679 === "Referer") {
             return Referer.value;
         };
-        if (_680 === "Te") {
+        if (_679 === "Te") {
             return TE.value;
         };
-        if (_680 === "Trailer") {
+        if (_679 === "Trailer") {
             return Trailer.value;
         };
-        if (_680 === "Transfer-Encoding") {
+        if (_679 === "Transfer-Encoding") {
             return TransferEncoding.value;
         };
-        if (_680 === "Upgrade") {
+        if (_679 === "Upgrade") {
             return Upgrade.value;
         };
-        if (_680 === "User-Agent") {
+        if (_679 === "User-Agent") {
             return UserAgent.value;
         };
-        if (_680 === "Via") {
+        if (_679 === "Via") {
             return Via.value;
         };
-        if (_680 === "Warning") {
+        if (_679 === "Warning") {
             return Warning.value;
         };
-        return new Custom(_680);
+        return new Custom(_679);
     };
-    var status2Number = function (_681) {
-        if (_681 instanceof NoStatus) {
+    var status2Number = function (_680) {
+        if (_680 instanceof NoStatus) {
             return 0;
         };
-        if (_681 instanceof Continue) {
+        if (_680 instanceof Continue) {
             return 100;
         };
-        if (_681 instanceof SwitchingProtocols) {
+        if (_680 instanceof SwitchingProtocols) {
             return 101;
         };
-        if (_681 instanceof Ok) {
+        if (_680 instanceof Ok) {
             return 200;
         };
-        if (_681 instanceof Created) {
+        if (_680 instanceof Created) {
             return 201;
         };
-        if (_681 instanceof Accepted) {
+        if (_680 instanceof Accepted) {
             return 202;
         };
-        if (_681 instanceof NonAuthoritativeInformation) {
+        if (_680 instanceof NonAuthoritativeInformation) {
             return 203;
         };
-        if (_681 instanceof NoContent) {
+        if (_680 instanceof NoContent) {
             return 204;
         };
-        if (_681 instanceof ResetContent) {
+        if (_680 instanceof ResetContent) {
             return 205;
         };
-        if (_681 instanceof PartialContent) {
+        if (_680 instanceof PartialContent) {
             return 206;
         };
-        if (_681 instanceof MultipleChoices) {
+        if (_680 instanceof MultipleChoices) {
             return 300;
         };
-        if (_681 instanceof MovedPermanently) {
+        if (_680 instanceof MovedPermanently) {
             return 301;
         };
-        if (_681 instanceof Found) {
+        if (_680 instanceof Found) {
             return 302;
         };
-        if (_681 instanceof SeeOther) {
+        if (_680 instanceof SeeOther) {
             return 303;
         };
-        if (_681 instanceof NotModified) {
+        if (_680 instanceof NotModified) {
             return 304;
         };
-        if (_681 instanceof UseProxy) {
+        if (_680 instanceof UseProxy) {
             return 305;
         };
-        if (_681 instanceof TemporaryRedirect) {
+        if (_680 instanceof TemporaryRedirect) {
             return 307;
         };
-        if (_681 instanceof BadRequest) {
+        if (_680 instanceof BadRequest) {
             return 400;
         };
-        if (_681 instanceof Unauthorized) {
+        if (_680 instanceof Unauthorized) {
             return 401;
         };
-        if (_681 instanceof PaymentRequired) {
+        if (_680 instanceof PaymentRequired) {
             return 402;
         };
-        if (_681 instanceof Forbidden) {
+        if (_680 instanceof Forbidden) {
             return 403;
         };
-        if (_681 instanceof NotFound) {
+        if (_680 instanceof NotFound) {
             return 404;
         };
-        if (_681 instanceof MethodNotAllowed) {
+        if (_680 instanceof MethodNotAllowed) {
             return 405;
         };
-        if (_681 instanceof NotAcceptable) {
+        if (_680 instanceof NotAcceptable) {
             return 406;
         };
-        if (_681 instanceof ProxyAuthenticationRequired) {
+        if (_680 instanceof ProxyAuthenticationRequired) {
             return 407;
         };
-        if (_681 instanceof RequestTimeout) {
+        if (_680 instanceof RequestTimeout) {
             return 408;
         };
-        if (_681 instanceof Gone) {
+        if (_680 instanceof Gone) {
             return 410;
         };
-        if (_681 instanceof LengthRequired) {
+        if (_680 instanceof LengthRequired) {
             return 411;
         };
-        if (_681 instanceof PreconditionFailed) {
+        if (_680 instanceof PreconditionFailed) {
             return 412;
         };
-        if (_681 instanceof RequestEntityTooLarge) {
+        if (_680 instanceof RequestEntityTooLarge) {
             return 413;
         };
-        if (_681 instanceof RequestURITooLong) {
+        if (_680 instanceof RequestURITooLong) {
             return 414;
         };
-        if (_681 instanceof UnsupportedMediaType) {
+        if (_680 instanceof UnsupportedMediaType) {
             return 415;
         };
-        if (_681 instanceof RequestedRangeNotSatisfiable) {
+        if (_680 instanceof RequestedRangeNotSatisfiable) {
             return 416;
         };
-        if (_681 instanceof ExpectationFailed) {
+        if (_680 instanceof ExpectationFailed) {
             return 417;
         };
-        if (_681 instanceof InternalServerError) {
+        if (_680 instanceof InternalServerError) {
             return 500;
         };
-        if (_681 instanceof NotImplemented) {
+        if (_680 instanceof NotImplemented) {
             return 501;
         };
-        if (_681 instanceof BadGateway) {
+        if (_680 instanceof BadGateway) {
             return 502;
         };
-        if (_681 instanceof ServiceUnavailable) {
+        if (_680 instanceof ServiceUnavailable) {
             return 503;
         };
-        if (_681 instanceof GatewayTimeout) {
+        if (_680 instanceof GatewayTimeout) {
             return 504;
         };
-        if (_681 instanceof HTTPVersionNotSupported) {
+        if (_680 instanceof HTTPVersionNotSupported) {
             return 505;
         };
         throw new Error("Failed pattern match");
     };
-    var space = function (__dict_Monad_573) {
-        return Text_Parsing_Parser_Combinators.choice(__dict_Monad_573)([ Text_Parsing_Parser_String.string(__dict_Monad_573)(" "), Text_Parsing_Parser_String.string(__dict_Monad_573)("\t") ]);
+    var space = function (__dict_Monad_572) {
+        return Text_Parsing_Parser_Combinators.choice(__dict_Monad_572)([ Text_Parsing_Parser_String.string(__dict_Monad_572)(" "), Text_Parsing_Parser_String.string(__dict_Monad_572)("\t") ]);
     };
-    var skipMany = function (__dict_Monad_574) {
+    var skipMany = function (__dict_Monad_573) {
         return function (s) {
-            return Control_Apply["*>"](Text_Parsing_Parser.applyParserT(__dict_Monad_574))(Text_Parsing_Parser_Combinators.many(__dict_Monad_574)(s))(Prelude.pure(Text_Parsing_Parser.applicativeParserT(__dict_Monad_574))({}));
+            return Control_Apply["*>"](Text_Parsing_Parser.applyParserT(__dict_Monad_573))(Text_Parsing_Parser_Combinators.many(__dict_Monad_573)(s))(Prelude.pure(Text_Parsing_Parser.applicativeParserT(__dict_Monad_573))({}));
         };
     };
-    var skipSpaces = function (__dict_Monad_575) {
-        return skipMany(__dict_Monad_575)(space(__dict_Monad_575));
+    var skipSpaces = function (__dict_Monad_574) {
+        return skipMany(__dict_Monad_574)(space(__dict_Monad_574));
     };
     var showHeaderHead = function (_) {
-        return new Prelude.Show(function (_685) {
-            if (_685 instanceof Accept) {
+        return new Prelude.Show(function (_684) {
+            if (_684 instanceof Accept) {
                 return "Accept";
             };
-            if (_685 instanceof AcceptCharset) {
+            if (_684 instanceof AcceptCharset) {
                 return "Accept-Charset";
             };
-            if (_685 instanceof AcceptEncoding) {
+            if (_684 instanceof AcceptEncoding) {
                 return "Accept-Encoding";
             };
-            if (_685 instanceof AcceptLanguage) {
+            if (_684 instanceof AcceptLanguage) {
                 return "Accept-Language";
             };
-            if (_685 instanceof Allow) {
+            if (_684 instanceof Allow) {
                 return "Allow";
             };
-            if (_685 instanceof Authorization) {
+            if (_684 instanceof Authorization) {
                 return "Authorization";
             };
-            if (_685 instanceof CacheControl) {
+            if (_684 instanceof CacheControl) {
                 return "Cache-Control";
             };
-            if (_685 instanceof Connection) {
+            if (_684 instanceof Connection) {
                 return "Connection";
             };
-            if (_685 instanceof ContentEncoding) {
+            if (_684 instanceof ContentEncoding) {
                 return "Content-Encoding";
             };
-            if (_685 instanceof ContentLanguage) {
+            if (_684 instanceof ContentLanguage) {
                 return "Content-Language";
             };
-            if (_685 instanceof ContentLength) {
+            if (_684 instanceof ContentLength) {
                 return "Content-Length";
             };
-            if (_685 instanceof ContentLocation) {
+            if (_684 instanceof ContentLocation) {
                 return "Content-Location";
             };
-            if (_685 instanceof ContentMD5) {
+            if (_684 instanceof ContentMD5) {
                 return "Content-MD5";
             };
-            if (_685 instanceof ContentRange) {
+            if (_684 instanceof ContentRange) {
                 return "Content-Range";
             };
-            if (_685 instanceof ContentType) {
+            if (_684 instanceof ContentType) {
                 return "Content-Type";
             };
-            if (_685 instanceof Date) {
+            if (_684 instanceof Date) {
                 return "Date";
             };
-            if (_685 instanceof Expect) {
+            if (_684 instanceof Expect) {
                 return "Expect";
             };
-            if (_685 instanceof Expires) {
+            if (_684 instanceof Expires) {
                 return "Expires";
             };
-            if (_685 instanceof From) {
+            if (_684 instanceof From) {
                 return "From";
             };
-            if (_685 instanceof Host) {
+            if (_684 instanceof Host) {
                 return "Host";
             };
-            if (_685 instanceof IfMatch) {
+            if (_684 instanceof IfMatch) {
                 return "If-Match";
             };
-            if (_685 instanceof IfModifiedSince) {
+            if (_684 instanceof IfModifiedSince) {
                 return "If-Modified-Since";
             };
-            if (_685 instanceof IfNoneMatch) {
+            if (_684 instanceof IfNoneMatch) {
                 return "If-None-Match";
             };
-            if (_685 instanceof IfRange) {
+            if (_684 instanceof IfRange) {
                 return "If-Range";
             };
-            if (_685 instanceof IfUnmodifiedSince) {
+            if (_684 instanceof IfUnmodifiedSince) {
                 return "If-Unmodified-Since";
             };
-            if (_685 instanceof LastModified) {
+            if (_684 instanceof LastModified) {
                 return "Last-Modified";
             };
-            if (_685 instanceof MaxForwards) {
+            if (_684 instanceof MaxForwards) {
                 return "Max-Forwards";
             };
-            if (_685 instanceof Pragma) {
+            if (_684 instanceof Pragma) {
                 return "Pragma";
             };
-            if (_685 instanceof ProxyAuthorization) {
+            if (_684 instanceof ProxyAuthorization) {
                 return "Proxy-Authorization";
             };
-            if (_685 instanceof Range) {
+            if (_684 instanceof Range) {
                 return "Range";
             };
-            if (_685 instanceof Referer) {
+            if (_684 instanceof Referer) {
                 return "Referer";
             };
-            if (_685 instanceof TE) {
+            if (_684 instanceof TE) {
                 return "Te";
             };
-            if (_685 instanceof Trailer) {
+            if (_684 instanceof Trailer) {
                 return "Trailer";
             };
-            if (_685 instanceof TransferEncoding) {
+            if (_684 instanceof TransferEncoding) {
                 return "Transfer-Encoding";
             };
-            if (_685 instanceof Upgrade) {
+            if (_684 instanceof Upgrade) {
                 return "Upgrade";
             };
-            if (_685 instanceof UserAgent) {
+            if (_684 instanceof UserAgent) {
                 return "User-Agent";
             };
-            if (_685 instanceof Via) {
+            if (_684 instanceof Via) {
                 return "Via";
             };
-            if (_685 instanceof Warning) {
+            if (_684 instanceof Warning) {
                 return "Warning";
             };
-            if (_685 instanceof Custom) {
-                return _685.value0;
+            if (_684 instanceof Custom) {
+                return _684.value0;
             };
             throw new Error("Failed pattern match");
         });
     };
     var showHeader = function (_) {
-        return new Prelude.Show(function (_684) {
-            return Prelude.show(showHeaderHead({}))(_684.value0) + ": " + _684.value1;
+        return new Prelude.Show(function (_683) {
+            return Prelude.show(showHeaderHead({}))(_683.value0) + ": " + _683.value1;
         });
     };
     var showHTTPVerb = function (_) {
-        return new Prelude.Show(function (_683) {
-            if (_683 instanceof DELETE) {
+        return new Prelude.Show(function (_682) {
+            if (_682 instanceof DELETE) {
                 return "DELETE";
             };
-            if (_683 instanceof GET) {
+            if (_682 instanceof GET) {
                 return "GET";
             };
-            if (_683 instanceof HEAD) {
+            if (_682 instanceof HEAD) {
                 return "HEAD";
             };
-            if (_683 instanceof OPTIONS) {
+            if (_682 instanceof OPTIONS) {
                 return "OPTIONS";
             };
-            if (_683 instanceof PATCH) {
+            if (_682 instanceof PATCH) {
                 return "PATCH";
             };
-            if (_683 instanceof POST) {
+            if (_682 instanceof POST) {
                 return "POST";
             };
-            if (_683 instanceof PUT) {
+            if (_682 instanceof PUT) {
                 return "PUT";
             };
             throw new Error("Failed pattern match");
         });
     };
-    var number2Status = function (_682) {
-        if (_682 === 0) {
+    var number2Status = function (_681) {
+        if (_681 === 0) {
             return new Data_Maybe.Just(NoStatus.value);
         };
-        if (_682 === 100) {
+        if (_681 === 100) {
             return new Data_Maybe.Just(Continue.value);
         };
-        if (_682 === 101) {
+        if (_681 === 101) {
             return new Data_Maybe.Just(SwitchingProtocols.value);
         };
-        if (_682 === 200) {
+        if (_681 === 200) {
             return new Data_Maybe.Just(Ok.value);
         };
-        if (_682 === 201) {
+        if (_681 === 201) {
             return new Data_Maybe.Just(Created.value);
         };
-        if (_682 === 202) {
+        if (_681 === 202) {
             return new Data_Maybe.Just(Accepted.value);
         };
-        if (_682 === 203) {
+        if (_681 === 203) {
             return new Data_Maybe.Just(NonAuthoritativeInformation.value);
         };
-        if (_682 === 204) {
+        if (_681 === 204) {
             return new Data_Maybe.Just(NoContent.value);
         };
-        if (_682 === 205) {
+        if (_681 === 205) {
             return new Data_Maybe.Just(ResetContent.value);
         };
-        if (_682 === 206) {
+        if (_681 === 206) {
             return new Data_Maybe.Just(PartialContent.value);
         };
-        if (_682 === 300) {
+        if (_681 === 300) {
             return new Data_Maybe.Just(MultipleChoices.value);
         };
-        if (_682 === 301) {
+        if (_681 === 301) {
             return new Data_Maybe.Just(MovedPermanently.value);
         };
-        if (_682 === 302) {
+        if (_681 === 302) {
             return new Data_Maybe.Just(Found.value);
         };
-        if (_682 === 303) {
+        if (_681 === 303) {
             return new Data_Maybe.Just(SeeOther.value);
         };
-        if (_682 === 304) {
+        if (_681 === 304) {
             return new Data_Maybe.Just(NotModified.value);
         };
-        if (_682 === 305) {
+        if (_681 === 305) {
             return new Data_Maybe.Just(UseProxy.value);
         };
-        if (_682 === 307) {
+        if (_681 === 307) {
             return new Data_Maybe.Just(TemporaryRedirect.value);
         };
-        if (_682 === 400) {
+        if (_681 === 400) {
             return new Data_Maybe.Just(BadRequest.value);
         };
-        if (_682 === 401) {
+        if (_681 === 401) {
             return new Data_Maybe.Just(Unauthorized.value);
         };
-        if (_682 === 402) {
+        if (_681 === 402) {
             return new Data_Maybe.Just(PaymentRequired.value);
         };
-        if (_682 === 403) {
+        if (_681 === 403) {
             return new Data_Maybe.Just(Forbidden.value);
         };
-        if (_682 === 404) {
+        if (_681 === 404) {
             return new Data_Maybe.Just(NotFound.value);
         };
-        if (_682 === 405) {
+        if (_681 === 405) {
             return new Data_Maybe.Just(MethodNotAllowed.value);
         };
-        if (_682 === 406) {
+        if (_681 === 406) {
             return new Data_Maybe.Just(NotAcceptable.value);
         };
-        if (_682 === 407) {
+        if (_681 === 407) {
             return new Data_Maybe.Just(ProxyAuthenticationRequired.value);
         };
-        if (_682 === 408) {
+        if (_681 === 408) {
             return new Data_Maybe.Just(RequestTimeout.value);
         };
-        if (_682 === 410) {
+        if (_681 === 410) {
             return new Data_Maybe.Just(Gone.value);
         };
-        if (_682 === 411) {
+        if (_681 === 411) {
             return new Data_Maybe.Just(LengthRequired.value);
         };
-        if (_682 === 412) {
+        if (_681 === 412) {
             return new Data_Maybe.Just(PreconditionFailed.value);
         };
-        if (_682 === 413) {
+        if (_681 === 413) {
             return new Data_Maybe.Just(RequestEntityTooLarge.value);
         };
-        if (_682 === 414) {
+        if (_681 === 414) {
             return new Data_Maybe.Just(RequestURITooLong.value);
         };
-        if (_682 === 415) {
+        if (_681 === 415) {
             return new Data_Maybe.Just(UnsupportedMediaType.value);
         };
-        if (_682 === 416) {
+        if (_681 === 416) {
             return new Data_Maybe.Just(RequestedRangeNotSatisfiable.value);
         };
-        if (_682 === 417) {
+        if (_681 === 417) {
             return new Data_Maybe.Just(ExpectationFailed.value);
         };
-        if (_682 === 500) {
+        if (_681 === 500) {
             return new Data_Maybe.Just(InternalServerError.value);
         };
-        if (_682 === 501) {
+        if (_681 === 501) {
             return new Data_Maybe.Just(NotImplemented.value);
         };
-        if (_682 === 502) {
+        if (_681 === 502) {
             return new Data_Maybe.Just(BadGateway.value);
         };
-        if (_682 === 503) {
+        if (_681 === 503) {
             return new Data_Maybe.Just(ServiceUnavailable.value);
         };
-        if (_682 === 504) {
+        if (_681 === 504) {
             return new Data_Maybe.Just(GatewayTimeout.value);
         };
-        if (_682 === 505) {
+        if (_681 === 505) {
             return new Data_Maybe.Just(HTTPVersionNotSupported.value);
         };
         return Data_Maybe.Nothing.value;
     };
-    var eol = function (__dict_Monad_576) {
-        return Text_Parsing_Parser_String.string(__dict_Monad_576)("\n");
+    var eol = function (__dict_Monad_575) {
+        return Text_Parsing_Parser_String.string(__dict_Monad_575)("\n");
     };
-    var parseHeader = function (__dict_Monad_577) {
-        return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_577))(Control_Apply["<*"](Text_Parsing_Parser.applyParserT(__dict_Monad_577))(Control_Apply["<*"](Text_Parsing_Parser.applyParserT(__dict_Monad_577))(Text_Parsing_Parser_Combinators.many1(__dict_Monad_577)(Text_Parsing_Parser_String["char"](__dict_Monad_577)))(Text_Parsing_Parser_String.string(__dict_Monad_577)(":")))(skipSpaces(__dict_Monad_577)))(function (_130) {
-            return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_577))(Control_Apply["<*"](Text_Parsing_Parser.applyParserT(__dict_Monad_577))(Text_Parsing_Parser_Combinators.many1(__dict_Monad_577)(Text_Parsing_Parser_String["char"](__dict_Monad_577)))(eol(__dict_Monad_577)))(function (_129) {
+    var parseHeader = function (__dict_Monad_576) {
+        return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_576))(Control_Apply["<*"](Text_Parsing_Parser.applyParserT(__dict_Monad_576))(Control_Apply["<*"](Text_Parsing_Parser.applyParserT(__dict_Monad_576))(Text_Parsing_Parser_Combinators.many1(__dict_Monad_576)(Text_Parsing_Parser_String["char"](__dict_Monad_576)))(Text_Parsing_Parser_String.string(__dict_Monad_576)(":")))(skipSpaces(__dict_Monad_576)))(function (_130) {
+            return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_576))(Control_Apply["<*"](Text_Parsing_Parser.applyParserT(__dict_Monad_576))(Text_Parsing_Parser_Combinators.many1(__dict_Monad_576)(Text_Parsing_Parser_String["char"](__dict_Monad_576)))(eol(__dict_Monad_576)))(function (_129) {
                 var head$prime = string2Head(Data_String.joinWith("")(_130));
                 var values$prime = Data_String.joinWith("")(_129);
-                return Prelude.pure(Text_Parsing_Parser.applicativeParserT(__dict_Monad_577))(new Header(head$prime, values$prime));
+                return Prelude.pure(Text_Parsing_Parser.applicativeParserT(__dict_Monad_576))(new Header(head$prime, values$prime));
             });
         });
     };
@@ -69096,23 +69080,23 @@ PS.Network_Oboe = (function () {
     };
     var oboeGet = function (url) {
         return oboe((function () {
-            var _2601 = {};
-            for (var _2602 in oboeOptions) {
-                if (oboeOptions.hasOwnProperty(_2602)) {
-                    _2601[_2602] = oboeOptions[_2602];
+            var _2600 = {};
+            for (var _2601 in oboeOptions) {
+                if (oboeOptions.hasOwnProperty(_2601)) {
+                    _2600[_2601] = oboeOptions[_2601];
                 };
             };
-            _2601.url = url;
-            return _2601;
+            _2600.url = url;
+            return _2600;
         })());
     };
     var mkFn3_ = Data_Function.mkFn3;
     var mkFn2_ = Data_Function.mkFn2;
     var mkFn1_ = Data_Function.mkFn1;
-    var header2Obj = function (_686) {
+    var header2Obj = function (_685) {
         return {
-            head: Prelude.show(Network_HTTP.showHeaderHead({}))(_686.value0), 
-            value: _686.value1
+            head: Prelude.show(Network_HTTP.showHeaderHead({}))(_685.value0), 
+            value: _685.value1
         };
     };
     return {
@@ -69150,32 +69134,32 @@ PS.Browser_WebStorage = (function () {
     function unsafeClear(storage) {  storage.clear();  return storage;};
     function null2Maybe(n) {  return n == null ? nothing : just(n);};
     var storageSessionStorage = function (_) {
-        return new Storage(function (_698) {
+        return new Storage(function (_697) {
             return unsafeClear(sessionStorage);
-        }, function (_695) {
-            return unsafeGetItem(sessionStorage);
         }, function (_694) {
-            return unsafeKey(sessionStorage);
+            return unsafeGetItem(sessionStorage);
         }, function (_693) {
+            return unsafeKey(sessionStorage);
+        }, function (_692) {
             return unsafeLength(sessionStorage);
-        }, function (_697) {
-            return unsafeRemoveItem(sessionStorage);
         }, function (_696) {
+            return unsafeRemoveItem(sessionStorage);
+        }, function (_695) {
             return unsafeSetItem(sessionStorage);
         });
     };
     var storageLocalStorage = function (_) {
-        return new Storage(function (_692) {
+        return new Storage(function (_691) {
             return unsafeClear(localStorage);
-        }, function (_689) {
-            return unsafeGetItem(localStorage);
         }, function (_688) {
-            return unsafeKey(localStorage);
+            return unsafeGetItem(localStorage);
         }, function (_687) {
+            return unsafeKey(localStorage);
+        }, function (_686) {
             return unsafeLength(localStorage);
-        }, function (_691) {
-            return unsafeRemoveItem(localStorage);
         }, function (_690) {
+            return unsafeRemoveItem(localStorage);
+        }, function (_689) {
             return unsafeSetItem(localStorage);
         });
     };
@@ -69273,43 +69257,43 @@ PS.SlamData_Helpers = (function () {
         return dict.toUI;
     };
     var showLocalKey = function (_) {
-        return new Prelude.Show(function (_724) {
-            if (_724 instanceof Blocks) {
+        return new Prelude.Show(function (_723) {
+            if (_723 instanceof Blocks) {
                 return "blocks";
             };
-            if (_724 instanceof Notebooks) {
+            if (_723 instanceof Notebooks) {
                 return "notebooks";
             };
-            if (_724 instanceof EvalSQLBlocks) {
+            if (_723 instanceof EvalSQLBlocks) {
                 return "evalsqlblocks";
             };
             throw new Error("Failed pattern match");
         });
     };
-    var serverURI = function (_704) {
-        return _704.server.location + ":" + Prelude.show(Prelude.showNumber({}))(_704.server.port);
+    var serverURI = function (_703) {
+        return _703.server.location + ":" + Prelude.show(Prelude.showNumber({}))(_703.server.port);
     };
-    var select = function (_699) {
-        return function (_700) {
-            return function (_701) {
-                if (_699(_700)) {
-                    var _2626 = {};
-                    for (var _2627 in _701) {
-                        if (_701.hasOwnProperty(_2627)) {
-                            _2626[_2627] = _701[_2627];
+    var select = function (_698) {
+        return function (_699) {
+            return function (_700) {
+                if (_698(_699)) {
+                    var _2625 = {};
+                    for (var _2626 in _700) {
+                        if (_700.hasOwnProperty(_2626)) {
+                            _2625[_2626] = _700[_2626];
                         };
                     };
-                    _2626.fst = Prelude[":"](_700)(_701.fst);
-                    return _2626;
+                    _2625.fst = Prelude[":"](_699)(_700.fst);
+                    return _2625;
                 };
-                var _2628 = {};
-                for (var _2629 in _701) {
-                    if (_701.hasOwnProperty(_2629)) {
-                        _2628[_2629] = _701[_2629];
+                var _2627 = {};
+                for (var _2628 in _700) {
+                    if (_700.hasOwnProperty(_2628)) {
+                        _2627[_2628] = _700[_2628];
                     };
                 };
-                _2628.snd = Prelude[":"](_700)(_701.snd);
-                return _2628;
+                _2627.snd = Prelude[":"](_699)(_700.snd);
+                return _2627;
             };
         };
     };
@@ -69322,9 +69306,9 @@ PS.SlamData_Helpers = (function () {
             snd: [  ]
         });
     };
-    var noneOf = function (__dict_Monad_578) {
+    var noneOf = function (__dict_Monad_577) {
         return function (ss) {
-            return Text_Parsing_Parser_String.satisfy(__dict_Monad_578)(Prelude.flip(Data_Foldable.notElem(Prelude.eqString({}))(Data_Foldable.foldableArray({})))(ss));
+            return Text_Parsing_Parser_String.satisfy(__dict_Monad_577)(Prelude.flip(Data_Foldable.notElem(Prelude.eqString({}))(Data_Foldable.foldableArray({})))(ss));
         };
     };
     var parseQuery = Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(Prelude["<$>"](Text_Parsing_Parser.functorParserT(Control_Monad_Identity.functorIdentity({})))(Data_String.joinWith(""))(Text_Parsing_Parser_Combinators.many1(Control_Monad_Identity.monadIdentity({}))(Text_Parsing_Parser_Combinators["try"](Control_Monad_Identity.functorIdentity({}))(noneOf(Control_Monad_Identity.monadIdentity({}))([ "=" ])))))(function (_142) {
@@ -69339,16 +69323,16 @@ PS.SlamData_Helpers = (function () {
             return Prelude.pure(Text_Parsing_Parser.applicativeParserT(Control_Monad_Identity.monadIdentity({})))(Data_Map.fromList(Prelude.ordString({}))(_140));
         });
     });
-    var localSet = function (__dict_Show_579) {
+    var localSet = function (__dict_Show_578) {
         return function (key) {
             return function (val) {
-                return Browser_WebStorage.setItem(Browser_WebStorage.storageLocalStorage({}))(Browser_WebStorage.localStorage)(Prelude.show(showLocalKey({}))(key))(Prelude.show(__dict_Show_579)(val));
+                return Browser_WebStorage.setItem(Browser_WebStorage.storageLocalStorage({}))(Browser_WebStorage.localStorage)(Prelude.show(showLocalKey({}))(key))(Prelude.show(__dict_Show_578)(val));
             };
         };
     };
-    var localGet = function (__dict_ReadForeign_580) {
+    var localGet = function (__dict_ReadForeign_579) {
         return function (key) {
-            return Data_Maybe.maybe([  ])(Prelude[">>>"](Prelude.semigroupoidArr({}))(Data_Foreign.parseJSON(Data_Foreign.readArray(__dict_ReadForeign_580)))(Data_Either.either(Prelude["const"]([  ]))(Prelude.id(Prelude.categoryArr({})))))(Browser_WebStorage.getItem(Browser_WebStorage.storageLocalStorage({}))(Browser_WebStorage.localStorage)(Prelude.show(showLocalKey({}))(key)));
+            return Data_Maybe.maybe([  ])(Prelude[">>>"](Prelude.semigroupoidArr({}))(Data_Foreign.parseJSON(Data_Foreign.readArray(__dict_ReadForeign_579)))(Data_Either.either(Prelude["const"]([  ]))(Prelude.id(Prelude.categoryArr({})))))(Browser_WebStorage.getItem(Browser_WebStorage.storageLocalStorage({}))(Browser_WebStorage.localStorage)(Prelude.show(showLocalKey({}))(key)));
         };
     };
     var large = function (size) {
@@ -69357,21 +69341,21 @@ PS.SlamData_Helpers = (function () {
         };
     };
     var iconFA = function (_) {
+        return new Icon(function (_724) {
+            return _724.value0;
+        });
+    };
+    var iconEntypo = function (_) {
         return new Icon(function (_725) {
             return _725.value0;
         });
     };
-    var iconEntypo = function (_) {
-        return new Icon(function (_726) {
-            return _726.value0;
-        });
-    };
-    var guardMaybe = function (_702) {
-        return function (_703) {
-            if (_702) {
-                return _703;
+    var guardMaybe = function (_701) {
+        return function (_702) {
+            if (_701) {
+                return _702;
             };
-            if (!_702) {
+            if (!_701) {
                 return Data_Maybe.Nothing.value;
             };
             throw new Error("Failed pattern match");
@@ -69381,34 +69365,34 @@ PS.SlamData_Helpers = (function () {
     var faIcon = function (name) {
         return FAIcon.create(React_DOM.i([ React_DOM.className(name) ])([  ]));
     };
-    var fileIcon = function (_715) {
+    var fileIcon = function (_714) {
         return faIcon("fa fa-file-o");
     };
-    var loadingIcon = function (_717) {
+    var loadingIcon = function (_716) {
         return faIcon("fa fa-circle-o-notch fa-spin");
     };
-    var markdownIcon = function (_710) {
+    var markdownIcon = function (_709) {
         return faIcon("fa fa-file-text");
     };
-    var newIcon = function (_706) {
+    var newIcon = function (_705) {
         return faIcon("fa fa-file");
     };
-    var newNotebookIcon = function (_716) {
+    var newNotebookIcon = function (_715) {
         return faIcon("fa fa-plus");
     };
-    var openIcon = function (_707) {
+    var openIcon = function (_706) {
         return faIcon("fa fa-folder-open");
     };
-    var publishIcon = function (_709) {
+    var publishIcon = function (_708) {
         return faIcon("fa fa-book");
     };
-    var saveIcon = function (_708) {
+    var saveIcon = function (_707) {
         return faIcon("fa fa-save");
     };
-    var sqlIcon = function (_711) {
+    var sqlIcon = function (_710) {
         return faIcon("fa fa-database");
     };
-    var visualIcon = function (_712) {
+    var visualIcon = function (_711) {
         return faIcon("fa fa-bar-chart-o");
     };
     var eqLocalKey = function (_) {
@@ -69416,15 +69400,15 @@ PS.SlamData_Helpers = (function () {
             return function (l$prime) {
                 return !Prelude["=="](eqLocalKey({}))(l)(l$prime);
             };
-        }, function (_722) {
-            return function (_723) {
-                if (_722 instanceof Blocks && _723 instanceof Blocks) {
+        }, function (_721) {
+            return function (_722) {
+                if (_721 instanceof Blocks && _722 instanceof Blocks) {
                     return true;
                 };
-                if (_722 instanceof Notebooks && _723 instanceof Notebooks) {
+                if (_721 instanceof Notebooks && _722 instanceof Notebooks) {
                     return true;
                 };
-                if (_722 instanceof EvalSQLBlocks && _723 instanceof EvalSQLBlocks) {
+                if (_721 instanceof EvalSQLBlocks && _722 instanceof EvalSQLBlocks) {
                     return true;
                 };
                 return false;
@@ -69434,16 +69418,16 @@ PS.SlamData_Helpers = (function () {
     var entypoIcon = function (name) {
         return EntypoIcon.create(React_DOM.i([ React_DOM.className(name) ])([  ]));
     };
-    var lineChartIcon = function (_720) {
+    var lineChartIcon = function (_719) {
         return entypoIcon("icon-chart-line");
     };
-    var pieChartIcon = function (_721) {
+    var pieChartIcon = function (_720) {
         return entypoIcon("icon-chart-pie");
     };
-    var dirOpenIcon = function (_713) {
+    var dirOpenIcon = function (_712) {
         return faIcon("fa fa-folder-open-o");
     };
-    var dirClosedIcon = function (_714) {
+    var dirClosedIcon = function (_713) {
         return faIcon("fa fa-folder-o");
     };
     var defaultServerPort = 8080;
@@ -69513,22 +69497,22 @@ PS.SlamData_Helpers = (function () {
             });
         }));
     };
-    var closeIcon = function (_705) {
+    var closeIcon = function (_704) {
         return faIcon("fa fa-times");
     };
-    var barChartIcon = function (_719) {
+    var barChartIcon = function (_718) {
         return entypoIcon("icon-chart-bar");
     };
-    var areaChartIcon = function (_718) {
+    var areaChartIcon = function (_717) {
         return entypoIcon("icon-chart-area");
     };
-    var actionButton = function (__dict_Icon_581) {
+    var actionButton = function (__dict_Icon_580) {
         return function (props) {
             return React_DOM["li'"]([ React_DOM.a([ React_DOM.className("tiny secondary button has-tooltip"), React_DOM.onClick(function (_) {
                 return props.click;
             }), React_DOM.titleProp(props.tooltip), React_DOM.dataSet({
                 tooltip: ""
-            }) ])([ toUI(__dict_Icon_581)(props.icon) ]) ]);
+            }) ])([ toUI(__dict_Icon_580)(props.icon) ]) ]);
         };
     };
     return {
@@ -69611,29 +69595,29 @@ PS.SlamData_App_Notebook_Block_Common = (function () {
         var _144 = React.getRefs();
         var _143 = React.readState();
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-            var _2669 = {};
-            for (var _2670 in _143) {
-                if (_143.hasOwnProperty(_2670)) {
-                    _2669[_2670] = _143[_2670];
+            var _2668 = {};
+            for (var _2669 in _143) {
+                if (_143.hasOwnProperty(_2669)) {
+                    _2668[_2669] = _143[_2669];
                 };
             };
-            _2669.edit = SlamData_App_Notebook_Block_Types.Eval.value;
-            _2669.content = (SlamData_Helpers.getDOMNode(_144.editor)).value;
-            return _2669;
+            _2668.edit = SlamData_App_Notebook_Block_Types.Eval.value;
+            _2668.content = (SlamData_Helpers.getDOMNode(_144.editor)).value;
+            return _2668;
         })()))();
     };
     var edit = function __do() {
         var _145 = React.readState();
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-            var _2672 = {};
-            for (var _2673 in _145) {
-                if (_145.hasOwnProperty(_2673)) {
-                    _2672[_2673] = _145[_2673];
+            var _2671 = {};
+            for (var _2672 in _145) {
+                if (_145.hasOwnProperty(_2672)) {
+                    _2671[_2672] = _145[_2672];
                 };
             };
-            _2672.edit = SlamData_App_Notebook_Block_Types.Edit.value;
-            _2672.content = _145.content;
-            return _2672;
+            _2671.edit = SlamData_App_Notebook_Block_Types.Edit.value;
+            _2671.content = _145.content;
+            return _2671;
         })()))();
     };
     var blockRow = function (styles) {
@@ -69685,8 +69669,8 @@ PS.SlamData_App_Notebook_Block_SQL = (function () {
     var React = PS.React;
     var SlamData_App_Notebook_Block_Common = PS.SlamData_App_Notebook_Block_Common;
     function cwm() {  extendState.call(this, {status: loading});  if (isJust_(this.state.location)) {    cdm.call(this, fromJust_(this.state.location));  } else {    runQuery.call(this, this.state.content);  }};
-    function cdm(location) {  var xhr = new XMLHttpRequest();  xhr.onerror = function() {    if (this.isMounted()) {      extendState.call(this, {status: error('Problem loading query')});    }  }.bind(this);  xhr.onload = function() {    if (this.isMounted()) {      extendState.call(this, {status: successful(xhr.responseText)});    }  }.bind(this);  xhr.open('GET', this.props.serverURI + '/data/fs/' + location + '?limit=' + pagingLimit);  xhr.send(null);};
-    function runQuery(query) {  var id = newID();  $.ajax({    type: 'POST',    url: this.props.serverURI + '/query/fs/?out=' + showBlockID(id),    data: query,    dataType: 'json',    success: function(data, status, jqXHR) {      /* Parse the location out of the response. */      var location = data.out;      if (this.isMounted()) {        extendState.call(this, {location: just_(location)});      }      saveLocal(this.props)(this.state);      cdm.call(this, location);    }.bind(this),    error: function() {      if (this.isMounted()) {        extendState.call(this, {status: error('Could not create query')});      }    }.bind(this)  });};
+    function cdm(location) {  var xhr = new XMLHttpRequest();  xhr.onerror = function() {    if (this.isMounted()) {      extendState.call(this, {status: error('Problem loading query')});    }  }.bind(this);  xhr.onload = function() {    if (this.isMounted()) {      extendState.call(this, {status: successful(xhr.responseText)});    }  }.bind(this);  xhr.open('GET', this.props.serverURI + '/data/fs' + this.props.serverFS + location + '?limit=' + pagingLimit);  xhr.send(null);};
+    function runQuery(query) {  var sanitizeLocation = function(loc) {    return loc.slice(0) === '/' ? loc.slice(1) : loc;  };  var id = newID();  $.ajax({    type: 'POST',    url: this.props.serverURI + '/query/fs' + this.props.serverFS + '?out=' + showBlockID(id),    data: query,    dataType: 'json',    success: function(data, status, jqXHR) {      /* Parse the location out of the response. */      var location = data.out;      if (this.isMounted()) {        extendState.call(this, {location: just_(sanitizeLocation(location))});      }      saveLocal(this.props)(this.state);      cdm.call(this, location);    }.bind(this),    error: function() {      if (this.isMounted()) {        extendState.call(this, {status: error('Could not create query')});      }    }.bind(this)  });};
     function extendState(neu) {  return this.setState(extend(this.state)(neu));};
     function extend(old) {  return function(neu) {    return copy(neu)(copy(old)({}));  }};
     function copy(neu) {  return function(old) {    for (var key in neu) {      old[key] = neu[key];    }    return old;  }};
@@ -69702,8 +69686,8 @@ PS.SlamData_App_Notebook_Block_SQL = (function () {
                 content: state.content, 
                 location: state.location
             });
-            var go = function (_732) {
-                return Prelude["=="](SlamData_App_Notebook_Block_Types.eqBlockID({}))(_732.value0.ident)(props.ident) ? rec : _732;
+            var go = function (_731) {
+                return Prelude["=="](SlamData_App_Notebook_Block_Types.eqBlockID({}))(_731.value0.ident)(props.ident) ? rec : _731;
             };
             var blocks = SlamData_Helpers.localGet(SlamData_App_Notebook_Block_Types.readEvalSQLSpec({}))(SlamData_Helpers.EvalSQLBlocks.value);
             var blocks$prime = Prelude["<$>"](Data_Array.functorArray({}))(go)(blocks);
@@ -69713,7 +69697,7 @@ PS.SlamData_App_Notebook_Block_SQL = (function () {
     };
     var parseRaw = Prelude[">>>"](Prelude.semigroupoidArr({}))(Data_String.trim)(Data_String.split("\\n"));
     var pagingLimit = 20;
-    var newID = function (_731) {
+    var newID = function (_730) {
         return SlamData_App_Notebook_Block_Types.BlockID.create(Data_UUID.runUUID(Data_UUID.v4));
     };
     var loading = SlamData_App_Notebook_Block_Types.Loading.value;
@@ -69723,14 +69707,14 @@ PS.SlamData_App_Notebook_Block_SQL = (function () {
     var format = function (str) {
         return React_DOM["li'"]([ React_DOM["span'"]([ React_DOM.text(str) ]) ]);
     };
-    var essLocation = function (_730) {
-        return _730.value0.location;
+    var essLocation = function (_729) {
+        return _729.value0.location;
     };
-    var essIdent = function (_728) {
-        return _728.value0.ident;
+    var essIdent = function (_727) {
+        return _727.value0.ident;
     };
-    var essContent = function (_729) {
-        return _729.value0.content;
+    var essContent = function (_728) {
+        return _728.value0.content;
     };
     var getLocation = function (props) {
         return function (content) {
@@ -69744,28 +69728,28 @@ PS.SlamData_App_Notebook_Block_SQL = (function () {
     var error = function (str) {
         return new SlamData_App_Notebook_Block_Types.Error(str);
     };
-    var actualContent = function (_727) {
-        if (_727 instanceof SlamData_App_Notebook_Block_Types.Loading) {
+    var actualContent = function (_726) {
+        if (_726 instanceof SlamData_App_Notebook_Block_Types.Loading) {
             return SlamData_Helpers.toUI(SlamData_Helpers.iconFA({}))(SlamData_Helpers.loadingIcon({}));
         };
-        if (_727 instanceof SlamData_App_Notebook_Block_Types.Error) {
-            return React_DOM["span'"]([ React_DOM.text(_727.value0) ]);
+        if (_726 instanceof SlamData_App_Notebook_Block_Types.Error) {
+            return React_DOM["span'"]([ React_DOM.text(_726.value0) ]);
         };
-        if (_727 instanceof SlamData_App_Notebook_Block_Types.Successful) {
-            return React_DOM["ul'"](Prelude["<$>"](Data_Array.functorArray({}))(format)(parseRaw(_727.value0)));
+        if (_726 instanceof SlamData_App_Notebook_Block_Types.Successful) {
+            return React_DOM["ul'"](Prelude["<$>"](Data_Array.functorArray({}))(format)(parseRaw(_726.value0)));
         };
         throw new Error("Failed pattern match");
     };
     var evalSQL = function (ed) {
         return function (content) {
             return React.mkUI((function () {
-                var _2688 = {};
-                for (var _2689 in React.spec) {
-                    if (React.spec.hasOwnProperty(_2689)) {
-                        _2688[_2689] = React.spec[_2689];
+                var _2687 = {};
+                for (var _2688 in React.spec) {
+                    if (React.spec.hasOwnProperty(_2688)) {
+                        _2687[_2688] = React.spec[_2688];
                     };
                 };
-                _2688.getInitialState = function __do() {
+                _2687.getInitialState = function __do() {
                     var _146 = React.getProps();
                     return (function () {
                         var blocks = SlamData_Helpers.localGet(SlamData_App_Notebook_Block_Types.readEvalSQLSpec({}))(SlamData_Helpers.EvalSQLBlocks.value);
@@ -69777,8 +69761,8 @@ PS.SlamData_App_Notebook_Block_SQL = (function () {
                         });
                     })()();
                 };
-                _2688.componentWillMount = cwm;
-                return _2688;
+                _2687.componentWillMount = cwm;
+                return _2687;
             })())(function __do() {
                 var _148 = React.getProps();
                 var _147 = React.readState();
@@ -69806,15 +69790,15 @@ PS.SlamData_App_Notebook_Block_Visual = (function () {
     var Control_Monad_Eff = PS.Control_Monad_Eff;
     var SlamData_App_Notebook_Block_Common = PS.SlamData_App_Notebook_Block_Common;
     var React_DOM = PS.React_DOM;
-    function cdm() {  var defaultJson = '{"dataSrc": "", "field": "", "visualType": ""}';  try {    var content = JSON.parse(getOrElse_(this.props.content)(defaultJson));  } catch (e) {    var content = JSON.parse(defaultJson);  }  var opts = newOptions(this.props.ident)(content.field)(parseVisualType(content.visualType));  var chart = generate_(opts)();  var data = [];  oboe(this.props.serverURI + '/data/fs/' + content.dataSrc)    .node('!', function(json) {      data.push(json[content.field]);      chart.load({columns: [[content.field].concat(data)]});    });};
-    var parseVisualType = function (_733) {
-        if (_733 === "bar") {
+    function cdm() {  var defaultJson = '{"dataSrc": "", "field": "", "visualType": ""}';  try {    var content = JSON.parse(getOrElse_(this.props.content)(defaultJson));  } catch (e) {    var content = JSON.parse(defaultJson);  }  var opts = newOptions(this.props.ident)(content.field)(parseVisualType(content.visualType));  var chart = generate_(opts)();  var data = [];  oboe(this.props.serverURI + '/data/fs' + this.props.serverFS + content.dataSrc)    .node('!', function(json) {      data.push(json[content.field]);      chart.load({columns: [[content.field].concat(data)]});    });};
+    var parseVisualType = function (_732) {
+        if (_732 === "bar") {
             return Graphics_C3.Bar.value;
         };
-        if (_733 === "line") {
+        if (_732 === "line") {
             return Graphics_C3.Line.value;
         };
-        if (_733 === "pie") {
+        if (_732 === "pie") {
             return Graphics_C3.Pie.value;
         };
         return Graphics_C3.Bar.value;
@@ -69822,25 +69806,25 @@ PS.SlamData_App_Notebook_Block_Visual = (function () {
     var newOptions = function (ident) {
         return function (name) {
             return function (ty) {
-                var _2695 = {};
-                for (var _2696 in Graphics_C3.options) {
-                    if (Graphics_C3.options.hasOwnProperty(_2696)) {
-                        _2695[_2696] = Graphics_C3.options[_2696];
+                var _2694 = {};
+                for (var _2695 in Graphics_C3.options) {
+                    if (Graphics_C3.options.hasOwnProperty(_2695)) {
+                        _2694[_2695] = Graphics_C3.options[_2695];
                     };
                 };
-                _2695.bindto = "#chart-" + Prelude.show(SlamData_App_Notebook_Block_Types.showBlockID({}))(ident);
-                _2695.c3Data = [ (function () {
-                    var _2693 = {};
-                    for (var _2694 in Graphics_C3.c3Data) {
-                        if (Graphics_C3.c3Data.hasOwnProperty(_2694)) {
-                            _2693[_2694] = Graphics_C3.c3Data[_2694];
+                _2694.bindto = "#chart-" + Prelude.show(SlamData_App_Notebook_Block_Types.showBlockID({}))(ident);
+                _2694.c3Data = [ (function () {
+                    var _2692 = {};
+                    for (var _2693 in Graphics_C3.c3Data) {
+                        if (Graphics_C3.c3Data.hasOwnProperty(_2693)) {
+                            _2692[_2693] = Graphics_C3.c3Data[_2693];
                         };
                     };
-                    _2693.name = name;
-                    _2693.c3Type = ty;
-                    return _2693;
+                    _2692.name = name;
+                    _2692.c3Type = ty;
+                    return _2692;
                 })() ];
-                return _2695;
+                return _2694;
             };
         };
     };
@@ -69848,14 +69832,14 @@ PS.SlamData_App_Notebook_Block_Visual = (function () {
     var generate_ = Graphics_C3.generate;
     var evalVisual = function (content) {
         return React.mkUI((function () {
-            var _2697 = {};
-            for (var _2698 in React.spec) {
-                if (React.spec.hasOwnProperty(_2698)) {
-                    _2697[_2698] = React.spec[_2698];
+            var _2696 = {};
+            for (var _2697 in React.spec) {
+                if (React.spec.hasOwnProperty(_2697)) {
+                    _2696[_2697] = React.spec[_2697];
                 };
             };
-            _2697.componentDidMount = cdm;
-            return _2697;
+            _2696.componentDidMount = cdm;
+            return _2696;
         })())(function __do() {
             var _150 = React.getProps();
             return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_App_Notebook_Block_Common.blockRow("block-content")([  ])([ React_DOM.div([ React_DOM.className("evaled-block") ])([ React_DOM.div([ React_DOM.idProp("chart-" + Prelude.show(SlamData_App_Notebook_Block_Types.showBlockID({}))(_150.ident)) ])([  ]) ]) ]))();
@@ -69886,14 +69870,14 @@ PS.SlamData_App_Notebook_Block = (function () {
     function scu(p, s) {  return (!eqEditor(this.state.edit)(s.edit)) ||         (!isEval(s.edit) && this.state.content !== s.content) ||         (!eqBlockID(this.props.ident)(p.ident));};
     function state2Content(state) {  return state.content;};
     var toolbar = (function () {
-        var specificButtons = function (_738) {
-            if (_738 instanceof SlamData_App_Notebook_Block_Types.Markdown) {
+        var specificButtons = function (_737) {
+            if (_737 instanceof SlamData_App_Notebook_Block_Types.Markdown) {
                 return [  ];
             };
-            if (_738 instanceof SlamData_App_Notebook_Block_Types.SQL) {
+            if (_737 instanceof SlamData_App_Notebook_Block_Types.SQL) {
                 return [  ];
             };
-            if (_738 instanceof SlamData_App_Notebook_Block_Types.Visual) {
+            if (_737 instanceof SlamData_App_Notebook_Block_Types.Visual) {
                 return [  ];
             };
             throw new Error("Failed pattern match");
@@ -69907,8 +69891,8 @@ PS.SlamData_App_Notebook_Block = (function () {
             }) ]) ]))();
         });
     })();
-    var isEval = function (_734) {
-        if (_734 instanceof SlamData_App_Notebook_Block_Types.Eval) {
+    var isEval = function (_733) {
+        if (_733 instanceof SlamData_App_Notebook_Block_Types.Eval) {
             return true;
         };
         return false;
@@ -69943,8 +69927,8 @@ PS.SlamData_App_Notebook_Block = (function () {
                 content: Data_Maybe.Just.create(state2Content(state)), 
                 ident: props.ident
             });
-            var go = function (_737) {
-                return Prelude["=="](SlamData_App_Notebook_Block_Types.eqBlockID({}))(_737.value0.ident)(props.ident) ? rec : new SlamData_App_Notebook_Block_Types.BlockSpec(_737.value0);
+            var go = function (_736) {
+                return Prelude["=="](SlamData_App_Notebook_Block_Types.eqBlockID({}))(_736.value0.ident)(props.ident) ? rec : new SlamData_App_Notebook_Block_Types.BlockSpec(_736.value0);
             };
             var blocks = SlamData_Helpers.localGet(SlamData_App_Notebook_Block_Types.readBlockSpec({}))(SlamData_Helpers.Blocks.value);
             var blocks$prime = Prelude["<$>"](Data_Array.functorArray({}))(go)(blocks);
@@ -69955,14 +69939,14 @@ PS.SlamData_App_Notebook_Block = (function () {
         var _154 = React.getProps();
         var _153 = React.readState();
         Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-            var _2707 = {};
-            for (var _2708 in _153) {
-                if (_153.hasOwnProperty(_2708)) {
-                    _2707[_2708] = _153[_2708];
+            var _2706 = {};
+            for (var _2707 in _153) {
+                if (_153.hasOwnProperty(_2707)) {
+                    _2706[_2707] = _153[_2707];
                 };
             };
-            _2707.content = SlamData_Helpers.getOrElse(_154.content)("");
-            return _2707;
+            _2706.content = SlamData_Helpers.getOrElse(_154.content)("");
+            return _2706;
         })()))();
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))({})();
     };
@@ -69979,44 +69963,44 @@ PS.SlamData_App_Notebook_Block = (function () {
             }));
         }), React_DOM.onKeyPress(handleKeyPress), React_DOM.ref("editor"), React_DOM.value(content) ])([  ]) ]) ]);
     };
-    var evalOrEdit = function (_735) {
-        return function (_736) {
-            if (_736.blockType instanceof SlamData_App_Notebook_Block_Types.Visual) {
+    var evalOrEdit = function (_734) {
+        return function (_735) {
+            if (_735.blockType instanceof SlamData_App_Notebook_Block_Types.Visual) {
                 return function (s) {
-                    return SlamData_App_Notebook_Block_Visual.evalVisual(s)(_736);
+                    return SlamData_App_Notebook_Block_Visual.evalVisual(s)(_735);
                 };
             };
-            if (_735 instanceof SlamData_App_Notebook_Block_Types.Edit) {
+            if (_734 instanceof SlamData_App_Notebook_Block_Types.Edit) {
                 return blockEditor;
             };
-            if (_735 instanceof SlamData_App_Notebook_Block_Types.Eval && _736.blockType instanceof SlamData_App_Notebook_Block_Types.Markdown) {
+            if (_734 instanceof SlamData_App_Notebook_Block_Types.Eval && _735.blockType instanceof SlamData_App_Notebook_Block_Types.Markdown) {
                 return function (s) {
                     return SlamData_App_Notebook_Block_Markdown.evalMarkdown(s)({});
                 };
             };
-            if (_735 instanceof SlamData_App_Notebook_Block_Types.Eval && _736.blockType instanceof SlamData_App_Notebook_Block_Types.SQL) {
+            if (_734 instanceof SlamData_App_Notebook_Block_Types.Eval && _735.blockType instanceof SlamData_App_Notebook_Block_Types.SQL) {
                 return function (s) {
-                    return SlamData_App_Notebook_Block_SQL.evalSQL(React.deferred(SlamData_App_Notebook_Block_Common.edit))(s)(_736);
+                    return SlamData_App_Notebook_Block_SQL.evalSQL(React.deferred(SlamData_App_Notebook_Block_Common.edit))(s)(_735);
                 };
             };
             throw new Error("Failed pattern match");
         };
     };
     var block = React.mkUI((function () {
-        var _2714 = {};
-        for (var _2715 in React.spec) {
-            if (React.spec.hasOwnProperty(_2715)) {
-                _2714[_2715] = React.spec[_2715];
+        var _2713 = {};
+        for (var _2714 in React.spec) {
+            if (React.spec.hasOwnProperty(_2714)) {
+                _2713[_2714] = React.spec[_2714];
             };
         };
-        _2714.getInitialState = Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
+        _2713.getInitialState = Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
             edit: SlamData_App_Notebook_Block_Types.Edit.value, 
             content: ""
         });
-        _2714.componentWillUpdate = Data_Function.mkFn2(cwu);
-        _2714.componentWillMount = cwm;
-        _2714.shouldComponentUpdate = scu;
-        return _2714;
+        _2713.componentWillUpdate = Data_Function.mkFn2(cwu);
+        _2713.componentWillMount = cwm;
+        _2713.shouldComponentUpdate = scu;
+        return _2713;
     })())(function __do() {
         var _152 = React.readState();
         var _151 = React.getProps();
@@ -70041,6 +70025,8 @@ PS.SlamData_App_Notebook_Settings = (function () {
     var Data_Function = PS.Data_Function;
     var Data_Array = PS.Data_Array;
     var Data_Tuple = PS.Data_Tuple;
+    var Data_Profunctor = PS.Data_Profunctor;
+    var Data_Maybe = PS.Data_Maybe;
     function SlamDataTab() {
 
     };
@@ -70049,26 +70035,29 @@ PS.SlamData_App_Notebook_Settings = (function () {
 
     };
     SlamEngineTab.value = new SlamEngineTab();
-    function wtfIsUpWithEvents(write, save, state) {  write(state);  save({sdConfig: state.sdConfig, seConfig: state.seConfig})();  return function() {    return state;  };};
+    function wtfIsUpWithEvents(write, save, state) {  write(state);  save({sdConfig: state.settings.sdConfig, seConfig: state.settings.seConfig})();  return function() {    return state;  };};
     var showSettingsTab = function (_) {
-        return new Prelude.Show(function (_744) {
-            if (_744 instanceof SlamDataTab) {
+        return new Prelude.Show(function (_743) {
+            if (_743 instanceof SlamDataTab) {
                 return "SlamData";
             };
-            if (_744 instanceof SlamEngineTab) {
+            if (_743 instanceof SlamEngineTab) {
                 return "SlamEngine";
             };
             throw new Error("Failed pattern match");
         });
     };
-    var seConfig = function (__dict_Functor_582) {
-        return Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._settings(__dict_Functor_582))(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._settingsRec(__dict_Functor_582))(SlamData_Lens._seConfig(__dict_Functor_582)));
+    var seConfig = function (__dict_Functor_581) {
+        return Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._settings(__dict_Functor_581))(SlamData_Lens._seConfig(__dict_Functor_581));
+    };
+    var seMountings = function (__dict_Functor_582) {
+        return Control_Lens[".."](Prelude.semigroupoidArr({}))(seConfig(__dict_Functor_582))(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._seConfigRec(__dict_Functor_582))(SlamData_Lens._mountings(__dict_Functor_582)));
     };
     var seServer = function (__dict_Functor_583) {
         return Control_Lens[".."](Prelude.semigroupoidArr({}))(seConfig(__dict_Functor_583))(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._seConfigRec(__dict_Functor_583))(SlamData_Lens._server(__dict_Functor_583)));
     };
     var sdConfig = function (__dict_Functor_584) {
-        return Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._settings(__dict_Functor_584))(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._settingsRec(__dict_Functor_584))(SlamData_Lens._sdConfig(__dict_Functor_584)));
+        return Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._settings(__dict_Functor_584))(SlamData_Lens._sdConfig(__dict_Functor_584));
     };
     var sdServer = function (__dict_Functor_585) {
         return Control_Lens[".."](Prelude.semigroupoidArr({}))(sdConfig(__dict_Functor_585))(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._sdConfigRec(__dict_Functor_585))(SlamData_Lens._server(__dict_Functor_585)));
@@ -70088,12 +70077,12 @@ PS.SlamData_App_Notebook_Settings = (function () {
             return function (st$prime) {
                 return !Prelude["=="](eqSettingsTab({}))(st)(st$prime);
             };
-        }, function (_742) {
-            return function (_743) {
-                if (_742 instanceof SlamDataTab && _743 instanceof SlamDataTab) {
+        }, function (_741) {
+            return function (_742) {
+                if (_741 instanceof SlamDataTab && _742 instanceof SlamDataTab) {
                     return true;
                 };
-                if (_742 instanceof SlamEngineTab && _743 instanceof SlamEngineTab) {
+                if (_741 instanceof SlamEngineTab && _742 instanceof SlamEngineTab) {
                     return true;
                 };
                 return false;
@@ -70101,9 +70090,9 @@ PS.SlamData_App_Notebook_Settings = (function () {
         });
     };
     var activate = function (__dict_Eq_587) {
-        return function (_740) {
-            return function (_741) {
-                if (Prelude["=="](__dict_Eq_587)(_740)(_741)) {
+        return function (_739) {
+            return function (_740) {
+                if (Prelude["=="](__dict_Eq_587)(_739)(_740)) {
                     return " active";
                 };
                 return "";
@@ -70111,50 +70100,64 @@ PS.SlamData_App_Notebook_Settings = (function () {
         };
     };
     var settings = React.mkUI((function () {
-        var _2723 = {};
-        for (var _2724 in React.spec) {
-            if (React.spec.hasOwnProperty(_2724)) {
-                _2723[_2724] = React.spec[_2724];
+        var _2722 = {};
+        for (var _2723 in React.spec) {
+            if (React.spec.hasOwnProperty(_2723)) {
+                _2722[_2723] = React.spec[_2723];
             };
         };
-        _2723.getInitialState = initialState;
-        return _2723;
+        _2722.getInitialState = initialState;
+        return _2722;
     })())(function __do() {
         var _157 = React.getProps();
         var _156 = React.readState();
         return (function () {
             var mountings = Data_Map.toList(Control_Lens["^."](_156)(Control_Lens[".."](Prelude.semigroupoidArr({}))(seConfig(Data_Const.functorConst({})))(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._seConfigRec(Data_Const.functorConst({})))(SlamData_Lens._mountings(Data_Const.functorConst({}))))));
-            return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div([ React_DOM.className("vertical") ])([ React_DOM.div([ React_DOM.className("small-1  columns") ])([ React_DOM.dl([ React_DOM.className("tabs vertical") ])([ React_DOM.dd([ React_DOM.className("tab" + activate(eqSettingsTab({}))(SlamEngineTab.value)(_156.active)) ])([ React_DOM.a([ React_DOM.onClick(function (_) {
+            return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div([ React_DOM.className("vertical") ])([ React_DOM.div([ React_DOM.className("small-1  columns"), React_DOM.idProp("settings-category") ])([ React_DOM.dl([ React_DOM.className("tabs vertical") ])([ React_DOM.dd([ React_DOM.className("tab" + activate(eqSettingsTab({}))(SlamEngineTab.value)(_156.active)) ])([ React_DOM.a([ React_DOM.onClick(function (_) {
                 return React.writeState((function () {
-                    var _2727 = {};
-                    for (var _2728 in _156) {
-                        if (_156.hasOwnProperty(_2728)) {
-                            _2727[_2728] = _156[_2728];
+                    var _2726 = {};
+                    for (var _2727 in _156) {
+                        if (_156.hasOwnProperty(_2727)) {
+                            _2726[_2727] = _156[_2727];
                         };
                     };
-                    _2727.active = SlamEngineTab.value;
-                    return _2727;
+                    _2726.active = SlamEngineTab.value;
+                    return _2726;
                 })());
             }) ])([ React_DOM.text(Prelude.show(showSettingsTab({}))(SlamEngineTab.value)) ]) ]), React_DOM.dd([ React_DOM.className("tab" + activate(eqSettingsTab({}))(SlamDataTab.value)(_156.active)) ])([ React_DOM.a([ React_DOM.onClick(function (_) {
                 return React.writeState((function () {
-                    var _2729 = {};
-                    for (var _2730 in _156) {
-                        if (_156.hasOwnProperty(_2730)) {
-                            _2729[_2730] = _156[_2730];
+                    var _2728 = {};
+                    for (var _2729 in _156) {
+                        if (_156.hasOwnProperty(_2729)) {
+                            _2728[_2729] = _156[_2729];
                         };
                     };
-                    _2729.active = SlamDataTab.value;
-                    return _2729;
+                    _2728.active = SlamDataTab.value;
+                    return _2728;
                 })());
-            }) ])([ React_DOM.text(Prelude.show(showSettingsTab({}))(SlamDataTab.value)) ]) ]) ]) ]), React_DOM.div([ React_DOM.className("small-11 columns") ])([ React_DOM.div([ React_DOM.className("tabs-content vertical") ])([ React_DOM.div([ React_DOM.className("content" + activate(eqSettingsTab({}))(SlamEngineTab.value)(_156.active)) ])([ React_DOM["h6'"]([ React_DOM.text("Settings for the local instance of SlamEngine") ]), React_DOM["form'"]([ React_DOM["fieldset'"]([ React_DOM["legend'"]([ React_DOM.text("Server") ]), React_DOM["div'"]([ React_DOM.label([ React_DOM.htmlFor("slamengine-port") ])([ React_DOM.text("Port") ]), React_DOM.input([ React_DOM.name("slamengine-port"), React_DOM.placeholder("8080"), React_DOM.onChange(function (e) {
+            }) ])([ React_DOM.text(Prelude.show(showSettingsTab({}))(SlamDataTab.value)) ]) ]) ]) ]), React_DOM.div([ React_DOM.className("small-11 columns"), React_DOM.idProp("settings-content") ])([ React_DOM.div([ React_DOM.className("tabs-content vertical") ])([ React_DOM.div([ React_DOM.className("content" + activate(eqSettingsTab({}))(SlamEngineTab.value)(_156.active)) ])([ React_DOM["h6'"]([ React_DOM.text("Settings for the local instance of SlamEngine") ]), React_DOM["form'"]([ React_DOM["fieldset'"]([ React_DOM["legend'"]([ React_DOM.text("Server") ]), React_DOM["div'"]([ React_DOM.label([ React_DOM.htmlFor("slamengine-port") ])([ React_DOM.text("Port") ]), React_DOM.input([ React_DOM.name("slamengine-port"), React_DOM.placeholder("8080"), React_DOM.onChange(function (e) {
                 var state$prime = Control_Lens[".~"](Control_Lens[".."](Prelude.semigroupoidArr({}))(seServer(Control_Monad_Identity.functorIdentity({})))(SlamData_Lens._port(Control_Monad_Identity.functorIdentity({}))))(e.target.value)(_156);
                 return wtfIsUpWithEvents(React.writeState, _157.saveSettings, state$prime);
-            }), React_DOM.value(Prelude.show(Prelude.showNumber({}))(Control_Lens["^."](_156)(Control_Lens[".."](Prelude.semigroupoidArr({}))(seServer(Data_Const.functorConst({})))(SlamData_Lens._port(Data_Const.functorConst({})))))) ])([  ]) ]) ]), React_DOM["fieldset'"]([ React_DOM["legend'"]([ React_DOM.text("MongoDB mountings") ]), React_DOM["div'"](Prelude[">>="](Data_Array.bindArray({}))(mountings)(function (_739) {
-                return [ React_DOM.label([ React_DOM.htmlFor("mongodb-path") ])([ React_DOM.text("Path") ]), React_DOM.input([ React_DOM.name("mongodb-mongouri"), React_DOM.placeholder("/"), React_DOM.value(_739.value0) ])([  ]), React_DOM.label([ React_DOM.htmlFor("mongodb-mongouri") ])([ React_DOM.text("MongoUri") ]), React_DOM.input([ React_DOM.name("mongodb-mongouri"), React_DOM.placeholder("mongodb://localhost:27017"), React_DOM.value(Control_Lens["^."](_739.value1)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._mountingRec(Data_Const.functorConst({})))(SlamData_Lens._connectionUri(Data_Const.functorConst({}))))) ])([  ]), React_DOM.label([ React_DOM.htmlFor("mongodb-database") ])([ React_DOM.text("Database") ]), React_DOM.input([ React_DOM.name("mongodb-database"), React_DOM.placeholder("test"), React_DOM.value(Control_Lens["^."](_739.value1)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._mountingRec(Data_Const.functorConst({})))(SlamData_Lens._database(Data_Const.functorConst({}))))) ])([  ]) ];
+            }), React_DOM.value(Prelude.show(Prelude.showNumber({}))(Control_Lens["^."](_156)(Control_Lens[".."](Prelude.semigroupoidArr({}))(seServer(Data_Const.functorConst({})))(SlamData_Lens._port(Data_Const.functorConst({})))))) ])([  ]) ]) ]), React_DOM["fieldset'"]([ React_DOM["legend'"]([ React_DOM.text("MongoDB mountings") ]), React_DOM["div'"](Prelude[">>="](Data_Array.bindArray({}))(mountings)(function (_738) {
+                return [ React_DOM.label([ React_DOM.htmlFor("mongodb-path") ])([ React_DOM.text("Path") ]), React_DOM.input([ React_DOM.name("mongodb-mongouri"), React_DOM.placeholder("/"), React_DOM.onChange(function (e) {
+                    var state$prime = Control_Lens["%~"](Data_Profunctor.profunctorArr({}))(seMountings(Control_Monad_Identity.functorIdentity({})))(Data_Map["delete"](Prelude.ordString({}))(_738.value0))(_156);
+                    var state$prime$prime = Control_Lens["%~"](Data_Profunctor.profunctorArr({}))(seMountings(Control_Monad_Identity.functorIdentity({})))(Data_Map.insert(Prelude.ordString({}))(e.target.value)(_738.value1))(state$prime);
+                    return wtfIsUpWithEvents(React.writeState, _157.saveSettings, state$prime$prime);
+                }), React_DOM.value(_738.value0) ])([  ]), React_DOM.label([ React_DOM.htmlFor("mongodb-mongouri") ])([ React_DOM.text("MongoUri") ]), React_DOM.input([ React_DOM.name("mongodb-mongouri"), React_DOM.placeholder("mongodb://localhost:27017"), React_DOM.onChange(function (e) {
+                    var state$prime = Control_Lens["%~"](Data_Profunctor.profunctorArr({}))(seMountings(Control_Monad_Identity.functorIdentity({})))(Data_Map.update(Prelude.ordString({}))(function (m) {
+                        return new Data_Maybe.Just(Control_Lens[".~"](Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._mountingRec(Control_Monad_Identity.functorIdentity({})))(SlamData_Lens._connectionUri(Control_Monad_Identity.functorIdentity({}))))(e.target.value)(m));
+                    })(_738.value0))(_156);
+                    return wtfIsUpWithEvents(React.writeState, _157.saveSettings, state$prime);
+                }), React_DOM.value(Control_Lens["^."](_738.value1)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._mountingRec(Data_Const.functorConst({})))(SlamData_Lens._connectionUri(Data_Const.functorConst({}))))) ])([  ]), React_DOM.label([ React_DOM.htmlFor("mongodb-database") ])([ React_DOM.text("Database") ]), React_DOM.input([ React_DOM.name("mongodb-database"), React_DOM.placeholder("test"), React_DOM.onChange(function (e) {
+                    var state$prime = Control_Lens["%~"](Data_Profunctor.profunctorArr({}))(seMountings(Control_Monad_Identity.functorIdentity({})))(Data_Map.update(Prelude.ordString({}))(function (m) {
+                        return new Data_Maybe.Just(Control_Lens[".~"](Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._mountingRec(Control_Monad_Identity.functorIdentity({})))(SlamData_Lens._database(Control_Monad_Identity.functorIdentity({}))))(e.target.value)(m));
+                    })(_738.value0))(_156);
+                    return wtfIsUpWithEvents(React.writeState, _157.saveSettings, state$prime);
+                }), React_DOM.value(Control_Lens["^."](_738.value1)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._mountingRec(Data_Const.functorConst({})))(SlamData_Lens._database(Data_Const.functorConst({}))))) ])([  ]) ];
             })) ]), React_DOM["fieldset'"]([ React_DOM["legend'"]([ React_DOM.text("Java") ]), React_DOM["div'"]([ React_DOM.label([ React_DOM.htmlFor("java-binary") ])([ React_DOM.text("Binary") ]), React_DOM.input([ React_DOM.name("java-binary"), React_DOM.placeholder("/usr/bin/java"), React_DOM.onChange(function (e) {
                 var state$prime = Control_Lens[".~"](Control_Lens[".."](Prelude.semigroupoidArr({}))(nodeWebkit(Control_Monad_Identity.functorIdentity({})))(SlamData_Lens._java(Control_Monad_Identity.functorIdentity({}))))(e.target.value)(_156);
                 return wtfIsUpWithEvents(React.writeState, _157.saveSettings, state$prime);
-            }), React_DOM.value(Control_Lens["^."](_156)(Control_Lens[".."](Prelude.semigroupoidArr({}))(nodeWebkit(Data_Const.functorConst({})))(SlamData_Lens._java(Data_Const.functorConst({}))))) ])([  ]) ]) ]) ]) ]), React_DOM.div([ React_DOM.className("content" + activate(eqSettingsTab({}))(SlamDataTab.value)(_156.active)) ])([ React_DOM["form'"]([ React_DOM["fieldset'"]([ React_DOM["legend'"]([ React_DOM.text("SlamEngine server") ]), React_DOM["div'"]([ React_DOM.label([ React_DOM.htmlFor("server-location") ])([ React_DOM.text("Location") ]), React_DOM.input([ React_DOM.name("server-location"), React_DOM.placeholder("http://localhost"), React_DOM.onChange(function (e) {
+            }), React_DOM.value(Control_Lens["^."](_156)(Control_Lens[".."](Prelude.semigroupoidArr({}))(nodeWebkit(Data_Const.functorConst({})))(SlamData_Lens._java(Data_Const.functorConst({}))))) ])([  ]) ]) ]) ]) ]), React_DOM.div([ React_DOM.className("content" + activate(eqSettingsTab({}))(SlamDataTab.value)(_156.active)) ])([ React_DOM["h6'"]([ React_DOM.text("SlamEngine server to connect to") ]), React_DOM["form'"]([ React_DOM["fieldset'"]([ React_DOM["legend'"]([ React_DOM.text("SlamEngine server") ]), React_DOM["div'"]([ React_DOM.label([ React_DOM.htmlFor("server-location") ])([ React_DOM.text("Location") ]), React_DOM.input([ React_DOM.name("server-location"), React_DOM.placeholder("http://localhost"), React_DOM.onChange(function (e) {
                 var state$prime = Control_Lens[".~"](Control_Lens[".."](Prelude.semigroupoidArr({}))(sdServer(Control_Monad_Identity.functorIdentity({})))(SlamData_Lens._location(Control_Monad_Identity.functorIdentity({}))))(e.target.value)(_156);
                 return wtfIsUpWithEvents(React.writeState, _157.saveSettings, state$prime);
             }), React_DOM.value(Control_Lens["^."](_156)(Control_Lens[".."](Prelude.semigroupoidArr({}))(sdServer(Data_Const.functorConst({})))(SlamData_Lens._location(Data_Const.functorConst({}))))) ])([  ]) ]), React_DOM["div'"]([ React_DOM.label([ React_DOM.htmlFor("server-port") ])([ React_DOM.text("Post") ]), React_DOM.input([ React_DOM.name("server-port"), React_DOM.placeholder("8080"), React_DOM.onChange(function (e) {
@@ -70203,27 +70206,27 @@ PS.SlamData_App_Notebook_Types = (function () {
     };
     function showVisualData(vd) {  return JSON.stringify(vd);};
     var showVisualTab = function (_) {
-        return new Prelude.Show(function (_745) {
-            if (_745 instanceof DataSrcTab) {
+        return new Prelude.Show(function (_744) {
+            if (_744 instanceof DataSrcTab) {
                 return "Data Source";
             };
-            if (_745 instanceof FieldsTab) {
+            if (_744 instanceof FieldsTab) {
                 return "Fields";
             };
-            if (_745 instanceof VisualTypeTab) {
+            if (_744 instanceof VisualTypeTab) {
                 return "Type";
             };
             throw new Error("Failed pattern match");
         });
     };
     var showNotebookID = function (_) {
-        return new Prelude.Show(function (_748) {
-            return Prelude.show(Data_UUID.showUUID({}))(_748.value0);
+        return new Prelude.Show(function (_747) {
+            return Prelude.show(Data_UUID.showUUID({}))(_747.value0);
         });
     };
     var showNotebookSpec = function (_) {
-        return new Prelude.Show(function (_751) {
-            return "{ \"blocks\": " + Prelude.show(Prelude.showArray(Prelude.showString({})))(Prelude["<$>"](Data_Array.functorArray({}))(Prelude.show(SlamData_App_Notebook_Block_Types.showBlockID({})))(_751.value0.blocks)) + ", \"ident\": \"" + Prelude.show(showNotebookID({}))(_751.value0.ident) + "\"" + ", \"name\": \"" + _751.value0.name + "\"" + "}";
+        return new Prelude.Show(function (_750) {
+            return "{ \"blocks\": " + Prelude.show(Prelude.showArray(Prelude.showString({})))(Prelude["<$>"](Data_Array.functorArray({}))(Prelude.show(SlamData_App_Notebook_Block_Types.showBlockID({})))(_750.value0.blocks)) + ", \"ident\": \"" + Prelude.show(showNotebookID({}))(_750.value0.ident) + "\"" + ", \"name\": \"" + _750.value0.name + "\"" + "}";
         });
     };
     var readNotebookSpec = function (_) {
@@ -70244,9 +70247,9 @@ PS.SlamData_App_Notebook_Types = (function () {
             return function (b$prime) {
                 return !Prelude["=="](eqNotebookID({}))(b)(b$prime);
             };
-        }, function (_746) {
-            return function (_747) {
-                return Prelude["=="](Data_UUID.eqUUID({}))(_746.value0)(_747.value0);
+        }, function (_745) {
+            return function (_746) {
+                return Prelude["=="](Data_UUID.eqUUID({}))(_745.value0)(_746.value0);
             };
         });
     };
@@ -70255,9 +70258,9 @@ PS.SlamData_App_Notebook_Types = (function () {
             return function (ns$prime) {
                 return !Prelude["=="](eqNotebookSpec({}))(ns)(ns$prime);
             };
-        }, function (_749) {
-            return function (_750) {
-                return _749.value0.name === _750.value0.name && Prelude["=="](Prelude.eqArray(SlamData_App_Notebook_Block_Types.eqBlockID({})))(_749.value0.blocks)(_750.value0.blocks) && Prelude["=="](eqNotebookID({}))(_749.value0.ident)(_750.value0.ident);
+        }, function (_748) {
+            return function (_749) {
+                return _748.value0.name === _749.value0.name && Prelude["=="](Prelude.eqArray(SlamData_App_Notebook_Block_Types.eqBlockID({})))(_748.value0.blocks)(_749.value0.blocks) && Prelude["=="](eqNotebookID({}))(_748.value0.ident)(_749.value0.ident);
             };
         });
     };
@@ -70292,27 +70295,27 @@ PS.SlamData_App_Panel = (function () {
         return function __do() {
             var _163 = React.readState();
             return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-                var _2751 = {};
-                for (var _2752 in _163) {
-                    if (_163.hasOwnProperty(_2752)) {
-                        _2751[_2752] = _163[_2752];
+                var _2750 = {};
+                for (var _2751 in _163) {
+                    if (_163.hasOwnProperty(_2751)) {
+                        _2750[_2751] = _163[_2751];
                     };
                 };
-                _2751.activeTab = new Data_Maybe.Just(ident);
-                return _2751;
+                _2750.activeTab = new Data_Maybe.Just(ident);
+                return _2750;
             })()))();
         };
     };
-    var injectMakeActive = function (_756) {
-        return function (_757) {
+    var injectMakeActive = function (_755) {
+        return function (_756) {
             return SlamData_App_Panel_Tab.makeTabName({
-                name: _757.name, 
-                external: _757.external, 
-                internal: _757.internal, 
-                content: _757.content, 
-                active: Prelude["=="](Data_Maybe.eqMaybe(Data_UUID.eqUUID({})))(_756)(new Data_Maybe.Just(_757.ident)), 
-                ident: _757.ident, 
-                activate: React.deferred(makeActive(_757.ident))
+                name: _756.name, 
+                external: _756.external, 
+                internal: _756.internal, 
+                content: _756.content, 
+                active: Prelude["=="](Data_Maybe.eqMaybe(Data_UUID.eqUUID({})))(_755)(new Data_Maybe.Just(_756.ident)), 
+                ident: _756.ident, 
+                activate: React.deferred(makeActive(_756.ident))
             });
         };
     };
@@ -70320,21 +70323,21 @@ PS.SlamData_App_Panel = (function () {
         tabs: [  ], 
         activeTab: Data_Maybe.Nothing.value
     };
-    var _name = function (_752) {
-        return _752.name;
+    var _name = function (_751) {
+        return _751.name;
     };
-    var _ident = function (_755) {
-        return _755.ident;
+    var _ident = function (_754) {
+        return _754.ident;
     };
     var panel$prime = React.mkUI((function () {
-        var _2764 = {};
-        for (var _2765 in React.spec) {
-            if (React.spec.hasOwnProperty(_2765)) {
-                _2764[_2765] = React.spec[_2765];
+        var _2763 = {};
+        for (var _2764 in React.spec) {
+            if (React.spec.hasOwnProperty(_2764)) {
+                _2763[_2764] = React.spec[_2764];
             };
         };
-        _2764.getInitialState = Prelude.pure(Control_Monad_Eff.applicativeEff({}))(initialState);
-        return _2764;
+        _2763.getInitialState = Prelude.pure(Control_Monad_Eff.applicativeEff({}))(initialState);
+        return _2763;
     })())(function __do() {
         var _162 = React.getProps();
         var _161 = React.readState();
@@ -70352,11 +70355,11 @@ PS.SlamData_App_Panel = (function () {
             tabs: tabs
         });
     };
-    var _content = function (_753) {
-        return _753.content;
+    var _content = function (_752) {
+        return _752.content;
     };
-    var _active = function (_754) {
-        return _754.active;
+    var _active = function (_753) {
+        return _753.active;
     };
     return {
         panel: panel
@@ -70404,12 +70407,12 @@ PS.SlamData_App_FileSystem = (function () {
     var SlamData_App_Panel = PS.SlamData_App_Panel;
     var Data_Array = PS.Data_Array;
     var Data_UUID = PS.Data_UUID;
-    var ft2UI = function (_758) {
-        if (_758.type === "directory") {
-            return React_DOM["ul'"]([ SlamData_Helpers.toUI(SlamData_Helpers.iconFA({}))(SlamData_Helpers.dirOpenIcon({})), React_DOM.text(_758.name) ]);
+    var ft2UI = function (_757) {
+        if (_757.type === "directory") {
+            return React_DOM["ul'"]([ SlamData_Helpers.toUI(SlamData_Helpers.iconFA({}))(SlamData_Helpers.dirOpenIcon({})), React_DOM.text(_757.name) ]);
         };
-        if (_758.type === "file") {
-            return React_DOM["li'"]([ SlamData_Helpers.toUI(SlamData_Helpers.iconFA({}))(SlamData_Helpers.fileIcon({})), React_DOM.text(_758.name) ]);
+        if (_757.type === "file") {
+            return React_DOM["li'"]([ SlamData_Helpers.toUI(SlamData_Helpers.iconFA({}))(SlamData_Helpers.fileIcon({})), React_DOM.text(_757.name) ]);
         };
         throw new Error("Failed pattern match");
     };
@@ -70448,6 +70451,7 @@ PS.SlamData_App_Notebook = (function () {
     var Data_Maybe = PS.Data_Maybe;
     var Control_Monad_Eff = PS.Control_Monad_Eff;
     var React = PS.React;
+    var Data_Map = PS.Data_Map;
     var Data_UUID = PS.Data_UUID;
     var SlamData_App_Panel_Tab = PS.SlamData_App_Panel_Tab;
     var Data_Foldable = PS.Data_Foldable;
@@ -70457,9 +70461,11 @@ PS.SlamData_App_Notebook = (function () {
     var Control_Lens = PS.Control_Lens;
     var SlamData_Lens = PS.SlamData_Lens;
     var Data_Const = PS.Data_Const;
+    var Data_Array_Unsafe = PS.Data_Array_Unsafe;
     function scu(p, s) {  return s.visualState.visible ||         (this.state.visualState.visible !== s.visualState.visible) ||         (!eqNotebooks(this.state.notebooks)(s.notebooks)) ||         (!eqActive(this.state.active)(s.active)) ||         (this.props.showSettings !== p.showSettings);};
     function targetValue(e) {  return function(ty) {    return {      dataSrc: e.target.selectedOptions[0].parentNode.label,      field: e.target.value,      visualType: showVisualType_(ty)    }  }};
-    function fieldswm(that) {    that.state.visualState.fields.forEach(function(f0) {      oboe(serverURI_(this.props.settings.sdConfig) +'/data/fs/' + f0.dataSrc + '?limit=1')      .done(function(json) {        var state = that.state;        state.visualState.fields.forEach(function(f1, i) {          if (f1.dataSrc === f0.dataSrc) {            state.visualState.fields[i].allFields = Object.keys(json);          }        });        if (that.isMounted()) {          that.setState(state);        }      });    });};
+    function slashize(raw) {  return raw.slice(-1) === '/' ? raw : raw + '/';};
+    function fieldswm(that) {    that.state.visualState.fields.forEach(function(f0) {      var settings = that.props.settings;      oboe(serverURI_(settings.sdConfig) +'/data/fs' + slashize(keys_(settings.seConfig.mountings)[0]) + f0.dataSrc + '?limit=1')      .done(function(json) {        var state = that.state;        state.visualState.fields.forEach(function(f1, i) {          if (f1.dataSrc === f0.dataSrc) {            state.visualState.fields[i].allFields = Object.keys(json);          }        });        if (that.isMounted()) {          that.setState(state);        }      });    });};
     function bind(that) {  return function(f) {    return f.bind(that);  }};
     function modifyDataSrc(that) {  return function(bool) {    return function(str) {      return function() {        var state = that.state;        var vState = dataSrcUpdate(bool)(str)(state.visualState);        state.visualState = vState;        that.replaceState(state);        fieldswm(that);      }    }  }};
     function createVisualBlock(that) {  return function(ty) {    return function(ident) {      return function(content) {        var event = createBlock(ty)(ident)(content)();        var state = event();        state.visualState = initialState.visualState;        that.replaceState(state);        return function() { return state; };      }    }  }};
@@ -70492,24 +70498,24 @@ PS.SlamData_App_Notebook = (function () {
             var _172 = React.readState();
             return (function () {
                 var visualState$prime = (function () {
-                    var _2779 = {};
-                    for (var _2780 in _172.visualState) {
-                        if (_172.visualState.hasOwnProperty(_2780)) {
-                            _2779[_2780] = _172.visualState[_2780];
+                    var _2778 = {};
+                    for (var _2779 in _172.visualState) {
+                        if (_172.visualState.hasOwnProperty(_2779)) {
+                            _2778[_2779] = _172.visualState[_2779];
                         };
                     };
-                    _2779.visible = vis;
-                    return _2779;
+                    _2778.visible = vis;
+                    return _2778;
                 })();
                 return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-                    var _2781 = {};
-                    for (var _2782 in _172) {
-                        if (_172.hasOwnProperty(_2782)) {
-                            _2781[_2782] = _172[_2782];
+                    var _2780 = {};
+                    for (var _2781 in _172) {
+                        if (_172.hasOwnProperty(_2781)) {
+                            _2780[_2781] = _172[_2781];
                         };
                     };
-                    _2781.visualState = visualState$prime;
-                    return _2781;
+                    _2780.visualState = visualState$prime;
+                    return _2780;
                 })()));
             })()();
         };
@@ -70519,6 +70525,7 @@ PS.SlamData_App_Notebook = (function () {
             return Prelude["=="](SlamData_App_Notebook_Types.eqNotebookID({}))(ident)(i) ? " active" : "";
         });
     };
+    var keys_ = Data_Map.keys;
     var initialState = {
         notebooks: SlamData_Helpers.localGet(SlamData_App_Notebook_Types.readNotebookSpec({}))(SlamData_Helpers.Notebooks.value), 
         active: Data_Maybe.Nothing.value, 
@@ -70534,36 +70541,36 @@ PS.SlamData_App_Notebook = (function () {
     var getNotebookID = function (_788) {
         return _788.value0;
     };
-    var makeNotebook = function (_771) {
-        return function (_772) {
-            return function (_773) {
-                return function (_774) {
-                    return function (_775) {
-                        return function (_776) {
-                            if (Prelude["=="](SlamData_App_Notebook_Types.eqNotebookID({}))(_772)(_776.value0.ident)) {
-                                return React_DOM.dd([ React_DOM.className("tab" + maybeActive(_776.value0.ident)(_771)) ])([ React_DOM.a([ React_DOM.href("#" + SlamData_App_Panel_Tab.tabize(getNotebookID(_776.value0.ident))), React_DOM.onClick(function (e) {
+    var makeNotebook = function (_770) {
+        return function (_771) {
+            return function (_772) {
+                return function (_773) {
+                    return function (_774) {
+                        return function (_775) {
+                            if (Prelude["=="](SlamData_App_Notebook_Types.eqNotebookID({}))(_771)(_775.value0.ident)) {
+                                return React_DOM.dd([ React_DOM.className("tab" + maybeActive(_775.value0.ident)(_770)) ])([ React_DOM.a([ React_DOM.href("#" + SlamData_App_Panel_Tab.tabize(getNotebookID(_775.value0.ident))), React_DOM.onClick(function (e) {
                                     return function __do() {
                                         Prelude.pure(Control_Monad_Eff.applicativeEff({}))(e.preventDefault({}))();
-                                        return _774(_776.value0.ident)();
+                                        return _773(_775.value0.ident)();
                                     };
-                                }) ])([ React_DOM.text(_776.value0.name), React_DOM.i([ React_DOM.className("fa fa-times"), React_DOM.onClick(function (e) {
+                                }) ])([ React_DOM.text(_775.value0.name), React_DOM.i([ React_DOM.className("fa fa-times"), React_DOM.onClick(function (e) {
                                     return function __do() {
                                         Prelude.pure(Control_Monad_Eff.applicativeEff({}))(e.stopPropagation({}))();
                                         Prelude.pure(Control_Monad_Eff.applicativeEff({}))(e.preventDefault({}))();
-                                        return _773();
+                                        return _772();
                                     };
                                 }) ])([  ]) ]) ]);
                             };
-                            return React_DOM.dd([ React_DOM.className("tab" + maybeActive(_776.value0.ident)(_771)) ])([ React_DOM.a([ React_DOM.href("#" + SlamData_App_Panel_Tab.tabize(getNotebookID(_776.value0.ident))), React_DOM.onClick(function (e) {
+                            return React_DOM.dd([ React_DOM.className("tab" + maybeActive(_775.value0.ident)(_770)) ])([ React_DOM.a([ React_DOM.href("#" + SlamData_App_Panel_Tab.tabize(getNotebookID(_775.value0.ident))), React_DOM.onClick(function (e) {
                                 return function __do() {
                                     Prelude.pure(Control_Monad_Eff.applicativeEff({}))(e.preventDefault({}))();
-                                    return _774(_776.value0.ident)();
+                                    return _773(_775.value0.ident)();
                                 };
-                            }) ])([ React_DOM.text(_776.value0.name), React_DOM.i([ React_DOM.className("fa fa-times"), React_DOM.onClick(function (e) {
+                            }) ])([ React_DOM.text(_775.value0.name), React_DOM.i([ React_DOM.className("fa fa-times"), React_DOM.onClick(function (e) {
                                 return function __do() {
                                     Prelude.pure(Control_Monad_Eff.applicativeEff({}))(e.stopPropagation({}))();
                                     Prelude.pure(Control_Monad_Eff.applicativeEff({}))(e.preventDefault({}))();
-                                    return _775(_776.value0.ident)();
+                                    return _774(_775.value0.ident)();
                                 };
                             }) ])([  ]) ]) ]);
                         };
@@ -70589,7 +70596,7 @@ PS.SlamData_App_Notebook = (function () {
             return React_DOM["li'"]([ React_DOM.text(props.dataSrc), React_DOM["ul'"](Prelude["<$>"](Data_Array.functorArray({}))(field2UI(modify)(props.dataSrc)(props.selectedFields))(props.allFields)) ]);
         };
     };
-    var externalActions = function (_783) {
+    var externalActions = function (_782) {
         return React_DOM.ul([ React_DOM.className("button-group") ])([ SlamData_Helpers.actionButton(SlamData_Helpers.iconFA({}))({
             tooltip: "Save", 
             icon: SlamData_Helpers.saveIcon({}), 
@@ -70614,28 +70621,28 @@ PS.SlamData_App_Notebook = (function () {
         return function __do() {
             var _180 = React.readState();
             return (function () {
-                var o = SlamData_Helpers.partition(function (_763) {
-                    return Prelude["=="](SlamData_App_Notebook_Types.eqNotebookID({}))(_763.value0.ident)(ident);
+                var o = SlamData_Helpers.partition(function (_762) {
+                    return Prelude["=="](SlamData_App_Notebook_Types.eqNotebookID({}))(_762.value0.ident)(ident);
                 })(_180.notebooks);
                 var blocks = SlamData_Helpers.localGet(SlamData_App_Notebook_Block_Types.readBlockSpec({}))(SlamData_Helpers.Blocks.value);
                 return function __do() {
                     var _179 = Prelude.pure(Control_Monad_Eff.applicativeEff({}))(Data_Maybe.fromMaybe(blocks)(Prelude[">>="](Data_Maybe.bindMaybe({}))(Data_Array.head(o.fst))(function (_178) {
-                        return Prelude.pure(Data_Maybe.applicativeMaybe({}))(Data_Array.filter(function (_764) {
-                            return Data_Foldable.notElem(SlamData_App_Notebook_Block_Types.eqBlockID({}))(Data_Foldable.foldableArray({}))(_764.value0.ident)(_178.value0.blocks);
+                        return Prelude.pure(Data_Maybe.applicativeMaybe({}))(Data_Array.filter(function (_763) {
+                            return Data_Foldable.notElem(SlamData_App_Notebook_Block_Types.eqBlockID({}))(Data_Foldable.foldableArray({}))(_763.value0.ident)(_178.value0.blocks);
                         })(blocks));
                     })))();
                     Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_Helpers.localSet(Prelude.showArray(SlamData_App_Notebook_Block_Types.showBlockSpec({})))(SlamData_Helpers.Blocks.value)(_179))();
                     Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_Helpers.localSet(Prelude.showArray(SlamData_App_Notebook_Types.showNotebookSpec({})))(SlamData_Helpers.Notebooks.value)(o.snd))();
                     return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-                        var _2802 = {};
-                        for (var _2803 in _180) {
-                            if (_180.hasOwnProperty(_2803)) {
-                                _2802[_2803] = _180[_2803];
+                        var _2801 = {};
+                        for (var _2802 in _180) {
+                            if (_180.hasOwnProperty(_2802)) {
+                                _2801[_2802] = _180[_2802];
                             };
                         };
-                        _2802.notebooks = o.snd;
-                        _2802.active = Data_Maybe.Nothing.value;
-                        return _2802;
+                        _2801.notebooks = o.snd;
+                        _2801.active = Data_Maybe.Nothing.value;
+                        return _2801;
                     })()))();
                 };
             })()();
@@ -70645,19 +70652,19 @@ PS.SlamData_App_Notebook = (function () {
         return function __do() {
             var _176 = React.readState();
             return (function () {
-                var blocks$prime = Data_Array.filter(function (_762) {
-                    return Prelude["/="](SlamData_App_Notebook_Block_Types.eqBlockID({}))(_762.value0.ident)(ident);
+                var blocks$prime = Data_Array.filter(function (_761) {
+                    return Prelude["/="](SlamData_App_Notebook_Block_Types.eqBlockID({}))(_761.value0.ident)(ident);
                 })(SlamData_Helpers.localGet(SlamData_App_Notebook_Block_Types.readBlockSpec({}))(SlamData_Helpers.Blocks.value));
                 var go = function (_790) {
                     return new SlamData_App_Notebook_Types.NotebookSpec((function () {
-                        var _2808 = {};
-                        for (var _2809 in _790.value0) {
-                            if (_790.value0.hasOwnProperty(_2809)) {
-                                _2808[_2809] = _790.value0[_2809];
+                        var _2807 = {};
+                        for (var _2808 in _790.value0) {
+                            if (_790.value0.hasOwnProperty(_2808)) {
+                                _2807[_2808] = _790.value0[_2808];
                             };
                         };
-                        _2808.blocks = Data_Array["delete"](SlamData_App_Notebook_Block_Types.eqBlockID({}))(ident)(_790.value0.blocks);
-                        return _2808;
+                        _2807.blocks = Data_Array["delete"](SlamData_App_Notebook_Block_Types.eqBlockID({}))(ident)(_790.value0.blocks);
+                        return _2807;
                     })());
                 };
                 var notebooks$prime = Prelude["<$>"](Data_Array.functorArray({}))(go)(_176.notebooks);
@@ -70665,14 +70672,14 @@ PS.SlamData_App_Notebook = (function () {
                     Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_Helpers.localSet(Prelude.showArray(SlamData_App_Notebook_Block_Types.showBlockSpec({})))(SlamData_Helpers.Blocks.value)(blocks$prime))();
                     Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_Helpers.localSet(Prelude.showArray(SlamData_App_Notebook_Types.showNotebookSpec({})))(SlamData_Helpers.Notebooks.value)(notebooks$prime))();
                     return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-                        var _2811 = {};
-                        for (var _2812 in _176) {
-                            if (_176.hasOwnProperty(_2812)) {
-                                _2811[_2812] = _176[_2812];
+                        var _2810 = {};
+                        for (var _2811 in _176) {
+                            if (_176.hasOwnProperty(_2811)) {
+                                _2810[_2811] = _176[_2811];
                             };
                         };
-                        _2811.notebooks = notebooks$prime;
-                        return _2811;
+                        _2810.notebooks = notebooks$prime;
+                        return _2810;
                     })()))();
                 };
             })()();
@@ -70686,14 +70693,14 @@ PS.SlamData_App_Notebook = (function () {
                 return function __do() {
                     Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_Helpers.localSet(Prelude.showArray(SlamData_App_Notebook_Types.showNotebookSpec({})))(SlamData_Helpers.Notebooks.value)(notebooks))();
                     return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-                        var _2814 = {};
-                        for (var _2815 in _174) {
-                            if (_174.hasOwnProperty(_2815)) {
-                                _2814[_2815] = _174[_2815];
+                        var _2813 = {};
+                        for (var _2814 in _174) {
+                            if (_174.hasOwnProperty(_2814)) {
+                                _2813[_2814] = _174[_2814];
                             };
                         };
-                        _2814.notebooks = Prelude["<$>"](Data_Array.functorArray({}))(f)(_174.notebooks);
-                        return _2814;
+                        _2813.notebooks = Prelude["<$>"](Data_Array.functorArray({}))(f)(_174.notebooks);
+                        return _2813;
                     })()))();
                 };
             })()();
@@ -70711,15 +70718,15 @@ PS.SlamData_App_Notebook = (function () {
             return function __do() {
                 Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_Helpers.localSet(Prelude.showArray(SlamData_App_Notebook_Types.showNotebookSpec({})))(SlamData_Helpers.Notebooks.value)(notebooks$prime))();
                 return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-                    var _2817 = {};
-                    for (var _2818 in _177) {
-                        if (_177.hasOwnProperty(_2818)) {
-                            _2817[_2818] = _177[_2818];
+                    var _2816 = {};
+                    for (var _2817 in _177) {
+                        if (_177.hasOwnProperty(_2817)) {
+                            _2816[_2817] = _177[_2817];
                         };
                     };
-                    _2817.notebooks = notebooks$prime;
-                    _2817.active = new Data_Maybe.Just(i);
-                    return _2817;
+                    _2816.notebooks = notebooks$prime;
+                    _2816.active = new Data_Maybe.Just(i);
+                    return _2816;
                 })()))();
             };
         })()();
@@ -70739,14 +70746,14 @@ PS.SlamData_App_Notebook = (function () {
                         var blocks$prime = Data_Array.snoc(SlamData_Helpers.localGet(SlamData_App_Notebook_Block_Types.readBlockSpec({}))(SlamData_Helpers.Blocks.value))(block);
                         var go = function (_789) {
                             return Prelude["=="](SlamData_App_Notebook_Types.eqNotebookID({}))(_789.value0.ident)(ident) ? new SlamData_App_Notebook_Types.NotebookSpec((function () {
-    var _2821 = {};
-    for (var _2822 in _789.value0) {
-        if (_789.value0.hasOwnProperty(_2822)) {
-            _2821[_2822] = _789.value0[_2822];
+    var _2820 = {};
+    for (var _2821 in _789.value0) {
+        if (_789.value0.hasOwnProperty(_2821)) {
+            _2820[_2821] = _789.value0[_2821];
         };
     };
-    _2821.blocks = Data_Array.snoc(_789.value0.blocks)(i);
-    return _2821;
+    _2820.blocks = Data_Array.snoc(_789.value0.blocks)(i);
+    return _2820;
 })()) : new SlamData_App_Notebook_Types.NotebookSpec(_789.value0);
                         };
                         var notebooks$prime = Prelude["<$>"](Data_Array.functorArray({}))(go)(_175.notebooks);
@@ -70754,14 +70761,14 @@ PS.SlamData_App_Notebook = (function () {
                             Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_Helpers.localSet(Prelude.showArray(SlamData_App_Notebook_Block_Types.showBlockSpec({})))(SlamData_Helpers.Blocks.value)(blocks$prime))();
                             Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_Helpers.localSet(Prelude.showArray(SlamData_App_Notebook_Types.showNotebookSpec({})))(SlamData_Helpers.Notebooks.value)(notebooks$prime))();
                             return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-                                var _2824 = {};
-                                for (var _2825 in _175) {
-                                    if (_175.hasOwnProperty(_2825)) {
-                                        _2824[_2825] = _175[_2825];
+                                var _2823 = {};
+                                for (var _2824 in _175) {
+                                    if (_175.hasOwnProperty(_2824)) {
+                                        _2823[_2824] = _175[_2824];
                                     };
                                 };
-                                _2824.notebooks = notebooks$prime;
-                                return _2824;
+                                _2823.notebooks = notebooks$prime;
+                                return _2823;
                             })()))();
                         };
                     })()();
@@ -70769,19 +70776,19 @@ PS.SlamData_App_Notebook = (function () {
             };
         };
     };
-    var internalActions = function (_784) {
+    var internalActions = function (_783) {
         return React_DOM.ul([ React_DOM.className("button-group") ])([ SlamData_Helpers.actionButton(SlamData_Helpers.iconFA({}))({
             tooltip: Prelude.show(SlamData_App_Notebook_Block_Types.showBlockType({}))(SlamData_App_Notebook_Block_Types.Markdown.value), 
             icon: SlamData_Helpers.markdownIcon({}), 
-            click: createBlock(SlamData_App_Notebook_Block_Types.Markdown.value)(_784.notebook.ident)(Data_Maybe.Nothing.value)
+            click: createBlock(SlamData_App_Notebook_Block_Types.Markdown.value)(_783.notebook.ident)(Data_Maybe.Nothing.value)
         }), SlamData_Helpers.actionButton(SlamData_Helpers.iconFA({}))({
             tooltip: Prelude.show(SlamData_App_Notebook_Block_Types.showBlockType({}))(SlamData_App_Notebook_Block_Types.SQL.value), 
             icon: SlamData_Helpers.sqlIcon({}), 
-            click: createBlock(SlamData_App_Notebook_Block_Types.SQL.value)(_784.notebook.ident)(Data_Maybe.Nothing.value)
+            click: createBlock(SlamData_App_Notebook_Block_Types.SQL.value)(_783.notebook.ident)(Data_Maybe.Nothing.value)
         }), SlamData_Helpers.actionButton(SlamData_Helpers.iconFA({}))({
             tooltip: Prelude.show(SlamData_App_Notebook_Block_Types.showBlockType({}))(SlamData_App_Notebook_Block_Types.Visual.value), 
             icon: SlamData_Helpers.visualIcon({}), 
-            click: _784.visibility(true)
+            click: _783.visibility(true)
         }) ]);
     };
     var changeVisual = function (ty) {
@@ -70789,60 +70796,63 @@ PS.SlamData_App_Notebook = (function () {
             var _169 = React.readState();
             return (function () {
                 var vState$prime = (function () {
-                    var _2830 = {};
-                    for (var _2831 in _169.visualState) {
-                        if (_169.visualState.hasOwnProperty(_2831)) {
-                            _2830[_2831] = _169.visualState[_2831];
+                    var _2829 = {};
+                    for (var _2830 in _169.visualState) {
+                        if (_169.visualState.hasOwnProperty(_2830)) {
+                            _2829[_2830] = _169.visualState[_2830];
                         };
                     };
-                    _2830.visualType = ty;
-                    return _2830;
+                    _2829.visualType = ty;
+                    return _2829;
                 })();
                 return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React.writeState((function () {
-                    var _2832 = {};
-                    for (var _2833 in _169) {
-                        if (_169.hasOwnProperty(_2833)) {
-                            _2832[_2833] = _169[_2833];
+                    var _2831 = {};
+                    for (var _2832 in _169) {
+                        if (_169.hasOwnProperty(_2832)) {
+                            _2831[_2832] = _169[_2832];
                         };
                     };
-                    _2832.visualState = vState$prime;
-                    return _2832;
+                    _2831.visualState = vState$prime;
+                    return _2831;
                 })()));
             })()();
         };
     };
-    var block2UI = function (_785) {
-        return function (_786) {
-            return function (_787) {
-                return SlamData_App_Notebook_Block.block({
-                    blockType: _786.value0.blockType, 
-                    ident: _786.value0.ident, 
-                    close: React.deferred(deleteBlock(_786.value0.ident)), 
-                    content: _786.value0.content, 
-                    index: _787, 
-                    serverURI: _785
-                });
+    var block2UI = function (_784) {
+        return function (_785) {
+            return function (_786) {
+                return function (_787) {
+                    return SlamData_App_Notebook_Block.block({
+                        blockType: _786.value0.blockType, 
+                        ident: _786.value0.ident, 
+                        close: React.deferred(deleteBlock(_786.value0.ident)), 
+                        content: _786.value0.content, 
+                        index: _787, 
+                        serverURI: _784, 
+                        serverFS: _785
+                    });
+                };
             };
         };
     };
-    var makeBlocks = function (_777) {
-        return function (_778) {
-            return function (_779) {
-                return function (_780) {
-                    return function (_781) {
-                        return function (_782) {
-                            if (Prelude["=="](SlamData_App_Notebook_Types.eqNotebookID({}))(_777)(_782.value0.ident)) {
-                                return React_DOM.div([ React_DOM.className("content" + maybeActive(_782.value0.ident)(_778)) ])([ SlamData_App_Notebook_Settings.settings({
-                                    settings: _779, 
-                                    saveSettings: _780
+    var makeBlocks = function (_776) {
+        return function (_777) {
+            return function (_778) {
+                return function (_779) {
+                    return function (_780) {
+                        return function (_781) {
+                            if (Prelude["=="](SlamData_App_Notebook_Types.eqNotebookID({}))(_776)(_781.value0.ident)) {
+                                return React_DOM.div([ React_DOM.className("content" + maybeActive(_781.value0.ident)(_777)) ])([ SlamData_App_Notebook_Settings.settings({
+                                    settings: _778, 
+                                    saveSettings: _779
                                 }) ]);
                             };
-                            return React_DOM.div([ React_DOM.className("content" + maybeActive(_782.value0.ident)(_778)) ])([ React_DOM.div([ React_DOM.className("toolbar button-bar") ])([ externalActions({}), internalActions({
-                                notebook: _782.value0, 
-                                visibility: _781
-                            }) ]), React_DOM["hr'"]([  ]), React_DOM.div([ React_DOM.className("actual-content") ])(Data_Array.zipWith(block2UI(SlamData_Helpers.serverURI(Control_Lens["^."](_779)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._settingsRec(Data_Const.functorConst({})))(SlamData_Lens._sdConfig(Data_Const.functorConst({})))))))(Data_Array.filter(function (_761) {
-                                return Data_Foldable.elem(SlamData_App_Notebook_Block_Types.eqBlockID({}))(Data_Foldable.foldableArray({}))(_761.value0.ident)(_782.value0.blocks);
-                            })(SlamData_Helpers.localGet(SlamData_App_Notebook_Block_Types.readBlockSpec({}))(SlamData_Helpers.Blocks.value)))(Data_Array.range(0)(Data_Array.length(_782.value0.blocks)))) ]);
+                            return React_DOM.div([ React_DOM.className("content" + maybeActive(_781.value0.ident)(_777)) ])([ React_DOM.div([ React_DOM.className("toolbar button-bar") ])([ externalActions({}), internalActions({
+                                notebook: _781.value0, 
+                                visibility: _780
+                            }) ]), React_DOM["hr'"]([  ]), React_DOM.div([ React_DOM.className("actual-content") ])(Data_Array.zipWith(block2UI(SlamData_Helpers.serverURI(Control_Lens["^."](_778)(SlamData_Lens._sdConfig(Data_Const.functorConst({})))))(Data_Array_Unsafe.head(Data_Map.keys(Control_Lens["^."](_778)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._seConfig(Data_Const.functorConst({})))(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._seConfigRec(Data_Const.functorConst({})))(SlamData_Lens._mountings(Data_Const.functorConst({})))))))))(Data_Array.filter(function (_760) {
+                                return Data_Foldable.elem(SlamData_App_Notebook_Block_Types.eqBlockID({}))(Data_Foldable.foldableArray({}))(_760.value0.ident)(_781.value0.blocks);
+                            })(SlamData_Helpers.localGet(SlamData_App_Notebook_Block_Types.readBlockSpec({}))(SlamData_Helpers.Blocks.value)))(Data_Array.range(0)(Data_Array.length(_781.value0.blocks)))) ]);
                         };
                     };
                 };
@@ -70891,20 +70901,20 @@ PS.SlamData_App_Notebook = (function () {
             })()))();
         };
     };
-    var actVisualType = function (_770) {
-        if (_770 instanceof SlamData_App_Notebook_Types.VisualTypeTab) {
+    var actVisualType = function (_769) {
+        if (_769 instanceof SlamData_App_Notebook_Types.VisualTypeTab) {
             return " active";
         };
         return "";
     };
-    var actFields = function (_769) {
-        if (_769 instanceof SlamData_App_Notebook_Types.FieldsTab) {
+    var actFields = function (_768) {
+        if (_768 instanceof SlamData_App_Notebook_Types.FieldsTab) {
             return " active";
         };
         return "";
     };
-    var actData = function (_768) {
-        if (_768 instanceof SlamData_App_Notebook_Types.DataSrcTab) {
+    var actData = function (_767) {
+        if (_767 instanceof SlamData_App_Notebook_Types.DataSrcTab) {
             return " active";
         };
         return "";
@@ -70938,14 +70948,14 @@ PS.SlamData_App_Notebook = (function () {
             };
         };
     };
-    var ft2UI = function (_765) {
-        return function (_766) {
-            return function (_767) {
-                if (_767.type === "file") {
-                    var checked = Data_Foldable.elem(Prelude.eqString({}))(Data_Foldable.foldableArray({}))(_767.name)(Prelude["<$>"](Data_Array.functorArray({}))(_dataSrc)(_766));
+    var ft2UI = function (_764) {
+        return function (_765) {
+            return function (_766) {
+                if (_766.type === "file") {
+                    var checked = Data_Foldable.elem(Prelude.eqString({}))(Data_Foldable.foldableArray({}))(_766.name)(Prelude["<$>"](Data_Array.functorArray({}))(_dataSrc)(_765));
                     return React_DOM["li'"]([ React_DOM.input([ React_DOM.typeProp("checkbox"), React_DOM.onChange(function (_) {
-                        return _765(!checked)(_767.name);
-                    }), React_DOM.checked(checked) ])([  ]), React_DOM.text(_767.name) ]);
+                        return _764(!checked)(_766.name);
+                    }), React_DOM.checked(checked) ])([  ]), React_DOM.text(_766.name) ]);
                 };
                 throw new Error("Failed pattern match");
             };
@@ -71013,8 +71023,8 @@ PS.SlamData_App_Notebook = (function () {
     ident: _167.settingId
 }) ] : [  ];
             var notebooks = Prelude["++"](Data_Array.semigroupArray({}))(_167.notebooks)(settingsPage);
-            var active = Prelude["<|>"](Data_Maybe.alternativeMaybe({}))(_167.active)(Data_Maybe.maybe(Data_Maybe.Nothing.value)(function (_759) {
-                return new Data_Maybe.Just(_759.value0.ident);
+            var active = Prelude["<|>"](Data_Maybe.alternativeMaybe({}))(_167.active)(Data_Maybe.maybe(Data_Maybe.Nothing.value)(function (_758) {
+                return new Data_Maybe.Just(_758.value0.ident);
             })(Data_Array.head(notebooks)));
             return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div([ React_DOM.className("slamdata-panel") ])(Prelude["++"](Data_Array.semigroupArray({}))([ React_DOM.dl([ React_DOM.className("tabs") ])(Data_Array.snoc(Prelude["<$>"](Data_Array.functorArray({}))(makeNotebook(active)(_167.settingId)(_168.hideSettings)(Prelude["<<<"](Prelude.semigroupoidArr({}))(React.deferred)(activateTab))(Prelude["<<<"](Prelude.semigroupoidArr({}))(React.deferred)(deleteNotebook)))(notebooks))(React_DOM.dd([ React_DOM.className("tab") ])([ React_DOM["div'"]([ React_DOM.a([ React_DOM.onClick(function (_) {
                 return createNotebook;
@@ -71057,8 +71067,8 @@ PS.SlamData_App_Notebook = (function () {
     return function __do() {
         var _165 = React.readState();
         return (function () {
-            var active = SlamData_Helpers.getOrElse(_165.active)(Data_Maybe.maybe(SlamData_App_Notebook_Types.NotebookID.create(Data_UUID.runUUID(Data_UUID.v4)))(function (_760) {
-                return _760.value0.ident;
+            var active = SlamData_Helpers.getOrElse(_165.active)(Data_Maybe.maybe(SlamData_App_Notebook_Types.NotebookID.create(Data_UUID.runUUID(Data_UUID.v4)))(function (_759) {
+                return _759.value0.ident;
             })(Data_Array.head(_165.notebooks)));
             return createVisualBlock(_166)(SlamData_App_Notebook_Block_Types.Visual.value)(active)(visualContent(_167.visualState.visualData));
         })()();
@@ -71128,7 +71138,8 @@ PS.SlamData_App_Workspace = (function () {
     var SlamData_App_FileSystem = PS.SlamData_App_FileSystem;
     var SlamData_App_Notebook = PS.SlamData_App_Notebook;
     var SlamData_Helpers = PS.SlamData_Helpers;
-    function cwm() {  var fetchFS = function() {    oboe(serverURI_(this.props.settings.sdConfig) + '/metadata/fs/')    .done(function(json) {      if (this.isMounted()) {        var sorted = json.children.sort(function(a, b) {          return a.name.localeCompare(b.name);        });        this.setState({files: sorted});      }    }.bind(this));  }.bind(this);  fetchFS();  setInterval(fetchFS, pollRate);};
+    var Data_Map = PS.Data_Map;
+    function cwm() {  var fetchFS = function() {    var settings = this.props.settings;    oboe(serverURI_(settings.sdConfig) + '/metadata/fs' + keys_(settings.seConfig.mountings)[0])    .done(function(json) {      if (this.isMounted()) {        var sorted = json.children.sort(function(a, b) {          return a.name.localeCompare(b.name);        });        this.setState({files: sorted});      }    }.bind(this));  }.bind(this);  fetchFS();  setInterval(fetchFS, pollRate);};
     var workspace = React.mkUI((function () {
         var _2892 = {};
         for (var _2893 in React.spec) {
@@ -71156,6 +71167,7 @@ PS.SlamData_App_Workspace = (function () {
     });
     var serverURI_ = SlamData_Helpers.serverURI;
     var pollRate = 5000;
+    var keys_ = Data_Map.keys;
     return {
         workspace: workspace
     };

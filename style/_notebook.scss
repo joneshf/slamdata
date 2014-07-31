@@ -92,9 +92,14 @@
         position: fixed;
         z-index: 200;
 
+        .tabs.vertical {
+            width: 15%;
+        }
+
         .tabs-content {
             height: 100%;
             overflow-x: hidden;
+            width: 85%;
             ul {
                 list-style-type: none;
                 width: auto;

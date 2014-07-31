@@ -52,6 +52,8 @@ module SlamData.App.Notebook (notebook) where
 
   import qualified React.DOM as D
   import qualified Browser.WebStorage as WS
+  import qualified Data.Map as M
+  import qualified Data.Array.Unsafe as UA
 
   eqNotebooks :: [NotebookSpec] -> [NotebookSpec] -> Boolean
   eqNotebooks xs ys = xs == ys
@@ -231,11 +233,17 @@ module SlamData.App.Notebook (notebook) where
     ]
 
   serverURI_ = serverURI
+  keys_ = M.keys
+  foreign import slashize
+    "function slashize(raw) {\
+    \  return raw.slice(-1) === '/' ? raw : raw + '/';\
+    \}" :: String -> String
 
   foreign import fieldswm
     "function fieldswm(that) {\
     \    that.state.visualState.fields.forEach(function(f0) {\
-    \      oboe(serverURI_(this.props.settings.sdConfig) +'/data/fs/' + f0.dataSrc + '?limit=1')\
+    \      var settings = that.props.settings;\
+    \      oboe(serverURI_(settings.sdConfig) +'/data/fs' + slashize(keys_(settings.seConfig.mountings)[0]) + f0.dataSrc + '?limit=1')\
     \      .done(function(json) {\
     \        var state = that.state;\
     \        state.visualState.fields.forEach(function(f1, i) {\
@@ -439,7 +447,8 @@ module SlamData.App.Notebook (notebook) where
     , D.hr' []
     , D.div
         [D.className "actual-content"]
-        (zipWith (block2UI (serverURI $ config^._settingsRec.._sdConfig))
+        (zipWith (block2UI (serverURI $ config^._sdConfig)
+                           (UA.head (M.keys (config^._seConfig.._seConfigRec.._mountings))))
                  (filter (\(BlockSpec bs) -> bs.ident `elem` nb.blocks) (localGet Blocks))
                  (range 0 $ length nb.blocks))
     ]
@@ -522,14 +531,15 @@ module SlamData.App.Notebook (notebook) where
     pure $ localSet Notebooks notebooks'
     pure $ writeState state{notebooks = notebooks'}
 
-  block2UI :: String -> BlockSpec -> Number -> UI
-  block2UI s (BlockSpec {blockType = ty, ident = n, content = c}) i =
+  block2UI :: String -> String -> BlockSpec -> Number -> UI
+  block2UI uri fs (BlockSpec {blockType = ty, ident = n, content = c}) i =
     block { blockType: ty
           , ident: n
           , close: deferred $ deleteBlock n
           , content: c
           , index: i
-          , serverURI: s
+          , serverURI: uri
+          , serverFS: fs
           }
 
   createNotebook :: forall eff. NotebookEvent eff

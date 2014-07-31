@@ -6,9 +6,6 @@ module SlamData.Lens where
 
   import SlamData.Types
 
-  _settingsRec :: LensP Settings SettingsRec
-  _settingsRec = lens (\(Settings rec) -> rec) (\_ rec -> Settings rec)
-
   _sdConfigRec :: LensP SDConfig SDConfigRec
   _sdConfigRec = lens (\(SDConfig rec) -> rec) (\_ rec -> SDConfig rec)
 

@@ -103,6 +103,14 @@
 
 @import "compass/layout/stretching";
 
+#settings-category {
+    border-top: 1px solid $slamdata-border-color;
+}
+#settings-content {
+    border: 1px solid $slamdata-border-color;
+    border-right: none;
+}
+
 .tabs-content.vertical {
     border: none;
     height: 100%;
