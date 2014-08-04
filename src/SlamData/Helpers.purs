@@ -260,10 +260,12 @@ module SlamData.Helpers where
 
   parseQuery :: Parser String Query
   parseQuery = do
-    key <- joinWith "" <$> many1 (try $ noneOf ["="])
+    key <- (joinWith "" >>> decodeURIComponent) <$> many1 (try $ noneOf ["="])
     string "="
-    val <- joinWith "" <$> many1 (try $ noneOf ["&"])
+    val <- (joinWith "" >>> decodeURIComponent) <$> many1 (try $ noneOf ["&"])
     pure $ Tuple key val
+
+  foreign import decodeURIComponent :: String -> String
 
   -- TODO: Move these to purescript-react.
 
