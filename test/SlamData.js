@@ -17,51 +17,38 @@ casper.test.begin('SlamData layout is proper', 1, function(test) {
     // stays proper throughout any changes.
     casper.start(index + '?' + search, function() {
         test.assertTitle('SlamData', 'Title set properly');
-    });
-
-    casper.run(function() {
+    }).run(function() {
         test.done();
     });
 });
 
 casper.test.begin('Config is read properly', 9, function(test) {
-    var evalEquals = function(name, expected, message) {
-        test.assertEvalEquals(function(name) {
-            return __utils__.getFieldValue(name);
-        }, expected, message, name);
-    };
-
     casper.start(index + '?' + search, function() {
         this.viewport(1280, 720).then(function() {
             this.capture('test/screenshots/empty.png');
         });
-    });
-
-    casper.thenClick('#menu-button-Edit', function() {
+    }).thenClick('#menu-button-Edit', function() {
         this.capture('test/screenshots/edit_button.png');
+
         test.assertVisible('#menu-command-Settings', 'Settings command is visible');
-    });
-    casper.thenClick('#menu-command-Settings', function() {
+    }).thenClick('#menu-command-Settings', function() {
         this.capture('test/screenshots/settings_command.png');
+
         test.assertVisible('#notebook-Settings', 'Settings notebook visible');
-    });
-    casper.thenClick('#notebook-Settings', function() {
+    }).thenClick('#notebook-Settings', function() {
         this.capture('test/screenshots/notebook_settings_slamengine.png');
 
-        evalEquals('slamengine-port', config.sePort.toString(), '`slamengine-port` should match `config.sePort`');
-        evalEquals('mongodb-path', config.seMountPath, '`mongodb-path` should match `config.seMountPath`');
-        evalEquals('mongodb-mongouri', config.seMongoURI, '`mongodb-mongouri` should match `config.seMongoURI`');
-        evalEquals('mongodb-database', config.seDatabase, '`mongodb-database` should match `config.seDatabase`');
-        evalEquals('java-binary', config.javaLocation, '`java-binary` should match `config.javaLocation`');
-    });
-    casper.thenClick('#settings-SlamData', function() {
+        test.assertField('slamengine-port', config.sePort.toString(), '`slamengine-port` should match `config.sePort`');
+        test.assertField('mongodb-path', config.seMountPath, '`mongodb-path` should match `config.seMountPath`');
+        test.assertField('mongodb-mongouri', config.seMongoURI, '`mongodb-mongouri` should match `config.seMongoURI`');
+        test.assertField('mongodb-database', config.seDatabase, '`mongodb-database` should match `config.seDatabase`');
+        test.assertField('java-binary', config.javaLocation, '`java-binary` should match `config.javaLocation`');
+    }).thenClick('#settings-SlamData', function() {
         this.capture('test/screenshots/notebook_settings_slamdata.png');
 
-        evalEquals('server-location', config.serverLocation, '`server-location` should match `config.serverLocation`');
-        evalEquals('server-port', config.serverPort.toString(), '`server-port` should match `config.serverPort`');
-    });
-
-    casper.run(function() {
+        test.assertField('server-location', config.serverLocation, '`server-location` should match `config.serverLocation`');
+        test.assertField('server-port', config.serverPort.toString(), '`server-port` should match `config.serverPort`');
+    }).run(function() {
         test.done();
     });
 });
