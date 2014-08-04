@@ -16,12 +16,6 @@ module SlamData.Browser where
 
   import DOM (DOM())
 
-  -- We need to explicitly import prelude stuff
-  -- and run psc with --no-prelude
-  -- because slamdata.js comes with prelude,
-  -- and psc doesn't want to play nice without this.
-  import Prelude ((#), const, pure, unit, Unit())
-
   import SlamData (slamData)
   import SlamData.App (app)
   import SlamData.Helpers

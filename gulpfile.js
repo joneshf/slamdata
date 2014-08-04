@@ -80,13 +80,15 @@ var paths = {
         browser: {
             js: 'lib/browser/js',
             src: [ 'lib/browser/src/**/*.purs'
-                 , 'lib/browser/bower_components/slamdata/js/slamdata.e.purs'
+                 , 'lib/browser/bower_components/slamdata/src/**/*.purs'
+                 , 'lib/browser/bower_components/purescript-*/src/**/*.purs'
                  ]
         },
         'node-webkit': {
             js: 'lib/node-webkit/js',
             src: [ 'lib/node-webkit/src/**/*.purs'
-                 , 'lib/node-webkit/bower_components/slamdata/js/slamdata.e.purs'
+                 , 'lib/node-webkit/bower_components/slamdata/src/**/*.purs'
+                 , 'lib/node-webkit/bower_components/purescript-*/src/**/*.purs'
                  ]
         }
     },
@@ -116,13 +118,11 @@ var options = {
         browser: {
             codegen: 'SlamData.Browser',
             main: 'SlamData.Browser',
-            noPrelude: true,
             output: 'slamdata-browser.js'
         },
         'node-webkit': {
             codegen: 'SlamData.NodeWebkit',
             main: 'SlamData.NodeWebkit',
-            noPrelude: true,
             output: 'slamdata-node-webkit.js'
         }
     }
@@ -132,7 +132,6 @@ var options = {
 function bowerLib(target) {
     return function() {
         var lib = path.join('lib', target)
-          // , libBower = path.join(lib, 'bower_components');
         return bower({cwd: lib});
     }
 };

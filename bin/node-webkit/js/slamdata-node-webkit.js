@@ -68,8 +68,8 @@ PS.SlamData_NodeWebkit = (function () {
         return new Variadic();
     };
     var seJar = $less$div$greater("jar")("slamengine_2.10-0.1-SNAPSHOT-one-jar.jar");
-    var onData = function (__dict_EventEmitter_0) {
-        return Prelude["<<<"](Prelude.semigroupoidArr({}))(onEvent(__dict_EventEmitter_0)(variadicFn1({}))("data"))(Data_Function.mkFn1);
+    var onData = function (__dict_EventEmitter_589) {
+        return Prelude["<<<"](Prelude.semigroupoidArr({}))(onEvent(__dict_EventEmitter_589)(variadicFn1({}))("data"))(Data_Function.mkFn1);
     };
     var mInsert = Data_Map.insert(Prelude.ordString({}));
     var mEmpty_ = Data_Map.empty;
@@ -96,14 +96,14 @@ PS.SlamData_NodeWebkit = (function () {
     var linuxConfigHome = Prelude["<|>"](Data_Maybe.alternativeMaybe({}))(env("XDG_CONFIG_HOME"))(Prelude["<$>"](Data_Maybe.functorMaybe({}))(function (home) {
         return $less$div$greater(home)(".config");
     })(env("HOME")));
-    var resolveConfigDir = (function (_3) {
-        if (_3 === "darwin") {
+    var resolveConfigDir = (function (_806) {
+        if (_806 === "darwin") {
             return $less$div$greater($less$div$greater($less$div$greater(Data_Maybe_Unsafe.fromJust(env("HOME")))("Library"))("Application Support"))("slamdata");
         };
-        if (_3 === "linux") {
+        if (_806 === "linux") {
             return $less$div$greater(Data_Maybe_Unsafe.fromJust(linuxConfigHome))("slamdata");
         };
-        if (_3 === "win32") {
+        if (_806 === "win32") {
             return $less$div$greater(Data_Maybe_Unsafe.fromJust(env("LOCALAPPDATA")))("slamdata");
         };
         throw new Error("Failed pattern match");
@@ -119,27 +119,27 @@ PS.SlamData_NodeWebkit = (function () {
         var seConfig = Data_Maybe.maybe(SlamData_Helpers.defaultSEConfig)(Prelude.id(Prelude.categoryArr({})))(seConfigM);
         var java = Control_Lens["^."](sdConfig)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._sdConfigRec(Data_Const.functorConst({})))(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._nodeWebkit(Data_Const.functorConst({})))(SlamData_Lens._java(Data_Const.functorConst({})))));
         return function __do() {
-            var _1 = spawn(java)([ "-jar", seJar, seConfigFile ])();
-            onData(eventEmitterStreamStdout({}))(Prelude["<<<"](Prelude.semigroupoidArr({}))(Debug_Trace.trace)(Prelude["<>"](Prelude.semigroupString({}))("stdout: ")))(stdout(_1))();
-            var __1 = onData(eventEmitterStreamStderr({}))(Prelude["<<<"](Prelude.semigroupoidArr({}))(Debug_Trace.trace)(Prelude["<>"](Prelude.semigroupString({}))("stderr: ")))(stderr(_1))();
-            var _0 = guiWindow(gui)();
+            var _193 = spawn(java)([ "-jar", seJar, seConfigFile ])();
+            onData(eventEmitterStreamStdout({}))(Prelude["<<<"](Prelude.semigroupoidArr({}))(Debug_Trace.trace)(Prelude["<>"](Prelude.semigroupString({}))("stdout: ")))(stdout(_193))();
+            var __1 = onData(eventEmitterStreamStderr({}))(Prelude["<<<"](Prelude.semigroupoidArr({}))(Debug_Trace.trace)(Prelude["<>"](Prelude.semigroupString({}))("stderr: ")))(stderr(_193))();
+            var _192 = guiWindow(gui)();
             var __2 = onNewWinPolicy(function (__2) {
                 return function (url) {
                     return function (policy) {
                         return Control_Apply["*>"](Control_Monad_Eff.applyEff({}))(Prelude[">>="](Control_Monad_Eff.bindEff({}))(guiShell(gui))(openExternal(url)))(ignore(policy));
                     };
                 };
-            })(_0)();
+            })(_192)();
             var __3 = onCloseNWWindow(function (__3) {
-                return Control_Apply["*>"](Control_Monad_Eff.applyEff({}))(Control_Apply["*>"](Control_Monad_Eff.applyEff({}))(kill(_1))(closeWindow(_0)))(Debug_Trace.trace("gone"));
-            })(_0)();
+                return Control_Apply["*>"](Control_Monad_Eff.applyEff({}))(Control_Apply["*>"](Control_Monad_Eff.applyEff({}))(kill(_193))(closeWindow(_192)))(Debug_Trace.trace("gone"));
+            })(_192)();
             return Control_Monad_Cont_Trans.runContT(SlamData.slamData({
                 sdConfig: sdConfig, 
                 seConfig: seConfig
-            }))(function (_2) {
+            }))(function (_805) {
                 return function __do() {
-                    var __4 = writeFileSync(sdConfigFile)(Data_Argonaut_Printer.printToString(Data_Argonaut_Encode.encodeIdentity(SlamData_Types.encodeSDConfig({}))(_2.sdConfig)))();
-                    return writeFileSync(seConfigFile)(Data_Argonaut_Printer.printToString(Data_Argonaut_Encode.encodeIdentity(SlamData_Types.encodeSEConfig({}))(_2.seConfig)))();
+                    var __4 = writeFileSync(sdConfigFile)(Data_Argonaut_Printer.printToString(Data_Argonaut_Encode.encodeIdentity(SlamData_Types.encodeSDConfig({}))(_805.sdConfig)))();
+                    return writeFileSync(seConfigFile)(Data_Argonaut_Printer.printToString(Data_Argonaut_Encode.encodeIdentity(SlamData_Types.encodeSEConfig({}))(_805.seConfig)))();
                 };
             })();
         };
