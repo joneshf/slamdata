@@ -10,6 +10,7 @@ module SlamData.Browser where
   --    You should be running slamengine somewhere.
 
   import Control.Monad.Eff (Eff())
+  import Control.Monad.Cont.Trans (runContT)
 
   import Data.Either (either)
   import Data.Maybe (Maybe(..))
@@ -20,7 +21,7 @@ module SlamData.Browser where
   -- and run psc with --no-prelude
   -- because slamdata.js comes with prelude,
   -- and psc doesn't want to play nice without this.
-  import Prelude ((#), const)
+  import Prelude ((#), const, pure, unit, Unit())
 
   import React (UI())
 
@@ -36,13 +37,16 @@ module SlamData.Browser where
     , search
     , window
     )
+  import SlamData.Types (FSWrite())
 
   import Text.Parsing.Parser (runParser)
 
-  main :: forall eff. Eff (dom :: DOM | eff) UI
+  main :: Eff (dom :: DOM, fsWrite :: FSWrite) Unit
   main = do
     let search' = window # location # search
     let rawQueries = runParser search' parseQueryString
     let sdConfig = either (const defaultSDConfig) query2SDConfig rawQueries
     let seConfig = either (const defaultSEConfig) query2SEConfig rawQueries
-    slamData {sdConfig: sdConfig, seConfig: Just seConfig}
+    runContT
+      (slamData {sdConfig: sdConfig, seConfig: seConfig})
+      \_ -> pure unit

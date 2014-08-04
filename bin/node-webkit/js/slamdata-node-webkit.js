@@ -121,16 +121,16 @@ PS.SlamData_NodeWebkit = (function () {
         return function __do() {
             var _1 = spawn(java)([ "-jar", seJar, seConfigFile ])();
             onData(eventEmitterStreamStdout({}))(Prelude["<<<"](Prelude.semigroupoidArr({}))(Debug_Trace.trace)(Prelude["<>"](Prelude.semigroupString({}))("stdout: ")))(stdout(_1))();
-            onData(eventEmitterStreamStderr({}))(Prelude["<<<"](Prelude.semigroupoidArr({}))(Debug_Trace.trace)(Prelude["<>"](Prelude.semigroupString({}))("stderr: ")))(stderr(_1))();
+            var __1 = onData(eventEmitterStreamStderr({}))(Prelude["<<<"](Prelude.semigroupoidArr({}))(Debug_Trace.trace)(Prelude["<>"](Prelude.semigroupString({}))("stderr: ")))(stderr(_1))();
             var _0 = guiWindow(gui)();
-            onNewWinPolicy(function (_) {
+            var __2 = onNewWinPolicy(function (__2) {
                 return function (url) {
                     return function (policy) {
                         return Control_Apply["*>"](Control_Monad_Eff.applyEff({}))(Prelude[">>="](Control_Monad_Eff.bindEff({}))(guiShell(gui))(openExternal(url)))(ignore(policy));
                     };
                 };
             })(_0)();
-            onCloseNWWindow(function (_) {
+            var __3 = onCloseNWWindow(function (__3) {
                 return Control_Apply["*>"](Control_Monad_Eff.applyEff({}))(Control_Apply["*>"](Control_Monad_Eff.applyEff({}))(kill(_1))(closeWindow(_0)))(Debug_Trace.trace("gone"));
             })(_0)();
             return Control_Monad_Cont_Trans.runContT(SlamData.slamData({
@@ -138,7 +138,7 @@ PS.SlamData_NodeWebkit = (function () {
                 seConfig: seConfig
             }))(function (_2) {
                 return function __do() {
-                    writeFileSync(sdConfigFile)(Data_Argonaut_Printer.printToString(Data_Argonaut_Encode.encodeIdentity(SlamData_Types.encodeSDConfig({}))(_2.sdConfig)))();
+                    var __4 = writeFileSync(sdConfigFile)(Data_Argonaut_Printer.printToString(Data_Argonaut_Encode.encodeIdentity(SlamData_Types.encodeSDConfig({}))(_2.sdConfig)))();
                     return writeFileSync(seConfigFile)(Data_Argonaut_Printer.printToString(Data_Argonaut_Encode.encodeIdentity(SlamData_Types.encodeSEConfig({}))(_2.seConfig)))();
                 };
             })();
