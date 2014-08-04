@@ -1,0 +1,24 @@
+{
+  "name": "slamdata-browser",
+  "version": "0.1.0",
+  "homepage": "https://github.com/slamdata/slamdata",
+  "description": "Browser version of SlamData",
+  "moduleType": [
+    "globals"
+  ],
+  "license": "AGPL-3.0",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "slamdata": "../../",
+    "purescript-either": "~0.1.2",
+    "purescript-dom": "~0.1.0",
+    "purescript-parsing": "*",
+    "purescript-transformers": "~0.0.5"
+  }
+}

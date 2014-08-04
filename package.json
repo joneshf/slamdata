@@ -25,6 +25,7 @@
     "casperjs": "^1.1.0-beta3",
     "event-stream": "^3.1.5",
     "gulp": "^3.8.5",
+    "gulp-bower": "0.0.6",
     "gulp-compass": "^1.1.9",
     "gulp-concat": "^2.2.0",
     "gulp-purescript": "0.0.9",

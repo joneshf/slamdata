@@ -1,6 +1,7 @@
 'use strict'
 
 var gulp = require('gulp')
+  , bower = require('gulp-bower')
   , compass = require('gulp-compass')
   , concat = require('gulp-concat')
   , es = require('event-stream')
@@ -128,6 +129,14 @@ var options = {
 }
 
 // Functions.
+function bowerLib(target) {
+    return function() {
+        var lib = path.join('lib', target)
+          // , libBower = path.join(lib, 'bower_components');
+        return bower({cwd: lib});
+    }
+};
+
 function clean(path) {
     return function(done) {
         rimraf(path, done);
@@ -207,6 +216,9 @@ function sequence () {
 }
 
 // Workhorse tasks.
+gulp.task('bower-browser', bowerLib('browser'));
+gulp.task('bower-node-webkit', bowerLib('node-webkit'));
+
 gulp.task('clean-build', clean('bin'));
 gulp.task('clean-compile', clean('js'));
 gulp.task('clean-dist', clean('dist'));
@@ -257,7 +269,8 @@ gulp.task('entypo-node-webkit', entypo('node-webkit'));
 gulp.task('fonts-node-webkit', fonts('node-webkit'));
 gulp.task('imgs-node-webkit', imgs('node-webkit'));
 
-gulp.task('build-browser', sequence( 'compile-browser'
+gulp.task('build-browser', sequence( 'bower-browser'
+                                   , 'compile-browser'
                                    , [ 'concat-css-browser'
                                      , 'concat-js-browser'
                                      , 'copy-browser'
@@ -266,7 +279,8 @@ gulp.task('build-browser', sequence( 'compile-browser'
                                      , 'imgs-browser'
                                      ]
                                    ));
-gulp.task('build-node-webkit', sequence( 'compile-node-webkit'
+gulp.task('build-node-webkit', sequence( 'bower-node-webkit'
+                                       , 'compile-node-webkit'
                                        , [ 'concat-css-node-webkit'
                                          , 'concat-js-node-webkit'
                                          , 'copy-node-webkit'

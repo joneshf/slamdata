@@ -13,7 +13,6 @@ module SlamData.Browser where
   import Control.Monad.Cont.Trans (runContT)
 
   import Data.Either (either)
-  import Data.Maybe (Maybe(..))
 
   import DOM (DOM())
 
@@ -22,8 +21,6 @@ module SlamData.Browser where
   -- because slamdata.js comes with prelude,
   -- and psc doesn't want to play nice without this.
   import Prelude ((#), const, pure, unit, Unit())
-
-  import React (UI())
 
   import SlamData (slamData)
   import SlamData.App (app)
