@@ -83,13 +83,17 @@ module SlamData.App.Notebook.Settings
               [ D.dd
                   [D.className $ "tab" ++ activate SlamEngineTab state.active]
                   [D.a
-                      [D.onClick \_ -> writeState state{active = SlamEngineTab}]
+                      [ D.idProp $ "settings-" ++ show SlamEngineTab
+                      , D.onClick \_ -> writeState state{active = SlamEngineTab}
+                      ]
                       [D.text $ show SlamEngineTab]
                   ]
               , D.dd
                   [D.className $ "tab" ++ activate SlamDataTab state.active]
                   [D.a
-                      [D.onClick \_ -> writeState state{active = SlamDataTab}]
+                      [ D.idProp $ "settings-" ++ show SlamDataTab
+                      , D.onClick \_ -> writeState state{active = SlamDataTab}
+                      ]
                       [D.text $ show SlamDataTab]
                   ]
               ]
@@ -130,7 +134,7 @@ module SlamData.App.Notebook.Settings
                                   [D.htmlFor "mongodb-path"]
                                   [D.text "Path"]
                               , D.input
-                                  [ D.name "mongodb-mongouri"
+                                  [ D.name "mongodb-path"
                                   , D.placeholder "/"
                                   , D.onChange \e -> do
                                     let state' = state # seMountings%~ (M.delete path)

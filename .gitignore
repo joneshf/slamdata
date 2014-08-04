@@ -9,3 +9,4 @@ dist
 *.jar
 npm-debug.log
 .sass-cache
+test/screenshots

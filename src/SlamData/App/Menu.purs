@@ -18,13 +18,13 @@ module SlamData.App.Menu (menu) where
   menu = mkUI spec do
     props <- getProps
     pure $ D.nav
-      [ D.ClassName "top-bar"
+      [ D.className "top-bar"
       , D.Data {options: "is_hover: false", topbar: true}
       ]
-      [ D.ul [D.ClassName "title-area"]
+      [ D.ul [D.className "title-area"]
               [ D.li' [] ]
-      , D.section [D.ClassName "top-bar-section"]
-          [ D.ul [D.ClassName "left"]
+      , D.section [D.className "top-bar-section"]
+          [ D.ul [D.className "left"]
               [ editMenu props.showSettings
               , command2UI {name: "divider", action: Nothing}
               ]
@@ -81,17 +81,24 @@ module SlamData.App.Menu (menu) where
     ]
 
   menuButton :: forall eff props state result. String -> [Command eff props state result] -> UI
-  menuButton name commands = D.li [D.ClassName "has-dropdown"]
-    [ D.a' [ D.text name ]
-    , D.ul [D.ClassName "dropdown"] (command2UI <$> commands)
+  menuButton name commands = D.li
+    [D.className "has-dropdown"]
+    [ D.a [D.idProp $ "menu-button-" ++ name] [D.text name]
+    , D.ul [D.className "dropdown"] (command2UI <$> commands)
     ]
 
   command2UI :: forall eff props state result. Command eff props state result -> UI
   command2UI {name = "divider"}               = D.li [D.className "divider"] []
-  command2UI {name = name, action = Nothing}  = D.li' [D.a' [D.text name]]
+  command2UI {name = name, action = Nothing}  = D.li'
+    [D.a
+        [D.idProp $ "menu-command-" ++ name]
+        [D.text name]
+    ]
   command2UI {name = name, action = Just act} =
     D.li'
       [D.a
-          [D.onClick \_ -> act]
+          [ D.idProp $ "menu-command-" ++ name
+          , D.onClick \_ -> act
+          ]
           [D.text name]
       ]

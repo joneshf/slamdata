@@ -390,6 +390,7 @@ module SlamData.App.Notebook (notebook) where
     [D.className $ "tab" ++ maybeActive nb.ident active]
     [D.a
         [ D.href $ "#" ++ tabize (getNotebookID nb.ident)
+        , D.idProp $ "notebook-Settings"
         , D.onClick \e -> do
             pure $ e.preventDefault {}
             activate nb.ident

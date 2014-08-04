@@ -1,6 +1,7 @@
 'use strict'
 
 var gulp = require('gulp')
+  , bower = require('gulp-bower')
   , compass = require('gulp-compass')
   , concat = require('gulp-concat')
   , es = require('event-stream')
@@ -10,6 +11,7 @@ var gulp = require('gulp')
   , purescript = require('gulp-purescript')
   , rimraf = require('rimraf')
   , runSequence = require('run-sequence')
+  , spawn = require('child_process').spawn
   ;
 
 // Configuration.
@@ -78,15 +80,20 @@ var paths = {
         browser: {
             js: 'lib/browser/js',
             src: [ 'lib/browser/src/**/*.purs'
-                 , 'lib/browser/bower_components/slamdata/js/slamdata.e.purs'
+                 , 'lib/browser/bower_components/slamdata/src/**/*.purs'
+                 , 'lib/browser/bower_components/purescript-*/src/**/*.purs'
                  ]
         },
         'node-webkit': {
             js: 'lib/node-webkit/js',
             src: [ 'lib/node-webkit/src/**/*.purs'
-                 , 'lib/node-webkit/bower_components/slamdata/js/slamdata.e.purs'
+                 , 'lib/node-webkit/bower_components/slamdata/src/**/*.purs'
+                 , 'lib/node-webkit/bower_components/purescript-*/src/**/*.purs'
                  ]
         }
+    },
+    slamEngine: {
+        jar: '../slamengine/target/scala-2.10/slamengine_2.10-0.1-SNAPSHOT-one-jar.jar'
     }
 }
 
@@ -111,19 +118,24 @@ var options = {
         browser: {
             codegen: 'SlamData.Browser',
             main: 'SlamData.Browser',
-            noPrelude: true,
             output: 'slamdata-browser.js'
         },
         'node-webkit': {
             codegen: 'SlamData.NodeWebkit',
             main: 'SlamData.NodeWebkit',
-            noPrelude: true,
             output: 'slamdata-node-webkit.js'
         }
     }
 }
 
 // Functions.
+function bowerLib(target) {
+    return function() {
+        var lib = path.join('lib', target)
+        return bower({cwd: lib});
+    }
+};
+
 function clean(path) {
     return function(done) {
         rimraf(path, done);
@@ -203,6 +215,9 @@ function sequence () {
 }
 
 // Workhorse tasks.
+gulp.task('bower-browser', bowerLib('browser'));
+gulp.task('bower-node-webkit', bowerLib('node-webkit'));
+
 gulp.task('clean-build', clean('bin'));
 gulp.task('clean-compile', clean('js'));
 gulp.task('clean-dist', clean('dist'));
@@ -253,7 +268,8 @@ gulp.task('entypo-node-webkit', entypo('node-webkit'));
 gulp.task('fonts-node-webkit', fonts('node-webkit'));
 gulp.task('imgs-node-webkit', imgs('node-webkit'));
 
-gulp.task('build-browser', sequence( 'compile-browser'
+gulp.task('build-browser', sequence( 'bower-browser'
+                                   , 'compile-browser'
                                    , [ 'concat-css-browser'
                                      , 'concat-js-browser'
                                      , 'copy-browser'
@@ -262,7 +278,8 @@ gulp.task('build-browser', sequence( 'compile-browser'
                                      , 'imgs-browser'
                                      ]
                                    ));
-gulp.task('build-node-webkit', sequence( 'compile-node-webkit'
+gulp.task('build-node-webkit', sequence( 'bower-node-webkit'
+                                       , 'compile-node-webkit'
                                        , [ 'concat-css-node-webkit'
                                          , 'concat-js-node-webkit'
                                          , 'copy-node-webkit'
@@ -297,13 +314,17 @@ gulp.task('dist-node-webkit', function() {
     });
 });
 
+gulp.task('test-casperjs', function(done) {
+    spawn('./node_modules/.bin/casperjs', ['test', 'test/'], {stdio: 'inherit'}).on('close', done);
+});
+
 // Main tasks.
 gulp.task('build', sequence( ['clean-build', 'compile']
                            , ['build-browser', 'build-node-webkit']
                            ));
 gulp.task('default', sequence(['compile', 'sass']));
 gulp.task('dist', sequence(['build', 'clean-dist'], 'dist-node-webkit'));
-gulp.task('test', ['build']);
+gulp.task('test', sequence('build', ['test-casperjs']));
 gulp.task('watch', function() {
     gulp.watch(paths.src, ['compile']);
     gulp.watch(paths.style, ['sass']);
