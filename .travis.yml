@@ -4,5 +4,6 @@ ghc:
 install:
   - cabal install purescript
   - npm install -g bower
+  - gem install compass
 script:
   - npm test

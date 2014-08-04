@@ -1,6 +1,6 @@
 {
   "main": "index.html",
-  "name": "slamdata",
+  "name": "SlamData",
   "description": "Front end for SlamData",
   "version": "0.1.0",
   "window": {
@@ -9,8 +9,5 @@
     "title": "SlamData",
     "toolbar": false,
     "width": 1280
-  },
-  "dependencies": {
-    "find-java-home": "git://github.com/joneshf/node-find-java-home.git"
   }
 }

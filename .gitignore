@@ -8,3 +8,4 @@ cache
 dist
 *.jar
 npm-debug.log
+.sass-cache

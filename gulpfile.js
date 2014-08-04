@@ -1,19 +1,23 @@
+'use strict'
+
 var gulp = require('gulp')
-  , clean = require('gulp-clean')
+  , compass = require('gulp-compass')
   , concat = require('gulp-concat')
   , es = require('event-stream')
+  , fs = require('fs')
   , nwBuilder = require('node-webkit-builder')
+  , path = require('path')
   , purescript = require('gulp-purescript')
-  , sass = require('gulp-sass')
+  , rimraf = require('rimraf')
+  , runSequence = require('run-sequence')
   ;
 
 // Configuration.
-paths = {
-    src: [
-        'src/**/*.purs',
-        'bower_components/purescript-*/src/**/*.purs',
-        'bower_components/purescript-*/src/**/*.purs.hs'
-    ],
+var paths = {
+    src: [ 'src/**/*.purs'
+         , 'bower_components/purescript-*/src/**/*.purs'
+         , 'bower_components/purescript-*/src/**/*.purs.hs'
+         ],
     dest: 'js',
     style: 'style/**/*.scss',
     css: 'css',
@@ -21,6 +25,7 @@ paths = {
     build: {
         browser: {
             css: 'bin/browser/css',
+            dest: 'bin/browser',
             fonts: 'bin/browser/fonts',
             imgs: 'bin/browser/imgs',
             index: 'bin/browser',
@@ -28,6 +33,7 @@ paths = {
         },
         'node-webkit': {
             css: 'bin/node-webkit/css',
+            dest: 'bin/node-webkit',
             fonts: 'bin/node-webkit/fonts',
             imgs: 'bin/node-webkit/imgs',
             index: 'bin/node-webkit',
@@ -36,83 +42,173 @@ paths = {
         }
     },
     concat: {
-        js: [
-            'bower_components/jquery/dist/jquery.js',
-            'bower_components/c3/c3.js',
-            'bower_components/d3/d3.js',
-            'bower_components/fastclick/lib/fastclick.js',
-            'bower_components/foundation/js/foundation.js',
-            'bower_components/modernizr/modernizr.js',
-            'bower_components/node-uuid/uuid.js',
-            'bower_components/oboe/dist/oboe-browser.js',
-            'bower_components/react/react-with-addons.js',
-            'bower_components/showdown/src/showdown.js',
-            'js/slamdata.js'
-        ],
-        css: [
-            'bower_components/c3/c3.css',
-            'bower_components/entypo/font/entypo.css',
-            'bower_components/fontawesome/css/font-awesome.css'
-        ],
-        fonts: [
-            'bower_components/fontawesome/fonts/*'
-        ],
-        entypo: [
-            'bower_components/entypo/font/entypo.eot',
-            'bower_components/entypo/font/entypo.svg',
-            'bower_components/entypo/font/entypo.ttf',
-            'bower_components/entypo/font/entypo.woff'
-        ]
+        css: [ 'bower_components/c3/c3.css'
+             , 'bower_components/entypo/font/entypo.css'
+             , 'bower_components/fontawesome/css/font-awesome.css'
+             ],
+        entypo: [ 'bower_components/entypo/font/entypo.eot'
+                , 'bower_components/entypo/font/entypo.svg'
+                , 'bower_components/entypo/font/entypo.ttf'
+                , 'bower_components/entypo/font/entypo.woff'
+                ],
+        fonts: ['bower_components/fontawesome/fonts/*'],
+        js: [ 'bower_components/jquery/dist/jquery.js'
+            , 'bower_components/c3/c3.js'
+            , 'bower_components/d3/d3.js'
+            , 'bower_components/fastclick/lib/fastclick.js'
+            , 'bower_components/foundation/js/foundation.js'
+            , 'bower_components/modernizr/modernizr.js'
+            , 'bower_components/node-uuid/uuid.js'
+            , 'bower_components/oboe/dist/oboe-browser.js'
+            , 'bower_components/react/react-with-addons.js'
+            , 'bower_components/showdown/src/showdown.js'
+            , 'js/slamdata.js'
+            ]
+    },
+    copy : {
+        browser: [ 'lib/browser/index.html'
+                 , 'lib/browser/js/**/*'
+                 ],
+        'node-webkit': [ 'lib/node-webkit/index.html'
+                       , 'lib/node-webkit/js/**/*'
+                       , 'lib/node-webkit/package.json'
+                       ]
+    },
+    lib: {
+        browser: {
+            js: 'lib/browser/js',
+            src: [ 'lib/browser/src/**/*.purs'
+                 , 'lib/browser/bower_components/slamdata/js/slamdata.e.purs'
+                 ]
+        },
+        'node-webkit': {
+            js: 'lib/node-webkit/js',
+            src: [ 'lib/node-webkit/src/**/*.purs'
+                 , 'lib/node-webkit/bower_components/slamdata/js/slamdata.e.purs'
+                 ]
+        }
     }
 }
 
-options = {
+var options = {
+    build: {
+        css: 'slamdata.css',
+        js: 'slamdata.js',
+    },
     compile: {
-        main: 'SlamData',
+        externs: 'js/slamdata.e.purs',
         output: 'slamdata.js'
     },
-    build: {
-        main: 'SlamData',
-        css: 'slamdata.css',
-        index: 'index.html',
-        js: 'slamdata.js'
+    copy: {
+        browser: {
+            base: 'lib/browser'
+        },
+        'node-webkit': {
+            base: 'lib/node-webkit'
+        }
+    },
+    lib: {
+        browser: {
+            codegen: 'SlamData.Browser',
+            main: 'SlamData.Browser',
+            noPrelude: true,
+            output: 'slamdata-browser.js'
+        },
+        'node-webkit': {
+            codegen: 'SlamData.NodeWebkit',
+            main: 'SlamData.NodeWebkit',
+            noPrelude: true,
+            output: 'slamdata-node-webkit.js'
+        }
     }
 }
 
 // Functions.
-var concatJs = function(target) {
-    return gulp.src(paths.concat.js)
-      .pipe(concat(options.build.js))
-      .pipe(gulp.dest(paths.build[target].js));
+function clean(path) {
+    return function(done) {
+        rimraf(path, done);
+    }
 };
 
-var concatCss = function(target) {
+function compileLib(target) {
+    return function() {
+        var psc = purescript.psc(options.lib[target]);
+        psc.on('error', function(e) {
+            console.error(e.message);
+            psc.end();
+        });
+        return gulp.src(paths.lib[target].src)
+            .pipe(psc)
+            .pipe(gulp.dest(paths.lib[target].js));
+    }
+};
+
+function concatJs(target) {
+    return function() {
+        return gulp.src(paths.concat.js)
+            .pipe(concat(options.build.js))
+            .pipe(gulp.dest(paths.build[target].js));
+    }
+};
+
+function concatCss(target) {
     var fa = gulp.src(paths.concat.css);
     var styles = gulp.src(paths.style)
-        .pipe(sass());
+        .pipe(compass({
+            import_path: '.',
+            project: __dirname,
+            sass: 'style'
+        }));
 
-    return es.concat(fa, styles)
-        .pipe(concat(options.build.css))
-        .pipe(gulp.dest(paths.build[target].css));
+    return function() {
+        return es.concat(fa, styles)
+            .pipe(concat(options.build.css))
+            .pipe(gulp.dest(paths.build[target].css));
+    }
 };
 
-var fonts = function(target) {
-    return gulp.src(paths.concat.fonts)
-      .pipe(gulp.dest(paths.build[target].fonts));
+function copy(target) {
+    return function() {
+        return gulp.src(paths.copy[target], options.copy[target])
+            .pipe(gulp.dest(paths.build[target].dest));
+    }
+}
+
+function fonts(target) {
+    return function() {
+        return gulp.src(paths.concat.fonts)
+            .pipe(gulp.dest(paths.build[target].fonts));
+    }
 };
 
-var entypo = function(target) {
-    return gulp.src(paths.concat.entypo)
-      .pipe(gulp.dest(paths.build[target].css));
+function entypo(target) {
+    return function() {
+        return gulp.src(paths.concat.entypo)
+            .pipe(gulp.dest(paths.build[target].css));
+    }
 };
 
-var imgs = function(target) {
-    return gulp.src(paths.imgs)
-      .pipe(gulp.dest(paths.build[target].imgs));
+function imgs(target) {
+    return function() {
+        return gulp.src(paths.imgs)
+            .pipe(gulp.dest(paths.build[target].imgs));
+    }
 };
+
+function sequence () {
+    var args = [].slice.call(arguments);
+    return function(done) {
+        runSequence.apply(null, args.concat(done));
+    }
+}
 
 // Workhorse tasks.
-gulp.task('compile', function() {
+gulp.task('clean-build', clean('bin'));
+gulp.task('clean-compile', clean('js'));
+gulp.task('clean-dist', clean('dist'));
+gulp.task('clean-sass', clean(paths.css));
+
+gulp.task('compile', ['clean-compile'], function() {
     // We need this hack for now until gulp does something about
     // https://github.com/gulpjs/gulp/issues/71
     var psc = purescript.psc(options.compile);
@@ -125,21 +221,16 @@ gulp.task('compile', function() {
         .pipe(gulp.dest(paths.dest));
 });
 
-gulp.task('clean-sass', function() {
-    return gulp.src(paths.css)
-      .pipe(clean());
-});
+gulp.task('compile-browser', compileLib('browser'));
+gulp.task('compile-node-webkit', compileLib('node-webkit'));
 
 gulp.task('sass', ['clean-sass'], function() {
-    var scss = sass();
-    scss.on('error', function(e) {
-        console.error(e.message);
-        scss.end();
-    });
-    // There's something wonky going on with gulp-sass.
-    // Removing the return allows things to operate more fluidly.
-    gulp.src(paths.style)
-        .pipe(scss)
+    return gulp.src(paths.style)
+        .pipe(compass({
+            import_path: '.',
+            project: __dirname,
+            sass: 'style'
+        }))
         .pipe(gulp.dest(paths.css));
 });
 
@@ -148,57 +239,70 @@ gulp.task('slamengine-jar', function() {
         .pipe(gulp.dest(paths.build['node-webkit'].jar));
 });
 
-gulp.task('slamengine-js', function() {
-    return gulp.src('lib/node-webkit/**/*')
-        .pipe(gulp.dest('bin/node-webkit'));
-});
+gulp.task('concat-css-browser', concatCss('browser'));
+gulp.task('concat-js-browser', concatJs('browser'));
+gulp.task('copy-browser', copy('browser'));
+gulp.task('entypo-browser', entypo('browser'));
+gulp.task('fonts-browser', fonts('browser'));
+gulp.task('imgs-browser', imgs('browser'));
 
-gulp.task('concat-js-browser', function() {return concatJs('browser');});
-gulp.task('concat-css-browser', function() {return concatCss('browser');});
-gulp.task('fonts-browser', function() {return fonts('browser');});
-gulp.task('entypo-browser', function() {return entypo('browser');});
-gulp.task('imgs-browser', function() {return imgs('browser');});
+gulp.task('concat-css-node-webkit', concatCss('node-webkit'));
+gulp.task('concat-js-node-webkit', concatJs('node-webkit'));
+gulp.task('copy-node-webkit', copy('node-webkit'));
+gulp.task('entypo-node-webkit', entypo('node-webkit'));
+gulp.task('fonts-node-webkit', fonts('node-webkit'));
+gulp.task('imgs-node-webkit', imgs('node-webkit'));
 
-gulp.task('concat-js-node-webkit', function() {return concatJs('node-webkit');});
-gulp.task('concat-css-node-webkit', function() {return concatCss('node-webkit');});
-gulp.task('fonts-node-webkit', function() {return fonts('node-webkit');});
-gulp.task('entypo-node-webkit', function() {return entypo('node-webkit');});
-gulp.task('imgs-node-webkit', function() {return imgs('node-webkit');});
+gulp.task('build-browser', sequence( 'compile-browser'
+                                   , [ 'concat-css-browser'
+                                     , 'concat-js-browser'
+                                     , 'copy-browser'
+                                     , 'entypo-browser'
+                                     , 'fonts-browser'
+                                     , 'imgs-browser'
+                                     ]
+                                   ));
+gulp.task('build-node-webkit', sequence( 'compile-node-webkit'
+                                       , [ 'concat-css-node-webkit'
+                                         , 'concat-js-node-webkit'
+                                         , 'copy-node-webkit'
+                                         , 'entypo-node-webkit'
+                                         , 'fonts-node-webkit'
+                                         , 'imgs-node-webkit'
+                                         , 'slamengine-jar'
+                                         ]
+                                       ));
 
-gulp.task('build-browser', [
-    'compile',
-    'concat-js-browser',
-    'concat-css-browser',
-    'fonts-browser',
-    'entypo-browser',
-    'imgs-browser'
-]);
-gulp.task('build-node-webkit', [
-    'compile',
-    'concat-js-node-webkit',
-    'concat-css-node-webkit',
-    'fonts-node-webkit',
-    'entypo-node-webkit',
-    'imgs-node-webkit',
-    'slamengine-jar',
-    'slamengine-js'
-]);
-
-gulp.task('dist-node-webkit', ['build-node-webkit'], function() {
-    nw = new nwBuilder({
+gulp.task('dist-node-webkit', function() {
+    var nw = new nwBuilder({
         buildDir: 'dist',
         files: 'bin/node-webkit/**',
         macIcns: 'imgs/slamdata.icns',
         platforms: ['linux64', 'osx', 'win'],
         winIco: 'imgs/slamdata.ico'
     });
-    return nw.build();
+    return nw.build().then(function() {
+        fs.renameSync(
+            'dist/SlamData/linux64/nw',
+            'dist/SlamData/linux64/SlamData'
+        );
+        fs.renameSync(
+            'dist/SlamData/osx/node-webkit.app',
+            'dist/SlamData/osx/SlamData.app'
+        );
+        fs.renameSync(
+            'dist/SlamData/win/nw.exe',
+            'dist/SlamData/win/SlamData.exe'
+        );
+    });
 });
 
 // Main tasks.
-gulp.task('build', ['build-browser', 'build-node-webkit']);
-gulp.task('default', ['compile', 'sass']);
-gulp.task('dist', ['build', 'dist-node-webkit']);
+gulp.task('build', sequence( ['clean-build', 'compile']
+                           , ['build-browser', 'build-node-webkit']
+                           ));
+gulp.task('default', sequence(['compile', 'sass']));
+gulp.task('dist', sequence(['build', 'clean-dist'], 'dist-node-webkit'));
 gulp.task('test', ['build']);
 gulp.task('watch', function() {
     gulp.watch(paths.src, ['compile']);

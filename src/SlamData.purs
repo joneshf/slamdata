@@ -1,8 +1,20 @@
 module SlamData where
 
-  import React
-  import React.DOM
+  import Control.Monad.Eff (Eff())
+  import Control.Monad.Cont.Trans (ContT(..))
 
-  import SlamData.App
+  import Data.Maybe (Maybe())
 
-  main = renderToElementById "content" app
+  import DOM (DOM())
+
+  import React (renderToElementById, UI())
+
+  import SlamData.App (app)
+  import SlamData.Types (FilePath(), FSWrite(), SaveSettings(), Settings())
+
+  slamData :: forall eff
+           .  Settings
+           -> ContT Unit (Eff (fsWrite :: FSWrite, dom :: DOM | eff)) Settings
+  slamData settings = ContT \save -> do
+    renderToElementById "content" $ app {settings: settings, saveSettings: save}
+    pure unit

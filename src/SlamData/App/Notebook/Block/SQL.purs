@@ -26,7 +26,6 @@ module SlamData.App.Notebook.Block.SQL (evalSQL) where
     , localGet
     , localSet
     , loadingIcon
-    , serverURI
     , toUI
     , LocalKey(..)
     )
@@ -122,7 +121,6 @@ module SlamData.App.Notebook.Block.SQL (evalSQL) where
   fromJust_ = fromJust
   newID :: Unit -> BlockID
   newID _ = BlockID $ runUUID v4
-  serverURI_ = serverURI
 
   pagingLimit = 20
 
@@ -154,23 +152,26 @@ module SlamData.App.Notebook.Block.SQL (evalSQL) where
     \      extendState.call(this, {status: successful(xhr.responseText)});\
     \    }\
     \  }.bind(this);\
-    \  xhr.open('GET', serverURI_ + '/data/fs/' + location);\
+    \  xhr.open('GET', this.props.serverURI + '/data/fs' + this.props.serverFS + location + '?limit=' + pagingLimit);\
     \  xhr.send(null);\
     \}" :: forall a. a
 
   foreign import runQuery
     "function runQuery(query) {\
+    \  var sanitizeLocation = function(loc) {\
+    \    return loc.slice(0) === '/' ? loc.slice(1) : loc;\
+    \  };\
     \  var id = newID();\
     \  $.ajax({\
     \    type: 'POST',\
-    \    url: serverURI_ + '/query/fs/?out=' + showBlockID(id),\
+    \    url: this.props.serverURI + '/query/fs' + this.props.serverFS + '?out=' + showBlockID(id),\
     \    data: query,\
     \    dataType: 'json',\
     \    success: function(data, status, jqXHR) {\
     \      /* Parse the location out of the response. */\
     \      var location = data.out;\
     \      if (this.isMounted()) {\
-    \        extendState.call(this, {location: just_(location)});\
+    \        extendState.call(this, {location: just_(sanitizeLocation(location))});\
     \      }\
     \      saveLocal(this.props)(this.state);\
     \      cdm.call(this, location);\

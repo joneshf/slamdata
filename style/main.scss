@@ -42,6 +42,11 @@ html, body {
 nav.top-bar {
     .right {
         margin: 5px 15px;
+        #slamdata-logo {
+            background-color: transparent;
+            line-height: inherit;
+            padding: 0;
+        }
         img {
             height: 30px;
         }

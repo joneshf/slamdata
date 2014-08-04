@@ -109,7 +109,7 @@ module SlamData.App.Notebook.Block (block) where
              -> BlockProps eff state result extra
              -> String
              -> UI
-  evalOrEdit _    p@{blockType=Visual}   = \s -> evalVisual s (injectC3Options p)
+  evalOrEdit _    p@{blockType=Visual}   = \s -> evalVisual s p
   evalOrEdit Edit p                      = blockEditor
   evalOrEdit Eval p@{blockType=Markdown} = \s -> evalMarkdown s {}
   evalOrEdit Eval p@{blockType=SQL}      = \s -> evalSQL (deferred edit) s p

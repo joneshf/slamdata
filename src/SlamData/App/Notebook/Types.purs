@@ -19,6 +19,7 @@ module SlamData.App.Notebook.Types where
   type NotebookState =
     { notebooks :: [NotebookSpec]
     , active :: Maybe NotebookID
+    , settingId :: NotebookID
     , visualState :: VisualState
     }
   type NotebookEvent eff =

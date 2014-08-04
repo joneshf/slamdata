@@ -16,8 +16,11 @@ module SlamData.App.Panel (panel) where
   panel :: [TabSpec] -> UI
   panel tabs = panel' {tabs: tabs}
 
+  initialState :: {tabs :: [TabSpec], activeTab :: Maybe UUID}
+  initialState = {tabs: [], activeTab: Nothing}
+
   panel' :: {tabs :: [TabSpec]} -> UI
-  panel' = mkUI spec {getInitialState = pure {tabs: [], activeTab: Nothing}} do
+  panel' = mkUI spec {getInitialState = pure initialState} do
     props <- getProps
     state <- readState
     let tabs = props.tabs
