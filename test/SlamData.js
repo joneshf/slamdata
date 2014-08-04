@@ -32,8 +32,9 @@ casper.test.begin('Config is read properly', 9, function(test) {
     };
 
     casper.start(index + '?' + search, function() {
-        this.viewport(1280, 720);
-        this.capture('test/screenshots/empty.png');
+        this.viewport(1280, 720).then(function() {
+            this.capture('test/screenshots/empty.png');
+        });
     });
 
     casper.thenClick('#menu-button-Edit', function() {

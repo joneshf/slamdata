@@ -70167,7 +70167,7 @@ PS.SlamData_App_Notebook_Settings = (function () {
         var _156 = React.readState();
         return (function () {
             var mountings = Data_Map.toList(Control_Lens["^."](_156)(Control_Lens[".."](Prelude.semigroupoidArr({}))(seConfig(Data_Const.functorConst({})))(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._seConfigRec(Data_Const.functorConst({})))(SlamData_Lens._mountings(Data_Const.functorConst({}))))));
-            return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div([ React_DOM.className("vertical") ])([ React_DOM.div([ React_DOM.className("small-1  columns"), React_DOM.idProp("settings-category") ])([ React_DOM.dl([ React_DOM.className("tabs vertical") ])([ React_DOM.dd([ React_DOM.className("tab" + activate(eqSettingsTab({}))(SlamEngineTab.value)(_156.active)) ])([ React_DOM.a([ React_DOM.onClick(function (_) {
+            return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div([ React_DOM.className("vertical") ])([ React_DOM.div([ React_DOM.className("small-1  columns"), React_DOM.idProp("settings-category") ])([ React_DOM.dl([ React_DOM.className("tabs vertical") ])([ React_DOM.dd([ React_DOM.className("tab" + activate(eqSettingsTab({}))(SlamEngineTab.value)(_156.active)) ])([ React_DOM.a([ React_DOM.idProp("settings-" + Prelude.show(showSettingsTab({}))(SlamEngineTab.value)), React_DOM.onClick(function (_) {
                 return React.writeState((function () {
                     var _2726 = {};
                     for (var _2727 in _156) {
@@ -70178,7 +70178,7 @@ PS.SlamData_App_Notebook_Settings = (function () {
                     _2726.active = SlamEngineTab.value;
                     return _2726;
                 })());
-            }) ])([ React_DOM.text(Prelude.show(showSettingsTab({}))(SlamEngineTab.value)) ]) ]), React_DOM.dd([ React_DOM.className("tab" + activate(eqSettingsTab({}))(SlamDataTab.value)(_156.active)) ])([ React_DOM.a([ React_DOM.onClick(function (_) {
+            }) ])([ React_DOM.text(Prelude.show(showSettingsTab({}))(SlamEngineTab.value)) ]) ]), React_DOM.dd([ React_DOM.className("tab" + activate(eqSettingsTab({}))(SlamDataTab.value)(_156.active)) ])([ React_DOM.a([ React_DOM.idProp("settings-" + Prelude.show(showSettingsTab({}))(SlamDataTab.value)), React_DOM.onClick(function (_) {
                 return React.writeState((function () {
                     var _2728 = {};
                     for (var _2729 in _156) {

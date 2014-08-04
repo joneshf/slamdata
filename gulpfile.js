@@ -10,6 +10,7 @@ var gulp = require('gulp')
   , purescript = require('gulp-purescript')
   , rimraf = require('rimraf')
   , runSequence = require('run-sequence')
+  , spawn = require('child_process').spawn
   ;
 
 // Configuration.
@@ -87,6 +88,9 @@ var paths = {
                  , 'lib/node-webkit/bower_components/slamdata/js/slamdata.e.purs'
                  ]
         }
+    },
+    slamEngine: {
+        jar: '../slamengine/target/scala-2.10/slamengine_2.10-0.1-SNAPSHOT-one-jar.jar'
     }
 }
 
@@ -297,13 +301,17 @@ gulp.task('dist-node-webkit', function() {
     });
 });
 
+gulp.task('test-casperjs', function(done) {
+    spawn('casperjs', ['test', 'test/'], {stdio: 'inherit'}).on('close', done);
+});
+
 // Main tasks.
 gulp.task('build', sequence( ['clean-build', 'compile']
                            , ['build-browser', 'build-node-webkit']
                            ));
 gulp.task('default', sequence(['compile', 'sass']));
 gulp.task('dist', sequence(['build', 'clean-dist'], 'dist-node-webkit'));
-gulp.task('test', ['build']);
+gulp.task('test', sequence('build', ['test-casperjs']));
 gulp.task('watch', function() {
     gulp.watch(paths.src, ['compile']);
     gulp.watch(paths.style, ['sass']);

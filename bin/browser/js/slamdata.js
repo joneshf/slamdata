@@ -69365,9 +69365,9 @@ PS.SlamData_Helpers = (function () {
             return Text_Parsing_Parser_String.satisfy(__dict_Monad_577)(Prelude.flip(Data_Foldable.notElem(Prelude.eqString({}))(Data_Foldable.foldableArray({})))(ss));
         };
     };
-    var parseQuery = Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(Prelude["<$>"](Text_Parsing_Parser.functorParserT(Control_Monad_Identity.functorIdentity({})))(Data_String.joinWith(""))(Text_Parsing_Parser_Combinators.many1(Control_Monad_Identity.monadIdentity({}))(Text_Parsing_Parser_Combinators["try"](Control_Monad_Identity.functorIdentity({}))(noneOf(Control_Monad_Identity.monadIdentity({}))([ "=" ])))))(function (_142) {
+    var parseQuery = Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(Prelude["<$>"](Text_Parsing_Parser.functorParserT(Control_Monad_Identity.functorIdentity({})))(Prelude[">>>"](Prelude.semigroupoidArr({}))(Data_String.joinWith(""))(decodeURIComponent))(Text_Parsing_Parser_Combinators.many1(Control_Monad_Identity.monadIdentity({}))(Text_Parsing_Parser_Combinators["try"](Control_Monad_Identity.functorIdentity({}))(noneOf(Control_Monad_Identity.monadIdentity({}))([ "=" ])))))(function (_142) {
         return Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(Text_Parsing_Parser_String.string(Control_Monad_Identity.monadIdentity({}))("="))(function (_) {
-            return Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(Prelude["<$>"](Text_Parsing_Parser.functorParserT(Control_Monad_Identity.functorIdentity({})))(Data_String.joinWith(""))(Text_Parsing_Parser_Combinators.many1(Control_Monad_Identity.monadIdentity({}))(Text_Parsing_Parser_Combinators["try"](Control_Monad_Identity.functorIdentity({}))(noneOf(Control_Monad_Identity.monadIdentity({}))([ "&" ])))))(function (_141) {
+            return Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(Prelude["<$>"](Text_Parsing_Parser.functorParserT(Control_Monad_Identity.functorIdentity({})))(Prelude[">>>"](Prelude.semigroupoidArr({}))(Data_String.joinWith(""))(decodeURIComponent))(Text_Parsing_Parser_Combinators.many1(Control_Monad_Identity.monadIdentity({}))(Text_Parsing_Parser_Combinators["try"](Control_Monad_Identity.functorIdentity({}))(noneOf(Control_Monad_Identity.monadIdentity({}))([ "&" ])))))(function (_141) {
                 return Prelude.pure(Text_Parsing_Parser.applicativeParserT(Control_Monad_Identity.monadIdentity({})))(new Data_Tuple.Tuple(_142, _141));
             });
         });
@@ -69578,6 +69578,7 @@ PS.SlamData_Helpers = (function () {
         Icon: Icon, 
         focus: focus, 
         getDOMNode: getDOMNode, 
+        decodeURIComponent: decodeURIComponent, 
         parseQuery: parseQuery, 
         parseQueryString: parseQueryString, 
         noneOf: noneOf, 
