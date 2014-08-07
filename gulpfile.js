@@ -12,6 +12,7 @@ var gulp = require('gulp')
   , rimraf = require('rimraf')
   , runSequence = require('run-sequence')
   , spawn = require('child_process').spawn
+  , taskListing = require('gulp-task-listing')
   ;
 
 // Configuration.
@@ -164,15 +165,15 @@ function concatJs(target) {
 };
 
 function concatCss(target) {
-    var fa = gulp.src(paths.concat.css);
-    var styles = gulp.src(paths.style)
-        .pipe(compass({
-            import_path: '.',
-            project: __dirname,
-            sass: 'style'
-        }));
-
     return function() {
+        var fa = gulp.src(paths.concat.css);
+        var styles = gulp.src(paths.style)
+            .pipe(compass({
+                import_path: '.',
+                project: __dirname,
+                sass: 'style'
+            }));
+
         return es.concat(fa, styles)
             .pipe(concat(options.build.css))
             .pipe(gulp.dest(paths.build[target].css));
@@ -318,3 +319,4 @@ gulp.task('watch', function() {
     gulp.watch(paths.src, ['compile']);
     gulp.watch(paths.style, ['sass']);
 });
+gulp.task('help', taskListing);
