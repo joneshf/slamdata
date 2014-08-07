@@ -296,26 +296,15 @@ gulp.task('dist-node-webkit', function() {
         files: 'bin/node-webkit/**',
         macIcns: 'imgs/slamdata.icns',
         platforms: ['linux64', 'osx', 'win'],
-        winIco: 'imgs/slamdata.ico'
+        winIco: 'imgs/slamdata.ico',
+        version: '0.10.1'
     });
-    return nw.build().then(function() {
-        fs.renameSync(
-            'dist/SlamData/linux64/nw',
-            'dist/SlamData/linux64/SlamData'
-        );
-        fs.renameSync(
-            'dist/SlamData/osx/node-webkit.app',
-            'dist/SlamData/osx/SlamData.app'
-        );
-        fs.renameSync(
-            'dist/SlamData/win/nw.exe',
-            'dist/SlamData/win/SlamData.exe'
-        );
-    });
+    return nw.on('log', console.log).build();
 });
 
 gulp.task('test-casperjs', function(done) {
-    spawn('./node_modules/.bin/casperjs', ['test', 'test/'], {stdio: 'inherit'}).on('close', done);
+    spawn('./node_modules/.bin/casperjs', ['test', 'test/'], {stdio: 'inherit'})
+        .on('close', done);
 });
 
 // Main tasks.

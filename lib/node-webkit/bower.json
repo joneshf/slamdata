@@ -21,6 +21,10 @@
     "purescript-lens": "~0.0.2",
     "purescript-transformers": "~0.0.5",
     "purescript-argonaut": "~0.0.1",
-    "slamdata": "git://github.com/joneshf/slamdata.git#test"
+    "slamdata": "../..",
+    "purescript-node-fs": "*",
+    "purescript-node-path": "~0.2.0",
+    "purescript-node-buffer": "*",
+    "purescript-globals": "~0.1.4"
   }
 }

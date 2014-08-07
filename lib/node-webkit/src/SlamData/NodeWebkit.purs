@@ -15,26 +15,32 @@ module SlamData.NodeWebkit where
   import Control.Lens ((^.), (..), lens, LensP())
   import Control.Monad (when)
   import Control.Monad.Eff (Eff(..))
+  import Control.Monad.Identity (Identity())
   import Control.Monad.Cont.Trans (runContT, ContT(..))
 
   import Data.Argonaut.Encode
   import Data.Argonaut.Decode
   import Data.Argonaut.Parser
   import Data.Argonaut.Printer (printToString)
+  import Data.Either (either, Either())
   import Data.Function (mkFn0, mkFn1, mkFn2, mkFn3, Fn0(), Fn1(), Fn2(), Fn3())
   import Data.Maybe (isJust, maybe, Maybe(..))
   import Data.Maybe.Unsafe (fromJust)
 
-  import Debug.Trace (trace)
+  import Debug.Trace (trace, print, Trace())
+
+  import Global (Error())
+
+  import Node.Encoding (Encoding(..))
+  import Node.FS (FS())
+  import Node.FS.Sync (writeTextFile)
+  import Node.Path (join, FilePath())
 
   import SlamData (slamData)
   import SlamData.Lens
-  import SlamData.Helpers (defaultSDConfig, defaultSEConfig)
+  import SlamData.Helpers (defaultSDConfig, defaultSEConfig, getOrElse)
   import SlamData.Types
-    ( FilePath()
-    , FS()
-    , FSWrite()
-    , Mounting()
+    ( Mounting()
     , Settings()
     , SDConfig(..)
     , SEConfig(..)
@@ -65,8 +71,6 @@ module SlamData.NodeWebkit where
   foreign import data NWShell :: *
   foreign import data NWWindow :: *
   foreign import data NW :: !
-  foreign import data Path :: *
-  foreign import data Process :: *
   foreign import data Spawn :: !
   foreign import data Signal :: !
   foreign import data Stream :: ! -> *
@@ -80,24 +84,12 @@ module SlamData.NodeWebkit where
 
   foreign import child_process
     "var child_process = require('child_process');" :: ChildProcess
-  foreign import fs "var fs = require('fs');" :: FS
   foreign import gui "var gui = require('nw.gui');" :: NWGUI
-  foreign import path "var path = require('path');" :: Path
   foreign import platform "var platform = process.platform;" :: String
-  foreign import process :: Process
   foreign import window :: {history :: WindowHistory}
 
   windowHistory :: WindowHistory
   windowHistory = window.history
-
-  foreign import writeFileSync
-    "function writeFileSync(path) {\
-    \  return function(data) {\
-    \    return function() {\
-    \      fs.writeFileSync(path, data);\
-    \    }\
-    \  }\
-    \}" :: forall eff. FilePath -> String -> Eff (fsWrite :: FSWrite | eff) Unit
 
   foreign import replaceState
     "function replaceState(state) {\
@@ -139,13 +131,8 @@ module SlamData.NodeWebkit where
         -> [String]
         -> Eff (spawn :: Spawn | eff) ChildProcess
 
-  foreign import joinPath
-    "function joinPath(paths) {\
-    \  return path.join.apply(null, paths);\
-    \}" :: [String] -> String
-
   (</>) :: FilePath -> FilePath -> FilePath
-  (</>) fp fp' = joinPath [fp, fp']
+  (</>) fp fp' = join [fp, fp']
 
   foreign import guiShell
     "function guiShell(gui) {\
@@ -283,15 +270,6 @@ module SlamData.NodeWebkit where
     \  return require(location);\
     \}" :: forall r. FilePath -> { | r}
 
-  foreign import rawMountings2Mountings
-    "function rawMountings2Mountings(raw) {\
-    \  var mountings = mEmpty_;\
-    \  for (var path in raw) {\
-    \    mountings = mInsert(path)(raw[path])(mountings);\
-    \  }\
-    \  return mountings;\
-    \}" :: forall r. { | r} -> M.Map String Mounting
-
   linuxConfigHome :: Maybe FilePath
   linuxConfigHome = env "XDG_CONFIG_HOME"
                 <|> (\home -> home </> ".config") <$> env "HOME"
@@ -310,13 +288,21 @@ module SlamData.NodeWebkit where
   seJar :: FilePath
   seJar = "jar" </> "slamengine_2.10-0.1-SNAPSHOT-one-jar.jar"
 
+  config2String :: forall a. (EncodeJson Identity Identity a) => a -> String
+  config2String = printToString <<< encodeIdentity
+
+  showError :: forall eff. Either Error Unit -> Eff (trace :: Trace | eff) Unit
+  showError = either print pure
+
   main = do
-    let sdConfigStr = stringify $ requireConfig sdConfigFile
+    let sdConfigStr = requireConfig sdConfigFile # stringify
     let sdConfigM = parseMaybe sdConfigStr >>= decodeMaybe
-    let sdConfig = maybe defaultSDConfig id sdConfigM
-    let seConfigStr = stringify $ requireConfig seConfigFile
+    let sdConfig = sdConfigM `getOrElse` defaultSDConfig
+
+    let seConfigStr = requireConfig seConfigFile # stringify
     let seConfigM = parseMaybe seConfigStr >>= decodeMaybe
-    let seConfig = maybe defaultSEConfig id seConfigM
+    let seConfig = seConfigM `getOrElse` defaultSEConfig
+
     let java = sdConfig^._sdConfigRec.._nodeWebkit.._java
     -- Start up SlamEngine.
     se <- spawn java ["-jar", seJar, seConfigFile]
@@ -332,7 +318,8 @@ module SlamData.NodeWebkit where
     -- Cleanup after ourselves.
     onCloseNWWindow (\_ -> kill se *> closeWindow win *> trace "gone") win
     -- Pass down the config  to the web page.
-    runContT (slamData {sdConfig: sdConfig, seConfig: seConfig})
-             \{sdConfig = sdC, seConfig = seC} -> do
-                writeFileSync sdConfigFile (printToString $ encodeIdentity $ sdC)
-                writeFileSync seConfigFile (printToString $ encodeIdentity $ seC)
+    runContT
+      (slamData {sdConfig: sdConfig, seConfig: seConfig})
+      \{sdConfig = sdC, seConfig = seC} -> do
+        writeTextFile UTF8 sdConfigFile (config2String sdC) >>= showError
+        writeTextFile UTF8 seConfigFile (config2String seC) >>= showError

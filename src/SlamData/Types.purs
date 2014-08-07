@@ -13,6 +13,8 @@ module SlamData.Types where
   import Data.Tuple (uncurry, Tuple(..))
   import Data.Traversable (sequence, traverse, Traversable)
 
+  import Node.FS (FS())
+
   import qualified Data.Map as M
 
   -- TODO: These ports should be their own type, not `Number`.
@@ -39,12 +41,7 @@ module SlamData.Types where
     , database :: String
     }
 
-  type SaveSettings eff = Settings -> Eff (fsWrite :: FSWrite | eff) Unit
-
-  -- TODO: Move this to the appropriate library.
-  foreign import data FS :: *
-  foreign import data FSWrite :: !
-  type FilePath = String
+  type SaveSettings eff = Settings -> Eff (fs :: FS | eff) Unit
 
   instance encodeSDConfig :: EncodeJson Identity Identity SDConfig where
     encodeJson (Identity (SDConfig sdConfig)) = Identity $
