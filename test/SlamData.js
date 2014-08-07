@@ -21,25 +21,6 @@ var contentSelector = '#notebook .tabs-content .content'
   , tabSelector = '#notebook .tabs .tab'
   ;
 
-casper.test.setUp(function(done) {
-    casper.start(defaultURL, function() {
-        casper.viewport(1280, 720);
-        casper.evaluate(function() {
-            localStorage.clear();
-        });
-    }).run(done);
-});
-
-casper.test.begin('SlamData layout is proper', 1, function(test) {
-    // This suite should ensure that the basic layout
-    // stays proper throughout any changes.
-    casper.start(defaultURL, function() {
-        test.assertTitle('SlamData', 'Title set properly');
-    }).run(function() {
-        test.done();
-    });
-});
-
 function onlyAddButton(test) {
     // For a fresh notebook we should not have anything stored.
     // Make sure we only have the add button.
@@ -117,6 +98,25 @@ function selectNotebook(n, test) {
     var className = casper.getElementAttribute(nthTab, 'class');
     test.assertMatch(className, /active/, 'Selected notebook ' + n)
 }
+
+casper.test.setUp(function(done) {
+    casper.start(defaultURL, function() {
+        casper.viewport(1280, 720);
+        casper.evaluate(function() {
+            localStorage.clear();
+        });
+    }).run(done);
+});
+
+casper.test.begin('SlamData layout is proper', 1, function(test) {
+    // This suite should ensure that the basic layout
+    // stays proper throughout any changes.
+    casper.start(defaultURL, function() {
+        test.assertTitle('SlamData', 'Title set properly');
+    }).run(function() {
+        test.done();
+    });
+});
 
 casper.test.begin('Basic Notebook Functionality', 15, function(test) {
     casper.start(defaultURL).then(function() {
