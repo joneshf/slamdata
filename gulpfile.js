@@ -117,12 +117,10 @@ var options = {
     },
     lib: {
         browser: {
-            codegen: 'SlamData.Browser',
             main: 'SlamData.Browser',
             output: 'slamdata-browser.js'
         },
         'node-webkit': {
-            codegen: 'SlamData.NodeWebkit',
             main: 'SlamData.NodeWebkit',
             output: 'slamdata-node-webkit.js'
         }
