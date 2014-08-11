@@ -26,6 +26,11 @@
     "purescript-node-buffer": "*",
     "purescript-node-events": "~0.0.5",
     "purescript-node-child-process": "~0.0.1",
-    "purescript-node-webkit": "~0.0.3"
+    "purescript-node-webkit": "~0.0.3",
+    "purescript-react": "joneshf/purescript-react#simplify"
+  },
+  "resolutions": {
+    "react": "~0.11.1",
+    "purescript-react": "*"
   }
 }

@@ -1,63 +1,63 @@
 module SlamData.Helpers where
 
-  import Control.Apply ((*>))
-  import Control.Monad.Eff
+--   import Control.Apply ((*>))
+--   import Control.Monad.Eff
 
-  import Data.Either
-  import Data.Foldable
-  import Data.Foreign
-  import Data.Function
-  import Data.Maybe
-  import Data.String
-  import Data.Tuple
+--   import Data.Either
+--   import Data.Foldable
+--   import Data.Foreign
+--   import Data.Function
+  import Data.Maybe (fromMaybe, Maybe())
+--   import Data.String
+--   import Data.Tuple
 
-  import React
+--   import React
 
   import SlamData.Types (Mounting(..), SDConfig(..), SEConfig(..))
 
-  import Text.Parsing.Parser (Parser(), ParserT())
-  import Text.Parsing.Parser.Combinators ((<?>), many, many1, optional, sepBy, try)
-  import Text.Parsing.Parser.String (char, satisfy, string)
+--   import Text.Parsing.Parser (Parser(), ParserT())
+--   import Text.Parsing.Parser.Combinators ((<?>), many, many1, optional, sepBy, try)
+--   import Text.Parsing.Parser.String (char, satisfy, string)
 
-  import qualified Browser.WebStorage as WS
-  import qualified Data.Array as A
+--   import qualified Browser.WebStorage as WS
+--   import qualified Data.Array as A
   import qualified Data.Map as M
-  import qualified Graphics.C3 as C3
-  import qualified React.DOM as D
+--   import qualified Graphics.C3 as C3
+--   import qualified React.DOM as D
 
-  -- Random purescript stuff.
+--   -- Random purescript stuff.
 
-  (..) :: Number -> Number -> [Number]
-  (..) = A.range
+--   (..) :: Number -> Number -> [Number]
+--   (..) = A.range
 
   getOrElse :: forall a. Maybe a -> a -> a
   getOrElse = flip fromMaybe
 
-  partition :: forall a. (a -> Boolean) -> [a] -> {fst :: [a], snd :: [a]}
-  partition p = foldr (select p) {fst: [], snd: []}
+--   partition :: forall a. (a -> Boolean) -> [a] -> {fst :: [a], snd :: [a]}
+--   partition p = foldr (select p) {fst: [], snd: []}
 
-  select :: forall a. (a -> Boolean) -> a -> {fst :: [a], snd :: [a]} -> {fst :: [a], snd :: [a]}
-  select p x o | p x = o{fst = x:o.fst}
-  select p x o       = o{snd = x:o.snd}
+--   select :: forall a. (a -> Boolean) -> a -> {fst :: [a], snd :: [a]} -> {fst :: [a], snd :: [a]}
+--   select p x o | p x = o{fst = x:o.fst}
+--   select p x o       = o{snd = x:o.snd}
 
-  guardMaybe :: forall a. Boolean -> Maybe a -> Maybe a
-  guardMaybe true  m = m
-  guardMaybe false _ = Nothing
+--   guardMaybe :: forall a. Boolean -> Maybe a -> Maybe a
+--   guardMaybe true  m = m
+--   guardMaybe false _ = Nothing
 
-  foreign import data Window :: *
-  foreign import data Location :: *
+--   foreign import data Window :: *
+--   foreign import data Location :: *
 
-  foreign import window :: Window
+--   foreign import window :: Window
 
-  foreign import location
-    "function location(win) {\
-    \  return win.location;\
-    \}" :: Window -> Location
+--   foreign import location
+--     "function location(win) {\
+--     \  return win.location;\
+--     \}" :: Window -> Location
 
-  foreign import search
-    "function search(loc) {\
-    \  return loc.search;\
-    \}" :: Location -> String
+--   foreign import search
+--     "function search(loc) {\
+--     \  return loc.search;\
+--     \}" :: Location -> String
 
   -- SlamData specific stuff.
 
@@ -91,195 +91,115 @@ module SlamData.Helpers where
   serverURI (SDConfig {server = {location = l, port = p}}) =
     l ++ ":" ++ show p
 
-  getServerURI :: QueryString -> String
-  getServerURI qs = fromMaybe defaultServerURI do
-    loc <- M.lookup "serverLocation" qs
-    port <- M.lookup "serverPort" qs
-    pure $ loc ++ ":" ++ port
+--   getServerURI :: QueryString -> String
+--   getServerURI qs = fromMaybe defaultServerURI do
+--     loc <- M.lookup "serverLocation" qs
+--     port <- M.lookup "serverPort" qs
+--     pure $ loc ++ ":" ++ port
 
-  foreign import parseInt :: Fn2 String Number Number
+--   foreign import parseInt :: Fn2 String Number Number
 
-  query2SDConfig :: QueryString -> SDConfig
-  query2SDConfig qs = fromMaybe defaultSDConfig do
-    loc <- M.lookup "serverLocation" qs
-    port <- M.lookup "serverPort" qs
-    java <- M.lookup "javaLocation" qs
-    pure $ SDConfig
-      { server: {location: loc, port: runFn2 parseInt port 10}
-      , nodeWebkit: {java: java}
-      }
+--   query2SDConfig :: QueryString -> SDConfig
+--   query2SDConfig qs = fromMaybe defaultSDConfig do
+--     loc <- M.lookup "serverLocation" qs
+--     port <- M.lookup "serverPort" qs
+--     java <- M.lookup "javaLocation" qs
+--     pure $ SDConfig
+--       { server: {location: loc, port: runFn2 parseInt port 10}
+--       , nodeWebkit: {java: java}
+--       }
 
-  query2SEConfig :: QueryString -> SEConfig
-  query2SEConfig qs = fromMaybe defaultSEConfig do
-    port <- M.lookup "sePort" qs
-    path <- M.lookup "seMountPath" qs
-    mongoURI <- M.lookup "seMongoURI" qs
-    database <- M.lookup "seDatabase" qs
-    pure $ SEConfig
-      { server: {port: runFn2 parseInt port 10}
-      , mountings: M.singleton path $ MountMongo
-         { connectionUri: mongoURI
-         , database: database
-         }
-      }
+--   query2SEConfig :: QueryString -> SEConfig
+--   query2SEConfig qs = fromMaybe defaultSEConfig do
+--     port <- M.lookup "sePort" qs
+--     path <- M.lookup "seMountPath" qs
+--     mongoURI <- M.lookup "seMongoURI" qs
+--     database <- M.lookup "seDatabase" qs
+--     pure $ SEConfig
+--       { server: {port: runFn2 parseInt port 10}
+--       , mountings: M.singleton path $ MountMongo
+--          { connectionUri: mongoURI
+--          , database: database
+--          }
+--       }
 
-  actionButton :: forall eff props state result i. (Icon i)
-               => { click :: EventHandlerContext eff props state result
-                  , icon :: i
-                  , tooltip :: Prim.String
-                  }
-               -> UI
-  actionButton props = D.li'
-    [D.a
-        [ D.className "tiny secondary button has-tooltip"
-        , D.onClick \_ -> props.click
-        , D.titleProp props.tooltip
-        , D.dataSet {tooltip: ""}
-        ]
-        [toUI props.icon]
-    ]
+--   actionButton :: forall eff props state result i. (Icon i)
+--                => { click :: EventHandlerContext eff props state result
+--                   , icon :: i
+--                   , tooltip :: Prim.String
+--                   }
+--                -> UI
+--   actionButton props = D.li'
+--     [D.a
+--         [ D.className "tiny secondary button has-tooltip"
+--         , D.onClick \_ -> props.click
+--         , D.titleProp props.tooltip
+--         , D.dataSet {tooltip: ""}
+--         ]
+--         [toUI props.icon]
+--     ]
 
-  -- At least we can try to catch spelling mistakes.
-  data LocalKey = Blocks
-                | Notebooks
-                | EvalSQLBlocks
+--   -- At least we can try to catch spelling mistakes.
+--   data LocalKey = Blocks
+--                 | Notebooks
+--                 | EvalSQLBlocks
 
-  instance eqLocalKey :: Eq LocalKey where
-    (==) Blocks        Blocks        = true
-    (==) Notebooks     Notebooks     = true
-    (==) EvalSQLBlocks EvalSQLBlocks = true
-    (==) _             _             = false
+--   instance eqLocalKey :: Eq LocalKey where
+--     (==) Blocks        Blocks        = true
+--     (==) Notebooks     Notebooks     = true
+--     (==) EvalSQLBlocks EvalSQLBlocks = true
+--     (==) _             _             = false
 
-    (/=) l l' = not (l == l')
+--     (/=) l l' = not (l == l')
 
-  instance showLocalKey :: Show LocalKey where
-    show Blocks    = "blocks"
-    show Notebooks = "notebooks"
-    show EvalSQLBlocks = "evalsqlblocks"
+--   instance showLocalKey :: Show LocalKey where
+--     show Blocks    = "blocks"
+--     show Notebooks = "notebooks"
+--     show EvalSQLBlocks = "evalsqlblocks"
 
-  localGet :: forall a. (ReadForeign a) => LocalKey -> [a]
-  localGet key =
-    maybe []
-          (parseJSON >>> either (const []) id)
-          (WS.getItem WS.localStorage $ show key)
+--   localGet :: forall a. (ReadForeign a) => LocalKey -> [a]
+--   localGet key =
+--     maybe []
+--           (parseJSON >>> either (const []) id)
+--           (WS.getItem WS.localStorage $ show key)
 
-  localSet :: forall a. (Show a) => LocalKey -> a -> WS.LocalStorage
-  localSet key val = WS.setItem WS.localStorage (show key) (show val)
+--   localSet :: forall a. (Show a) => LocalKey -> a -> WS.LocalStorage
+--   localSet key val = WS.setItem WS.localStorage (show key) (show val)
 
-  type VisualType = C3.C3Type
-  visualBar :: VisualType
-  visualBar = C3.Bar
-  visualLine :: VisualType
-  visualLine = C3.Line
-  visualPie :: VisualType
-  visualPie = C3.Pie
+--   type VisualType = C3.C3Type
+--   visualBar :: VisualType
+--   visualBar = C3.Bar
+--   visualLine :: VisualType
+--   visualLine = C3.Line
+--   visualPie :: VisualType
+--   visualPie = C3.Pie
 
-  type FileType = {name :: String, "type" :: String}
-  type FileSystemProps = {files :: [FileType]}
+--   -- | Foundation stuff.
+--   row :: [UI] -> UI
+--   row uis = D.div [D.className "row"] uis
 
-  -- | Foundation stuff.
-  row :: [UI] -> UI
-  row uis = D.div [D.className "row"] uis
+--   large :: String -> UI -> UI
+--   large size ui =
+--     D.div [D.className $ "large-" ++ size ++ " columns"] [ui]
 
-  large :: String -> UI -> UI
-  large size ui =
-    D.div [D.className $ "large-" ++ size ++ " columns"] [ui]
+--   -- | Parsing stuff
+--   type Query = Tuple String String
+--   type QueryString = M.Map String String
 
-  -- | Icon stuff.
+--   noneOf :: forall s m a. (Monad m) => [String] -> ParserT String m String
+--   noneOf ss = satisfy (flip notElem ss)
 
-  -- Let's try and make the icons easily replaceable.
-  -- Hopefully we can get it to the point where we can mix and match icons
-  -- from different sets.
-  class Icon i where
-    toUI :: i -> UI
+--   parseQueryString :: Parser String QueryString
+--   parseQueryString = do
+--     optional $ string "?"
+--     queries <- parseQuery `sepBy` string "&"
+--     pure $ M.fromList queries
 
-  data FAIcon = FAIcon UI
-  instance iconFA :: Icon FAIcon where
-    toUI (FAIcon ui) = ui
+--   parseQuery :: Parser String Query
+--   parseQuery = do
+--     key <- (joinWith "" >>> decodeURIComponent) <$> many1 (try $ noneOf ["="])
+--     string "="
+--     val <- (joinWith "" >>> decodeURIComponent) <$> many1 (try $ noneOf ["&"])
+--     pure $ Tuple key val
 
-  data EntypoIcon = EntypoIcon UI
-  instance iconEntypo :: Icon EntypoIcon where
-    toUI (EntypoIcon ui) = ui
-
-  faIcon :: String -> FAIcon
-  faIcon name = FAIcon $ D.i [D.className name] []
-  entypoIcon :: String -> EntypoIcon
-  entypoIcon name = EntypoIcon $ D.i [D.className name] []
-
-  closeIcon :: {} -> FAIcon
-  closeIcon {} = faIcon "fa fa-times"
-  -- Notebook
-  newIcon :: {} -> FAIcon
-  newIcon {} = faIcon "fa fa-file"
-  openIcon :: {} -> FAIcon
-  openIcon {} = faIcon "fa fa-folder-open"
-  saveIcon :: {} -> FAIcon
-  saveIcon {} = faIcon "fa fa-save"
-  publishIcon :: {} -> FAIcon
-  publishIcon {} = faIcon "fa fa-book"
-  -- Blocks
-  markdownIcon :: {} -> FAIcon
-  markdownIcon {} = faIcon "fa fa-file-text"
-  sqlIcon :: {} -> FAIcon
-  sqlIcon {} = faIcon "fa fa-database"
-  visualIcon :: {} -> FAIcon
-  visualIcon {} = faIcon "fa fa-bar-chart-o"
-  -- FileSystem
-  dirOpenIcon :: {} -> FAIcon
-  dirOpenIcon {} = faIcon "fa fa-folder-open-o"
-  dirClosedIcon :: {} -> FAIcon
-  dirClosedIcon {} = faIcon "fa fa-folder-o"
-  fileIcon :: {} -> FAIcon
-  fileIcon {} = faIcon "fa fa-file-o"
-  newNotebookIcon :: {} -> FAIcon
-  newNotebookIcon {} = faIcon "fa fa-plus"
-  loadingIcon :: {} -> FAIcon
-  loadingIcon {} = faIcon "fa fa-circle-o-notch fa-spin"
-
-  areaChartIcon :: {} -> EntypoIcon
-  areaChartIcon {} = entypoIcon "icon-chart-area"
-  barChartIcon :: {} -> EntypoIcon
-  barChartIcon {} = entypoIcon "icon-chart-bar"
-  lineChartIcon :: {} -> EntypoIcon
-  lineChartIcon {} = entypoIcon "icon-chart-line"
-  pieChartIcon :: {} -> EntypoIcon
-  pieChartIcon {} = entypoIcon "icon-chart-pie"
-
-  -- | Parsing stuff
-  type Query = Tuple String String
-  type QueryString = M.Map String String
-
-  noneOf :: forall s m a. (Monad m) => [String] -> ParserT String m String
-  noneOf ss = satisfy (flip notElem ss)
-
-  parseQueryString :: Parser String QueryString
-  parseQueryString = do
-    optional $ string "?"
-    queries <- parseQuery `sepBy` string "&"
-    pure $ M.fromList queries
-
-  parseQuery :: Parser String Query
-  parseQuery = do
-    key <- (joinWith "" >>> decodeURIComponent) <$> many1 (try $ noneOf ["="])
-    string "="
-    val <- (joinWith "" >>> decodeURIComponent) <$> many1 (try $ noneOf ["&"])
-    pure $ Tuple key val
-
-  foreign import decodeURIComponent :: String -> String
-
-  -- TODO: Move these to purescript-react.
-
-  type ReactStateRW state result =
-    Eff (r :: ReadStateEff state, w :: WriteStateEff state) result
-
-  type Component attrs values = { getDOMNode :: {} -> values | attrs }
-
-  foreign import getDOMNode
-    "function getDOMNode(x) {\
-    \  return x.getDOMNode();\
-    \}" :: forall attrs values. Component attrs values -> values
-
-  foreign import focus
-    "function focus(x) {\
-    \  return x.focus();\
-    \}" :: forall a b. a -> b
+--   foreign import decodeURIComponent :: String -> String

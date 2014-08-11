@@ -15,6 +15,9 @@ module SlamData.Lens where
   _mountingRec :: LensP Mounting MountingRec
   _mountingRec = lens (\(MountMongo rec) -> rec) (\_ rec -> MountMongo rec)
 
+  _fileTypeRec :: LensP FileType FileTypeRec
+  _fileTypeRec = lens (\(FileType rec) -> rec) (\_ rec -> FileType rec)
+
   _sdConfig :: forall a r. LensP {sdConfig :: a | r} a
   _sdConfig = lens (\o -> o.sdConfig) (\o x -> o{sdConfig = x})
 

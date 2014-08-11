@@ -1,37 +1,46 @@
-module SlamData.App (app) where
+module SlamData.App (app, AppProps(), AppState()) where
 
-  import Control.Monad.Eff
+  import Control.Monad.Eff (Eff())
 
-  import React
+  import DOM (DOM())
 
-  import SlamData.App.Menu
-  import SlamData.App.Workspace
-  import SlamData.Types (SaveSettings(), Settings())
+  import React (coerceThis, createClass, spec)
+  import React.Types(ComponentClass(), React(), ReactThis())
+
+  import SlamData.App.Menu (menu)
+  import SlamData.App.Workspace (workspace)
+  import SlamData.Types
+    ( FileType()
+    ,  SlamDataState()
+    ,  SlamDataCont()
+    ,  Settings()
+    )
 
   import qualified React.DOM as D
 
-  app :: forall eff
-      .  { settings :: Settings
-         , saveSettings :: SaveSettings eff
-         }
-      -> UI
-  app = mkUI spec {getInitialState = pure {settingsVisible: false}} $ do
-    state <- readState
-    props <- getProps
-    pure $ D.div'
-      [ menu {showSettings: deferred $ showSettings true}
-      , workspace { settings: props.settings
-                  , saveSettings: props.saveSettings
-                  , showSettings: state.settingsVisible
-                  , hideSettings: deferred $ showSettings false
-                  }
+  type AppProps eff =
+    { files :: [FileType]
+    , handler :: SlamDataCont (dom :: DOM, react :: React | eff)
+    , settings :: Settings
+    }
+  type AppState = {showSettings :: Boolean}
+
+  app :: forall eff. ComponentClass (AppProps eff) AppState
+  app = createClass spec
+    { displayName = "App"
+    , render = \this -> pure $ D.div {}
+      [ menu (showSettings $ coerceThis this)
+      , workspace
+        { files: this.props.files
+        , settings: this.props.settings
+        }
+        []
       ]
+    , getInitialState = \_ -> pure {showSettings: false}
+    }
 
-  type AppState = {settingsVisible :: Boolean}
-
-  showSettings :: forall eff props state result
-               .  Boolean
-               -> Eff (r :: ReadStateEff AppState, w :: WriteStateEff AppState | eff) AppState
-  showSettings bool = do
-    state <- readState
-    writeState state{settingsVisible = bool}
+  showSettings :: forall eff fields props state
+               .  ReactThis fields props {showSettings :: Boolean}
+               -> Boolean
+               -> Eff eff Unit
+  showSettings this bool = pure $ this.setState {showSettings: bool}

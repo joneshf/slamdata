@@ -2,6 +2,7 @@ module SlamData.Types where
 
   import Control.Monad.Eff (Eff(..))
   import Control.Monad.Identity (Identity(..))
+  import Control.Monad.Cont.Trans (ContT())
 
   import Data.Argonaut.Combinators
   import Data.Argonaut.Core
@@ -12,8 +13,6 @@ module SlamData.Types where
   import Data.Maybe (maybe, Maybe(..))
   import Data.Tuple (uncurry, Tuple(..))
   import Data.Traversable (sequence, traverse, Traversable)
-
-  import Node.FS (FS())
 
   import qualified Data.Map as M
 
@@ -41,7 +40,22 @@ module SlamData.Types where
     , database :: String
     }
 
-  type SaveSettings eff = Settings -> Eff (fs :: FS | eff) Unit
+  data SlamDataEvent = SaveSDConfig SDConfig
+                     | SaveSEConfig SEConfig
+                     | ReadFileSystem
+
+  type SlamDataCont eff = SlamDataEvent -> Eff eff Unit
+
+  type SaveSettings eff = Settings -> Eff eff Unit
+
+  type SlamDataState = {showSettings :: Boolean}
+
+  newtype FileType = FileType FileTypeRec
+  type FileTypeRec = {name :: String, "type" :: String}
+  type FileSystemProps = {files :: [FileType]}
+
+  newtype FileTypes = FileTypes FileTypesRec
+  type FileTypesRec = {children :: [FileType]}
 
   instance encodeSDConfig :: EncodeJson Identity Identity SDConfig where
     encodeJson (Identity (SDConfig sdConfig)) = Identity $
@@ -107,6 +121,24 @@ module SlamData.Types where
     decodeJson (Identity json) = maybe (Left "Couldn't decode.") Right $ do
       obj <- toObject json
       traverse decodeMaybe obj
+
+  instance decodeArray :: (DecodeJson Identity (Either String) a) => DecodeJson Identity (Either String) [a] where
+    decodeJson (Identity json) = maybe (Left "Couldn't decode.") Right $ do
+      obj <- toArray json
+      traverse decodeMaybe obj
+
+  instance decodeFileType :: DecodeJson Identity (Either String) FileType where
+    decodeJson (Identity json) = maybe (Left "Not a file type") Right $ do
+      obj <- toObject json
+      name <- M.lookup "name" obj >>= toString
+      ty <- M.lookup "type" obj >>= toString
+      pure $ FileType {name: name, "type": ty}
+
+  instance decodeFileTypes :: DecodeJson Identity (Either String) FileTypes where
+    decodeJson (Identity json) = maybe (Left "No FileTypes") Right $ do
+      obj <- toObject json
+      children <- M.lookup "children" obj >>= toArray >>= traverse decodeMaybe
+      pure $ FileTypes {children: children}
 
   -- Orphans
 

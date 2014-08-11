@@ -24,6 +24,16 @@
     <script src="bower_components/foundation/js/foundation/foundation.topbar.js"></script>
     <script src="js/slamdata.js"></script>
     <script type="text/javascript">
+        // Load up slamdata.
+        var settings = {
+            sdConfig: PS.SlamData_Helpers.defaultSDConfig,
+            seConfig: PS.SlamData_Helpers.defaultSEConfig
+        };
+        PS.Control_Monad_Cont_Trans.runContT(PS.SlamData.slamData(settings))(function(x) {
+            return function() {
+                console.log('you want me to work with: ', JSON.stringify(x, null, 4));
+            }
+        })();
         // We have to initialize any foundation stuff last.
         $(document).foundation();
     </script>

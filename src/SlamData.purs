@@ -7,16 +7,16 @@ module SlamData where
 
   import DOM (DOM())
 
-  import Node.FS (FS())
-
-  import React (renderToElementById, UI())
+  import React (renderComponentById)
+  import React.Types (React())
 
   import SlamData.App (app)
-  import SlamData.Types (SaveSettings(), Settings())
+  import SlamData.Types (SlamDataState(), SaveSettings(), Settings(), SlamDataEvent())
 
   slamData :: forall eff
            .  Settings
-           -> ContT Unit (Eff (fs :: FS, dom :: DOM | eff)) Settings
-  slamData settings = ContT \save -> do
-    renderToElementById "content" $ app {settings: settings, saveSettings: save}
+           -> ContT Unit (Eff (dom :: DOM, react :: React | eff)) SlamDataEvent
+  slamData settings = ContT \handler -> do
+    let component = app {files: [], handler: handler, settings: settings} []
+    renderComponentById component "content"
     pure unit

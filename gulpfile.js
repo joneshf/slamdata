@@ -4,8 +4,10 @@ var gulp = require('gulp')
   , bower = require('gulp-bower')
   , compass = require('gulp-compass')
   , concat = require('gulp-concat')
+  , connect = require('gulp-connect')
   , es = require('event-stream')
   , fs = require('fs')
+  , gutil = require('gulp-util')
   , nwBuilder = require('node-webkit-builder')
   , path = require('path')
   , purescript = require('gulp-purescript')
@@ -105,7 +107,13 @@ var options = {
     },
     compile: {
         externs: 'js/slamdata.e.purs',
+        modules: ['SlamData', 'SlamData.Helpers', 'Control.Monad.Cont.Trans'],
+        noMagicDo: true,
         output: 'slamdata.js'
+    },
+    connect: {
+        port: 8251,
+        livereload: true
     },
     copy: {
         browser: {
@@ -121,8 +129,9 @@ var options = {
             output: 'slamdata-browser.js'
         },
         'node-webkit': {
-            main: 'SlamData.NodeWebkit',
-            output: 'slamdata-node-webkit.js'
+            // main: 'SlamData.NodeWebkit',
+            output: 'slamdata-node-webkit.js',
+            noMagicDo: true
         }
     }
 }
@@ -145,7 +154,7 @@ function compileLib(target) {
     return function() {
         var psc = purescript.psc(options.lib[target]);
         psc.on('error', function(e) {
-            console.error(e.message);
+            gutil.log(e.message);
             psc.end();
         });
         return gulp.src(paths.lib[target].src)
@@ -227,16 +236,21 @@ gulp.task('compile', ['clean-compile'], function() {
     // https://github.com/gulpjs/gulp/issues/71
     var psc = purescript.psc(options.compile);
     psc.on('error', function(e) {
-        console.error(e.message);
+        gutil.log(e.message);
         psc.end();
     });
     return gulp.src(paths.src)
         .pipe(psc)
-        .pipe(gulp.dest(paths.dest));
+        .pipe(gulp.dest(paths.dest))
+        .pipe(connect.reload());
 });
 
 gulp.task('compile-browser', compileLib('browser'));
 gulp.task('compile-node-webkit', compileLib('node-webkit'));
+
+gulp.task('connect', function() {
+    return connect.server(options.connect);
+});
 
 gulp.task('sass', ['clean-sass'], function() {
     return gulp.src(paths.style)
@@ -245,7 +259,8 @@ gulp.task('sass', ['clean-sass'], function() {
             project: __dirname,
             sass: 'style'
         }))
-        .pipe(gulp.dest(paths.css));
+        .pipe(gulp.dest(paths.css))
+        .pipe(connect.reload());
 });
 
 gulp.task('slamengine-jar', function() {
@@ -298,7 +313,7 @@ gulp.task('dist-node-webkit', function() {
         winIco: 'imgs/slamdata.ico',
         version: '0.10.1'
     });
-    return nw.on('log', console.log).build();
+    return nw.on('log', gutil.log).build();
 });
 
 gulp.task('test-casperjs', function(done) {
@@ -313,7 +328,7 @@ gulp.task('build', sequence( ['clean-build', 'compile']
 gulp.task('default', sequence(['compile', 'sass']));
 gulp.task('dist', sequence(['build', 'clean-dist'], 'dist-node-webkit'));
 gulp.task('test', sequence('build', ['test-casperjs']));
-gulp.task('watch', function() {
+gulp.task('watch', ['connect'], function() {
     gulp.watch(paths.src, ['compile']);
     gulp.watch(paths.style, ['sass']);
 });

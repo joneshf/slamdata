@@ -9,7 +9,7 @@ var qs = require('querystring')
     , seDatabase: 'test'
     }
   , search = qs.stringify(config)
-  , index = './bin/browser/index.html'
+  , index = './index.html'
   , defaultURL = index + '?' + search
   , screenshotDir = 'test/screenshots'
   ;
