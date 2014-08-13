@@ -3,6 +3,7 @@ module SlamData.Types where
   import Control.Monad.Eff (Eff(..))
   import Control.Monad.Identity (Identity(..))
   import Control.Monad.Cont.Trans (ContT())
+  import Control.Reactive.Timer (Timer())
 
   import Data.Argonaut.Combinators
   import Data.Argonaut.Core
@@ -13,6 +14,12 @@ module SlamData.Types where
   import Data.Maybe (maybe, Maybe(..))
   import Data.Tuple (uncurry, Tuple(..))
   import Data.Traversable (sequence, traverse, Traversable)
+
+  import DOM (DOM())
+
+  import Node.Events (Event(..))
+
+  import React.Types (React())
 
   import qualified Data.Map as M
 
@@ -43,6 +50,10 @@ module SlamData.Types where
   data SlamDataEvent = SaveSDConfig SDConfig
                      | SaveSEConfig SEConfig
                      | ReadFileSystem
+                     | CreateNotebook
+
+  type SlamDataRequest eff =
+    SlamDataEvent -> Eff (dom :: DOM, react :: React, timer :: Timer | eff) Boolean
 
   type SlamDataCont eff = SlamDataEvent -> Eff eff Unit
 
@@ -150,3 +161,10 @@ module SlamData.Types where
   instance traversableMap :: (Ord k) => Traversable (M.Map k) where
     traverse f ms = foldr (\x acc -> M.union <$> x <*> acc) (pure M.empty) ((\fs -> uncurry M.singleton <$> fs) <$> (traverse f <$> M.toList ms))
     sequence = traverse id
+
+  requestEvent :: Event
+  requestEvent = Event "request"
+
+  responseEvent :: Event
+  responseEvent = Event "response"
+

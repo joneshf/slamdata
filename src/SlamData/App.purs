@@ -1,6 +1,7 @@
 module SlamData.App (app, AppProps(), AppState()) where
 
   import Control.Monad.Eff (Eff())
+  import Control.Reactive.Timer (Timer())
 
   import DOM (DOM())
 
@@ -11,16 +12,16 @@ module SlamData.App (app, AppProps(), AppState()) where
   import SlamData.App.Workspace (workspace)
   import SlamData.Types
     ( FileType()
-    ,  SlamDataState()
-    ,  SlamDataCont()
-    ,  Settings()
+    , SlamDataState()
+    , SlamDataRequest()
+    , Settings()
     )
 
   import qualified React.DOM as D
 
   type AppProps eff =
     { files :: [FileType]
-    , handler :: SlamDataCont (dom :: DOM, react :: React | eff)
+    , request :: SlamDataRequest eff
     , settings :: Settings
     }
   type AppState = {showSettings :: Boolean}
@@ -28,15 +29,17 @@ module SlamData.App (app, AppProps(), AppState()) where
   app :: forall eff. ComponentClass (AppProps eff) AppState
   app = createClass spec
     { displayName = "App"
+    , componentWillUnmount = \_ -> Debug.Trace.trace "Unmounting app"
+    , getInitialState = \_ -> pure {showSettings: false}
     , render = \this -> pure $ D.div {}
       [ menu (showSettings $ coerceThis this)
       , workspace
         { files: this.props.files
+        , request: this.props.request
         , settings: this.props.settings
         }
         []
       ]
-    , getInitialState = \_ -> pure {showSettings: false}
     }
 
   showSettings :: forall eff fields props state

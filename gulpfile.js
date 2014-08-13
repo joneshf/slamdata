@@ -108,7 +108,6 @@ var options = {
     compile: {
         externs: 'js/slamdata.e.purs',
         modules: ['SlamData', 'SlamData.Helpers', 'Control.Monad.Cont.Trans'],
-        noMagicDo: true,
         output: 'slamdata.js'
     },
     connect: {

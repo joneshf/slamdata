@@ -1,74 +1,45 @@
--- module SlamData.App.Workspace.Notebook (notebook) where
+module SlamData.App.Workspace.Notebook
+  ( NotebookProps()
+  , NotebookState()
+  , notebooks
+  ) where
 
---   import Control.Lens ((^.), (..))
---   import Control.Monad.Eff
+  import Control.Reactive.Timer (Timer())
 
---   import Data.Array
---   import Data.Either
---   import Data.Foldable
---   import Data.Foreign
---   import Data.Maybe
---   import Data.Maybe.Unsafe
---   import Data.String (joinWith)
---   import Data.UUID
+  import DOM (DOM())
 
---   import Network.Oboe
+  import React (createClass, spec)
+  import React.Types (Component(), ComponentClass(), React())
 
---   import React
+  import SlamData.Components (newNotebookIcon)
+  import SlamData.Types (FileType(), SlamDataRequest(), SlamDataEvent(..))
 
---   import SlamData.App.Notebook.Block
---   import SlamData.App.Notebook.Block.Common
---   import SlamData.App.Notebook.Block.Types
---   import SlamData.App.Notebook.Settings (settings, SettingsProps())
---   import SlamData.App.Notebook.Types
---   import SlamData.App.Panel
---   import SlamData.App.Panel.Tab
---   import SlamData.Helpers
---     ( actionButton
---     , getOrElse
---     , newNotebookIcon
---     , barChartIcon
---     , lineChartIcon
---     , localGet
---     , localSet
---     , pieChartIcon
---     , markdownIcon
---     , partition
---     , publishIcon
---     , saveIcon
---     , serverURI
---     , sqlIcon
---     , toUI
---     , visualBar
---     , visualIcon
---     , visualLine
---     , visualPie
---     , FileType()
---     , LocalKey(..)
---     , VisualType()
---     )
---   import SlamData.Lens
---   import SlamData.Types (SlamDataCont(), Settings())
+  import qualified React.DOM as D
 
---   import qualified React.DOM as D
---   import qualified Browser.WebStorage as WS
---   import qualified Data.Map as M
---   import qualified Data.Array.Unsafe as UA
+  foreign import undefined :: forall a. a
 
---   eqNotebooks :: [NotebookSpec] -> [NotebookSpec] -> Boolean
---   eqNotebooks xs ys = xs == ys
+  type NotebookProps eff =
+    { files :: [FileType]
+    , request :: SlamDataRequest eff
+    }
+  type NotebookState = {}
 
---   eqActive :: Maybe NotebookID -> Maybe NotebookID -> Boolean
---   eqActive x y = x == y
+  notebooks :: forall eff. ComponentClass (NotebookProps eff) NotebookState
+  notebooks = createClass spec
+    { displayName = "Notebooks"
+    , render = \this -> pure $ D.div {className: "slamdata-panel"}
+      [D.dl {className: "tabs"}
+        [createNotebookButton this.props.request]
+      ]
+    }
 
---   foreign import scu
---     "function scu(p, s) {\
---     \  return s.visualState.visible ||\
---     \         (this.state.visualState.visible !== s.visualState.visible) ||\
---     \         (!eqNotebooks(this.state.notebooks)(s.notebooks)) ||\
---     \         (!eqActive(this.state.active)(s.active)) ||\
---     \         (this.props.showSettings !== p.showSettings);\
---     \}" :: forall a. a
+  createNotebookButton :: forall eff. SlamDataRequest eff -> Component
+  createNotebookButton request = D.dd {className: "tab"}
+    [D.div {}
+      [D.a {id: "add-notebook", onClick: request CreateNotebook}
+        [newNotebookIcon]
+      ]
+    ]
 
 --   notebook :: forall eff props state result
 --            .  { files :: [FileType]

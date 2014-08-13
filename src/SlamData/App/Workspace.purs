@@ -18,27 +18,30 @@ module SlamData.App.Workspace (workspace, WorkspaceProps(), WorkspaceState()) wh
   import React.Types (Component(), ComponentClass(), React(), ReactThis())
 
   import SlamData.App.Workspace.FileSystem (filesystem)
---   import SlamData.App.Notebook (notebook)
+  import SlamData.App.Workspace.Notebook (notebooks)
   import SlamData.Helpers (getOrElse, serverURI)
   import SlamData.Lens (_mountings, _seConfigRec)
   import SlamData.Types
     ( FileType()
     , FileTypes(..)
     , Settings()
-    , SlamDataCont()
+    , SlamDataRequest()
     , SlamDataEvent(..)
     )
 
   import qualified Data.Map as M
   import qualified React.DOM as D
 
-  type WorkspaceProps =
+  foreign import stringify "function stringify(x) { return JSON.stringify(x, null, 4); }" :: forall a. a -> String
+
+  type WorkspaceProps eff =
     { files :: [FileType]
+    , request :: SlamDataRequest eff
     , settings :: Settings
     }
   type WorkspaceState = {files :: [FileType]}
 
-  workspace :: forall eff. ComponentClass WorkspaceProps WorkspaceState
+  workspace :: forall eff. ComponentClass (WorkspaceProps eff) WorkspaceState
   workspace = createClass spec
     { displayName = "Workspace"
     , componentDidMount = \this -> do
@@ -50,27 +53,30 @@ module SlamData.App.Workspace (workspace, WorkspaceProps(), WorkspaceState()) wh
       pure unit
     , getInitialState = \_ -> pure {files: [] :: [FileType]}
     , render = \this -> pure $ D.div {id: "workspace"}
-      [workspace' this.state.files]
+      [workspace' this.state.files this.props.request]
     }
 
   readFS :: forall eff fields
-         .  ReactThis (settings :: Settings | fields) WorkspaceProps WorkspaceState
+         .  ReactThis (settings :: Settings | fields) (WorkspaceProps eff) WorkspaceState
          -> String
          -> Eff (oboe :: OboeEff | eff) Unit
   readFS this url = do
     o <- oboeGet $ url
     done o \json -> do
-      let decoded = parseMaybe (stringify json) >>= decodeMaybe
-      let files = ((\(FileTypes fts) -> fts.children) <$> decoded) `getOrElse` []
-      pure $ this.setState {files: files}
+      -- let decoded = (parseMaybe (stringify json) >>= decodeMaybe) :: Maybe FileTypes
+      -- let files = ((\(FileTypes fts) -> fts.children) <$> decoded) `getOrElse` []
+      pure $ this.setState {files: (unsafeCoerce json).children}
     pure unit
 
-  foreign import stringify "function stringify(x) { return JSON.stringify(x, null, 4); }" :: forall a. a -> String
+  foreign import unsafeCoerce "function unsafeCoerce(x) { return x; }" :: forall a b. a -> b
 
-  workspace' :: [FileType] -> Component
-  workspace' files = D.div {className: "row", id: "main-row"}
+  workspace' :: forall eff
+             .  [FileType]
+             -> SlamDataRequest eff
+             -> Component
+  workspace' files request = D.div {className: "row", id: "main-row"}
     [ D.div {className: "small-5 medium-3 large-2 columns", id: "filesystem"}
       [filesystem files]
     , D.div {className: "small-7 medium-9 large-10 columns", id: "notebook"}
-      [D.rawText "notebooks"]
+      [notebooks {files: files, request: request} []]
     ]

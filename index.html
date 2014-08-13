@@ -22,6 +22,7 @@
     <script src="bower_components/fastclick/lib/fastclick.js"></script>
     <script src="bower_components/foundation/js/foundation/foundation.js"></script>
     <script src="bower_components/foundation/js/foundation/foundation.topbar.js"></script>
+    <script src="bower_components/tiny-emitter/dist/tinyemitter.js"></script>
     <script src="js/slamdata.js"></script>
     <script type="text/javascript">
         // Load up slamdata.
@@ -29,11 +30,13 @@
             sdConfig: PS.SlamData_Helpers.defaultSDConfig,
             seConfig: PS.SlamData_Helpers.defaultSEConfig
         };
-        PS.Control_Monad_Cont_Trans.runContT(PS.SlamData.slamData(settings))(function(x) {
-            return function() {
-                console.log('you want me to work with: ', JSON.stringify(x, null, 4));
-            }
-        })();
+        // Start up an emitter to pass down to slamdata.
+        var emitter = new TinyEmitter();
+        emitter.on(PS.SlamData_Types.requestEvent, function(data) {
+            console.log('you want me to do something with: ', JSON.stringify(data, null, 4));
+            emitter.emit(PS.SlamData_Types.responseEvent, "butts");
+        });
+        PS.SlamData.slamData(emitter)(settings)();
         // We have to initialize any foundation stuff last.
         $(document).foundation();
     </script>

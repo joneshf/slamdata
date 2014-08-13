@@ -50,6 +50,11 @@
     "purescript-node-fs": "*",
     "purescript-node-path": "~0.2.0",
     "purescript-react": "joneshf/purescript-react#simplify",
-    "purescript-timers": "~0.0.4"
+    "purescript-timers": "~0.0.4",
+    "purescript-node-events": "~0.0.5"
+  },
+  "devDependencies": {
+    "purescript-node-events": "~0.0.6",
+    "tiny-emitter": "~0.1.12"
   }
 }
