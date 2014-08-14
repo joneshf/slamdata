@@ -2,318 +2,400 @@ module SlamData.App.Workspace.Notebook.Settings
   ( settings
   , SettingsProps()
   , SettingsState()
+  , SettingsTab()
   ) where
 
---   import Control.Lens ((.~), (%~), (..), (^.), LensP())
---   import Control.Monad.Eff (Eff())
+  import Control.Lens ((.~), (%~), (..), (^.), LensP())
+  import Control.Bind ((=<<))
 
---   import Data.Function (runFn2, Fn2(), runFn3, Fn3())
---   import Data.Maybe (Maybe(..))
---   import Data.Tuple (Tuple(..))
+  import Data.Either (Either(..))
+  import Data.Tuple (Tuple(..))
 
---   import React
---     ( getProps
---     , mkUI
---     , readState
---     , spec
---     , writeState
---     , ReadProps()
---     , ReadPropsEff()
---     , ReadStateEff()
---     , UI()
---     , WriteStateEff()
---     )
+  import Global (readInt)
 
---   import SlamData.Helpers (defaultSEConfig, getOrElse)
---   import SlamData.Lens
---   import SlamData.Types
---     ( Mounting()
---     , SlamDataCont()
---     , Settings()
---     , SDConfig()
---     , SEConfig()
---     )
+  import React (coerceThis, createClass, eventHandler, spec)
+  import React.Types (Component(), ComponentClass(), Element(), ReactThis())
 
---   import qualified Data.Map as M
---   import qualified React.DOM as D
+  import SlamData.Lens
+    ( _connectionUri
+    , _database
+    , _java
+    , _location
+    , _mountings
+    , _mountingRec
+    , _mountingWrapper
+    , _nodeWebkit
+    , _port
+    , _sdConfig
+    , _sdConfigNodeWebkit
+    , _sdConfigRec
+    , _sdConfigServer
+    , _seConfig
+    , _seConfigRec
+    , _seConfigServer
+    , _server
+    , _settings
+    )
+  import SlamData.Types
+    ( Mounting(..)
+    , SDConfig()
+    , SDConfigNodeWebkitRec()
+    , SDConfigServerRec()
+    , SEConfig()
+    , SEConfigServerRec()
+    , SlamDataEventTy(..)
+    , SlamDataRequest(..)
+    , SlamDataState()
+    )
 
---   data SettingsTab = SlamDataTab
---                    | SlamEngineTab
-
---   instance eqSettingsTab :: Eq SettingsTab where
---     (==) SlamDataTab   SlamDataTab   = true
---     (==) SlamEngineTab SlamEngineTab = true
---     (==) _             _             = false
-
---     (/=) st            st'           = not (st == st')
-
---   instance showSettingsTab :: Show SettingsTab where
---     show SlamDataTab   = "SlamData"
---     show SlamEngineTab = "SlamEngine"
-
---   type SettingsProps eff props state =
---     { handle :: SlamDataCont eff
---     , settings :: Settings
---     }
-
---   type SettingsState =
---     { active :: SettingsTab
---     , settings :: Settings
---     }
-
---   foreign import undefined :: forall a. a
-
---   sdConfig :: forall a r r'. LensP {settings :: Settings | r} SDConfig
---   sdConfig = _settings.._sdConfig
-
---   seConfig :: forall a r r'. LensP {settings :: Settings | r} SEConfig
---   seConfig = _settings.._seConfig
-
---   sdServer :: forall r. LensP {settings :: Settings | r} {location :: String, port :: Number}
---   sdServer = sdConfig.._sdConfigRec.._server
-
---   seServer :: forall r. LensP {settings :: Settings | r} {port :: Number}
---   seServer = seConfig.._seConfigRec.._server
-
---   nodeWebkit :: forall r. LensP {settings :: Settings | r} {java :: String}
---   nodeWebkit = sdConfig.._sdConfigRec.._nodeWebkit
-
---   seMountings :: forall r. LensP {settings :: Settings | r} (M.Map String Mounting)
---   seMountings = seConfig.._seConfigRec.._mountings
-
-  import React (createClass, spec)
-  import React.Types (Component(), ComponentClass())
-
-  import SlamData.Types (SlamDataRequest(..), SlamDataState())
-
+  import qualified Data.Map as M
   import qualified React.DOM as D
 
   type SettingsProps eff =
     { request :: SlamDataRequest eff
     , state   :: SlamDataState
     }
-  type SettingsState = {}
+  type SettingsState =
+    { active   :: SettingsTab
+    , sdConfig :: SDConfig
+    , seConfig :: SEConfig
+    }
+
+  data SettingsTab = SlamDataTab
+                   | SlamEngineTab
+
+  instance eqSettingsTab :: Eq SettingsTab where
+    (==) SlamDataTab   SlamDataTab   = true
+    (==) SlamEngineTab SlamEngineTab = true
+    (==) _             _             = false
+
+    (/=) st            st'           = not (st == st')
+
+  instance showSettingsTab :: Show SettingsTab where
+    show SlamDataTab   = "SlamData"
+    show SlamEngineTab = "SlamEngine"
 
   settings :: forall eff. ComponentClass (SettingsProps eff) SettingsState
   settings = createClass spec
     { displayName = "Settings"
+    , getInitialState = \this -> pure
+      { active: SlamEngineTab
+      , sdConfig: this.props.state.settings.sdConfig
+      , seConfig: this.props.state.settings.seConfig
+      }
     , render = \this -> pure $ D.div {className: "vertical"}
-      [tabs, content]
+      [tabs $ coerceThis this, contents $ coerceThis this]
     }
 
-  tabs :: Component
-  tabs = D.div {className: "small-1 columns", id: "settings-category"}
+  tabs :: forall fields eff state
+       .  ReactThis fields (SettingsProps eff) SettingsState
+       -> Component
+  tabs this = D.div {className: "small-1 columns", id: "settings-category"}
     [D.dl {className: "tabs vertical"}
-      [slamEngineTab, slamDataTab]
+      [slamEngineTab this, slamDataTab this]
     ]
 
-  slamEngineTab :: Component
-  slamEngineTab = tab "SlamEngine"
+  slamEngineTab :: forall fields eff state
+                .  ReactThis fields (SettingsProps eff) SettingsState
+                -> Component
+  slamEngineTab = reifyTab SlamEngineTab
 
-  slamDataTab :: Component
-  slamDataTab = tab "SlamData"
+  slamDataTab :: forall fields eff state
+              .  ReactThis fields (SettingsProps eff) SettingsState
+              -> Component
+  slamDataTab = reifyTab SlamDataTab
 
-  tab :: String -> Component
-  tab name = D.dd {className: "tab"}
-    [D.a {id: "settings-" ++ name}
-      [D.rawText name]
+  reifyTab :: forall fields eff state
+           .  SettingsTab
+           -> ReactThis fields (SettingsProps eff) SettingsState
+           -> Component
+  reifyTab name this = D.dd {className: "tab" ++ activate name this.state.active}
+    [D.a {id: "settings-" ++ show name, onClick: \_ -> this.setState this.state{active = name}}
+      [D.rawText $ show name]
     ]
 
-  content :: Component
-  content = D.div {className: "small-11 columns", id: "settings-content"}
-    []
+  contents :: forall fields eff state
+           .  ReactThis fields (SettingsProps eff) SettingsState
+           -> Component
+  contents this = D.div {className: "small-11 columns", id: "settings-content"}
+    [D.div {className: "tabs-content vertical"}
+      [slamEngineContent this, slamDataContent this]
+    ]
 
---   settings :: forall eff props state. SettingsProps eff props state -> UI
---   settings = mkUI spec{getInitialState = initialState} do
---     props <- getProps
---     state <- readState
---     let mountings = M.toList $ state^.seConfig.._seConfigRec.._mountings
---     pure $ D.div
---       [D.className "vertical"]
---       [ D.div
---           [ D.className "small-1  columns"
---           , D.idProp "settings-category"
---           ]
---           [D.dl
---               [D.className "tabs vertical"]
---               [ D.dd
---                   [D.className $ "tab" ++ activate SlamEngineTab state.active]
---                   [D.a
---                       [ D.idProp $ "settings-" ++ show SlamEngineTab
---                       , D.onClick \_ -> writeState state{active = SlamEngineTab}
---                       ]
---                       [D.text $ show SlamEngineTab]
---                   ]
---               , D.dd
---                   [D.className $ "tab" ++ activate SlamDataTab state.active]
---                   [D.a
---                       [ D.idProp $ "settings-" ++ show SlamDataTab
---                       , D.onClick \_ -> writeState state{active = SlamDataTab}
---                       ]
---                       [D.text $ show SlamDataTab]
---                   ]
---               ]
---           ]
---       , D.div
---           [ D.className "small-11 columns"
---           , D.idProp "settings-content"
---           ]
---           [D.div
---               [D.className "tabs-content vertical"]
---               [ D.div
---                   [D.className $ "content" ++ activate SlamEngineTab state.active]
---                   [ D.h6' [D.text "Settings for the local instance of SlamEngine"]
---                   , D.form'
---                       [ D.fieldset'
---                           [ D.legend' [D.text "Server"]
---                           , D.div'
---                               [ D.label
---                                   [D.htmlFor "slamengine-port"]
---                                   [D.text "Port"]
---                               , D.input
---                                   [ D.name "slamengine-port"
---                                   , D.placeholder "8080"
---                                   , D.onChange \e -> do
---                                     let state' = state # seServer.._port .~ e.target.value
---                                     props.handle undefined
---                                     -- runFn2 wtfIsUpWithEvents writeState state'
---                                   , D.value $ show $ state^.seServer.._port
---                                   ]
---                                   []
---                               ]
---                           ]
---                       -- This fieldset should be a list of mountings,
---                       -- rather than just one.
---                       , D.fieldset'
---                           [ D.legend' [D.text "MongoDB mountings"]
---                           , D.div' $ mountings >>= \(Tuple path mounting) ->
---                               [ D.label
---                                   [D.htmlFor "mongodb-path"]
---                                   [D.text "Path"]
---                               , D.input
---                                   [ D.name "mongodb-path"
---                                   , D.placeholder "/"
---                                   , D.onChange \e -> do
---                                     let state' = state # seMountings%~ (M.delete path)
---                                     let state'' = state' # seMountings%~ (M.insert e.target.value mounting)
---                                     props.handle undefined
---                                     -- runFn2 wtfIsUpWithEvents writeState state''
---                                   , D.value path
---                                   ]
---                                   []
---                               , D.label
---                                   [D.htmlFor "mongodb-mongouri"]
---                                   [D.text "MongoUri"]
---                               , D.input
---                                   [ D.name "mongodb-mongouri"
---                                   , D.placeholder "mongodb://localhost:27017"
---                                   , D.onChange \e -> do
---                                     let state' = state # seMountings%~ (M.update (\m -> Just (m # _mountingRec.._connectionUri.~ e.target.value)) path)
---                                     props.handle undefined
---                                     -- runFn2 wtfIsUpWithEvents writeState state'
---                                   , D.value $ mounting^._mountingRec.._connectionUri
---                                   ]
---                                   []
---                               , D.label
---                                   [D.htmlFor "mongodb-database"]
---                                   [D.text "Database"]
---                               , D.input
---                                   [ D.name "mongodb-database"
---                                   , D.placeholder "test"
---                                   , D.onChange \e -> do
---                                     let state' = state # seMountings%~ (M.update (\m -> Just (m # _mountingRec.._database.~ e.target.value)) path)
---                                     props.handle undefined
---                                     -- runFn2 wtfIsUpWithEvents writeState state'
---                                   , D.value $ mounting^._mountingRec.._database
---                                   ]
---                                   []
---                               ]
---                           ]
---                       , D.fieldset'
---                           [ D.legend' [D.text "Java"]
---                           , D.div'
---                               [ D.label
---                                   [D.htmlFor "java-binary"]
---                                   [D.text "Binary"]
---                               , D.input
---                                   [ D.name "java-binary"
---                                   , D.placeholder "/usr/bin/java"
---                                   , D.onChange \e -> do
---                                     let state' = state # nodeWebkit.._java .~ e.target.value
---                                     props.handle undefined
---                                     -- runFn2 wtfIsUpWithEvents writeState state'
---                                   , D.value $ state^.nodeWebkit.._java
---                                   ]
---                                   []
---                               ]
---                           ]
---                       ]
---                   ]
---               , D.div
---                   [D.className $ "content" ++ activate SlamDataTab state.active]
---                   [ D.h6' [D.text "SlamEngine server to connect to"]
---                   , D.form'
---                       [D.fieldset'
---                           [ D.legend' [D.text "SlamEngine server"]
---                           , D.div'
---                               [ D.label
---                                   [D.htmlFor "server-location"]
---                                   [D.text "Location"]
---                               , D.input
---                                   [ D.name "server-location"
---                                   , D.placeholder "http://localhost"
---                                   , D.onChange \e -> do
---                                     let state' = state # sdServer.._location .~ e.target.value
---                                     props.handle undefined
---                                     -- runFn2 wtfIsUpWithEvents writeState state'
---                                   , D.value $ state^.sdServer.._location
---                                   ]
---                                   []
---                               ]
---                           , D.div'
---                               [ D.label
---                                   [D.htmlFor "server-port"]
---                                   [D.text "Post"]
---                               , D.input
---                                   [ D.name "server-port"
---                                   , D.placeholder "8080"
---                                   , D.onChange \e -> do
---                                     let state' = state # sdServer.._port .~ e.target.value
---                                     props.handle undefined
---                                     -- runFn2 wtfIsUpWithEvents writeState state'
---                                   , D.value $ show $ state^.sdServer.._port
---                                   ]
---                                   []
---                               ]
---                           ]
---                       ]
---                   ]
---               ]
---           ]
---       ]
+  slamEngineContent :: forall fields eff state
+                    .  ReactThis fields (SettingsProps eff) SettingsState
+                    -> Component
+  slamEngineContent = reifyContent SlamEngineTab
 
---   foreign import wtfIsUpWithEvents
---     "function wtfIsUpWithEvents(write, save, state) {\
---     \  write(state);\
---     \  save({sdConfig: state.settings.sdConfig, seConfig: state.settings.seConfig})();\
---     \  return function() {\
---     \    return state;\
---     \  };\
---     \}" :: forall state eff a b c. Fn2 a b c
---         -- .  Fn2 (state -> Eff (r :: ReadStateEff state, w :: WriteStateEff state | eff) state)
---         --        SettingsState
---         --        (Eff (r :: ReadStateEff state, w :: WriteStateEff state | eff) state)
+  slamDataContent :: forall fields eff state
+                  .  ReactThis fields (SettingsProps eff) SettingsState
+                  -> Component
+  slamDataContent = reifyContent SlamDataTab
 
---   foreign import parseInt :: Fn2 String Number Number
+  reifyContent :: forall fields eff state
+               .  SettingsTab
+               -> ReactThis fields (SettingsProps eff) SettingsState
+               -> Component
+  reifyContent SlamEngineTab this =
+    D.div {className: "content" ++ activate SlamEngineTab this.state.active}
+      [ D.h6 {} [D.rawText "Settings for the local instance of SlamEngine"]
+      , D.form {}
+        [ slamEngineServerSettings this
+        , slamEngineMountingsSettings this
+        , slamEngineJavaSettings this
+        , saveConfig this (Right this.state.seConfig)
+        ]
+      ]
+  reifyContent SlamDataTab this =
+    D.div {className: "content" ++ activate SlamDataTab this.state.active}
+      [ D.h6 {} [D.rawText "SlamEngine server to connect to"]
+      , D.form {}
+        [ slamDataServerSettings this
+        , saveConfig this (Left this.state.sdConfig)
+        ]
+      ]
 
---   -- Use the props to set up the state.
---   -- Anti-pattern or not, this is the only thing that makes sense.
---   initialState :: forall eff props state. ReadProps (SettingsProps eff props state) {} SettingsState
---   initialState = getProps >>= \props ->
---     pure { active: SlamEngineTab
---          , settings: props.settings
---          }
+  slamDataServerSettings :: forall fields eff state
+                         .  ReactThis fields (SettingsProps eff) SettingsState
+                         -> Component
+  slamDataServerSettings this = D.fieldset {}
+    [ D.legend {} [D.rawText "SlamEngine server"]
+    , slamDataServerLocation this
+    , slamDataServerPort this
+    ]
 
---   activate :: forall a. (Eq a) => a -> a -> String
---   activate x y | x == y = " active"
---   activate _ _          = ""
+  slamDataServerLocation :: forall fields eff state
+                         .  ReactThis fields (SettingsProps eff) SettingsState
+                         -> Component
+  slamDataServerLocation this = D.div {}
+    [ D.label {htmlFor: "server-location"} [D.rawText "Location"]
+    , D.input { name: "server-location"
+              , onChange: eventHandler this \this e -> pure $
+                this.setState (this.state # _sdServerLocation .~ value e.target)
+              , placeholder: "http://localhost"
+              , value: this.state^._sdServerLocation
+              }
+      []
+    ]
+
+  slamDataServerPort :: forall fields eff state
+                     .  ReactThis fields (SettingsProps eff) SettingsState
+                     -> Component
+  slamDataServerPort this = D.div {}
+    [ D.label {htmlFor: "server-port"} [D.rawText "Port"]
+    , D.input { name: "server-port"
+              , onChange: eventHandler this \this e -> pure $
+                this.setState (this.state # _sdServerPort .~ (readInt 10 $ value e.target))
+              , placeholder: "8080"
+              , value: this.state^._sdServerPort
+              }
+      []
+    ]
+
+  slamEngineServerSettings :: forall fields eff state
+                     .  ReactThis fields (SettingsProps eff) SettingsState
+                     -> Component
+  slamEngineServerSettings this = D.fieldset {}
+    [ D.legend {} [D.rawText "Server"]
+    , slamEngineServerPort this
+    ]
+
+  slamEngineMountingsSettings :: forall fields eff state
+                              .  ReactThis fields (SettingsProps eff) SettingsState
+                              -> Component
+  slamEngineMountingsSettings this = D.fieldset {}
+    (D.legend {} [D.rawText "MongoDB mountings"] : slamEngineMountings this)
+
+  slamEngineServerPort :: forall fields eff state
+                       .  ReactThis fields (SettingsProps eff) SettingsState
+                       -> Component
+  slamEngineServerPort this = D.div {}
+    [ D.label {htmlFor: "slamengine-port"} [D.rawText "Port"]
+    , D.input { name: "slamengine-port"
+              , onChange: eventHandler this \this e -> pure $
+                this.setState (this.state # _seServerPort .~ (readInt 10 $ value e.target))
+              , placeholder: "8080"
+              , value: this.state^._seServerPort
+              }
+      []
+    ]
+
+  slamEngineMountings :: forall fields eff state
+                      .  ReactThis fields (SettingsProps eff) SettingsState
+                      -> [Component]
+  slamEngineMountings this =
+     M.toList (this.state.seConfig^._seConfigRec.._mountings) >>= slamEngineMounting this
+
+  slamEngineMounting :: forall fields eff state
+                     .  ReactThis fields (SettingsProps eff) SettingsState
+                     -> Tuple String Mounting
+                     -> [Component]
+  slamEngineMounting this mounting =
+    (\m -> m this mounting) =<< [ slamEngineMountingPath
+                                , slamEngineMountingMongoDBMongoUri
+                                , slamEngineMountingMongoDBDatabse
+                                ]
+
+  slamEngineMountingPath :: forall fields eff state
+                         .  ReactThis fields (SettingsProps eff) SettingsState
+                         -> Tuple String Mounting
+                         -> [Component]
+  slamEngineMountingPath this (Tuple path mounting) =
+    [ D.label {htmlFor: "mongodb-path"} [D.rawText "Path"]
+    , D.input { name: "mongodb-path"
+              -- , onChange: eventHandler this \this e -> pure $
+              --   this.setState (this.state # _seServerPort .~ (readInt 10 $ value e.target))
+              , placeholder: "/"
+              , value: path
+              }
+      []
+    ]
+
+  slamEngineMountingMongoDBMongoUri :: forall fields eff state
+                                    .  ReactThis fields (SettingsProps eff) SettingsState
+                                    -> Tuple String Mounting
+                                    -> [Component]
+  slamEngineMountingMongoDBMongoUri this (Tuple path mounting) =
+    [ D.label {htmlFor: "mongodb-mongouri"} [D.rawText "MongoUri"]
+    , D.input { name: "mongodb-mongouri"
+              -- , onChange: eventHandler this \this e -> pure $
+              --   this.setState (this.state # _seServerPort .~ (readInt 10 $ value e.target))
+              , placeholder: "/"
+              , value: mounting^._mountingWrapper.._mountingRec.._connectionUri
+              }
+      []
+    ]
+
+  slamEngineMountingMongoDBDatabse :: forall fields eff state
+                                   .  ReactThis fields (SettingsProps eff) SettingsState
+                                   -> Tuple String Mounting
+                                   -> [Component]
+  slamEngineMountingMongoDBDatabse this (Tuple path mounting) =
+    [ D.label {htmlFor: "mongodb-mongouri"} [D.rawText "MongoUri"]
+    , D.input { name: "mongodb-mongouri"
+              -- , onChange: eventHandler this \this e -> pure $
+              --   this.setState (this.state # _seServerPort .~ (readInt 10 $ value e.target))
+              , placeholder: "/"
+              , value: mounting^._mountingWrapper.._mountingRec.._database
+              }
+      []
+    ]
+
+  slamEngineJavaSettings :: forall fields eff state
+                         .  ReactThis fields (SettingsProps eff) SettingsState
+                         -> Component
+  slamEngineJavaSettings this = D.fieldset {}
+    [ D.legend {} [D.rawText "Java"]
+    , slamEngineJavaBinary this
+    ]
+
+
+--D.fieldset'
+--  [ D.legend' [D.text "MongoDB mountings"]
+--  , D.div' $ mountings >>= \(Tuple path mounting) ->
+--      [ D.label
+--          [D.htmlFor "mongodb-path"]
+--          [D.text "Path"]
+--      , D.input
+--          [ D.name "mongodb-path"
+--          , D.placeholder "/"
+--          , D.onChange \e -> do
+--            let state' = state # seMountings%~ (M.delete path)
+--            let state'' = state' # seMountings%~ (M.insert e.target.value mounting)
+--            props.handle undefined
+--            -- runFn2 wtfIsUpWithEvents writeState state''
+--          , D.value path
+--          ]
+--          []
+--      , D.label
+--          [D.htmlFor "mongodb-mongouri"]
+--          [D.text "MongoUri"]
+--      , D.input
+--          [ D.name "mongodb-mongouri"
+--          , D.placeholder "mongodb://localhost:27017"
+--          , D.onChange \e -> do
+--            let state' = state # seMountings%~ (M.update (\m -> Just (m # _mountingRec.._connectionUri.~ e.target.value)) path)
+--            props.handle undefined
+--            -- runFn2 wtfIsUpWithEvents writeState state'
+--          , D.value $ mounting^._mountingRec.._connectionUri
+--          ]
+--          []
+--      , D.label
+--          [D.htmlFor "mongodb-database"]
+--          [D.text "Database"]
+--      , D.input
+--          [ D.name "mongodb-database"
+--          , D.placeholder "test"
+--          , D.onChange \e -> do
+--            let state' = state # seMountings%~ (M.update (\m -> Just (m # _mountingRec.._database.~ e.target.value)) path)
+--            props.handle undefined
+--            -- runFn2 wtfIsUpWithEvents writeState state'
+--          , D.value $ mounting^._mountingRec.._database
+--          ]
+--          []
+--      ]
+--  ]
+
+  slamEngineJavaBinary :: forall fields eff state
+                       .  ReactThis fields (SettingsProps eff) SettingsState
+                       -> Component
+  slamEngineJavaBinary this = D.div {}
+    [ D.label {htmlFor: "java-binary"} [D.rawText "Binary"]
+    , D.input { name: "java-binary"
+              , onChange: eventHandler this \this e -> pure $
+                this.setState (this.state # _sdJava .~ value e.target)
+              , placeholder: "/usr/bin/java"
+              , value: this.state^._sdJava
+              }
+      []
+    ]
+
+  saveConfig :: forall fields eff state
+             .  ReactThis fields (SettingsProps eff) SettingsState
+             -> Either SDConfig SEConfig
+             -> Component
+  saveConfig this (Left sdConfig) =
+    D.a { className: "tiny button"
+        , onClick: eventHandler this \this _ ->
+          this.props.request $ SaveSDConfig sdConfig
+        }
+      [D.rawText "Save"]
+  saveConfig this (Right seConfig) =
+    D.a { className: "tiny button"
+        , onClick: eventHandler this \this _ ->
+          this.props.request $ SaveSEConfig seConfig
+        }
+      [D.rawText "Save"]
+
+  activate :: SettingsTab -> SettingsTab -> String
+  activate tab active | tab == active = " active"
+  activate _   _                      = ""
+
+  foreign import value
+    "function value(el) {\
+    \  return el.value;\
+    \}" :: Element -> String
+
+  -- Lenses
+
+  _sdServer :: forall r. LensP {sdConfig :: SDConfig | r} SDConfigServerRec
+  _sdServer = _sdConfig.._sdConfigRec.._server.._sdConfigServer
+
+  _seServer :: forall r. LensP {seConfig :: SEConfig | r} SEConfigServerRec
+  _seServer = _seConfig.._seConfigRec.._server.._seConfigServer
+
+  _sdNodeWebkit :: forall r. LensP {sdConfig :: SDConfig | r} SDConfigNodeWebkitRec
+  _sdNodeWebkit = _sdConfig.._sdConfigRec.._nodeWebkit.._sdConfigNodeWebkit
+
+  _sdServerLocation :: forall r. LensP {sdConfig :: SDConfig | r} String
+  _sdServerLocation = _sdServer.._location
+
+  _sdServerPort :: forall r. LensP {sdConfig :: SDConfig | r} Number
+  _sdServerPort = _sdServer.._port
+
+  _sdJava :: forall r. LensP {sdConfig :: SDConfig | r} String
+  _sdJava = _sdNodeWebkit.._java
+
+  _seServerPort :: forall r. LensP {seConfig :: SEConfig | r} Number
+  _seServerPort = _seServer.._port
+

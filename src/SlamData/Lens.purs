@@ -8,22 +8,34 @@ module SlamData.Lens where
   import SlamData.Types.Workspace.FileSystem
 
   _sdConfigRec :: LensP SDConfig SDConfigRec
-  _sdConfigRec = lens (\(SDConfig rec) -> rec) (\_ rec -> SDConfig rec)
+  _sdConfigRec f (SDConfig rec) = SDConfig <$> f rec
 
   _seConfigRec :: LensP SEConfig SEConfigRec
-  _seConfigRec = lens (\(SEConfig rec) -> rec) (\_ rec -> SEConfig rec)
+  _seConfigRec f (SEConfig rec) = SEConfig <$> f rec
 
-  _mountingRec :: LensP Mounting MountingRec
-  _mountingRec = lens (\(MountMongo rec) -> rec) (\_ rec -> MountMongo rec)
+  _sdConfigServer :: LensP SDConfigServer SDConfigServerRec
+  _sdConfigServer f (SDConfigServer rec) = SDConfigServer <$> f rec
+
+  _sdConfigNodeWebkit :: LensP SDConfigNodeWebkit SDConfigNodeWebkitRec
+  _sdConfigNodeWebkit f (SDConfigNodeWebkit rec) = SDConfigNodeWebkit <$> f rec
+
+  _seConfigServer :: LensP SEConfigServer SEConfigServerRec
+  _seConfigServer f (SEConfigServer rec) = SEConfigServer <$> f rec
+
+  _mountingWrapper :: LensP Mounting MountingWrapper
+  _mountingWrapper f (MountMongo rec) = MountMongo <$> f rec
+
+  _mountingRec :: LensP MountingWrapper MountingRec
+  _mountingRec f (MountingWrapper rec) = MountingWrapper <$> f rec
 
   _fileTypeRec :: LensP FileType FileTypeRec
-  _fileTypeRec = lens (\(FileType rec) -> rec) (\_ rec -> FileType rec)
+  _fileTypeRec f (FileType rec) = FileType <$> f rec
 
   _sdConfig :: forall a r. LensP {sdConfig :: a | r} a
-  _sdConfig = lens (\o -> o.sdConfig) (\o x -> o{sdConfig = x})
+  _sdConfig f o@{sdConfig = sdc} = (\sdc' -> o{sdConfig = sdc'}) <$> f sdc
 
   _seConfig :: forall a r. LensP {seConfig :: a | r} a
-  _seConfig = lens (\o -> o.seConfig) (\o x -> o{seConfig = x})
+  _seConfig f o@{seConfig = sec} = (\sec' -> o{seConfig = sec'}) <$> f sec
 
   _server :: forall a r. LensP {server :: a | r} a
   _server = lens (\o -> o.server) (\o x -> o{server = x})

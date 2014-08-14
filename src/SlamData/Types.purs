@@ -47,12 +47,14 @@ module SlamData.Types where
     , nodeWebkit :: SDConfigNodeWebkit
     }
 
-  newtype SDConfigServer = SDConfigServer
+  newtype SDConfigServer = SDConfigServer SDConfigServerRec
+  type SDConfigServerRec =
     { location :: String
     , port :: Number
     }
 
-  newtype SDConfigNodeWebkit = SDConfigNodeWebkit
+  newtype SDConfigNodeWebkit = SDConfigNodeWebkit SDConfigNodeWebkitRec
+  type SDConfigNodeWebkitRec =
     { java :: String
     }
 
@@ -62,14 +64,16 @@ module SlamData.Types where
     , server    :: SEConfigServer
     }
 
-  newtype SEConfigServer = SEConfigServer
+  newtype SEConfigServer = SEConfigServer SEConfigServerRec
+  type SEConfigServerRec =
     { port :: Number
     }
 
   -- This should stay a data type for now,
   -- as we plan to have different types of mountings.
-  data Mounting = MountMongo MountingRec
-  newtype MountingRec = MountingRec
+  data Mounting = MountMongo MountingWrapper
+  newtype MountingWrapper = MountingWrapper MountingRec
+  type MountingRec =
     { connectionUri :: String
     , database      :: String
     }
@@ -156,8 +160,8 @@ module SlamData.Types where
       =  "mongodb" := encodeJson mounting
       ~> jsonEmptyObject
 
-  instance encodeMountingRec :: EncodeJson MountingRec where
-    encodeJson (MountingRec mounting)
+  instance encodeMountingRec :: EncodeJson MountingWrapper where
+    encodeJson (MountingWrapper mounting)
       =  "connectionUri" := encodeJson mounting.connectionUri
       ~> "database"      := encodeJson mounting.database
       ~> jsonEmptyObject
@@ -181,11 +185,11 @@ module SlamData.Types where
       mongodb <- M.lookup "mongodb" obj ?>>= "mongodb" >>= decodeJson
       pure $ MountMongo mongodb
 
-  instance decodeMountingRec :: DecodeJson MountingRec where
-    decodeJson json = toObject json ?>>= "MountingRec" >>= \obj -> do
+  instance decodeMountingRec :: DecodeJson MountingWrapper where
+    decodeJson json = toObject json ?>>= "MountingWrapper" >>= \obj -> do
       connectionUri <- M.lookup "connectionUri" obj ?>>= "connectionUri" >>= decodeJson
       database      <- M.lookup "database"      obj ?>>= "database"      >>= decodeJson
-      pure $ MountingRec {connectionUri: connectionUri, database: database}
+      pure $ MountingWrapper {connectionUri: connectionUri, database: database}
 
   -- Events
 

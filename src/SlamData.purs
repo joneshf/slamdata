@@ -1,4 +1,4 @@
-module SlamData where
+module SlamData (slamData) where
 
   import Control.Monad.Eff (Eff())
   import Control.Monad.Cont.Trans (ContT(..))

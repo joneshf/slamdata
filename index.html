@@ -48,6 +48,7 @@
         }
         emitter.on(types.requestEvent, function(request) {
             var newEvent = request.event;
+            // Mutation sucks.
             var newState = _.snapshot(request.state);
             if (jsTypes.isReadFileSystem(newEvent)) {
                 var fs = helpers.serverURI(state.settings.sdConfig) + '/metadata/fs/'
@@ -63,6 +64,7 @@
                 newState.showSettings = false;
                 respond(newState);
             } else {
+                // We can't do anything else, just pass it on back.
                 respond(newState);
             }
         });

@@ -15,7 +15,7 @@ module SlamData.Helpers where
 
   import SlamData.Types
     ( Mounting(..)
-    , MountingRec(..)
+    , MountingWrapper(..)
     , SDConfig(..)
     , SDConfigNodeWebkit(..)
     , SDConfigServer(..)
@@ -92,7 +92,7 @@ module SlamData.Helpers where
   defaultSEConfig = SEConfig
     { server: SEConfigServer {port: defaultServerPort}
     , mountings: M.singleton defaultMountPath $ MountMongo $
-        MountingRec { connectionUri: defaultMongoURI
+        MountingWrapper { connectionUri: defaultMongoURI
                     , database: defaultMongoDatabase
                     }
     }

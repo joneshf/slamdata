@@ -123,16 +123,17 @@ module SlamData.App.Workspace.Notebook
                -> Notebook
                -> Component
   reifyContent this (Notebook nb) | nb.ident == this.state.settingsId =
-    D.div {className: "content"}
+    D.div {className: "content" ++ maybeActive nb.ident this.state.active}
       [settings {request: this.props.request, state: this.props.state} []
       ]
-  reifyContent this (Notebook nb) = D.div {className: "content"}
-    [ D.div {className: "toolbar button-bar"}
-      []
-    , D.hr {} []
-    , D.div {className: "actual-content"}
-      []
-    ]
+  reifyContent this (Notebook nb) =
+    D.div {className: "content" ++ maybeActive nb.ident this.state.active}
+      [ D.div {className: "toolbar button-bar"}
+        []
+      , D.hr {} []
+      , D.div {className: "actual-content"}
+        []
+      ]
 
   maybeActive :: NotebookID -> Maybe NotebookID -> String
   maybeActive i (Just i') | i == i' = " active"
