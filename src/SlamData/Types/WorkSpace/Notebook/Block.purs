@@ -33,8 +33,17 @@ module SlamData.Types.Workspace.Notebook.Block where
                  | SQL
                  | Visual
 
+  instance eqBlock :: Eq Block where
+    (==) (Block b) (Block b') =
+      b.ident == b'.ident && b.content == b'.content
+    (/=) b b' = not (b == b')
+
   instance showBlock :: Show Block where
     show block = show $ encodeJson block
+
+  instance eqBlockID :: Eq BlockID where
+    (==) (BlockID i) (BlockID i') = i == i'
+    (/=) i i' = not (i == i')
 
   instance showBlockType :: Show BlockType where
     show Markdown = "Markdown"

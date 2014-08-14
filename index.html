@@ -19,6 +19,8 @@
 
     <script src="bower_components/react/react-with-addons.js"></script>
     <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/underscore/underscore.js"></script>
+    <script src="bower_components/underscore-contrib/underscore.object.builders.js"></script>
     <script src="bower_components/fastclick/lib/fastclick.js"></script>
     <script src="bower_components/foundation/js/foundation/foundation.js"></script>
     <script src="bower_components/foundation/js/foundation/foundation.topbar.js"></script>
@@ -46,7 +48,7 @@
         }
         emitter.on(types.requestEvent, function(request) {
             var newEvent = request.event;
-            var newState = request.state;
+            var newState = _.snapshot(request.state);
             if (jsTypes.isReadFileSystem(newEvent)) {
                 var fs = helpers.serverURI(state.settings.sdConfig) + '/metadata/fs/'
                 oboe(fs)

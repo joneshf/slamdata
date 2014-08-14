@@ -4,15 +4,18 @@ module SlamData.App.Workspace.Notebook
   , notebooks
   ) where
 
+  import Control.Monad.Eff (Eff())
   import Control.Reactive.Timer (Timer())
 
   import Data.Array (snoc)
+  import Data.Function (mkFn2, mkFn3)
+  import Data.Maybe (Maybe(..))
 
   import DOM (DOM())
 
   import Node.UUID (runUUID, v4)
 
-  import React (createClass, spec)
+  import React (coerceThis, createClass, eventHandler, spec)
   import React.Types (Component(), ComponentClass(), React(), This())
 
   import SlamData.App.Workspace.Notebook.Settings (settings)
@@ -33,16 +36,27 @@ module SlamData.App.Workspace.Notebook
     , state   :: SlamDataState
     }
   type NotebookState =
-    { settingsId :: NotebookID
+    { active     :: Maybe NotebookID
+    , settingsId :: NotebookID
     }
 
   notebooks :: forall eff. ComponentClass (NotebookProps eff) NotebookState
   notebooks = createClass spec
     { displayName = "Notebooks"
-    , getInitialState = \this -> pure {settingsId: NotebookID $ runUUID v4}
+    , shouldComponentUpdate = mkFn3 \this props state -> pure $
+      this.props.state.notebooks /= props.state.notebooks ||
+      -- this.props.state.settings /= props.state.settings ||
+      this.props.state.showSettings /= props.state.showSettings
+    , componentWillReceiveProps = mkFn2 \this props ->
+      if props.state.showSettings && not this.props.state.showSettings then
+        pure $ this.setState this.state{active = Just this.state.settingsId}
+      else
+        pure unit
+    , getInitialState = \this -> pure
+      {settingsId: NotebookID $ runUUID v4, active: Nothing :: Maybe NotebookID}
     , render = \this -> do
       let settings = if this.props.state.showSettings then [settingsTab this] else []
-      let tabs = reifyTabs this <$> this.props.state.notebooks ++ settings
+      let tabs = reifyTabs (coerceThis this) <$> this.props.state.notebooks ++ settings
       let tabs' = tabs `snoc` createNotebookButton this.props.request
       let content = reifyContent this <$> this.props.state.notebooks ++ settings
       pure $ D.div {className: "slamdata-panel"}
@@ -70,26 +84,34 @@ module SlamData.App.Workspace.Notebook
   reifyTabs :: forall fields eff props
             .  This ( state :: NotebookState
                     , props :: {request :: SlamDataRequest eff | props}
+                    , setState :: NotebookState -> Unit
                     | fields
                     )
             -> Notebook
             -> Component
   reifyTabs this (Notebook nb) | nb.ident == this.state.settingsId =
-    D.dd {className: "tab"}
-      [D.a {id: "notebook-Settings"}
+    D.dd {className: "tab" ++ maybeActive nb.ident this.state.active}
+      [D.a { id: "notebook-Settings"
+           , onClick: eventHandler this \this _ ->
+              pure $ this.setState this.state{active = Just nb.ident}
+           }
         [ D.rawText nb.name
         , D.i { className: "fa fa-times"
-              , onClick: this.props.request HideSettings
+              , onClick: eventHandler this \this _ -> do
+                pure $ this.setState this.state{active = Nothing}
+                this.props.request HideSettings
               }
           []
         ]
       ]
-  reifyTabs _ (Notebook nb) = D.dd {className: "tab"}
-    [D.a {}
-      [ D.rawText nb.name
-      , closeIcon
+  reifyTabs this (Notebook nb) =
+    D.dd {className: "tab" ++ maybeActive nb.ident this.state.active}
+      [D.a {onClick: eventHandler this \this _ ->
+              pure $ this.setState this.state {active = Just nb.ident}}
+        [ D.rawText nb.name
+        , closeIcon
+        ]
       ]
-    ]
 
   reifyContent :: forall fields eff props
                .  This ( state :: NotebookState
@@ -111,3 +133,7 @@ module SlamData.App.Workspace.Notebook
     , D.div {className: "actual-content"}
       []
     ]
+
+  maybeActive :: NotebookID -> Maybe NotebookID -> String
+  maybeActive i (Just i') | i == i' = " active"
+  maybeActive _ _                   = ""

@@ -31,6 +31,11 @@ module SlamData.Types.Workspace.Notebook where
     (==) (NotebookID i) (NotebookID i') = i == i'
     (/=) i i' = not (i == i')
 
+  instance eqNotebook :: Eq Notebook where
+    (==) (Notebook nb) (Notebook nb') =
+      nb.ident == nb'.ident && nb.blocks == nb'.blocks
+    (/=) nb nb' = not (nb == nb')
+
   instance decodeNotebook :: DecodeJson Notebook where
     decodeJson json = toObject json ?>>= "Notebook" >>= \obj -> do
       ident  <- M.lookup "ident"  obj ?>>= "ident"  >>= decodeJson

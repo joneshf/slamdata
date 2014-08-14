@@ -28,9 +28,12 @@ module SlamData.App.Workspace (workspace, WorkspaceProps(), WorkspaceState()) wh
   workspace :: forall eff. ComponentClass (WorkspaceProps eff) WorkspaceState
   workspace = createClass spec
     { displayName = "Workspace"
+    -- We need to use a method that has access to the current `this`
+    -- so we don't get caught with an old state.
+    , requestFS = \this -> this.props.request ReadFileSystem
     , componentDidMount = \this -> do
-      this.props.request ReadFileSystem
-      interval 5000 $ this.props.request ReadFileSystem
+      this.requestFS
+      interval 5000 $ this.requestFS -- Don't inline this!
       pure unit
     , render = \this -> pure $ D.div {id: "workspace"}
       [workspace' {request: this.props.request, state: this.props.state}]

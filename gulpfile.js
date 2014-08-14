@@ -238,7 +238,8 @@ gulp.task('browserify', ['compile', 'browserify-index'], function() {
         .require('./output/node_modules/SlamData.Types.JS', {expose: 'SlamData.Types.JS'})
         .bundle()
         .pipe(sourceStream('slamdata.js'))
-        .pipe(gulp.dest('js'));
+        .pipe(gulp.dest('js'))
+        .pipe(connect.reload());
 });
 
 gulp.task('browserify-index', function() {
@@ -261,8 +262,7 @@ gulp.task('compile', ['clean-compile'], function() {
     });
     return gulp.src(paths.src)
         .pipe(pscMake)
-        .pipe(gulp.dest(paths.dest))
-        .pipe(connect.reload());
+        .pipe(gulp.dest(paths.dest));
 });
 
 gulp.task('compile-browser', compileLib('browser'));
