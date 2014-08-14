@@ -83,6 +83,8 @@ module SlamData.Types where
                        | SaveSEConfig SEConfig
                        | ReadFileSystem
                        | CreateNotebook
+                       | ShowSettings
+                       | HideSettings
 
   type SlamDataRequest eff
     =  SlamDataEventTy

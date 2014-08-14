@@ -9,23 +9,23 @@ module SlamData.App.Menu (menu) where
   import React (createClass, eventHandler, spec)
   import React.Types (Component(), ComponentClass())
 
-  import SlamData.Types (SlamDataState())
+  import SlamData.Types (SlamDataEventTy(..), SlamDataRequest(), SlamDataState())
 
   import qualified React.DOM as D
 
-  type Command eff a = {name :: String, action :: Maybe (Unit -> Eff eff a)}
+  type Command eff a = {name :: String, action :: Maybe (Eff eff a)}
 
-  menu :: forall eff. (Boolean -> Eff eff Unit) -> Component
-  menu showSettings = D.nav
+  menu :: forall eff. SlamDataRequest eff -> Component
+  menu request = D.nav
     { className: "top-bar"
     , "data-options": "is_hover: false"
     , "data-topbar": true
     }
-    [menuBar showSettings]
+    [menuBar request]
 
-  menuBar :: forall eff. (Boolean -> Eff eff Unit) -> Component
-  menuBar showSettings = D.section {className: "top-bar-section"}
-    [ leftSide {extra: [divider]} [editMenu showSettings]
+  menuBar :: forall eff. SlamDataRequest eff -> Component
+  menuBar request = D.section {className: "top-bar-section"}
+    [ leftSide {extra: [divider]} [editMenu request]
     , rightSide {extra: []} [logo]
     ]
 
@@ -41,10 +41,10 @@ module SlamData.App.Menu (menu) where
       (intersperse divider this.props.children ++ this.props.extra)
     }
 
-  editMenu :: forall eff. (Boolean -> Eff eff Unit) -> Component
-  editMenu showSettings = menuButton
+  editMenu :: forall eff. SlamDataRequest eff -> Component
+  editMenu request = menuButton
     { name: "Edit"
-    , commands: [{name: "Settings", action: Just $ \_ -> showSettings true}]
+    , commands: [{name: "Settings", action: Just $ request ShowSettings}]
     }
     []
 

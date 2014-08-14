@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/slamdata/slamdata",
   "devDependencies": {
+    "browserify": "^5.10.0",
     "casperjs": "^1.1.0-beta3",
     "event-stream": "^3.1.5",
     "gulp": "^3.8.5",
@@ -35,6 +36,7 @@
     "node-webkit-builder": "^0.1.1",
     "npm": "^1.4.20",
     "rimraf": "^2.2.8",
-    "run-sequence": "^0.3.6"
+    "run-sequence": "^0.3.6",
+    "vinyl-source-stream": "^0.1.1"
   }
 }

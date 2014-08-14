@@ -17,7 +17,7 @@ module SlamData.App (app, AppProps(), AppState()) where
 
   type AppProps eff =
     { request :: SlamDataRequest eff
-    , state :: SlamDataState
+    , state   :: SlamDataState
     }
   type AppState = {showSettings :: Boolean}
 
@@ -26,7 +26,7 @@ module SlamData.App (app, AppProps(), AppState()) where
     { displayName = "App"
     , getInitialState = \_ -> pure {showSettings: false}
     , render = \this -> pure $ D.div {}
-      [ menu (showSettings $ coerceThis this)
+      [ menu this.props.request
       , workspace
         { request: this.props.request
         , state: this.props.state
@@ -34,9 +34,3 @@ module SlamData.App (app, AppProps(), AppState()) where
         []
       ]
     }
-
-  showSettings :: forall eff fields props state
-               .  ReactThis fields props {showSettings :: Boolean}
-               -> Boolean
-               -> Eff eff Unit
-  showSettings this bool = pure $ this.setState {showSettings: bool}

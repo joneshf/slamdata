@@ -25,9 +25,10 @@
     <script src="bower_components/tiny-emitter/dist/tinyemitter.js"></script>
     <script src="js/slamdata.js"></script>
     <script type="text/javascript">
-        var helpers = PS.SlamData_Helpers;
-        var jsTypes = PS.SlamData_Types_JS;
-        var types = PS.SlamData_Types;
+        var sd = require('SlamData');
+        var helpers = require('SlamData.Helpers');
+        var jsTypes = require('SlamData.Types.JS');
+        var types = require('SlamData.Types');
         // Load up slamdata.
         var state = {
             files: [],
@@ -35,7 +36,8 @@
             settings: {
                 sdConfig: helpers.defaultSDConfig,
                 seConfig: helpers.defaultSEConfig
-            }
+            },
+            showSettings: false
         };
         // Start up an emitter to pass down to slamdata.
         var emitter = new TinyEmitter();
@@ -43,19 +45,26 @@
             return emitter.emit(types.responseEvent, data);
         }
         emitter.on(types.requestEvent, function(request) {
-            if (jsTypes.isReadFileSystem(request.event)) {
+            var newEvent = request.event;
+            var newState = request.state;
+            if (jsTypes.isReadFileSystem(newEvent)) {
                 var fs = helpers.serverURI(state.settings.sdConfig) + '/metadata/fs/'
                 oboe(fs)
                     .done(function(files) {
-                        var state = request.state;
-                        state.files = files.children;
-                        respond(state);
+                        newState.files = files.children;
+                        respond(newState);
                     })
+            } else if (jsTypes.isShowSettings(newEvent)) {
+                newState.showSettings = true;
+                respond(newState);
+            } else if (jsTypes.isHideSettings(newEvent)) {
+                newState.showSettings = false;
+                respond(newState);
             } else {
-                respond(state);
+                respond(newState);
             }
         });
-        PS.SlamData.slamData(emitter)(state)();
+        require('SlamData').slamData(emitter)(state)();
         // We have to initialize any foundation stuff last.
         $(document).foundation();
     </script>

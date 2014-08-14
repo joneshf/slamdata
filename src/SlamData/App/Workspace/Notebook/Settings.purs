@@ -1,8 +1,8 @@
--- module SlamData.App.Workspace.Notebook.Settings
---   ( settings
---   , SettingsProps()
---   , SettingsTab()
---   ) where
+module SlamData.App.Workspace.Notebook.Settings
+  ( settings
+  , SettingsProps()
+  , SettingsState()
+  ) where
 
 --   import Control.Lens ((.~), (%~), (..), (^.), LensP())
 --   import Control.Monad.Eff (Eff())
@@ -80,6 +80,48 @@
 
 --   seMountings :: forall r. LensP {settings :: Settings | r} (M.Map String Mounting)
 --   seMountings = seConfig.._seConfigRec.._mountings
+
+  import React (createClass, spec)
+  import React.Types (Component(), ComponentClass())
+
+  import SlamData.Types (SlamDataRequest(..), SlamDataState())
+
+  import qualified React.DOM as D
+
+  type SettingsProps eff =
+    { request :: SlamDataRequest eff
+    , state   :: SlamDataState
+    }
+  type SettingsState = {}
+
+  settings :: forall eff. ComponentClass (SettingsProps eff) SettingsState
+  settings = createClass spec
+    { displayName = "Settings"
+    , render = \this -> pure $ D.div {className: "vertical"}
+      [tabs, content]
+    }
+
+  tabs :: Component
+  tabs = D.div {className: "small-1 columns", id: "settings-category"}
+    [D.dl {className: "tabs vertical"}
+      [slamEngineTab, slamDataTab]
+    ]
+
+  slamEngineTab :: Component
+  slamEngineTab = tab "SlamEngine"
+
+  slamDataTab :: Component
+  slamDataTab = tab "SlamData"
+
+  tab :: String -> Component
+  tab name = D.dd {className: "tab"}
+    [D.a {id: "settings-" ++ name}
+      [D.rawText name]
+    ]
+
+  content :: Component
+  content = D.div {className: "small-11 columns", id: "settings-content"}
+    []
 
 --   settings :: forall eff props state. SettingsProps eff props state -> UI
 --   settings = mkUI spec{getInitialState = initialState} do

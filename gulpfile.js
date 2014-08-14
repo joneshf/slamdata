@@ -2,6 +2,7 @@
 
 var gulp = require('gulp')
   , bower = require('gulp-bower')
+  , browserify = require('browserify')
   , compass = require('gulp-compass')
   , concat = require('gulp-concat')
   , connect = require('gulp-connect')
@@ -13,6 +14,7 @@ var gulp = require('gulp')
   , purescript = require('gulp-purescript')
   , rimraf = require('rimraf')
   , runSequence = require('run-sequence')
+  , sourceStream = require('vinyl-source-stream')
   , spawn = require('child_process').spawn
   , taskListing = require('gulp-task-listing')
   ;
@@ -106,13 +108,13 @@ var options = {
         js: 'slamdata.js',
     },
     compile: {
-        externs: 'js/slamdata.e.purs',
-        modules: [ 'SlamData'
-                 , 'SlamData.Types'
-                 , 'SlamData.Types.JS'
-                 , 'SlamData.Helpers'
-                 ],
-        output: 'slamdata.js'
+        // externs: 'js/slamdata.e.purs',
+        // modules: [ 'SlamData'
+        //          , 'SlamData.Types'
+        //          , 'SlamData.Types.JS'
+        //          , 'SlamData.Helpers'
+        //          ],
+        output: 'output/node_modules'
     },
     connect: {
         port: 8251,
@@ -228,6 +230,22 @@ function sequence () {
 gulp.task('bower-browser', bowerLib('browser'));
 gulp.task('bower-node-webkit', bowerLib('node-webkit'));
 
+gulp.task('browserify', ['compile', 'browserify-index'], function() {
+    return browserify('./output/index.js')
+        .require('./output/node_modules/SlamData', {expose: 'SlamData'})
+        .require('./output/node_modules/SlamData.Helpers', {expose: 'SlamData.Helpers'})
+        .require('./output/node_modules/SlamData.Types', {expose: 'SlamData.Types'})
+        .require('./output/node_modules/SlamData.Types.JS', {expose: 'SlamData.Types.JS'})
+        .bundle()
+        .pipe(sourceStream('slamdata.js'))
+        .pipe(gulp.dest('js'));
+});
+
+gulp.task('browserify-index', function() {
+    return gulp.src('index.js')
+        .pipe(gulp.dest('output'));
+});
+
 gulp.task('clean-build', clean('bin'));
 gulp.task('clean-compile', clean('js'));
 gulp.task('clean-dist', clean('dist'));
@@ -236,13 +254,13 @@ gulp.task('clean-sass', clean(paths.css));
 gulp.task('compile', ['clean-compile'], function() {
     // We need this hack for now until gulp does something about
     // https://github.com/gulpjs/gulp/issues/71
-    var psc = purescript.psc(options.compile);
-    psc.on('error', function(e) {
+    var pscMake = purescript.pscMake(options.compile);
+    pscMake.on('error', function(e) {
         gutil.log(e.message);
-        psc.end();
+        pscMake.end();
     });
     return gulp.src(paths.src)
-        .pipe(psc)
+        .pipe(pscMake)
         .pipe(gulp.dest(paths.dest))
         .pipe(connect.reload());
 });
@@ -324,14 +342,14 @@ gulp.task('test-casperjs', function(done) {
 });
 
 // Main tasks.
-gulp.task('build', sequence( ['clean-build', 'compile']
+gulp.task('build', sequence( ['clean-build', 'browserify']
                            , ['build-browser', 'build-node-webkit']
                            ));
-gulp.task('default', sequence(['compile', 'sass']));
+gulp.task('default', sequence(['browserify', 'sass']));
 gulp.task('dist', sequence(['build', 'clean-dist'], 'dist-node-webkit'));
 gulp.task('test', sequence('build', ['test-casperjs']));
 gulp.task('watch', ['connect'], function() {
-    gulp.watch(paths.src, ['compile']);
+    gulp.watch(paths.src, ['browserify']);
     gulp.watch(paths.style, ['sass']);
 });
 gulp.task('help', taskListing);

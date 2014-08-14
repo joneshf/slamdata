@@ -16,3 +16,9 @@ module SlamData.Types.JS where
   isCreateNotebook :: SlamDataEventTy -> Boolean
   isCreateNotebook CreateNotebook = true
   isCreateNotebook _              = false
+  isShowSettings :: SlamDataEventTy -> Boolean
+  isShowSettings ShowSettings = true
+  isShowSettings _            = false
+  isHideSettings :: SlamDataEventTy -> Boolean
+  isHideSettings HideSettings = true
+  isHideSettings _            = false
