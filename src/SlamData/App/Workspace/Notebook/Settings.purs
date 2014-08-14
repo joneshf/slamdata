@@ -9,6 +9,7 @@ module SlamData.App.Workspace.Notebook.Settings
   import Control.Bind ((=<<))
 
   import Data.Either (Either(..))
+  import Data.Maybe (Maybe(..))
   import Data.Tuple (Tuple(..))
 
   import Global (readInt)
@@ -243,8 +244,10 @@ module SlamData.App.Workspace.Notebook.Settings
   slamEngineMountingPath this (Tuple path mounting) =
     [ D.label {htmlFor: "mongodb-path"} [D.rawText "Path"]
     , D.input { name: "mongodb-path"
-              -- , onChange: eventHandler this \this e -> pure $
-              --   this.setState (this.state # _seServerPort .~ (readInt 10 $ value e.target))
+              , onChange: eventHandler this \this e -> do
+                let state' = this.state # _seMountings %~ (M.delete path)
+                let state'' = state' # _seMountings %~ (M.insert (value e.target) mounting)
+                pure $ this.setState state''
               , placeholder: "/"
               , value: path
               }
@@ -258,8 +261,9 @@ module SlamData.App.Workspace.Notebook.Settings
   slamEngineMountingMongoDBMongoUri this (Tuple path mounting) =
     [ D.label {htmlFor: "mongodb-mongouri"} [D.rawText "MongoUri"]
     , D.input { name: "mongodb-mongouri"
-              -- , onChange: eventHandler this \this e -> pure $
-              --   this.setState (this.state # _seServerPort .~ (readInt 10 $ value e.target))
+              , onChange: eventHandler this \this e -> do
+                let state' = this.state # _seMountings %~ (M.update (\m -> Just (m # _mountingWrapper.._mountingRec.._connectionUri .~ value e.target)) path)
+                pure $ this.setState state'
               , placeholder: "/"
               , value: mounting^._mountingWrapper.._mountingRec.._connectionUri
               }
@@ -273,8 +277,9 @@ module SlamData.App.Workspace.Notebook.Settings
   slamEngineMountingMongoDBDatabse this (Tuple path mounting) =
     [ D.label {htmlFor: "mongodb-mongouri"} [D.rawText "MongoUri"]
     , D.input { name: "mongodb-mongouri"
-              -- , onChange: eventHandler this \this e -> pure $
-              --   this.setState (this.state # _seServerPort .~ (readInt 10 $ value e.target))
+              , onChange: eventHandler this \this e -> do
+                let state' = this.state # _seMountings %~ (M.update (\m -> Just (m # _mountingWrapper.._mountingRec.._database .~ value e.target)) path)
+                pure $ this.setState state'
               , placeholder: "/"
               , value: mounting^._mountingWrapper.._mountingRec.._database
               }
@@ -288,53 +293,6 @@ module SlamData.App.Workspace.Notebook.Settings
     [ D.legend {} [D.rawText "Java"]
     , slamEngineJavaBinary this
     ]
-
-
---D.fieldset'
---  [ D.legend' [D.text "MongoDB mountings"]
---  , D.div' $ mountings >>= \(Tuple path mounting) ->
---      [ D.label
---          [D.htmlFor "mongodb-path"]
---          [D.text "Path"]
---      , D.input
---          [ D.name "mongodb-path"
---          , D.placeholder "/"
---          , D.onChange \e -> do
---            let state' = state # seMountings%~ (M.delete path)
---            let state'' = state' # seMountings%~ (M.insert e.target.value mounting)
---            props.handle undefined
---            -- runFn2 wtfIsUpWithEvents writeState state''
---          , D.value path
---          ]
---          []
---      , D.label
---          [D.htmlFor "mongodb-mongouri"]
---          [D.text "MongoUri"]
---      , D.input
---          [ D.name "mongodb-mongouri"
---          , D.placeholder "mongodb://localhost:27017"
---          , D.onChange \e -> do
---            let state' = state # seMountings%~ (M.update (\m -> Just (m # _mountingRec.._connectionUri.~ e.target.value)) path)
---            props.handle undefined
---            -- runFn2 wtfIsUpWithEvents writeState state'
---          , D.value $ mounting^._mountingRec.._connectionUri
---          ]
---          []
---      , D.label
---          [D.htmlFor "mongodb-database"]
---          [D.text "Database"]
---      , D.input
---          [ D.name "mongodb-database"
---          , D.placeholder "test"
---          , D.onChange \e -> do
---            let state' = state # seMountings%~ (M.update (\m -> Just (m # _mountingRec.._database.~ e.target.value)) path)
---            props.handle undefined
---            -- runFn2 wtfIsUpWithEvents writeState state'
---          , D.value $ mounting^._mountingRec.._database
---          ]
---          []
---      ]
---  ]
 
   slamEngineJavaBinary :: forall fields eff state
                        .  ReactThis fields (SettingsProps eff) SettingsState
@@ -399,3 +357,5 @@ module SlamData.App.Workspace.Notebook.Settings
   _seServerPort :: forall r. LensP {seConfig :: SEConfig | r} Number
   _seServerPort = _seServer.._port
 
+  _seMountings :: forall r. LensP {seConfig :: SEConfig | r} (M.Map String Mounting)
+  _seMountings = _seConfig.._seConfigRec.._mountings
