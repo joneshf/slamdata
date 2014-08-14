@@ -5,6 +5,7 @@ module SlamData.Lens where
   import Data.Maybe
 
   import SlamData.Types
+  import SlamData.Types.Workspace.FileSystem
 
   _sdConfigRec :: LensP SDConfig SDConfigRec
   _sdConfigRec = lens (\(SDConfig rec) -> rec) (\_ rec -> SDConfig rec)

@@ -31,7 +31,7 @@ module SlamData.NodeWebkit where
   import Node.ChildProcess (defaultSpawnOptions, spawn, ChildProcess(..), Stream())
   import Node.ChildProcess.Signal (sigterm)
   import Node.Encoding (Encoding(UTF8))
-  import Node.Events (on, Event(..), EventEff(), EventEmitter)
+  import Node.Events (emit, emitter, on, Event(..), EventEff(), EventEmitter)
   import Node.FS.Sync (writeTextFile)
   import Node.Path (join, FilePath())
   import Node.Webkit
@@ -48,7 +48,7 @@ module SlamData.NodeWebkit where
   import SlamData (slamData)
   import SlamData.Lens (_java, _nodeWebkit, _sdConfigRec)
   import SlamData.Helpers (defaultSDConfig, defaultSEConfig, getOrElse)
-  import SlamData.Types (SlamDataEvent(..))
+  import SlamData.Types (requestEvent, responseEvent, SlamDataEvent(..))
 
   foreign import platform "var platform = process.platform;" :: String
 
@@ -108,35 +108,37 @@ module SlamData.NodeWebkit where
   showError :: forall eff. Either Error Unit -> Eff (trace :: Trace | eff) Unit
   showError = either print pure
 
-  main' = do
+  main = do
     let sdConfig = parseConfig sdConfigFile `getOrElse` defaultSDConfig
     let seConfig = parseConfig seConfigFile `getOrElse` defaultSEConfig
     let java = sdConfig^._sdConfigRec.._nodeWebkit.._java
 
-    -- -- Start up SlamEngine.
-    -- ChildProcess se <- spawn java ["-jar", seJar, seConfigFile] defaultSpawnOptions
-    -- -- Log out things.
-    -- se.stdout # onData (mkFn1 \msg -> trace $ "stdout: " ++ msg)
-    -- se.stderr # onData (mkFn1 \msg -> trace $ "stderr: " ++ msg)
+    -- Start up SlamEngine.
+    ChildProcess se <- spawn java ["-jar", seJar, seConfigFile] defaultSpawnOptions
+    -- Log out things.
+    se.stdout # onData (mkFn1 \msg -> trace $ "stdout: " ++ msg)
+    se.stderr # onData (mkFn1 \msg -> trace $ "stderr: " ++ msg)
 
-    -- win <- nwWindow >>= get
-    -- -- Open links in the user's default method, e.g. in the browser.
-    -- win # onNewWinPolicy (mkFn3 \_ url policy -> do
-    --   nwShell >>= openExternal url
-    --   ignore policy)
+    win <- nwWindow >>= get
+    -- Open links in the user's default method, e.g. in the browser.
+    win # onNewWinPolicy (mkFn3 \_ url policy -> do
+      nwShell >>= openExternal url
+      ignore policy)
 
-    -- -- Cleanup after ourselves.
-    -- win # onClose (mkFn0 \_ -> do
-    --   pure $ runFn1 se.kill sigterm
-    --   closeWindow win
-    --   pure unit)
+    -- Cleanup after ourselves.
+    win # onClose (mkFn0 \_ -> do
+      pure $ runFn1 se.kill sigterm
+      closeWindow win
+      pure unit)
 
-    -- Pass down the config  to the web page.
-    runContT
-      (slamData {sdConfig: sdConfig, seConfig: seConfig})
-      \event -> case event of
-        SaveSDConfig sdC -> pure 3
-          -- writeTextFile UTF8 sdConfigFile (showConfig sdC) >>= showError
-        SaveSEConfig seC -> pure unit
-          -- writeTextFile UTF8 seConfigFile (showConfig seC) >>= showError
+    -- Make an emitter.
+    e <- emitter
+    e # on requestEvent (\event -> case event of
+      SaveSDConfig sdC ->
+        writeTextFile UTF8 sdConfigFile (showConfig sdC) >>= showError
+      SaveSEConfig seC ->
+        writeTextFile UTF8 seConfigFile (showConfig seC) >>= showError
+      _ -> (e # emit responseEvent "butts") >>= \_ -> trace "butts")
 
+    -- Start up SlamData.
+    slamData e {sdConfig: sdConfig, seConfig: seConfig}

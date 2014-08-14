@@ -25,18 +25,37 @@
     <script src="bower_components/tiny-emitter/dist/tinyemitter.js"></script>
     <script src="js/slamdata.js"></script>
     <script type="text/javascript">
+        var helpers = PS.SlamData_Helpers;
+        var jsTypes = PS.SlamData_Types_JS;
+        var types = PS.SlamData_Types;
         // Load up slamdata.
-        var settings = {
-            sdConfig: PS.SlamData_Helpers.defaultSDConfig,
-            seConfig: PS.SlamData_Helpers.defaultSEConfig
+        var state = {
+            files: [],
+            notebooks: [],
+            settings: {
+                sdConfig: helpers.defaultSDConfig,
+                seConfig: helpers.defaultSEConfig
+            }
         };
         // Start up an emitter to pass down to slamdata.
         var emitter = new TinyEmitter();
-        emitter.on(PS.SlamData_Types.requestEvent, function(data) {
-            console.log('you want me to do something with: ', JSON.stringify(data, null, 4));
-            emitter.emit(PS.SlamData_Types.responseEvent, "butts");
+        var respond = function(data) {
+            return emitter.emit(types.responseEvent, data);
+        }
+        emitter.on(types.requestEvent, function(request) {
+            if (jsTypes.isReadFileSystem(request.event)) {
+                var fs = helpers.serverURI(state.settings.sdConfig) + '/metadata/fs/'
+                oboe(fs)
+                    .done(function(files) {
+                        var state = request.state;
+                        state.files = files.children;
+                        respond(state);
+                    })
+            } else {
+                respond(state);
+            }
         });
-        PS.SlamData.slamData(emitter)(settings)();
+        PS.SlamData.slamData(emitter)(state)();
         // We have to initialize any foundation stuff last.
         $(document).foundation();
     </script>

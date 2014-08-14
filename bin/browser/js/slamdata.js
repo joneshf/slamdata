@@ -56341,6 +56341,9 @@ PS.Prelude = (function () {
     var $less$greater = function (dict) {
         return dict["<>"];
     };
+    var $less$less$less = function (dict) {
+        return dict["<<<"];
+    };
     var $less$times$greater = function (dict) {
         return dict["<*>"];
     };
@@ -56442,6 +56445,7 @@ PS.Prelude = (function () {
         ":": $colon, 
         "$": $dollar, 
         id: id, 
+        "<<<": $less$less$less, 
         flip: flip, 
         semigroupoidArr: semigroupoidArr, 
         categoryArr: categoryArr, 
@@ -56463,14 +56467,14 @@ PS.Data_Maybe = (function () {
     Just.create = function (value0) {
         return new Just(value0);
     };
-    var maybe = function (_147) {
-        return function (_148) {
-            return function (_149) {
-                if (_149 instanceof Nothing) {
-                    return _147;
+    var maybe = function (_155) {
+        return function (_156) {
+            return function (_157) {
+                if (_157 instanceof Nothing) {
+                    return _155;
                 };
-                if (_149 instanceof Just) {
-                    return _148(_149.value0);
+                if (_157 instanceof Just) {
+                    return _156(_157.value0);
                 };
                 throw new Error("Failed pattern match");
             };
@@ -56487,13 +56491,56 @@ PS.Data_Maybe = (function () {
     };
 })();
 var PS = PS || {};
+PS.Data_Function = (function () {
+    "use strict";
+    var Prelude = PS.Prelude;
+    function runFn3(fn) {  return function(a) {    return function(b) {      return function(c) {        return fn(a, b, c);      };    };  };};
+    return {
+        runFn3: runFn3
+    };
+})();
+var PS = PS || {};
+PS.Data_Const = (function () {
+    "use strict";
+    var Prelude = PS.Prelude;
+    function Const(value0) {
+        this.value0 = value0;
+    };
+    Const.create = function (value0) {
+        return new Const(value0);
+    };
+    var getConst = function (_191) {
+        return _191.value0;
+    };
+    var functorConst = function (_) {
+        return new Prelude.Functor(function (_197) {
+            return function (_198) {
+                return new Const(_198.value0);
+            };
+        });
+    };
+    return {
+        Const: Const, 
+        getConst: getConst, 
+        functorConst: functorConst
+    };
+})();
+var PS = PS || {};
 PS.Data_Array = (function () {
     "use strict";
     var Prelude = PS.Prelude;
+    var Data_Maybe = PS.Data_Maybe;
     function append (l1) {  return function (l2) {    return l1.concat(l2);  };};
     function map (f) {  return function (arr) {    var l = arr.length;    var result = new Array(l);    for (var i = 0; i < l; i++) {      result[i] = f(arr[i]);    }    return result;  };};
     var semigroupArray = function (_) {
         return new Prelude.Semigroup(append);
+    };
+    var head = function (_201) {
+        if (_201.length > 0) {
+            var _672 = _201.slice(1);
+            return new Data_Maybe.Just(_201[0]);
+        };
+        return Data_Maybe.Nothing.value;
     };
     var functorArray = function (_) {
         return new Prelude.Functor(map);
@@ -56501,6 +56548,7 @@ PS.Data_Array = (function () {
     return {
         append: append, 
         map: map, 
+        head: head, 
         functorArray: functorArray, 
         semigroupArray: semigroupArray
     };
@@ -56557,11 +56605,68 @@ PS.Control_Monad_Eff = (function () {
     };
 })();
 var PS = PS || {};
+PS.Control_Reactive_Timer = (function () {
+    "use strict";
+    var Prelude = PS.Prelude;
+    function interval(time){                        return function(fn){                           return function(){                             return window.setInterval(function(){          fn();                                      }, time);                                  };                                         };                                         };
+    return {
+        interval: interval
+    };
+})();
+var PS = PS || {};
+PS.Debug_Trace = (function () {
+    "use strict";
+    var Prelude = PS.Prelude;
+    function trace(s) {  return function() {    console.log(s);    return {};  };};
+    return {
+        trace: trace
+    };
+})();
+var PS = PS || {};
+PS.Node_Events = (function () {
+    "use strict";
+    var Prelude = PS.Prelude;
+    var Event = {
+        create: function (value) {
+            return value;
+        }
+    };
+    function EventEmitter() {
+
+    };
+    function Variadic() {
+
+    };
+    function emitterHelper2(__emitter) {  return function(__variadic) {    return function(method) {      return function(event) {        return function(cb) {          return function(emitter) {            return function() {              return emitter[method](event, function() {                return cb.apply(this, arguments)();              }.bind(this));            }          }        }      }    }  }};
+    function emit(__dict) {  return function(event) {    return function(arg) {      return function(emitter) {        return function() {          return emitter.emit(event, arg);        }      }    }  }};
+    var variadicArr = function (_) {
+        return new Variadic();
+    };
+    var on = function (__dict_EventEmitter_175) {
+        return function (__dict_Variadic_176) {
+            return emitterHelper2(__dict_EventEmitter_175)(__dict_Variadic_176)("on");
+        };
+    };
+    var eventEmitterEmitter = function (_) {
+        return new EventEmitter();
+    };
+    return {
+        Event: Event, 
+        Variadic: Variadic, 
+        EventEmitter: EventEmitter, 
+        emit: emit, 
+        on: on, 
+        eventEmitterEmitter: eventEmitterEmitter, 
+        variadicArr: variadicArr
+    };
+})();
+var PS = PS || {};
 PS.React = (function () {
     "use strict";
     var Prelude = PS.Prelude;
     var spec = {};;
-    function createClass(psSpec) {  var spec = {};  for (var fun in psSpec) {    if (psSpec.hasOwnProperty(fun)) {      (function(f) {        if (typeof psSpec[f] === 'function') {          spec[f] = function() {            return psSpec[f].apply(this, [this].concat([].slice.call(arguments)))() ;          }        } else {          spec[f] = psSpec[f];        }      })(fun);    }  }  return function(props) {    return function(children) {      return React.createClass(spec)(props, children);    }  }};
+    function coerceThis(t) {  return t;};
+    function createClass(psSpec) {  var spec = {};  for (var fun in psSpec) {    if (psSpec.hasOwnProperty(fun)) {      (function(f) {        if (typeof psSpec[f] === 'function') {          spec[f] = function() {            return psSpec[f].apply(this, [this].concat([].slice.call(arguments)))() ;          }        } else {          spec[f] = psSpec[f];        }      })(fun);    }  }  var Class = React.createClass(spec);  return function(props) {    return function(children) {      return Class(props, children);    }  }};
     function renderComponent(component) {  return function(element) {    return function() {      return React.renderComponent(component, element);    }  }};
     var renderComponentById = function (component) {
         return function (id) {
@@ -56572,6 +56677,7 @@ PS.React = (function () {
         renderComponentById: renderComponentById, 
         renderComponent: renderComponent, 
         createClass: createClass, 
+        coerceThis: coerceThis, 
         spec: spec, 
         document: document
     };
@@ -56587,6 +56693,11 @@ PS.React_DOM = (function () {
     var nav = dom("nav");
     var li = dom("li");
     var img = dom("img");
+    var i = dom("i");
+    var hr = dom("hr");
+    var dl = dom("dl");
+    var div = dom("div");
+    var dd = dom("dd");
     var a = dom("a");
     return {
         ul: ul, 
@@ -56594,9 +56705,34 @@ PS.React_DOM = (function () {
         nav: nav, 
         li: li, 
         img: img, 
+        i: i, 
+        hr: hr, 
+        dl: dl, 
+        div: div, 
+        dd: dd, 
         a: a, 
         rawText: rawText, 
         dom: dom
+    };
+})();
+var PS = PS || {};
+PS.SlamData_Components = (function () {
+    "use strict";
+    var Prelude = PS.Prelude;
+    var React_DOM = PS.React_DOM;
+    var icon = function (name) {
+        return React_DOM.i({
+            className: name
+        })([  ]);
+    };
+    var newNotebookIcon = icon("fa fa-plus");
+    var fileIcon = icon("fa fa-file-o");
+    var dirOpenIcon = icon("fa fa-folder-open-o");
+    return {
+        newNotebookIcon: newNotebookIcon, 
+        fileIcon: fileIcon, 
+        dirOpenIcon: dirOpenIcon, 
+        icon: icon
     };
 })();
 var PS = PS || {};
@@ -56610,9 +56746,9 @@ PS.Control_Monad_Cont_Trans = (function () {
     ContT.create = function (value0) {
         return new ContT(value0);
     };
-    var runContT = function (_369) {
-        return function (_370) {
-            return _369.value0(_370);
+    var runContT = function (_377) {
+        return function (_378) {
+            return _377.value0(_378);
         };
     };
     var withContT = function (f) {
@@ -56623,10 +56759,10 @@ PS.Control_Monad_Cont_Trans = (function () {
         };
     };
     var monadTransContT = function (_) {
-        return new Control_Monad_Trans.MonadTrans(function (__dict_Monad_169) {
+        return new Control_Monad_Trans.MonadTrans(function (__dict_Monad_180) {
             return function (m) {
                 return new ContT(function (k) {
-                    return Prelude[">>="](__dict_Monad_169["__superclass_Prelude.Bind_1"]({}))(m)(k);
+                    return Prelude[">>="](__dict_Monad_180["__superclass_Prelude.Bind_1"]({}))(m)(k);
                 });
             };
         });
@@ -56638,7 +56774,7 @@ PS.Control_Monad_Cont_Trans = (function () {
             });
         };
     };
-    var functorContT = function (__dict_Monad_171) {
+    var functorContT = function (__dict_Monad_182) {
         return new Prelude.Functor(function (f) {
             return function (m) {
                 return new ContT(function (k) {
@@ -56658,8 +56794,8 @@ PS.Control_Monad_Cont_Trans = (function () {
             }))(k);
         });
     };
-    var appluContT = function (__dict_Functor_173) {
-        return function (__dict_Monad_174) {
+    var appluContT = function (__dict_Functor_184) {
+        return function (__dict_Monad_185) {
             return new Prelude.Apply(function (f) {
                 return function (v) {
                     return new ContT(function (k) {
@@ -56671,11 +56807,11 @@ PS.Control_Monad_Cont_Trans = (function () {
                     });
                 };
             }, function (_) {
-                return functorContT(__dict_Monad_174);
+                return functorContT(__dict_Monad_185);
             });
         };
     };
-    var bindContT = function (__dict_Monad_172) {
+    var bindContT = function (__dict_Monad_183) {
         return new Prelude.Bind(function (m) {
             return function (k) {
                 return new ContT(function (k$prime) {
@@ -56685,13 +56821,13 @@ PS.Control_Monad_Cont_Trans = (function () {
                 });
             };
         }, function (_) {
-            return appluContT(((__dict_Monad_172["__superclass_Prelude.Applicative_0"]({}))["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(__dict_Monad_172);
+            return appluContT(((__dict_Monad_183["__superclass_Prelude.Applicative_0"]({}))["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(__dict_Monad_183);
         });
     };
-    var applicativeContT = function (__dict_Functor_175) {
-        return function (__dict_Monad_176) {
+    var applicativeContT = function (__dict_Functor_186) {
+        return function (__dict_Monad_187) {
             return new Prelude.Applicative(function (_) {
-                return appluContT(__dict_Functor_175)(__dict_Monad_176);
+                return appluContT(__dict_Functor_186)(__dict_Monad_187);
             }, function (a) {
                 return new ContT(function (k) {
                     return k(a);
@@ -56699,11 +56835,11 @@ PS.Control_Monad_Cont_Trans = (function () {
             });
         };
     };
-    var monadContT = function (__dict_Monad_170) {
+    var monadContT = function (__dict_Monad_181) {
         return new Prelude.Monad(function (_) {
-            return applicativeContT(((__dict_Monad_170["__superclass_Prelude.Applicative_0"]({}))["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(__dict_Monad_170);
+            return applicativeContT(((__dict_Monad_181["__superclass_Prelude.Applicative_0"]({}))["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(__dict_Monad_181);
         }, function (_) {
-            return bindContT(__dict_Monad_170);
+            return bindContT(__dict_Monad_181);
         });
     };
     return {
@@ -56723,6 +56859,8 @@ PS.Control_Monad_Cont_Trans = (function () {
 var PS = PS || {};
 PS.Data_Map = (function () {
     "use strict";
+    var Prelude = PS.Prelude;
+    var Data_Array = PS.Data_Array;
     function Leaf() {
 
     };
@@ -56771,8 +56909,69 @@ PS.Data_Map = (function () {
             return new Two(Leaf.value, k, v, Leaf.value);
         };
     };
+    var keys = function (_459) {
+        if (_459 instanceof Leaf) {
+            return [  ];
+        };
+        if (_459 instanceof Two) {
+            return Prelude["++"](Data_Array.semigroupArray({}))(keys(_459.value0))(Prelude["++"](Data_Array.semigroupArray({}))([ _459.value1 ])(keys(_459.value3)));
+        };
+        if (_459 instanceof Three) {
+            return Prelude["++"](Data_Array.semigroupArray({}))(keys(_459.value0))(Prelude["++"](Data_Array.semigroupArray({}))([ _459.value1 ])(Prelude["++"](Data_Array.semigroupArray({}))(keys(_459.value3))(Prelude["++"](Data_Array.semigroupArray({}))([ _459.value4 ])(keys(_459.value6)))));
+        };
+        throw new Error("Failed pattern match");
+    };
     return {
+        keys: keys, 
         singleton: singleton
+    };
+})();
+var PS = PS || {};
+PS.Control_Lens_Getter = (function () {
+    "use strict";
+    var Prelude = PS.Prelude;
+    var Data_Const = PS.Data_Const;
+    var $up$dot = function (s) {
+        return function (asa) {
+            return Data_Const.getConst(asa(Data_Const.Const.create)(s));
+        };
+    };
+    return {
+        "^.": $up$dot
+    };
+})();
+var PS = PS || {};
+PS.Control_Lens_Lens = (function () {
+    "use strict";
+    var Prelude = PS.Prelude;
+    var lens = function (s2a) {
+        return function (s2b2t) {
+            return function (__dict_Functor_439) {
+                return function (a2fb) {
+                    return function (s) {
+                        return Prelude["<$>"](__dict_Functor_439)(s2b2t(s))(a2fb(s2a(s)));
+                    };
+                };
+            };
+        };
+    };
+    return {
+        lens: lens
+    };
+})();
+var PS = PS || {};
+PS.Control_Lens = (function () {
+    "use strict";
+    var Prelude = PS.Prelude;
+    var Control_Lens_Getter = PS.Control_Lens_Getter;
+    var Control_Lens_Lens = PS.Control_Lens_Lens;
+    var $up$dot = Control_Lens_Getter["^."];
+    var $dot$dot = Prelude["<<<"];
+    var lens = Control_Lens_Lens.lens;
+    return {
+        lens: lens, 
+        "^.": $up$dot, 
+        "..": $dot$dot
     };
 })();
 var PS = PS || {};
@@ -56828,6 +57027,7 @@ var PS = PS || {};
 PS.SlamData_Types = (function () {
     "use strict";
     var Prelude = PS.Prelude;
+    var Node_Events = PS.Node_Events;
     var SDConfig = {
         create: function (value) {
             return value;
@@ -56844,10 +57044,38 @@ PS.SlamData_Types = (function () {
             return value;
         }
     };
+    function SaveSDConfig(value0) {
+        this.value0 = value0;
+    };
+    SaveSDConfig.create = function (value0) {
+        return new SaveSDConfig(value0);
+    };
+    function SaveSEConfig(value0) {
+        this.value0 = value0;
+    };
+    SaveSEConfig.create = function (value0) {
+        return new SaveSEConfig(value0);
+    };
+    function ReadFileSystem() {
+
+    };
+    ReadFileSystem.value = new ReadFileSystem();
+    function CreateNotebook() {
+
+    };
+    CreateNotebook.value = new CreateNotebook();
+    var responseEvent = "response";
+    var requestEvent = "request";
     return {
+        SaveSDConfig: SaveSDConfig, 
+        SaveSEConfig: SaveSEConfig, 
+        ReadFileSystem: ReadFileSystem, 
+        CreateNotebook: CreateNotebook, 
         MountMongo: MountMongo, 
         SEConfig: SEConfig, 
-        SDConfig: SDConfig
+        SDConfig: SDConfig, 
+        responseEvent: responseEvent, 
+        requestEvent: requestEvent
     };
 })();
 var PS = PS || {};
@@ -56867,17 +57095,17 @@ PS.SlamData_App_Menu = (function () {
         alt: "SlamData home page", 
         src: "imgs/slamdata-logo.png"
     })([  ]) ]) ]);
-    var intersperse = function (_603) {
-        return function (_604) {
-            if (_604.length === 0) {
+    var intersperse = function (_614) {
+        return function (_615) {
+            if (_615.length === 0) {
                 return [  ];
             };
-            if (_604.length === 1) {
-                return [ _604[0] ];
+            if (_615.length === 1) {
+                return [ _615[0] ];
             };
-            if (_604.length > 0) {
-                var _657 = _604.slice(1);
-                return Prelude[":"](_604[0])(Prelude[":"](_603)(intersperse(_603)(_657)));
+            if (_615.length > 0) {
+                var _692 = _615.slice(1);
+                return Prelude[":"](_615[0])(Prelude[":"](_614)(intersperse(_614)(_692)));
             };
             throw new Error("Failed pattern match");
         };
@@ -56887,48 +57115,46 @@ PS.SlamData_App_Menu = (function () {
     })([  ]);
     var menuSide = function (name) {
         return React.createClass((function () {
-            var _658 = {};
-            for (var _659 in React.spec) {
-                if (React.spec.hasOwnProperty(_659)) {
-                    _658[_659] = React.spec[_659];
+            var _693 = {};
+            for (var _694 in React.spec) {
+                if (React.spec.hasOwnProperty(_694)) {
+                    _693[_694] = React.spec[_694];
                 };
             };
-            _658.displayName = "MenuSide";
-            _658.render = function ($$this) {
+            _693.displayName = "MenuSide";
+            _693.render = function ($$this) {
                 return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.ul({
                     className: name
                 })(Prelude["++"](Data_Array.semigroupArray({}))(intersperse(divider)($$this.props.children))($$this.props.extra)));
             };
-            return _658;
+            return _693;
         })());
     };
     var leftSide = menuSide("left");
     var rightSide = menuSide("right");
-    var command = function (_602) {
-        if (_602.action instanceof Data_Maybe.Nothing) {
+    var command = function (_613) {
+        if (_613.action instanceof Data_Maybe.Nothing) {
             return React_DOM.li({})([ React_DOM.a({
-                id: "menu-command-" + _602.name
-            })([ React_DOM.rawText(_602.name) ]) ]);
+                id: "menu-command-" + _613.name
+            })([ React_DOM.rawText(_613.name) ]) ]);
         };
-        if (_602.action instanceof Data_Maybe.Just) {
+        if (_613.action instanceof Data_Maybe.Just) {
             return React_DOM.li({})([ React_DOM.a({
-                id: "menu-command-" + _602.name, 
-                onClick: function (_) {
-                    return _602.action.value0;
-                }
-            })([ React_DOM.rawText(_602.name) ]) ]);
+                id: "menu-command-" + _613.name, 
+                onClick: _613.action.value0
+            })([ React_DOM.rawText(_613.name) ]) ]);
         };
         throw new Error("Failed pattern match");
     };
     var menuButton = React.createClass((function () {
-        var _666 = {};
-        for (var _667 in React.spec) {
-            if (React.spec.hasOwnProperty(_667)) {
-                _666[_667] = React.spec[_667];
+        var _701 = {};
+        for (var _702 in React.spec) {
+            if (React.spec.hasOwnProperty(_702)) {
+                _701[_702] = React.spec[_702];
             };
         };
-        _666.displayName = "MenuButton";
-        _666.render = function ($$this) {
+        _701.displayName = "MenuButton";
+        _701.render = function ($$this) {
             return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.li({
                 className: "has-dropdown"
             })([ React_DOM.a({
@@ -56937,95 +57163,136 @@ PS.SlamData_App_Menu = (function () {
                 className: "dropdown"
             })(Prelude["<$>"](Data_Array.functorArray({}))(command)($$this.props.commands)) ]));
         };
-        return _666;
+        return _701;
     })());
-    var editMenu = function (state) {
+    var editMenu = function (showSettings) {
         return menuButton({
             name: "Edit", 
             commands: [ {
                 name: "Settings", 
-                action: Data_Maybe.Nothing.value
+                action: Data_Maybe.Just.create(function (_) {
+                    return showSettings(true);
+                })
             } ]
         })([  ]);
     };
-    var menuBar = function (state) {
+    var menuBar = function (showSettings) {
         return React_DOM.section({
             className: "top-bar-section"
         })([ leftSide({
             extra: [ divider ]
-        })([ editMenu(state) ]), rightSide({
+        })([ editMenu(showSettings) ]), rightSide({
             extra: [  ]
         })([ logo ]) ]);
     };
-    var menu = function (state) {
+    var menu = function (showSettings) {
         return React_DOM.nav({
-            className: "top-bar"
-        })([ menuBar(state) ]);
+            className: "top-bar", 
+            "data-options": "is_hover: false", 
+            "data-topbar": true
+        })([ menuBar(showSettings) ]);
     };
     return {
         menu: menu
     };
 })();
 var PS = PS || {};
-PS.SlamData_App = (function () {
+PS.SlamData_App_Workspace_FileSystem = (function () {
     "use strict";
     var Prelude = PS.Prelude;
-    var React = PS.React;
-    var Control_Monad_Eff = PS.Control_Monad_Eff;
-    var SlamData_App_Menu = PS.SlamData_App_Menu;
-    var app = React.createClass((function () {
-        var _668 = {};
-        for (var _669 in React.spec) {
-            if (React.spec.hasOwnProperty(_669)) {
-                _668[_669] = React.spec[_669];
-            };
+    var React_DOM = PS.React_DOM;
+    var SlamData_Components = PS.SlamData_Components;
+    var Data_Array = PS.Data_Array;
+    var SlamData_Types = PS.SlamData_Types;
+    var reify = function (_617) {
+        if (_617.type === "directory") {
+            return React_DOM.ul({})([ SlamData_Components.dirOpenIcon, React_DOM.rawText(_617.name) ]);
         };
-        _668.displayName = "App";
-        _668.render = function ($$this) {
-            return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_App_Menu.menu($$this.props.slamDataState));
+        if (_617.type === "file") {
+            return React_DOM.ul({})([ SlamData_Components.fileIcon, React_DOM.rawText(_617.name) ]);
         };
-        return _668;
-    })());
+        return React_DOM.ul({})([  ]);
+    };
+    var fsTab = React_DOM.dl({
+        className: "tabs", 
+        "data-tab": "true"
+    })([ React_DOM.dd({
+        className: "tab active"
+    })([ React_DOM.a({})([ React_DOM.rawText("FileSystem") ]) ]) ]);
+    var fsContent = function (files) {
+        return React_DOM.div({
+            className: "tabs-content"
+        })([ React_DOM.div({
+            className: "content active"
+        })([ React_DOM.div({
+            className: "toolbar button-bar"
+        })([ React_DOM.ul({
+            className: "button-group"
+        })([  ]), React_DOM.ul({
+            className: "button-group"
+        })([  ]) ]), React_DOM.hr({})([  ]), React_DOM.div({
+            className: "actual-content"
+        })(Prelude["<$>"](Data_Array.functorArray({}))(function (_616) {
+            return reify(_616);
+        })(files)) ]) ]);
+    };
+    var filesystem = function (files) {
+        return React_DOM.div({
+            className: "slamdata-panel"
+        })([ fsTab, fsContent(files) ]);
+    };
     return {
-        app: app
+        filesystem: filesystem
     };
 })();
 var PS = PS || {};
-PS.SlamData = (function () {
+PS.SlamData_App_Workspace_Notebook = (function () {
     "use strict";
     var Prelude = PS.Prelude;
-    var Control_Monad_Cont_Trans = PS.Control_Monad_Cont_Trans;
-    var SlamData_App = PS.SlamData_App;
-    var Control_Monad_Eff = PS.Control_Monad_Eff;
+    var React_DOM = PS.React_DOM;
+    var SlamData_Types = PS.SlamData_Types;
+    var SlamData_Components = PS.SlamData_Components;
     var React = PS.React;
-    var state = {
-        showSettings: false
+    var Control_Monad_Eff = PS.Control_Monad_Eff;
+    var createNotebookButton = function (request) {
+        return React_DOM.dd({
+            className: "tab"
+        })([ React_DOM.div({})([ React_DOM.a({
+            id: "add-notebook", 
+            onClick: request(SlamData_Types.CreateNotebook.value)
+        })([ SlamData_Components.newNotebookIcon ]) ]) ]);
     };
-    var slamData = function (settings) {
-        return new Control_Monad_Cont_Trans.ContT(function (handler) {
-            var component = SlamData_App.app({
-                slamDataState: state, 
-                handler: handler, 
-                settings: settings
-            })([  ]);
-            return function __do() {
-                React.renderComponentById(component)("content")();
-                return Prelude.unit;
+    var notebooks = React.createClass((function () {
+        var _709 = {};
+        for (var _710 in React.spec) {
+            if (React.spec.hasOwnProperty(_710)) {
+                _709[_710] = React.spec[_710];
             };
-        });
-    };
+        };
+        _709.displayName = "Notebooks";
+        _709.render = function ($$this) {
+            return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div({
+                className: "slamdata-panel"
+            })([ React_DOM.dl({
+                className: "tabs"
+            })([ createNotebookButton($$this.props.request) ]) ]));
+        };
+        return _709;
+    })());
     return {
-        state: state, 
-        slamData: slamData
+        notebooks: notebooks
     };
 })();
 var PS = PS || {};
 PS.SlamData_Helpers = (function () {
     "use strict";
     var Prelude = PS.Prelude;
-    var Data_Maybe = PS.Data_Maybe;
     var SlamData_Types = PS.SlamData_Types;
+    var Data_Maybe = PS.Data_Maybe;
     var Data_Map = PS.Data_Map;
+    var serverURI = function (_618) {
+        return _618.server.location + ":" + Prelude.show(Prelude.showNumber({}))(_618.server.port);
+    };
     var getOrElse = Prelude.flip(Data_Maybe.fromMaybe);
     var defaultServerPort = 8080;
     var defaultServerLocation = "http://localhost";
@@ -57052,6 +57319,7 @@ PS.SlamData_Helpers = (function () {
         }))
     };
     return {
+        serverURI: serverURI, 
         defaultSEConfig: defaultSEConfig, 
         defaultSDConfig: defaultSDConfig, 
         defaultServerURI: defaultServerURI, 
@@ -57061,5 +57329,443 @@ PS.SlamData_Helpers = (function () {
         defaultServerPort: defaultServerPort, 
         defaultServerLocation: defaultServerLocation, 
         getOrElse: getOrElse
+    };
+})();
+var PS = PS || {};
+PS.SlamData_Lens = (function () {
+    "use strict";
+    var Prelude = PS.Prelude;
+    var Control_Lens = PS.Control_Lens;
+    var SlamData_Types = PS.SlamData_Types;
+    var _seConfigRec = function (__dict_Functor_546) {
+        return Control_Lens.lens(function (_620) {
+            return _620;
+        })(function (_) {
+            return function (rec) {
+                return rec;
+            };
+        })(__dict_Functor_546);
+    };
+    var _mountings = function (__dict_Functor_552) {
+        return Control_Lens.lens(function (o) {
+            return o.mountings;
+        })(function (o) {
+            return function (x) {
+                var _716 = {};
+                for (var _717 in o) {
+                    if (o.hasOwnProperty(_717)) {
+                        _716[_717] = o[_717];
+                    };
+                };
+                _716.mountings = x;
+                return _716;
+            };
+        })(__dict_Functor_552);
+    };
+    return {
+        _mountings: _mountings, 
+        _seConfigRec: _seConfigRec
+    };
+})();
+var PS = PS || {};
+PS.Network_HTTP = (function () {
+    "use strict";
+    var Prelude = PS.Prelude;
+    function DELETE() {
+
+    };
+    DELETE.value = new DELETE();
+    function GET() {
+
+    };
+    GET.value = new GET();
+    function HEAD() {
+
+    };
+    HEAD.value = new HEAD();
+    function OPTIONS() {
+
+    };
+    OPTIONS.value = new OPTIONS();
+    function PATCH() {
+
+    };
+    PATCH.value = new PATCH();
+    function POST() {
+
+    };
+    POST.value = new POST();
+    function PUT() {
+
+    };
+    PUT.value = new PUT();
+    var showHeaderHead = function (_) {
+        return new Prelude.Show(function (_645) {
+            if (_645 instanceof Accept) {
+                return "Accept";
+            };
+            if (_645 instanceof AcceptCharset) {
+                return "Accept-Charset";
+            };
+            if (_645 instanceof AcceptEncoding) {
+                return "Accept-Encoding";
+            };
+            if (_645 instanceof AcceptLanguage) {
+                return "Accept-Language";
+            };
+            if (_645 instanceof Allow) {
+                return "Allow";
+            };
+            if (_645 instanceof Authorization) {
+                return "Authorization";
+            };
+            if (_645 instanceof CacheControl) {
+                return "Cache-Control";
+            };
+            if (_645 instanceof Connection) {
+                return "Connection";
+            };
+            if (_645 instanceof ContentEncoding) {
+                return "Content-Encoding";
+            };
+            if (_645 instanceof ContentLanguage) {
+                return "Content-Language";
+            };
+            if (_645 instanceof ContentLength) {
+                return "Content-Length";
+            };
+            if (_645 instanceof ContentLocation) {
+                return "Content-Location";
+            };
+            if (_645 instanceof ContentMD5) {
+                return "Content-MD5";
+            };
+            if (_645 instanceof ContentRange) {
+                return "Content-Range";
+            };
+            if (_645 instanceof ContentType) {
+                return "Content-Type";
+            };
+            if (_645 instanceof Date) {
+                return "Date";
+            };
+            if (_645 instanceof Expect) {
+                return "Expect";
+            };
+            if (_645 instanceof Expires) {
+                return "Expires";
+            };
+            if (_645 instanceof From) {
+                return "From";
+            };
+            if (_645 instanceof Host) {
+                return "Host";
+            };
+            if (_645 instanceof IfMatch) {
+                return "If-Match";
+            };
+            if (_645 instanceof IfModifiedSince) {
+                return "If-Modified-Since";
+            };
+            if (_645 instanceof IfNoneMatch) {
+                return "If-None-Match";
+            };
+            if (_645 instanceof IfRange) {
+                return "If-Range";
+            };
+            if (_645 instanceof IfUnmodifiedSince) {
+                return "If-Unmodified-Since";
+            };
+            if (_645 instanceof LastModified) {
+                return "Last-Modified";
+            };
+            if (_645 instanceof MaxForwards) {
+                return "Max-Forwards";
+            };
+            if (_645 instanceof Pragma) {
+                return "Pragma";
+            };
+            if (_645 instanceof ProxyAuthorization) {
+                return "Proxy-Authorization";
+            };
+            if (_645 instanceof Range) {
+                return "Range";
+            };
+            if (_645 instanceof Referer) {
+                return "Referer";
+            };
+            if (_645 instanceof TE) {
+                return "Te";
+            };
+            if (_645 instanceof Trailer) {
+                return "Trailer";
+            };
+            if (_645 instanceof TransferEncoding) {
+                return "Transfer-Encoding";
+            };
+            if (_645 instanceof Upgrade) {
+                return "Upgrade";
+            };
+            if (_645 instanceof UserAgent) {
+                return "User-Agent";
+            };
+            if (_645 instanceof Via) {
+                return "Via";
+            };
+            if (_645 instanceof Warning) {
+                return "Warning";
+            };
+            if (_645 instanceof Custom) {
+                return _645.value0;
+            };
+            throw new Error("Failed pattern match");
+        });
+    };
+    var showHTTPVerb = function (_) {
+        return new Prelude.Show(function (_643) {
+            if (_643 instanceof DELETE) {
+                return "DELETE";
+            };
+            if (_643 instanceof GET) {
+                return "GET";
+            };
+            if (_643 instanceof HEAD) {
+                return "HEAD";
+            };
+            if (_643 instanceof OPTIONS) {
+                return "OPTIONS";
+            };
+            if (_643 instanceof PATCH) {
+                return "PATCH";
+            };
+            if (_643 instanceof POST) {
+                return "POST";
+            };
+            if (_643 instanceof PUT) {
+                return "PUT";
+            };
+            throw new Error("Failed pattern match");
+        });
+    };
+    return {
+        DELETE: DELETE, 
+        GET: GET, 
+        HEAD: HEAD, 
+        OPTIONS: OPTIONS, 
+        PATCH: PATCH, 
+        POST: POST, 
+        PUT: PUT, 
+        showHTTPVerb: showHTTPVerb, 
+        showHeaderHead: showHeaderHead
+    };
+})();
+var PS = PS || {};
+PS.Network_Oboe = (function () {
+    "use strict";
+    var Prelude = PS.Prelude;
+    var Network_HTTP = PS.Network_HTTP;
+    var Data_Function = PS.Data_Function;
+    function done(o) {  return function(f) {    return function() {      return o.done(function(x){return f(x)();});    }  }};
+    function oboe_(header2Obj, showVerb, obj) {  return function() {    var oboe__;    try {      oboe__ = require('oboe');    } catch (e) {      oboe__ = window.oboe;    }    var headers = {};    obj.headers.map(header2Obj).forEach(function(header) {      headers[header.head] = header.value;    });    return oboe__({      url: obj.url,      method: showVerb(obj.method),      headers: headers,      body: obj.body,      cached: obj.cached,      withCredentials: obj.withCredentials    });  }};
+    var showVerb = Prelude.show(Network_HTTP.showHTTPVerb({}));
+    var oboeOptions = {
+        url: "", 
+        method: Network_HTTP.GET.value, 
+        headers: [  ], 
+        body: "", 
+        cached: true, 
+        withCredentials: false
+    };
+    var header2Obj = function (_646) {
+        return {
+            head: Prelude.show(Network_HTTP.showHeaderHead({}))(_646.value0), 
+            value: _646.value1
+        };
+    };
+    var oboe = Data_Function.runFn3(oboe_)(header2Obj)(showVerb);
+    var oboeGet = function (url) {
+        return oboe((function () {
+            var _724 = {};
+            for (var _725 in oboeOptions) {
+                if (oboeOptions.hasOwnProperty(_725)) {
+                    _724[_725] = oboeOptions[_725];
+                };
+            };
+            _724.url = url;
+            return _724;
+        })());
+    };
+    return {
+        done: done, 
+        oboeGet: oboeGet, 
+        oboe: oboe, 
+        oboeOptions: oboeOptions
+    };
+})();
+var PS = PS || {};
+PS.SlamData_App_Workspace = (function () {
+    "use strict";
+    var Prelude = PS.Prelude;
+    var React_DOM = PS.React_DOM;
+    var SlamData_App_Workspace_FileSystem = PS.SlamData_App_Workspace_FileSystem;
+    var SlamData_App_Workspace_Notebook = PS.SlamData_App_Workspace_Notebook;
+    var Control_Monad_Eff = PS.Control_Monad_Eff;
+    var Network_Oboe = PS.Network_Oboe;
+    var React = PS.React;
+    var Data_Map = PS.Data_Map;
+    var Control_Lens = PS.Control_Lens;
+    var SlamData_Lens = PS.SlamData_Lens;
+    var Data_Const = PS.Data_Const;
+    var SlamData_Helpers = PS.SlamData_Helpers;
+    var Data_Array = PS.Data_Array;
+    var Control_Reactive_Timer = PS.Control_Reactive_Timer;
+    function unsafeCoerce(x) { return x; };
+    var workspace$prime = function (files) {
+        return function (request) {
+            return React_DOM.div({
+                className: "row", 
+                id: "main-row"
+            })([ React_DOM.div({
+                className: "small-5 medium-3 large-2 columns", 
+                id: "filesystem"
+            })([ SlamData_App_Workspace_FileSystem.filesystem(files) ]), React_DOM.div({
+                className: "small-7 medium-9 large-10 columns", 
+                id: "notebook"
+            })([ SlamData_App_Workspace_Notebook.notebooks({
+                files: files, 
+                request: request
+            })([  ]) ]) ]);
+        };
+    };
+    var readFS = function ($$this) {
+        return function (url) {
+            return function __do() {
+                var _128 = Network_Oboe.oboeGet(url)();
+                Network_Oboe.done(_128)(function (json) {
+                    return Prelude.pure(Control_Monad_Eff.applicativeEff({}))($$this.setState({
+                        files: (unsafeCoerce(json)).children
+                    }));
+                })();
+                return Prelude.unit;
+            };
+        };
+    };
+    var workspace = React.createClass((function () {
+        var _727 = {};
+        for (var _728 in React.spec) {
+            if (React.spec.hasOwnProperty(_728)) {
+                _727[_728] = React.spec[_728];
+            };
+        };
+        _727.displayName = "Workspace";
+        _727.componentDidMount = function ($$this) {
+            var mountings = Data_Map.keys(Control_Lens["^."]($$this.props.settings.seConfig)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._seConfigRec(Data_Const.functorConst({})))(SlamData_Lens._mountings(Data_Const.functorConst({})))));
+            var root = SlamData_Helpers.getOrElse(Data_Array.head(mountings))("/");
+            var url = SlamData_Helpers.serverURI($$this.props.settings.sdConfig) + "/metadata/fs" + root;
+            return function __do() {
+                readFS($$this)(url)();
+                var __1 = Control_Reactive_Timer.interval(5000)(readFS($$this)(url))();
+                return Prelude.unit;
+            };
+        };
+        _727.getInitialState = function (_) {
+            return Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
+                files: [  ]
+            });
+        };
+        _727.render = function ($$this) {
+            return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div({
+                id: "workspace"
+            })([ workspace$prime($$this.state.files)($$this.props.request) ]));
+        };
+        return _727;
+    })());
+    return {
+        workspace: workspace
+    };
+})();
+var PS = PS || {};
+PS.SlamData_App = (function () {
+    "use strict";
+    var Prelude = PS.Prelude;
+    var Control_Monad_Eff = PS.Control_Monad_Eff;
+    var React = PS.React;
+    var Debug_Trace = PS.Debug_Trace;
+    var React_DOM = PS.React_DOM;
+    var SlamData_App_Menu = PS.SlamData_App_Menu;
+    var SlamData_App_Workspace = PS.SlamData_App_Workspace;
+    var showSettings = function ($$this) {
+        return function (bool) {
+            return Prelude.pure(Control_Monad_Eff.applicativeEff({}))($$this.setState({
+                showSettings: bool
+            }));
+        };
+    };
+    var app = React.createClass((function () {
+        var _729 = {};
+        for (var _730 in React.spec) {
+            if (React.spec.hasOwnProperty(_730)) {
+                _729[_730] = React.spec[_730];
+            };
+        };
+        _729.displayName = "App";
+        _729.componentWillUnmount = function (_) {
+            return Debug_Trace.trace("Unmounting app");
+        };
+        _729.getInitialState = function (_) {
+            return Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
+                showSettings: false
+            });
+        };
+        _729.render = function ($$this) {
+            return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div({})([ SlamData_App_Menu.menu(showSettings(React.coerceThis($$this))), SlamData_App_Workspace.workspace({
+                files: $$this.props.files, 
+                request: $$this.props.request, 
+                settings: $$this.props.settings
+            })([  ]) ]));
+        };
+        return _729;
+    })());
+    return {
+        app: app
+    };
+})();
+var PS = PS || {};
+PS.SlamData = (function () {
+    "use strict";
+    var Prelude = PS.Prelude;
+    var Control_Monad_Eff = PS.Control_Monad_Eff;
+    var Node_Events = PS.Node_Events;
+    var SlamData_Types = PS.SlamData_Types;
+    var SlamData_App = PS.SlamData_App;
+    var React = PS.React;
+    function setProps(props) {  return function(component) {    return function() {      component.setProps(props);    }  }};
+    var slamData = function (emitter) {
+        return function (settings) {
+            var request = function (event) {
+                return function __do() {
+                    Node_Events.emit(Node_Events.eventEmitterEmitter({}))(SlamData_Types.requestEvent)(event)(emitter)();
+                    return Prelude.unit;
+                };
+            };
+            var component = SlamData_App.app({
+                files: [  ], 
+                request: request, 
+                settings: settings
+            })([  ]);
+            return function __do() {
+                var _129 = React.renderComponentById(component)("content")();
+                Node_Events.on(Node_Events.eventEmitterEmitter({}))(Node_Events.variadicArr({}))(SlamData_Types.responseEvent)(function (settings_1) {
+                    return setProps({
+                        settings: settings_1
+                    })(_129);
+                })(emitter)();
+                return Prelude.unit;
+            };
+        };
+    };
+    return {
+        setProps: setProps, 
+        slamData: slamData
     };
 })();

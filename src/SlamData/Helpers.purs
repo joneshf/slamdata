@@ -13,7 +13,15 @@ module SlamData.Helpers where
 
 --   import React
 
-  import SlamData.Types (Mounting(..), SDConfig(..), SEConfig(..))
+  import SlamData.Types
+    ( Mounting(..)
+    , MountingRec(..)
+    , SDConfig(..)
+    , SDConfigNodeWebkit(..)
+    , SDConfigServer(..)
+    , SEConfig(..)
+    , SEConfigServer(..)
+    )
 
 --   import Text.Parsing.Parser (Parser(), ParserT())
 --   import Text.Parsing.Parser.Combinators ((<?>), many, many1, optional, sepBy, try)
@@ -74,22 +82,24 @@ module SlamData.Helpers where
 
   defaultSDConfig :: SDConfig
   defaultSDConfig = SDConfig
-    { server: {location: defaultServerLocation, port: defaultServerPort}
-    , nodeWebkit: {java: "java"}
+    { server: SDConfigServer { location: defaultServerLocation
+                             , port: defaultServerPort
+                             }
+    , nodeWebkit: SDConfigNodeWebkit {java: "java"}
     }
 
   defaultSEConfig :: SEConfig
   defaultSEConfig = SEConfig
-    { server: {port: defaultServerPort}
-    , mountings: M.singleton defaultMountPath $ MountMongo
-        { connectionUri: defaultMongoURI
-        , database: defaultMongoDatabase
-        }
+    { server: SEConfigServer {port: defaultServerPort}
+    , mountings: M.singleton defaultMountPath $ MountMongo $
+        MountingRec { connectionUri: defaultMongoURI
+                    , database: defaultMongoDatabase
+                    }
     }
 
   serverURI :: SDConfig -> String
-  serverURI (SDConfig {server = {location = l, port = p}}) =
-    l ++ ":" ++ show p
+  serverURI (SDConfig {server = SDConfigServer s}) =
+    s.location ++ ":" ++ show s.port
 
 --   getServerURI :: QueryString -> String
 --   getServerURI qs = fromMaybe defaultServerURI do

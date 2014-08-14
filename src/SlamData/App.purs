@@ -10,33 +10,26 @@ module SlamData.App (app, AppProps(), AppState()) where
 
   import SlamData.App.Menu (menu)
   import SlamData.App.Workspace (workspace)
-  import SlamData.Types
-    ( FileType()
-    , SlamDataState()
-    , SlamDataRequest()
-    , Settings()
-    )
+  import SlamData.Types (SlamDataState(), SlamDataRequest())
+  import SlamData.Types.Workspace.FileSystem (FileType())
 
   import qualified React.DOM as D
 
   type AppProps eff =
-    { files :: [FileType]
-    , request :: SlamDataRequest eff
-    , settings :: Settings
+    { request :: SlamDataRequest eff
+    , state :: SlamDataState
     }
   type AppState = {showSettings :: Boolean}
 
   app :: forall eff. ComponentClass (AppProps eff) AppState
   app = createClass spec
     { displayName = "App"
-    , componentWillUnmount = \_ -> Debug.Trace.trace "Unmounting app"
     , getInitialState = \_ -> pure {showSettings: false}
     , render = \this -> pure $ D.div {}
       [ menu (showSettings $ coerceThis this)
       , workspace
-        { files: this.props.files
-        , request: this.props.request
-        , settings: this.props.settings
+        { request: this.props.request
+        , state: this.props.state
         }
         []
       ]

@@ -107,7 +107,11 @@ var options = {
     },
     compile: {
         externs: 'js/slamdata.e.purs',
-        modules: ['SlamData', 'SlamData.Helpers', 'Control.Monad.Cont.Trans'],
+        modules: [ 'SlamData'
+                 , 'SlamData.Types'
+                 , 'SlamData.Types.JS'
+                 , 'SlamData.Helpers'
+                 ],
         output: 'slamdata.js'
     },
     connect: {
@@ -128,9 +132,8 @@ var options = {
             output: 'slamdata-browser.js'
         },
         'node-webkit': {
-            // main: 'SlamData.NodeWebkit',
-            output: 'slamdata-node-webkit.js',
-            noMagicDo: true
+            main: 'SlamData.NodeWebkit',
+            output: 'slamdata-node-webkit.js'
         }
     }
 }
@@ -291,8 +294,8 @@ gulp.task('build-browser', sequence( 'bower-browser'
                                      , 'imgs-browser'
                                      ]
                                    ));
-gulp.task('build-node-webkit', sequence( 'bower-node-webkit'
-                                       , 'compile-node-webkit'
+gulp.task('build-node-webkit', sequence(/* 'bower-node-webkit'
+                                       ,*/ 'compile-node-webkit'
                                        , [ 'concat-css-node-webkit'
                                          , 'concat-js-node-webkit'
                                          , 'copy-node-webkit'

@@ -1,14 +1,23 @@
 module SlamData.Types where
 
   import Control.Monad.Eff (Eff(..))
-  import Control.Monad.Identity (Identity(..))
-  import Control.Monad.Cont.Trans (ContT())
   import Control.Reactive.Timer (Timer())
 
-  import Data.Argonaut.Combinators
-  import Data.Argonaut.Core
-  import Data.Argonaut.Decode
-  import Data.Argonaut.Encode
+  import Data.Argonaut
+    ( (:=)
+    , (~>)
+    , (?>>=)
+    , decodeMaybe
+    , decodeJson
+    , encodeJson
+    , jsonEmptyObject
+    , toArray
+    , toNumber
+    , toObject
+    , toString
+    )
+  import Data.Argonaut.Decode (DecodeJson)
+  import Data.Argonaut.Encode (EncodeJson)
   import Data.Either (Either(..))
   import Data.Foldable (foldl, foldMap, foldr, Foldable)
   import Data.Maybe (maybe, Maybe(..))
@@ -17,9 +26,12 @@ module SlamData.Types where
 
   import DOM (DOM())
 
-  import Node.Events (Event(..))
+  import Node.Events (Event(..), EventEff())
 
   import React.Types (React())
+
+  import SlamData.Types.Workspace.FileSystem (FileType())
+  import SlamData.Types.Workspace.Notebook (Notebook())
 
   import qualified Data.Map as M
 
@@ -31,140 +43,152 @@ module SlamData.Types where
 
   newtype SDConfig = SDConfig SDConfigRec
   type SDConfigRec =
-    { server :: {location :: String, port :: Number}
-    , nodeWebkit :: {java :: String}
+    { server     :: SDConfigServer
+    , nodeWebkit :: SDConfigNodeWebkit
+    }
+
+  newtype SDConfigServer = SDConfigServer
+    { location :: String
+    , port :: Number
+    }
+
+  newtype SDConfigNodeWebkit = SDConfigNodeWebkit
+    { java :: String
     }
 
   newtype SEConfig = SEConfig SEConfigRec
   type SEConfigRec =
     { mountings :: M.Map String Mounting
-    , server :: {port :: Number}
+    , server    :: SEConfigServer
     }
 
+  newtype SEConfigServer = SEConfigServer
+    { port :: Number
+    }
+
+  -- This should stay a data type for now,
+  -- as we plan to have different types of mountings.
   data Mounting = MountMongo MountingRec
-  type MountingRec =
+  newtype MountingRec = MountingRec
     { connectionUri :: String
-    , database :: String
+    , database      :: String
     }
 
-  data SlamDataEvent = SaveSDConfig SDConfig
-                     | SaveSEConfig SEConfig
-                     | ReadFileSystem
-                     | CreateNotebook
+  newtype SlamDataEvent = SlamDataEvent
+    { state :: SlamDataState
+    , event :: SlamDataEventTy
+    }
 
-  type SlamDataRequest eff =
-    SlamDataEvent -> Eff (dom :: DOM, react :: React, timer :: Timer | eff) Boolean
+  data SlamDataEventTy = SaveSDConfig SDConfig
+                       | SaveSEConfig SEConfig
+                       | ReadFileSystem
+                       | CreateNotebook
 
-  type SlamDataCont eff = SlamDataEvent -> Eff eff Unit
+  type SlamDataRequest eff
+    =  SlamDataEventTy
+    -> Eff ( dom :: DOM
+           , event :: EventEff
+           , react :: React
+           , timer :: Timer
+           | eff
+           ) Unit
 
-  type SaveSettings eff = Settings -> Eff eff Unit
+  type SlamDataState =
+    { files        :: [FileType]
+    , notebooks    :: [Notebook]
+    , settings     :: Settings
+    , showSettings :: Boolean
+    }
 
-  type SlamDataState = {showSettings :: Boolean}
+  -- Instances
 
-  newtype FileType = FileType FileTypeRec
-  type FileTypeRec = {name :: String, "type" :: String}
-  type FileSystemProps = {files :: [FileType]}
-
-  newtype FileTypes = FileTypes FileTypesRec
-  type FileTypesRec = {children :: [FileType]}
-
-  instance encodeSDConfig :: EncodeJson Identity Identity SDConfig where
-    encodeJson (Identity (SDConfig sdConfig)) = Identity $
-      "server" := (  "location" := sdConfig.server.location
-                  ~> "port" := sdConfig.server.port
-                  ~> jsonEmptyObject
-                  )
-      ~> "nodeWebkit" := ("java" := sdConfig.nodeWebkit.java ~> jsonEmptyObject)
+  -- SDConfig
+  instance encodeSDConfig :: EncodeJson SDConfig where
+    encodeJson (SDConfig sdConfig)
+      =  "server"     := encodeJson sdConfig.server
+      ~> "nodeWebkit" := encodeJson sdConfig.nodeWebkit
       ~> jsonEmptyObject
 
-  instance decodeSDConfig :: DecodeJson Identity (Either String) SDConfig where
-    decodeJson (Identity json) = maybe (Left "Not SDConfig.") Right $ do
-      obj <- toObject json
-      server <- M.lookup "server" obj >>= toObject
-      location <- M.lookup "location" server >>= toString
-      port <- M.lookup "port" server >>= toNumber
-      nodeWebkit <- M.lookup "nodeWebkit" obj >>= toObject
-      java <- M.lookup "java" nodeWebkit >>= toString
-      pure (SDConfig { server: {location: location, port: port}
-                     , nodeWebkit: {java: java}
-                     })
-
-  instance encodeMounting :: EncodeJson Identity Identity Mounting where
-    encodeJson (Identity (MountMongo mounting)) = Identity $
-      "mongodb" := (  "connectionUri" := mounting.connectionUri
-                   ~> "database" := mounting.database
-                   ~> jsonEmptyObject
-                   )
+  instance encodeSDConfigServer :: EncodeJson SDConfigServer where
+    encodeJson (SDConfigServer server)
+      = "location" := encodeJson server.location
+      ~> "port"    := encodeJson server.port
       ~> jsonEmptyObject
 
-  instance decodeMounting :: DecodeJson Identity (Either String) Mounting where
-    decodeJson (Identity json) = maybe (Left "Not a MongoDB Mounting.") Right $ do
-      obj <- toObject json
-      mongodb <- M.lookup "mongodb" obj >>= toObject
-      connectionUri <- M.lookup "connectionUri" mongodb >>= toString
-      database <- M.lookup "database" mongodb >>= toString
-      pure $ MountMongo { connectionUri: connectionUri
-                        , database: database
-                        }
-
-  -- TODO: This should be `uncurry`, but have to wrap that record.
-  encodeMounting' :: Tuple String Mounting -> JAssoc
-  encodeMounting' (Tuple path mongodb) = path := mongodb
-
-  instance encodeSEConfig :: EncodeJson Identity Identity SEConfig where
-    encodeJson (Identity (SEConfig seConfig)) = Identity $
-      "server" := ("port" := seConfig.server.port ~> jsonEmptyObject)
-      ~> "mountings" := foldr (~>) jsonEmptyObject (encodeMounting' <$> M.toList seConfig.mountings)
+  instance encodeSDConfigNodeWebkit :: EncodeJson SDConfigNodeWebkit where
+    encodeJson (SDConfigNodeWebkit nw)
+      = "java" := encodeJson nw.java
       ~> jsonEmptyObject
 
-  instance decodeSEConfig :: DecodeJson Identity (Either String) SEConfig where
-    decodeJson (Identity json) = maybe (Left "Not SEConfig.") Right $ do
-      obj <- toObject json
-      server <- M.lookup "server" obj >>= toObject
-      port <- M.lookup "port" server >>= toNumber
-      mountings <- M.lookup "mountings" obj >>= toObject
-      mountings' <- traverse decodeMaybe mountings
-      pure $ SEConfig { server: {port: port}
+  instance decodeSDConfig :: DecodeJson SDConfig where
+    decodeJson json = toObject json ?>>= "SDConfig" >>= \obj -> do
+      server     <- M.lookup "server"     obj ?>>= "server"     >>= decodeJson
+      nodeWebkit <- M.lookup "nodeWebkit" obj ?>>= "nodeWebkit" >>= decodeJson
+      pure $ SDConfig {server: server, nodeWebkit: nodeWebkit}
+
+  instance decodeSDConfigServer :: DecodeJson SDConfigServer where
+    decodeJson json = toObject json ?>>= "SDConfigServer" >>= \obj -> do
+      location <- M.lookup "location" obj ?>>= "location" >>= decodeJson
+      port     <- M.lookup "port"     obj ?>>= "port"     >>= decodeJson
+      pure $ SDConfigServer {location: location, port: port}
+
+  instance decodeSDConfigNodeWebkit :: DecodeJson SDConfigNodeWebkit where
+    decodeJson json = toObject json ?>>= "SDConfigNodeWebkit" >>= \obj -> do
+      java <- M.lookup "java" obj ?>>= "java" >>= decodeJson
+      pure $ SDConfigNodeWebkit {java: java}
+
+  -- SEConfig
+  instance encodeSEConfig :: EncodeJson SEConfig where
+    encodeJson (SEConfig seConfig)
+      =  "server"    := encodeJson seConfig.server
+      ~> "mountings" := encodeJson seConfig.mountings
+      ~> jsonEmptyObject
+
+  instance encodeSEConfigServer :: EncodeJson SEConfigServer where
+    encodeJson (SEConfigServer server)
+      =  "port" := encodeJson server.port
+      ~> jsonEmptyObject
+
+  instance encodeMounting :: EncodeJson Mounting where
+    encodeJson (MountMongo mounting)
+      =  "mongodb" := encodeJson mounting
+      ~> jsonEmptyObject
+
+  instance encodeMountingRec :: EncodeJson MountingRec where
+    encodeJson (MountingRec mounting)
+      =  "connectionUri" := encodeJson mounting.connectionUri
+      ~> "database"      := encodeJson mounting.database
+      ~> jsonEmptyObject
+
+  instance decodeSEConfig :: DecodeJson SEConfig where
+    decodeJson json = toObject json ?>>= "SEConfig" >>= \obj -> do
+      server     <- M.lookup "server"    obj ?>>= "server"    >>= decodeJson
+      mountings  <- M.lookup "mountings" obj ?>>= "mountings" >>= decodeJson
+      mountings' <- traverse decodeJson mountings
+      pure $ SEConfig { server: server
                       , mountings: mountings'
                       }
 
-  instance decodeMap :: (DecodeJson Identity (Either String) a) => DecodeJson Identity (Either String) (M.Map String a) where
-    decodeJson (Identity json) = maybe (Left "Couldn't decode.") Right $ do
-      obj <- toObject json
-      traverse decodeMaybe obj
+  instance decodeSEConfigServer :: DecodeJson SEConfigServer where
+    decodeJson json = toObject json ?>>= "SEConfigServer" >>= \obj -> do
+      port <- M.lookup "port" obj ?>>= "port" >>= decodeJson
+      pure $ SEConfigServer {port: port}
 
-  instance decodeArray :: (DecodeJson Identity (Either String) a) => DecodeJson Identity (Either String) [a] where
-    decodeJson (Identity json) = maybe (Left "Couldn't decode.") Right $ do
-      obj <- toArray json
-      traverse decodeMaybe obj
+  instance decodeMounting :: DecodeJson Mounting where
+    decodeJson json = toObject json ?>>= "MountMongo" >>= \obj -> do
+      mongodb <- M.lookup "mongodb" obj ?>>= "mongodb" >>= decodeJson
+      pure $ MountMongo mongodb
 
-  instance decodeFileType :: DecodeJson Identity (Either String) FileType where
-    decodeJson (Identity json) = maybe (Left "Not a file type") Right $ do
-      obj <- toObject json
-      name <- M.lookup "name" obj >>= toString
-      ty <- M.lookup "type" obj >>= toString
-      pure $ FileType {name: name, "type": ty}
+  instance decodeMountingRec :: DecodeJson MountingRec where
+    decodeJson json = toObject json ?>>= "MountingRec" >>= \obj -> do
+      connectionUri <- M.lookup "connectionUri" obj ?>>= "connectionUri" >>= decodeJson
+      database      <- M.lookup "database"      obj ?>>= "database"      >>= decodeJson
+      pure $ MountingRec {connectionUri: connectionUri, database: database}
 
-  instance decodeFileTypes :: DecodeJson Identity (Either String) FileTypes where
-    decodeJson (Identity json) = maybe (Left "No FileTypes") Right $ do
-      obj <- toObject json
-      children <- M.lookup "children" obj >>= toArray >>= traverse decodeMaybe
-      pure $ FileTypes {children: children}
-
-  -- Orphans
-
-  instance foldableMap :: Foldable (M.Map k) where
-    foldr f z ms = foldr f z $ M.values ms
-    foldl f z ms = foldl f z $ M.values ms
-    foldMap f ms = foldMap f $ M.values ms
-
-  instance traversableMap :: (Ord k) => Traversable (M.Map k) where
-    traverse f ms = foldr (\x acc -> M.union <$> x <*> acc) (pure M.empty) ((\fs -> uncurry M.singleton <$> fs) <$> (traverse f <$> M.toList ms))
-    sequence = traverse id
+  -- Events
 
   requestEvent :: Event
   requestEvent = Event "request"
 
   responseEvent :: Event
   responseEvent = Event "response"
-

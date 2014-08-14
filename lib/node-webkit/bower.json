@@ -24,10 +24,10 @@
     "purescript-node-fs": "*",
     "purescript-node-path": "~0.2.0",
     "purescript-node-buffer": "*",
-    "purescript-node-events": "~0.0.5",
     "purescript-node-child-process": "~0.0.1",
     "purescript-node-webkit": "~0.0.3",
-    "purescript-react": "joneshf/purescript-react#simplify"
+    "purescript-react": "joneshf/purescript-react#simplify",
+    "purescript-node-events": "~0.0.6"
   },
   "resolutions": {
     "react": "~0.11.1",

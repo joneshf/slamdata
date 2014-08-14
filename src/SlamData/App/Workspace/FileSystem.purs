@@ -3,7 +3,7 @@ module SlamData.App.Workspace.FileSystem (filesystem) where
   import React.Types (Component())
 
   import SlamData.Components (dirOpenIcon, fileIcon)
-  import SlamData.Types (FileType(..), FileTypeRec())
+  import SlamData.Types.Workspace.FileSystem (FileType(..), FileTypeRec())
 
   import qualified React.DOM as D
 

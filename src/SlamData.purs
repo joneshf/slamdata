@@ -15,30 +15,28 @@ module SlamData where
 
   import SlamData.App (app)
   import SlamData.Types
-    ( SlamDataState()
-    , SaveSettings()
-    , Settings()
-    , SlamDataEvent()
+    ( SlamDataEvent(..)
+    , SlamDataEventTy()
+    , SlamDataRequest()
+    , SlamDataState()
     , requestEvent
     , responseEvent
     )
 
   slamData :: forall eff
            .  Emitter
-           -> Settings
+           -> SlamDataState
            -> Eff (dom :: DOM, event :: EventEff, react :: React, timer :: Timer | eff) Unit
-  slamData emitter settings = do
-    let request = \event -> emit requestEvent event emitter
-    let component = app {files: [], request: request, settings: settings} []
-    component' <- renderComponentById component "content"
-    on responseEvent (\settings -> setProps {settings: settings} component') emitter
+  slamData emitter state = do
+    renderComponentById (app {request: request emitter state, state: state} []) "content"
+    emitter # on responseEvent (\state ->
+      renderComponentById (app {request: request emitter state, state: state} []) "content")
     pure unit
 
-  foreign import setProps
-    "function setProps(props) {\
-    \  return function(component) {\
-    \    return function() {\
-    \      component.setProps(props);\
-    \    }\
-    \  }\
-    \}" :: forall props eff. props -> Component -> Eff (react :: React | eff) Unit
+  request :: forall eff
+          .  Emitter
+          -> SlamDataState
+          -> SlamDataRequest eff
+  request emitter state ty = do
+    emit requestEvent (SlamDataEvent {state: state, event: ty}) emitter
+    pure unit
