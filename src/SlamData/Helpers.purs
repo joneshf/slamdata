@@ -1,17 +1,8 @@
 module SlamData.Helpers where
 
---   import Control.Apply ((*>))
---   import Control.Monad.Eff
-
---   import Data.Either
---   import Data.Foldable
---   import Data.Foreign
---   import Data.Function
   import Data.Maybe (fromMaybe, Maybe())
---   import Data.String
---   import Data.Tuple
 
---   import React
+  import React.Types (Element())
 
   import SlamData.Types
     ( Mounting(..)
@@ -23,15 +14,7 @@ module SlamData.Helpers where
     , SEConfigServer(..)
     )
 
---   import Text.Parsing.Parser (Parser(), ParserT())
---   import Text.Parsing.Parser.Combinators ((<?>), many, many1, optional, sepBy, try)
---   import Text.Parsing.Parser.String (char, satisfy, string)
-
---   import qualified Browser.WebStorage as WS
---   import qualified Data.Array as A
   import qualified Data.Map as M
---   import qualified Graphics.C3 as C3
---   import qualified React.DOM as D
 
 --   -- Random purescript stuff.
 
@@ -48,26 +31,11 @@ module SlamData.Helpers where
 --   select p x o | p x = o{fst = x:o.fst}
 --   select p x o       = o{snd = x:o.snd}
 
---   guardMaybe :: forall a. Boolean -> Maybe a -> Maybe a
---   guardMaybe true  m = m
---   guardMaybe false _ = Nothing
-
---   foreign import data Window :: *
---   foreign import data Location :: *
-
---   foreign import window :: Window
-
---   foreign import location
---     "function location(win) {\
---     \  return win.location;\
---     \}" :: Window -> Location
-
---   foreign import search
---     "function search(loc) {\
---     \  return loc.search;\
---     \}" :: Location -> String
-
   -- SlamData specific stuff.
+
+  activate :: forall a. (Eq a) => a -> a -> String
+  activate x y | x == y = " active"
+  activate _ _          = ""
 
   -- | Server stuff.
 
@@ -106,8 +74,6 @@ module SlamData.Helpers where
 --     loc <- M.lookup "serverLocation" qs
 --     port <- M.lookup "serverPort" qs
 --     pure $ loc ++ ":" ++ port
-
---   foreign import parseInt :: Fn2 String Number Number
 
 --   query2SDConfig :: QueryString -> SDConfig
 --   query2SDConfig qs = fromMaybe defaultSDConfig do
@@ -149,33 +115,6 @@ module SlamData.Helpers where
 --         [toUI props.icon]
 --     ]
 
---   -- At least we can try to catch spelling mistakes.
---   data LocalKey = Blocks
---                 | Notebooks
---                 | EvalSQLBlocks
-
---   instance eqLocalKey :: Eq LocalKey where
---     (==) Blocks        Blocks        = true
---     (==) Notebooks     Notebooks     = true
---     (==) EvalSQLBlocks EvalSQLBlocks = true
---     (==) _             _             = false
-
---     (/=) l l' = not (l == l')
-
---   instance showLocalKey :: Show LocalKey where
---     show Blocks    = "blocks"
---     show Notebooks = "notebooks"
---     show EvalSQLBlocks = "evalsqlblocks"
-
---   localGet :: forall a. (ReadForeign a) => LocalKey -> [a]
---   localGet key =
---     maybe []
---           (parseJSON >>> either (const []) id)
---           (WS.getItem WS.localStorage $ show key)
-
---   localSet :: forall a. (Show a) => LocalKey -> a -> WS.LocalStorage
---   localSet key val = WS.setItem WS.localStorage (show key) (show val)
-
 --   type VisualType = C3.C3Type
 --   visualBar :: VisualType
 --   visualBar = C3.Bar
@@ -183,14 +122,6 @@ module SlamData.Helpers where
 --   visualLine = C3.Line
 --   visualPie :: VisualType
 --   visualPie = C3.Pie
-
---   -- | Foundation stuff.
---   row :: [UI] -> UI
---   row uis = D.div [D.className "row"] uis
-
---   large :: String -> UI -> UI
---   large size ui =
---     D.div [D.className $ "large-" ++ size ++ " columns"] [ui]
 
 --   -- | Parsing stuff
 --   type Query = Tuple String String
@@ -212,4 +143,9 @@ module SlamData.Helpers where
 --     val <- (joinWith "" >>> decodeURIComponent) <$> many1 (try $ noneOf ["&"])
 --     pure $ Tuple key val
 
---   foreign import decodeURIComponent :: String -> String
+  -- FFI stuff
+
+  foreign import value
+    "function value(el) {\
+    \  return el.value;\
+    \}" :: Element -> String
