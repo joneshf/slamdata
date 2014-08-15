@@ -7,6 +7,7 @@ module SlamData.Lens where
   import SlamData.Types
   import SlamData.Types.Workspace.FileSystem
   import SlamData.Types.Workspace.Notebook
+  import SlamData.Types.Workspace.Notebook.Block
 
   _sdConfigRec :: LensP SDConfig SDConfigRec
   _sdConfigRec f (SDConfig rec) = SDConfig <$> f rec
@@ -34,6 +35,9 @@ module SlamData.Lens where
 
   _notebookRec :: LensP Notebook NotebookRec
   _notebookRec f (Notebook rec) = Notebook <$> f rec
+
+  _blockRec :: LensP Block BlockRec
+  _blockRec f (Block rec) = Block <$> f rec
 
   _sdConfig :: forall a r. LensP {sdConfig :: a | r} a
   _sdConfig f o@{sdConfig = sdc} = (\sdc' -> o{sdConfig = sdc'}) <$> f sdc

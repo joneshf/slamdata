@@ -1,13 +1,17 @@
 module SlamData.Components where
 
-  import React.DOM (i)
-  import React.Types (Component())
+  import React (eventHandler)
+  import React.Types (Component(), ReactThis())
+
+  import SlamData.Types (SlamDataEventTy(), SlamDataRequest())
+
+  import qualified React.DOM as D
 
   type FontAwesome = Component
   type Entypo = Component
 
   icon :: String -> Component
-  icon name = i {className: name} []
+  icon name = D.i {className: name} []
 
   closeIcon       :: FontAwesome
   closeIcon       = icon "fa fa-times"
@@ -47,3 +51,16 @@ module SlamData.Components where
   lineChartIcon   = icon "icon-chart-line"
   pieChartIcon    :: Entypo
   pieChartIcon    = icon "icon-chart-pie"
+
+  actionButton :: forall eff fields props state
+               .  ReactThis fields {request :: SlamDataRequest eff | props} state
+               -> SlamDataEventTy
+               -> Component
+               -> Component
+  actionButton this event icon = D.li {}
+    [D.a { className: "tiny secondary button has-tooltip"
+         , onClick: eventHandler this \this -> pure $
+            this.props.request event
+         }
+      [icon]
+    ]

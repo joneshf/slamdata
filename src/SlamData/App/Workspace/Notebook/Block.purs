@@ -1,35 +1,90 @@
--- module SlamData.App.Workspace.Notebook.Block (block) where
+module SlamData.App.Workspace.Notebook.Block
+  ( block
+  , BlockProps()
+  , BlockState()
+  ) where
 
---   import Control.Apply
---   import Control.Monad.Eff
+  import Control.Lens ((^.), (..))
 
---   import Data.Array
---   import Data.Foldable
---   import Data.Function
---   import Data.Maybe
+  import React (coerceThis, createClass, spec)
+  import React.Types (Component(), ComponentClass(), ReactThis())
 
---   import React
+  import SlamData.Components (actionButton, closeIcon)
+  import SlamData.Lens (_blockRec, _ident)
+  import SlamData.Types (SlamDataEventTy(..), SlamDataRequest())
+  import SlamData.Types.Workspace.Notebook (NotebookID())
+  import SlamData.Types.Workspace.Notebook.Block (Block(..), BlockType(..))
 
---   import SlamData.App.Notebook.Block.Common
---   import SlamData.App.Notebook.Block.Markdown
---   import SlamData.App.Notebook.Block.SQL
---   import SlamData.App.Notebook.Block.Visual
---   import SlamData.App.Notebook.Block.Types
---   import SlamData.Helpers
+  import qualified React.DOM as D
 
---   import qualified Graphics.C3 as C3
---   import qualified React.DOM as D
---   import qualified Browser.WebStorage as WS
+  type BlockProps eff =
+    { block      :: Block
+    , notebookID :: NotebookID
+    , request    :: SlamDataRequest eff
+    }
+  type BlockState = {}
+  type BlockRowProps = {styles :: String}
+  type BlockRowState = {}
 
---   isEval :: Editor -> Boolean
---   isEval Eval = true
---   isEval _    = false
+  block :: forall eff. ComponentClass (BlockProps eff) BlockState
+  block = createClass spec
+    { displayName = "Block"
+    , render = \this -> pure $ D.div {className: "block"}
+      [ blockRow {styles: "block-toolbar toolbar"}
+        [ typeName this.props.block
+        , toolbar $ coerceThis this
+        ]
+      , blockContent this.props.block
+      ]
+    }
 
---   eqEditor :: Editor -> Editor -> Boolean
---   eqEditor ed ed' = ed == ed'
+  blockRow :: ComponentClass BlockRowProps BlockRowState
+  blockRow = createClass spec
+    { displayName = "BlockRow"
+    , render = \this -> pure $ D.div {className: this.props.styles ++ " row"}
+      case this.props.children of
+        (l:r:_) -> [ D.div {className: "large-1  columns"} [l]
+                   , D.div {className: "large-11 columns"} [r]
+                   ]
+        [r]     -> [ D.div {className: "large-1  columns"} []
+                   , D.div {className: "large-11 columns"} [r]
+                   ]
+        []      -> []
+    }
 
---   eqBlockID :: BlockID -> BlockID -> Boolean
---   eqBlockID ident ident' = ident == ident'
+  typeName :: Block -> Component
+  typeName (Block b) = D.div {className: "block-type text-center"}
+    [D.span {} [D.rawText $ show b.blockType]
+    ]
+
+  toolbar :: forall eff fields
+          .  ReactThis fields (BlockProps eff) BlockState
+          -> Component
+  toolbar this = D.div {className: "button-bar"}
+    [ D.ul {className: "left button-group"} []
+    , D.ul {className: "right button-group"}
+      [actionButton
+        this
+        (DeleteBlock this.props.notebookID $ this.props.block^._blockRec.._ident)
+        closeIcon
+      ]
+    ]
+
+  blockContent :: Block -> Component
+  blockContent (Block b) = blockRow {styles: "block-content"}
+    [D.div {}
+      [D.textarea { autoFocus: "true"
+                  , className: "block-editor"
+                  -- , onBlur: \_ -> eval
+                  -- , onChange: $ \e -> do
+                  --     pure $ writeState {edit: Edit, content: e.target.value}
+                  -- , onKeyPress: handleKeyPress
+                  , ref: "editor"
+                  , value: b.content
+                  }
+        []
+      ]
+    ]
 
 --   foreign import scu
 --     "function scu(p, s) {\
@@ -72,38 +127,6 @@
 --         blocks' = go <$> blocks
 --     in (pure $ localSet Blocks blocks') *> pure {}
 
---   foreign import state2Content
---     "function state2Content(state) {\
---     \  return state.content;\
---     \}" :: BlockState -> String
-
---   blockType :: BlockType -> UI
---   blockType ty = D.div
---     [D.className "block-type text-center"]
---     [D.span [D.className ""]
---         [D.text $ show ty]
---     ]
-
---   toolbar :: forall eff state result extra
---           .  BlockProps eff state result extra
---           -> UI
---   toolbar = mkUI spec do
---     props <- getProps
---     pure $ D.div
---       [ D.className "button-bar" ]
---       [ D.ul [D.className "left button-group"] (specificButtons props.blockType)
---       , D.ul [D.className "right button-group"]
---              [actionButton  { tooltip: "Close"
---                             , icon: closeIcon {}
---                             , click: props.close
---                             }
---              ]
---       ]
---       where
---         specificButtons Markdown = []
---         specificButtons SQL      = []
---         specificButtons Visual   = []
-
 --   evalOrEdit :: forall eff state result extra
 --              .  Editor
 --              -> BlockProps eff state result extra
@@ -129,15 +152,6 @@
 --                   []
 --       ]
 --     ]
-
---   injectC3Options o =
---     { blockType: o.blockType
---     , ident: o.ident
---     , index: o.index
---     , close: o.close
---     , content: o.content
---     , options: C3.options
---     }
 
 --   handleKeyPress k = do
 --     if (k.ctrlKey && k.keyCode == 13) || k.keyCode == 10

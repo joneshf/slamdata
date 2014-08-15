@@ -25,3 +25,9 @@ module SlamData.Types.JS where
   isHideSettings :: SlamDataEventTy -> Boolean
   isHideSettings HideSettings = true
   isHideSettings _            = false
+  isCreateBlock :: SlamDataEventTy -> Boolean
+  isCreateBlock (CreateBlock _ _) = true
+  isCreateBlock _                 = false
+  isDeleteBlock :: SlamDataEventTy -> Boolean
+  isDeleteBlock (DeleteBlock _ _) = true
+  isDeleteBlock _                 = false

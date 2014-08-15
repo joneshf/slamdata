@@ -82,6 +82,27 @@
                     return nb.ident !== ident;
                 });
                 respond(newState);
+            } else if (jsTypes.isCreateBlock(newEvent)) {
+                var ident = uuid.v4();
+                var blockType = newEvent.value1;
+                var content = '';
+                newState.notebooks = newState.notebooks.map(function(nb) {
+                    if (nb.ident === newEvent.value0) {
+                        nb.blocks.push({ident: ident, blockType: blockType, content: content});
+                    }
+                    return nb;
+                });
+                respond(newState);
+            } else if (jsTypes.isDeleteBlock(newEvent)) {
+                newState.notebooks = newState.notebooks.map(function(nb) {
+                    if (nb.ident === newEvent.value0) {
+                        nb.blocks = nb.blocks.filter(function(b) {
+                            return b.ident !== newEvent.value1;
+                        });
+                    }
+                    return nb;
+                });
+                respond(newState);
             } else {
                 // We can't do anything else, just pass it on back.
                 respond(newState);

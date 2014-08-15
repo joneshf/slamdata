@@ -19,8 +19,10 @@ module SlamData.App.Workspace.Notebook
   import React.Types (Component(), ComponentClass(), React(), ReactThis(), This())
 
   import SlamData.App.Workspace.Notebook.Settings (settings)
+  import SlamData.App.Workspace.Notebook.Block (block)
   import SlamData.Components
-    ( closeIcon
+    ( actionButton
+    , closeIcon
     , newNotebookIcon
     , markdownIcon
     , sqlIcon
@@ -34,6 +36,7 @@ module SlamData.App.Workspace.Notebook
     , SlamDataEventTy(..)
     )
   import SlamData.Types.Workspace.Notebook (Notebook(..), NotebookID(..))
+  import SlamData.Types.Workspace.Notebook.Block (Block(), BlockType(..))
 
   import qualified React.DOM as D
 
@@ -62,8 +65,8 @@ module SlamData.App.Workspace.Notebook
       else if length newBooks > length oldBooks then
         let active = (flip (^.) (_notebookRec.._ident)) <$> head (newBooks \\ oldBooks)
         in pure $ this.setState this.state{active = active}
-      else if oldBooks /= newBooks then
-        let active = (flip (^.) (_notebookRec.._ident)) <$> head props.state.notebooks
+      else if length newBooks < length oldBooks then
+        let active = (flip (^.) (_notebookRec.._ident)) <$> head newBooks
         in pure $ this.setState this.state{active = active}
       else
         pure unit
@@ -73,7 +76,7 @@ module SlamData.App.Workspace.Notebook
       let settings = if this.props.state.showSettings then [settingsTab this] else []
       let tabs = reifyTabs (coerceThis this) <$> this.props.state.notebooks ++ settings
       let tabs' = tabs `snoc` createNotebookButton (coerceThis this)
-      let content = reifyContent this <$> this.props.state.notebooks ++ settings
+      let content = reifyContent (coerceThis this) <$> this.props.state.notebooks ++ settings
       pure $ D.div {className: "slamdata-panel"}
         [ D.dl {className: "tabs"} tabs'
         , D.div {className: "tabs-content"} content
@@ -145,14 +148,8 @@ module SlamData.App.Workspace.Notebook
         ]
       ]
 
-  reifyContent :: forall fields eff props
-               .  This ( state :: NotebookState
-                       , props :: { request :: SlamDataRequest eff
-                                  , state   :: SlamDataState
-                                  | props
-                                  }
-                       | fields
-                       )
+  reifyContent :: forall fields eff
+               .  ReactThis fields (NotebookProps eff) NotebookState
                -> Notebook
                -> Component
   reifyContent this (Notebook nb) | nb.ident == this.state.settingsId =
@@ -162,21 +159,31 @@ module SlamData.App.Workspace.Notebook
   reifyContent this (Notebook nb) =
     D.div {className: "content" ++ activate (Just nb.ident) this.state.active}
       [ D.div {className: "toolbar button-bar"}
-        [internalActions]
+        [internalActions this nb.ident]
       , D.hr {} []
       , D.div {className: "actual-content"}
-        []
+        (reifyBlock this nb.ident <$> nb.blocks)
       ]
 
-  internalActions :: Component
-  internalActions = D.ul {className: "button-group"}
-    [ actionButton markdownIcon
-    , actionButton sqlIcon
-    , actionButton visualIcon
+  reifyBlock :: forall fields eff
+             .  ReactThis fields (NotebookProps eff) NotebookState
+             -> NotebookID
+             -> Block
+             -> Component
+  reifyBlock this ident b =
+    block {block: b, notebookID: ident, request: this.props.request} []
+
+  internalActions :: forall eff fields
+                  .  ReactThis fields (NotebookProps eff) NotebookState
+                  -> NotebookID
+                  -> Component
+  internalActions this ident = D.ul {className: "button-group"}
+    [ actionButton this (CreateBlock ident Markdown) (blockIcon Markdown)
+    , actionButton this (CreateBlock ident SQL)      (blockIcon SQL)
+    , actionButton this (CreateBlock ident Visual)   (blockIcon Visual)
     ]
 
-  actionButton :: Component -> Component
-  actionButton icon = D.li {}
-    [D.a {className: "tiny secondary button has-tooltip"}
-      [icon]
-    ]
+  blockIcon :: BlockType -> Component
+  blockIcon Markdown = markdownIcon
+  blockIcon SQL      = sqlIcon
+  blockIcon Visual   = visualIcon

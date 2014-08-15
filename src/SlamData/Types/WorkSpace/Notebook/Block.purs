@@ -23,7 +23,8 @@ module SlamData.Types.Workspace.Notebook.Block where
   import qualified Data.Map as M
 
   newtype BlockID = BlockID UUID
-  newtype Block = Block
+  newtype Block = Block BlockRec
+  type BlockRec =
     { ident     :: BlockID
     , blockType :: BlockType
     , content   :: String
