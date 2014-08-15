@@ -63,6 +63,25 @@
             } else if (jsTypes.isHideSettings(newEvent)) {
                 newState.showSettings = false;
                 respond(newState);
+            } else if (jsTypes.isCreateNotebook(newEvent)) {
+                var ident = uuid.v4();
+                var blocks = [];
+                var name = "Untitled";
+                var path = "/";
+                var notebook = {
+                    ident: ident,
+                    blocks: blocks,
+                    name: name,
+                    path: path
+                };
+                newState.notebooks.push(notebook);
+                respond(newState);
+            } else if (jsTypes.isCloseNotebook(newEvent)) {
+                var ident = newEvent.value0;
+                newState.notebooks = newState.notebooks.filter(function(nb) {
+                    return nb.ident !== ident;
+                });
+                respond(newState);
             } else {
                 // We can't do anything else, just pass it on back.
                 respond(newState);

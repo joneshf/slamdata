@@ -44,7 +44,7 @@ module SlamData.App.Workspace (workspace, WorkspaceProps(), WorkspaceState()) wh
              -> Component
   workspace' props = D.div {className: "row", id: "main-row"}
     [ D.div {className: "small-5 medium-3 large-2 columns", id: "filesystem"}
-      [filesystem props.state.files]
+      [filesystem {files: props.state.files} []]
     , D.div {className: "small-7 medium-9 large-10 columns", id: "notebook"}
       [notebooks props []]
     ]

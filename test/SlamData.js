@@ -2,7 +2,7 @@ var qs = require('querystring')
   , config =
     { serverLocation: 'http://localhost'
     , serverPort: 8080
-    , javaLocation: '/usr/bin/java'
+    , javaLocation: 'java'
     , sePort: 8080
     , seMountPath: '/'
     , seMongoURI: 'mongodb://localhost:27017'

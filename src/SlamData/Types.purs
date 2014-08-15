@@ -31,7 +31,7 @@ module SlamData.Types where
   import React.Types (React())
 
   import SlamData.Types.Workspace.FileSystem (FileType())
-  import SlamData.Types.Workspace.Notebook (Notebook())
+  import SlamData.Types.Workspace.Notebook (Notebook(), NotebookID())
 
   import qualified Data.Map as M
 
@@ -87,6 +87,7 @@ module SlamData.Types where
                        | SaveSEConfig SEConfig
                        | ReadFileSystem
                        | CreateNotebook
+                       | CloseNotebook NotebookID
                        | ShowSettings
                        | HideSettings
 

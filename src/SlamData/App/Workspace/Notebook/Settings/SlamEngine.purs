@@ -137,8 +137,8 @@ module SlamData.App.Workspace.Notebook.Settings.SlamEngine
                                    -> Tuple String Mounting
                                    -> Component
   slamEngineMountingMongoDBDatabse this (Tuple path mounting) = D.div {}
-    [ D.label {htmlFor: "mongodb-mongouri"} [D.rawText "MongoUri"]
-    , D.input { name: "mongodb-mongouri"
+    [ D.label {htmlFor: "mongodb-database"} [D.rawText "Database"]
+    , D.input { name: "mongodb-database"
               , onChange: eventHandler this \this e -> do
                 let state' = this.state # _seMountings
                            %~ ix path

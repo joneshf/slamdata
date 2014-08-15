@@ -1,15 +1,30 @@
-module SlamData.App.Workspace.FileSystem (filesystem) where
+module SlamData.App.Workspace.FileSystem
+  ( filesystem
+  , FileSystemProps()
+  , FileSystemState()
+  ) where
 
-  import React.Types (Component())
+  import Data.Function (mkFn3)
+
+  import React (createClass, spec)
+  import React.Types (Component(), ComponentClass())
 
   import SlamData.Components (dirOpenIcon, fileIcon)
   import SlamData.Types.Workspace.FileSystem (FileType(..), FileTypeRec())
 
   import qualified React.DOM as D
 
-  filesystem :: [FileType] -> Component
-  filesystem files = D.div {className: "slamdata-panel"}
-    [fsTab, fsContent files]
+  type FileSystemProps = {files :: [FileType]}
+  type FileSystemState = {}
+
+  filesystem :: ComponentClass FileSystemProps FileSystemState
+  filesystem = createClass spec
+    { displayName = "FileSystem"
+    , shouldComponentUpdate = mkFn3 \this props _ -> pure $
+      this.props.files /= props.files
+    , render = \this -> pure $ D.div {className: "slamdata-panel"}
+      [fsTab, fsContent this.props.files]
+    }
 
   fsTab :: Component
   fsTab = D.dl {className: "tabs", "data-tab": "true"}

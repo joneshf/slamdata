@@ -20,7 +20,8 @@ module SlamData.Types.Workspace.Notebook where
   import qualified Data.Map as M
 
   newtype NotebookID = NotebookID UUID
-  newtype Notebook = Notebook
+  newtype Notebook = Notebook NotebookRec
+  type NotebookRec =
     { ident  :: NotebookID
     , blocks :: [Block]
     , name   :: String

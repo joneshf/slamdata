@@ -15,6 +15,11 @@ module SlamData.Types.Workspace.FileSystem where
   newtype FileTypes = FileTypes FileTypesRec
   type FileTypesRec = {children :: [FileType]}
 
+  instance eqFileType :: Eq FileType where
+    (==) (FileType ft) (FileType ft') =
+      ft.name == ft'.name && ft."type" == ft'."type"
+    (/=) ft ft' = not (ft == ft')
+
   instance decodeFileType :: DecodeJson FileType where
     decodeJson json = maybe (Left "Not a file type") Right $ do
       obj <- toObject json
