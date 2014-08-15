@@ -55,12 +55,14 @@ module SlamData.Components where
   actionButton :: forall eff fields props state
                .  ReactThis fields {request :: SlamDataRequest eff | props} state
                -> SlamDataEventTy
+               -> String
                -> Component
                -> Component
-  actionButton this event icon = D.li {}
+  actionButton this event title icon = D.li {}
     [D.a { className: "tiny secondary button has-tooltip"
          , onClick: eventHandler this \this -> pure $
             this.props.request event
+         , title: title
          }
       [icon]
     ]

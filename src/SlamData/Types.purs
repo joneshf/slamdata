@@ -32,7 +32,11 @@ module SlamData.Types where
 
   import SlamData.Types.Workspace.FileSystem (FileType())
   import SlamData.Types.Workspace.Notebook (Notebook(), NotebookID())
-  import SlamData.Types.Workspace.Notebook.Block (BlockType(), BlockID())
+  import SlamData.Types.Workspace.Notebook.Block
+    ( Block()
+    , BlockID()
+    , BlockType()
+    )
 
   import qualified Data.Map as M
 
@@ -93,6 +97,8 @@ module SlamData.Types where
                        | HideSettings
                        | CreateBlock NotebookID BlockType
                        | DeleteBlock NotebookID BlockID
+                       | EditBlock Notebook Block
+                       | EvalBlock Notebook Block
 
   type SlamDataRequest eff
     =  SlamDataEventTy

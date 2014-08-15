@@ -236,6 +236,7 @@ gulp.task('browserify', ['compile', 'browserify-index'], function() {
         .require('./output/node_modules/SlamData.Helpers', {expose: 'SlamData.Helpers'})
         .require('./output/node_modules/SlamData.Types', {expose: 'SlamData.Types'})
         .require('./output/node_modules/SlamData.Types.JS', {expose: 'SlamData.Types.JS'})
+        .require('./output/node_modules/SlamData.Types.Workspace.Notebook.Block', {expose: 'SlamData.Types.Workspace.Notebook.Block'})
         .bundle()
         .pipe(sourceStream('slamdata.js'))
         .pipe(gulp.dest('js'))

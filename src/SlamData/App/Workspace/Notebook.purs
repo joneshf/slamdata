@@ -156,24 +156,24 @@ module SlamData.App.Workspace.Notebook
     D.div {className: "content" ++ activate (Just nb.ident) this.state.active}
       [settings {request: this.props.request, state: this.props.state} []
       ]
-  reifyContent this (Notebook nb) =
-    D.div {className: "content" ++ activate (Just nb.ident) this.state.active}
+  reifyContent this nb@(Notebook nb') =
+    D.div {className: "content" ++ activate (Just nb'.ident) this.state.active}
       [ D.div {className: "toolbar button-bar"}
-        [internalActions this nb.ident]
+        [internalActions this nb'.ident]
       , D.hr {} []
       , D.div {className: "actual-content"}
-        (reifyBlock this nb.ident <$> nb.blocks)
+        (reifyBlock this nb <$> nb'.blocks)
       ]
 
   reifyBlock :: forall fields eff
              .  ReactThis fields (NotebookProps eff) NotebookState
-             -> NotebookID
+             -> Notebook
              -> Block
              -> Component
-  reifyBlock this ident b@(Block b') =
+  reifyBlock this nb b@(Block b') =
     block { block: b
           , key: b'.ident
-          , notebookID: ident
+          , notebook: nb
           , request: this.props.request
           }
       []
@@ -183,10 +183,13 @@ module SlamData.App.Workspace.Notebook
                   -> NotebookID
                   -> Component
   internalActions this ident = D.ul {className: "button-group"}
-    [ actionButton this (CreateBlock ident Markdown) (blockIcon Markdown)
-    , actionButton this (CreateBlock ident SQL)      (blockIcon SQL)
-    , actionButton this (CreateBlock ident Visual)   (blockIcon Visual)
-    ]
+    (actions (actionButton this) ident <$> [Markdown, SQL, Visual])
+
+  actions :: (SlamDataEventTy -> String -> Component -> Component)
+          -> NotebookID
+          -> BlockType
+          -> Component
+  actions f ident ty = f (CreateBlock ident ty) (show ty) (blockIcon ty)
 
   blockIcon :: BlockType -> Component
   blockIcon Markdown = markdownIcon

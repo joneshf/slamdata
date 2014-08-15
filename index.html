@@ -29,8 +29,9 @@
     <script type="text/javascript">
         var sd = require('SlamData');
         var helpers = require('SlamData.Helpers');
-        var jsTypes = require('SlamData.Types.JS');
         var types = require('SlamData.Types');
+        var jsTypes = require('SlamData.Types.JS');
+        var blockTypes = require('SlamData.Types.Workspace.Notebook.Block');
         // Load up slamdata.
         var state = {
             files: [],
@@ -46,6 +47,7 @@
         var respond = function(data) {
             return emitter.emit(types.responseEvent, data);
         }
+        var converter = new Showdown.converter();
         emitter.on(types.requestEvent, function(request) {
             var newEvent = request.event;
             // Mutation sucks.
@@ -83,12 +85,16 @@
                 });
                 respond(newState);
             } else if (jsTypes.isCreateBlock(newEvent)) {
-                var ident = uuid.v4();
-                var blockType = newEvent.value1;
-                var content = '';
+                var newBlock = {
+                    ident: uuid.v4(),
+                    blockType: newEvent.value1,
+                    blockMode: blockTypes.Edit.value,
+                    editContent: '',
+                    evalContent: ''
+                };
                 newState.notebooks = newState.notebooks.map(function(nb) {
                     if (nb.ident === newEvent.value0) {
-                        nb.blocks.push({ident: ident, blockType: blockType, content: content});
+                        nb.blocks.push(newBlock);
                     }
                     return nb;
                 });
@@ -98,6 +104,40 @@
                     if (nb.ident === newEvent.value0) {
                         nb.blocks = nb.blocks.filter(function(b) {
                             return b.ident !== newEvent.value1;
+                        });
+                    }
+                    return nb;
+                });
+                respond(newState);
+            } else if (jsTypes.isEditBlock(newEvent)) {
+                var block = newEvent.value1;
+                var notebook = newEvent.value0;
+                newState.notebooks = newState.notebooks.map(function(nb) {
+                    if (nb.ident === notebook.ident) {
+                        nb.blocks = nb.blocks.map(function(b) {
+                            if (b.ident === block.ident) {
+                                b.blockMode = blockTypes.Edit.value;
+                            }
+                            return b;
+                        });
+                    }
+                    return nb;
+                });
+                respond(newState);
+            } else if (jsTypes.isEvalBlock(newEvent)) {
+                var block = newEvent.value1;
+                var notebook = newEvent.value0;
+                if (jsTypes.isMarkdown(block.blockType)) {
+                    block.evalContent = converter.makeHtml(block.editContent);
+                }
+                newState.notebooks = newState.notebooks.map(function(nb) {
+                    if (nb.ident === notebook.ident) {
+                        nb.blocks = nb.blocks.map(function(b) {
+                            if (b.ident === block.ident) {
+                                b.evalContent = block.evalContent;
+                                b.blockMode = blockTypes.Eval.value;
+                            }
+                            return b;
                         });
                     }
                     return nb;

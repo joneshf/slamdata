@@ -4,16 +4,29 @@ module SlamData.App.Workspace.Notebook.Block
   , BlockState()
   ) where
 
-  import Control.Lens ((^.), (..))
+  import Control.Lens ((^.), (..), (.~))
 
-  import React (coerceThis, createClass, spec)
+  import React (coerceThis, createClass, eventHandler, spec)
   import React.Types (Component(), ComponentClass(), ReactThis())
 
   import SlamData.Components (actionButton, closeIcon)
-  import SlamData.Lens (_blockRec, _ident)
+  import SlamData.Helpers (value)
+  import SlamData.Lens
+    ( _blockRec
+    , _blockMode
+    , _editContent
+    , _evalContent
+    , _ident
+    , _notebookRec
+    )
   import SlamData.Types (SlamDataEventTy(..), SlamDataRequest())
-  import SlamData.Types.Workspace.Notebook (NotebookID())
-  import SlamData.Types.Workspace.Notebook.Block (Block(..), BlockID(), BlockType(..))
+  import SlamData.Types.Workspace.Notebook (Notebook())
+  import SlamData.Types.Workspace.Notebook.Block
+    ( Block(..)
+    , BlockID()
+    , BlockMode(..)
+    , BlockType(..)
+    )
 
   import qualified React.DOM as D
 
@@ -22,22 +35,29 @@ module SlamData.App.Workspace.Notebook.Block
     -- This is needed so react doesn't try to outsmart itself
     -- http://facebook.github.io/react/docs/multiple-components.html#dynamic-children
     , key        :: BlockID
-    , notebookID :: NotebookID
+    , notebook   :: Notebook
     , request    :: SlamDataRequest eff
     }
-  type BlockState = {}
+  type BlockState =
+    { editContent :: String
+    , evalContent :: String
+    }
   type BlockRowProps = {styles :: String}
   type BlockRowState = {}
 
   block :: forall eff. ComponentClass (BlockProps eff) BlockState
   block = createClass spec
     { displayName = "Block"
+    , getInitialState = \this -> pure
+      { editContent: this.props.block^._blockRec.._editContent
+      , evalContent: this.props.block^._blockRec.._evalContent
+      }
     , render = \this -> pure $ D.div {className: "block"}
       [ blockRow {styles: "block-toolbar toolbar"}
         [ typeName this.props.block
         , toolbar $ coerceThis this
         ]
-      , blockContent this.props.block
+      , blockContent $ coerceThis this
       ]
     }
 
@@ -68,26 +88,51 @@ module SlamData.App.Workspace.Notebook.Block
     , D.ul {className: "right button-group"}
       [actionButton
         this
-        (DeleteBlock this.props.notebookID $ this.props.block^._blockRec.._ident)
+        (DeleteBlock (this.props.notebook^._notebookRec.._ident)
+                     (this.props.block^._blockRec.._ident))
+        "Close"
         closeIcon
       ]
     ]
 
-  blockContent :: Block -> Component
-  blockContent (Block b) = blockRow {styles: "block-content"}
-    [D.div {}
-      [D.textarea { autoFocus: "true"
-                  , className: "block-editor"
-                  -- , onBlur: \_ -> eval
-                  -- , onChange: $ \e -> do
-                  --     pure $ writeState {edit: Edit, content: e.target.value}
-                  -- , onKeyPress: handleKeyPress
-                  , ref: "editor"
-                  , value: b.content
-                  }
-        []
+  blockContent :: forall eff fields
+               .  ReactThis fields (BlockProps eff) BlockState
+               -> Component
+  blockContent this = case this.props.block^._blockRec.._blockMode of
+    Edit -> blockRow {styles: "block-content"}
+      [D.div {}
+        [D.textarea
+          { autoFocus: "true"
+          , className: "block-editor"
+          , onBlur: eventHandler this \this _ ->
+            let content = this.state.editContent
+                block' = this.props.block # _blockRec.._editContent .~ content
+            in this.props.request $
+              EvalBlock this.props.notebook block'
+          , onChange: eventHandler this \this e -> pure $
+            this.setState this.state{editContent = value e.target}
+          , onKeyUp: eventHandler this \this k ->
+            if k.ctrlKey && k.key == "Enter" then
+              let content = this.state.editContent
+                  block' = this.props.block # _blockRec.._editContent .~ content
+              in this.props.request $
+                EvalBlock this.props.notebook block'
+            else
+              pure unit
+          , value: this.state.editContent
+          }
+          []
+        ]
       ]
-    ]
+    Eval -> blockRow {styles: "block-content"}
+      [D.div { className: "evaled-block"
+             , onClick: eventHandler this \this _ -> this.props.request $
+                EditBlock this.props.notebook this.props.block
+             }
+        [D.span {dangerouslySetInnerHTML: {__html: this.props.block^._blockRec.._evalContent}}
+          []
+        ]
+      ]
 
 --   foreign import scu
 --     "function scu(p, s) {\
@@ -155,8 +200,3 @@ module SlamData.App.Workspace.Notebook.Block
 --                   []
 --       ]
 --     ]
-
---   handleKeyPress k = do
---     if (k.ctrlKey && k.keyCode == 13) || k.keyCode == 10
---       then eval
---       else edit

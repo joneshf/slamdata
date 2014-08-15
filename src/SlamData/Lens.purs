@@ -74,3 +74,15 @@ module SlamData.Lens where
 
   _ident :: forall a r. LensP {ident :: a | r} a
   _ident f o@{ident = i} = (\i' -> o{ident = i'}) <$> f i
+
+  _content :: forall a r. LensP {content :: a | r} a
+  _content f o@{content = i} = (\i' -> o{content = i'}) <$> f i
+
+  _blockMode :: forall a r. LensP {blockMode :: a | r} a
+  _blockMode f o@{blockMode = i} = (\i' -> o{blockMode = i'}) <$> f i
+
+  _editContent :: forall a r. LensP {editContent :: a | r} a
+  _editContent f o@{editContent = i} = (\i' -> o{editContent = i'}) <$> f i
+
+  _evalContent :: forall a r. LensP {evalContent :: a | r} a
+  _evalContent f o@{evalContent = i} = (\i' -> o{evalContent = i'}) <$> f i
