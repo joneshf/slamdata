@@ -36,7 +36,7 @@ module SlamData.App.Workspace.Notebook
     , SlamDataEventTy(..)
     )
   import SlamData.Types.Workspace.Notebook (Notebook(..), NotebookID(..))
-  import SlamData.Types.Workspace.Notebook.Block (Block(), BlockType(..))
+  import SlamData.Types.Workspace.Notebook.Block (Block(..), BlockType(..))
 
   import qualified React.DOM as D
 
@@ -170,8 +170,13 @@ module SlamData.App.Workspace.Notebook
              -> NotebookID
              -> Block
              -> Component
-  reifyBlock this ident b =
-    block {block: b, notebookID: ident, request: this.props.request} []
+  reifyBlock this ident b@(Block b') =
+    block { block: b
+          , key: b'.ident
+          , notebookID: ident
+          , request: this.props.request
+          }
+      []
 
   internalActions :: forall eff fields
                   .  ReactThis fields (NotebookProps eff) NotebookState

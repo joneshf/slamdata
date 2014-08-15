@@ -13,12 +13,15 @@ module SlamData.App.Workspace.Notebook.Block
   import SlamData.Lens (_blockRec, _ident)
   import SlamData.Types (SlamDataEventTy(..), SlamDataRequest())
   import SlamData.Types.Workspace.Notebook (NotebookID())
-  import SlamData.Types.Workspace.Notebook.Block (Block(..), BlockType(..))
+  import SlamData.Types.Workspace.Notebook.Block (Block(..), BlockID(), BlockType(..))
 
   import qualified React.DOM as D
 
   type BlockProps eff =
     { block      :: Block
+    -- This is needed so react doesn't try to outsmart itself
+    -- http://facebook.github.io/react/docs/multiple-components.html#dynamic-children
+    , key        :: BlockID
     , notebookID :: NotebookID
     , request    :: SlamDataRequest eff
     }
