@@ -54,11 +54,10 @@
             var newState = _.snapshot(request.state);
             if (jsTypes.isReadFileSystem(newEvent)) {
                 var fs = helpers.serverURI(state.settings.sdConfig) + '/metadata/fs/'
-                oboe(fs)
-                    .done(function(files) {
-                        newState.files = files.children;
-                        respond(newState);
-                    })
+                oboe(fs).done(function(files) {
+                    newState.files = files.children;
+                    respond(newState);
+                });
             } else if (jsTypes.isShowSettings(newEvent)) {
                 newState.showSettings = true;
                 respond(newState);
@@ -66,18 +65,22 @@
                 newState.showSettings = false;
                 respond(newState);
             } else if (jsTypes.isCreateNotebook(newEvent)) {
-                var ident = uuid.v4();
-                var blocks = [];
-                var name = "Untitled";
-                var path = "/";
                 var notebook = {
-                    ident: ident,
-                    blocks: blocks,
-                    name: name,
-                    path: path
+                    ident: uuid.v4(),
+                    blocks: [],
+                    name: "Untitled",
+                    path: "/"
                 };
-                newState.notebooks.push(notebook);
-                respond(newState);
+                var url = helpers.serverURI(state.settings.sdConfig) +
+                    '/data/fs' + notebook.path + notebook.name + '/index.nb';
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: JSON.stringify(notebook)
+                }).done(function() {
+                    newState.notebooks.push(notebook);
+                    respond(newState);
+                });
             } else if (jsTypes.isCloseNotebook(newEvent)) {
                 var ident = newEvent.value0;
                 newState.notebooks = newState.notebooks.filter(function(nb) {
@@ -129,20 +132,49 @@
                 var notebook = newEvent.value0;
                 if (jsTypes.isMarkdown(block.blockType)) {
                     block.evalContent = converter.makeHtml(block.editContent);
+                    newState.notebooks = newState.notebooks.map(function(nb) {
+                        if (nb.ident === notebook.ident) {
+                            nb.blocks = nb.blocks.map(function(b) {
+                                if (b.ident === block.ident) {
+                                    b.evalContent = block.evalContent;
+                                    b.blockMode = blockTypes.Eval.value;
+                                }
+                                return b;
+                            });
+                        }
+                        return nb;
+                    });
+                    respond(newState);
+                } else if (jsTypes.isSQL(block.blockType)) {
+                    var baseUrl = helpers.serverURI(state.settings.sdConfig);
+                    var url = baseUrl + '/query/fs' + notebook.path + '?out=' +
+                        notebook.name + '/out1.sql';
+                    oboe({
+                        url: url,
+                        method: 'POST',
+                        body: block.editContent,
+                    }).done(function(data) {
+                        var out = data.out;
+                        var xhr = new XMLHttpRequest();
+                        xhr.onload = function() {
+                            newState.notebooks = newState.notebooks.map(function(nb) {
+                                if (nb.ident === notebook.ident) {
+                                    nb.blocks = nb.blocks.map(function(b) {
+                                        if (b.ident === block.ident) {
+                                            b.evalContent = xhr.responseText;
+                                            b.blockMode = blockTypes.Eval.value;
+                                        }
+                                        return b;
+                                    });
+                                }
+                                return nb;
+                            });
+                            respond(newState);
+                        }
+                        xhr.open('GET', baseUrl + '/data/fs' + out + '?limit=20');
+                        xhr.send(null);
+                    });
                 }
-                newState.notebooks = newState.notebooks.map(function(nb) {
-                    if (nb.ident === notebook.ident) {
-                        nb.blocks = nb.blocks.map(function(b) {
-                            if (b.ident === block.ident) {
-                                b.evalContent = block.evalContent;
-                                b.blockMode = blockTypes.Eval.value;
-                            }
-                            return b;
-                        });
-                    }
-                    return nb;
-                });
-                respond(newState);
             } else {
                 // We can't do anything else, just pass it on back.
                 respond(newState);

@@ -67,10 +67,10 @@ module SlamData.App.Workspace.Notebook.Block
     , render = \this -> pure $ D.div {className: this.props.styles ++ " row"}
       case this.props.children of
         (l:r:_) -> [ D.div {className: "large-1  columns"} [l]
-                   , D.div {className: "large-11 columns"} [r]
+                   , D.div {className: "large-11 columns right-side"} [r]
                    ]
         [r]     -> [ D.div {className: "large-1  columns"} []
-                   , D.div {className: "large-11 columns"} [r]
+                   , D.div {className: "large-11 columns right-side"} [r]
                    ]
         []      -> []
     }
