@@ -66,49 +66,66 @@
             return emitter.emit(types.responseEvent, data);
         }
         var converter = new Showdown.converter();
+        var insertChildren = function(f, dirs, fs, children) {
+            if (dirs.length === 1 && dirs[0] === fs[0].name + '/' && fs[0].type === "directory") {
+                var oldKids = fs[0].children;
+                fs[0].children = children.map(function(c) {
+                    return f(oldKids, c);
+                });
+                return fs
+            } else if (dirs.length === 1 && dirs[0] === fs[0].name && fs[0].type === "file") {
+                var oldKids = fs[0].children;
+                fs[0].children = children.map(f);
+                return fs
+            } else if (dirs.length > 1 && dirs[0] === fs[0].name) {
+                var kids = insertChildren(f, dirs.slice(1), fs[0].children, children);
+                fs[0].children = kids;
+                return fs;
+            } else {
+                return [fs[0]].concat(insertChildren(f, dirs, fs.slice(1), children));
+            }
+        }
         emitter.on(types.requestEvent, function(request) {
             var newEvent = request.event;
             // Mutation sucks.
             var newState = _.snapshot(request.state);
             if (jsTypes.isReadFileSystem(newEvent)) {
-                var path = newEvent.value0;
-                var dirs = ['/'].concat(path.split('/').slice(1, -1));
+                var dirs = newEvent.value0;
+                var path = dirs[0] + dirs.slice(1).join('/');
                 var fs = helpers.serverURI(state.settings.sdConfig) + '/metadata/fs' + path;
-                oboe(fs).done(function(files) {
-                    var insertChildren = function(dirs, fs, children) {
-                        if (dirs.length === 1 && dirs[0] === fs[0].name) {
-                            var oldKids = fs[0].children;
-                            fs[0].children = children.map(function(c) {
-                                for (var i = 0; i < oldKids.length; ++i) {
-                                    var oldKid = oldKids[i];
-                                    if (oldKid.name == c.name && oldKid.type == c.type) {
-                                        if (oldKid.children != null) {
-                                            c.children = oldKid.children;
-                                        } else {
-                                            c.children = [];
-                                        }
-                                        return c;
-                                    }
-                                }
+                var insert = function(oldKids, c) {
+                    for (var i = 0; i < oldKids.length; ++i) {
+                        var oldKid = oldKids[i];
+                        if (oldKid.name == c.name && oldKid.type == c.type) {
+                            if (oldKid.children != null) {
+                                c.children = oldKid.children;
+                            } else {
                                 c.children = [];
-                                return c;
-                            })
-                            return fs
-                        } else if (dirs.length > 1 && dirs[0] === fs[0].name) {
-                            var kids = insertChildren(dirs.slice(1), fs[0].children, children);
-                            fs[0].children = kids;
-                            return fs;
-                        } else {
-                            return [fs[0]].concat(insertChildren(dirs, fs.slice(1), children));
+                            }
+                            return c;
                         }
                     }
-                    // var files1 = files.children.map(function(f) {
-                    //     if  (f.children == null) {
-                    //         f.children = [];
-                    //     }
-                    //     return f;
-                    // })
-                    newState.files = insertChildren(dirs, [newState.files], files.children)[0];
+                    c.children = [];
+                    return c;
+                };
+                oboe(fs).done(function(files) {
+                    newState.files = insertChildren(insert, dirs, [newState.files], files.children)[0];
+                    respond(newState);
+                });
+            } else if (jsTypes.isReadFields(newEvent)) {
+                var dirs = newEvent.value0;
+                var path = dirs[0] + dirs.slice(1).join('/');
+                var data = helpers.serverURI(state.settings.sdConfig) + '/data/fs' + path + '?limit=1';
+                var insert = function(field) {
+                    return {
+                        name: field,
+                        type: "field",
+                        children: []
+                    }
+                };
+                oboe(data).done(function(json) {
+                    var fields = Object.keys(json);
+                    newState.files = insertChildren(insert, dirs, [newState.files], fields)[0];
                     respond(newState);
                 });
             } else if (jsTypes.isShowSettings(newEvent)) {

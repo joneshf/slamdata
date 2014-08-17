@@ -37,7 +37,7 @@ module SlamData.App.Workspace (workspace, WorkspaceProps(), WorkspaceState()) wh
     -- We need to use a method that has access to the current `this`
     -- so we don't get caught with an old state.
     , requestFS = \this ->
-      this.props.request $ ReadFileSystem $ path this.props.state
+      this.props.request $ ReadFileSystem [path this.props.state]
     , componentDidMount = \this -> do
       this.requestFS
       interval 5000 $ this.requestFS -- Don't inline this!

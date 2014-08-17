@@ -92,7 +92,8 @@ module SlamData.Types where
 
   data SlamDataEventTy = SaveSDConfig SDConfig
                        | SaveSEConfig SEConfig
-                       | ReadFileSystem FilePath
+                       | ReadFileSystem [FilePath]
+                       | ReadFields [FilePath]
                        | CreateNotebook
                        | CloseNotebook NotebookID
                        | ShowSettings

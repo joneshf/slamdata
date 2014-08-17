@@ -7,7 +7,7 @@ module SlamData.App.Workspace.FileSystem
   import Control.Lens ((^.), (..))
   import Control.Monad.Eff (Eff())
 
-  import Data.Array (sort)
+  import Data.Array (snoc, sort)
   import Data.Function (mkFn3)
   import Data.String (charAt, length)
 
@@ -32,6 +32,11 @@ module SlamData.App.Workspace.FileSystem
     , request :: SlamDataRequest eff
     }
   type FileSystemState = {}
+  type FileSystemTreeProps eff =
+    { files :: FileType
+    , path :: [String]
+    , request :: SlamDataRequest eff
+    }
   type FileSystemTreeState =
     {collapsed :: Boolean}
 
@@ -59,39 +64,43 @@ module SlamData.App.Workspace.FileSystem
         ]
       , D.hr {} []
       , D.div {className: "actual-content"}
-        [reify {files: files, request: request} []]
+        [reify {files: files, request: request, path: []} []]
       ]
     ]
 
-  reify :: forall eff. ComponentClass (FileSystemProps eff) FileSystemTreeState
+  reify :: forall eff. ComponentClass (FileSystemTreeProps eff) FileSystemTreeState
   reify = createClass spec
     { displayName = "FileSystemTree"
     , getInitialState = \_ -> pure {collapsed: true}
     , render = \this -> case this.props.files of
       (FileType {"type" = "file", name = n}) -> pure $ D.div {} [D.rawText n]
-      (FileType {"type" = "directory", name = n, children = c}) -> pure $
-        treeView { collapsed: this.state.collapsed
-                 , defaultCollapsed: true
-                 , nodeLabel: D.span
-                    {onClick: eventHandler (coerceThis this) toggleTree}
-                    [D.rawText (this.props.files^._fileTypeRec.._name)]
-                 , onClick: eventHandler (coerceThis this) toggleTree
-
-                 }
-          ((\f -> reify {files: f, request: this.props.request} []) <$> sort (this.props.files^._fileTypeRec.._children))
+      (FileType {"type" = "directory", name = n, children = c}) -> do
+        let name = this.props.files^._fileTypeRec.._name
+        let path = this.props.path `snoc` name
+        let children = sort (this.props.files^._fileTypeRec.._children)
+        let req = this.props.request
+        pure $ treeView
+          { collapsed: this.state.collapsed
+          , defaultCollapsed: true
+          , nodeLabel: D.span
+             {onClick: eventHandler (coerceThis this) toggleTree}
+             [D.rawText name]
+          , onClick: eventHandler (coerceThis this) toggleTree
+          }
+          ((\f -> reify {files: f, request: req, path: path} []) <$> children)
     }
 
   toggleTree :: forall fields eff eff' event
-             .  ReactThis fields (FileSystemProps eff) FileSystemTreeState
+             .  ReactThis fields (FileSystemTreeProps eff) FileSystemTreeState
              -> ReactSyntheticEvent event
              -> Eff (SlamDataRequestEff eff) Unit
   toggleTree this _ =
-    if this.state.collapsed then do
-      this.props.request $ ReadFileSystem $ normalize (this.props.files^._fileTypeRec.._name)
+    let name = this.props.files^._fileTypeRec.._name
+        path = this.props.path `snoc` (name ++ "/")
+        -- joinedPath = if path == [] then "" else joinWith "/" path
+        -- joined = joinedPath ++ (this.props.files^._fileTypeRec.._name) ++ "/"
+    in if this.state.collapsed then do
+      this.props.request $ ReadFileSystem path
       pure $ this.setState {collapsed: not this.state.collapsed}
     else
       pure $ this.setState {collapsed: not this.state.collapsed}
-
-  normalize path | length path > 0 && charAt 0 path /= "/" = "/" ++ path ++ "/"
-  normalize path | length path == 0                        = "/"
-  normalize path                                           =        path ++ "/"

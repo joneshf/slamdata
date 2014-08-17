@@ -93,7 +93,7 @@ module SlamData.App.Workspace.Notebook.Block
                -> Component
   blockContent this = case this.props.block^._blockRec of
     {blockMode = Edit, blockType = Visual} ->
-      visualEditor {files: this.props.files} []
+      visualEditor {files: this.props.files, request: this.props.request} []
     {blockMode = Edit}                     -> blockEditor this
     {blockMode = Eval}                     -> evaluatedBlock this
 

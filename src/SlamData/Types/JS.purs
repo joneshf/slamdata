@@ -14,6 +14,9 @@ module SlamData.Types.JS where
   isReadFileSystem :: SlamDataEventTy -> Boolean
   isReadFileSystem (ReadFileSystem _) = true
   isReadFileSystem _                  = false
+  isReadFields :: SlamDataEventTy -> Boolean
+  isReadFields (ReadFields _) = true
+  isReadFields _              = false
   isCreateNotebook :: SlamDataEventTy -> Boolean
   isCreateNotebook CreateNotebook = true
   isCreateNotebook _              = false
