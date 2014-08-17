@@ -133,3 +133,8 @@ module SlamData.Helpers where
     "function value(el) {\
     \  return el.value;\
     \}" :: Element -> String
+
+  foreign import checked
+    "function checked(el) {\
+    \  return el.checked;\
+    \}" :: Element -> Boolean

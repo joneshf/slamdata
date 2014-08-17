@@ -32,20 +32,11 @@
     <script src="bower_components/tiny-emitter/dist/tinyemitter.js"></script>
     <script src="js/slamdata.js"></script>
     <script type="text/javascript">
-        var Alternative = require('Control.Alternative');
-        var Identity = require('Control.Monad.Identity');
-        var Argonaut = require('Data.Argonaut');
-        var ArgonautCore = require('Data.Argonaut.Core');
-        var ArgonautPrinter = require('Data.Argonaut.Printer');
-        var Either = require('Data.Either');
         var sd = require('SlamData');
         var helpers = require('SlamData.Helpers');
         var types = require('SlamData.Types');
         var jsTypes = require('SlamData.Types.JS');
         var blockTypes = require('SlamData.Types.Workspace.Notebook.Block');
-        var Parser = require('Text.Parsing.Parser');
-        var ParserCombinators = require('Text.Parsing.Parser.Combinators');
-        var ParserString = require('Text.Parsing.Parser.String');
         // Load up slamdata.
         var state = {
             files: {
