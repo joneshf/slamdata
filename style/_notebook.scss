@@ -54,15 +54,12 @@
     }
 }
 
-.block-sql .evaled-block {
-    ul {
-        list-style-type: none;
-        span {
-            font-family: monospace;
-            font-size: 10pt;
-        }
+.block-SQL .evaled-block {
+    span {
+        font-family: monospace;
+        font-size: 10pt;
     }
-    max-height: 250px;
+    max-height: 150px;
     overflow-y: auto;
 }
 

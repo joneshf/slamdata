@@ -15,7 +15,6 @@ module SlamData.Types.Workspace.Notebook where
   import Node.UUID (UUID())
 
   import SlamData.Types.Workspace.Notebook.Block (Block())
-  import SlamData.Types.Workspace.Notebook.Block (Block())
 
   import qualified Data.Map as M
 

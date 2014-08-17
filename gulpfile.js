@@ -52,6 +52,7 @@ var paths = {
         css: [ 'bower_components/c3/c3.css'
              , 'bower_components/entypo/font/entypo.css'
              , 'bower_components/fontawesome/css/font-awesome.css'
+             , 'bower_components/react-treeview/react-treeview.css'
              ],
         entypo: [ 'bower_components/entypo/font/entypo.eot'
                 , 'bower_components/entypo/font/entypo.svg'
@@ -68,6 +69,7 @@ var paths = {
             , 'bower_components/node-uuid/uuid.js'
             , 'bower_components/oboe/dist/oboe-browser.js'
             , 'bower_components/react/react-with-addons.js'
+            , 'bower_components/react-treeview/react-treeview.js'
             , 'bower_components/showdown/src/showdown.js'
             , 'js/slamdata.js'
             ]
@@ -232,11 +234,20 @@ gulp.task('bower-node-webkit', bowerLib('node-webkit'));
 
 gulp.task('browserify', ['compile', 'browserify-index'], function() {
     return browserify('./output/index.js')
+        .require('./output/node_modules/Control.Alternative', {expose: 'Control.Alternative'})
+        .require('./output/node_modules/Control.Monad.Identity', {expose: 'Control.Monad.Identity'})
+        .require('./output/node_modules/Data.Argonaut', {expose: 'Data.Argonaut'})
+        .require('./output/node_modules/Data.Argonaut.Core', {expose: 'Data.Argonaut.Core'})
+        .require('./output/node_modules/Data.Argonaut.Printer', {expose: 'Data.Argonaut.Printer'})
+        .require('./output/node_modules/Data.Either', {expose: 'Data.Either'})
         .require('./output/node_modules/SlamData', {expose: 'SlamData'})
         .require('./output/node_modules/SlamData.Helpers', {expose: 'SlamData.Helpers'})
         .require('./output/node_modules/SlamData.Types', {expose: 'SlamData.Types'})
         .require('./output/node_modules/SlamData.Types.JS', {expose: 'SlamData.Types.JS'})
         .require('./output/node_modules/SlamData.Types.Workspace.Notebook.Block', {expose: 'SlamData.Types.Workspace.Notebook.Block'})
+        .require('./output/node_modules/Text.Parsing.Parser', {expose: 'Text.Parsing.Parser'})
+        .require('./output/node_modules/Text.Parsing.Parser.Combinators', {expose: 'Text.Parsing.Parser.Combinators'})
+        .require('./output/node_modules/Text.Parsing.Parser.String', {expose: 'Text.Parsing.Parser.String'})
         .bundle()
         .pipe(sourceStream('slamdata.js'))
         .pipe(gulp.dest('js'))

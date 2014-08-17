@@ -9,17 +9,25 @@ module SlamData.App.Workspace.Notebook.Block
   import React (coerceThis, createClass, eventHandler, spec)
   import React.Types (Component(), ComponentClass(), ReactThis())
 
+  import SlamData.App.Workspace.Notebook.Block.Common
+    ( BlockRowProps()
+    , BlockRowState()
+    , blockRow
+    )
+  import SlamData.App.Workspace.Notebook.Block.Visual (visualEditor)
   import SlamData.Components (actionButton, closeIcon)
   import SlamData.Helpers (value)
   import SlamData.Lens
-    ( _blockRec
-    , _blockMode
+    ( _blockMode
+    , _blockRec
+    , _blockType
     , _editContent
     , _evalContent
     , _ident
     , _notebookRec
     )
   import SlamData.Types (SlamDataEventTy(..), SlamDataRequest())
+  import SlamData.Types.Workspace.FileSystem (FileType())
   import SlamData.Types.Workspace.Notebook (Notebook())
   import SlamData.Types.Workspace.Notebook.Block
     ( Block(..)
@@ -31,7 +39,8 @@ module SlamData.App.Workspace.Notebook.Block
   import qualified React.DOM as D
 
   type BlockProps eff =
-    { block      :: Block
+    { files      :: FileType
+    , block      :: Block
     -- This is needed so react doesn't try to outsmart itself
     -- http://facebook.github.io/react/docs/multiple-components.html#dynamic-children
     , key        :: BlockID
@@ -42,8 +51,6 @@ module SlamData.App.Workspace.Notebook.Block
     { editContent :: String
     , evalContent :: String
     }
-  type BlockRowProps = {styles :: String}
-  type BlockRowState = {}
 
   block :: forall eff. ComponentClass (BlockProps eff) BlockState
   block = createClass spec
@@ -59,20 +66,6 @@ module SlamData.App.Workspace.Notebook.Block
         ]
       , blockContent $ coerceThis this
       ]
-    }
-
-  blockRow :: ComponentClass BlockRowProps BlockRowState
-  blockRow = createClass spec
-    { displayName = "BlockRow"
-    , render = \this -> pure $ D.div {className: this.props.styles ++ " row"}
-      case this.props.children of
-        (l:r:_) -> [ D.div {className: "large-1  columns"} [l]
-                   , D.div {className: "large-11 columns right-side"} [r]
-                   ]
-        [r]     -> [ D.div {className: "large-1  columns"} []
-                   , D.div {className: "large-11 columns right-side"} [r]
-                   ]
-        []      -> []
     }
 
   typeName :: Block -> Component
@@ -98,105 +91,49 @@ module SlamData.App.Workspace.Notebook.Block
   blockContent :: forall eff fields
                .  ReactThis fields (BlockProps eff) BlockState
                -> Component
-  blockContent this = case this.props.block^._blockRec.._blockMode of
-    Edit -> blockRow {styles: "block-content"}
-      [D.div {}
-        [D.textarea
-          { autoFocus: "true"
-          , className: "block-editor"
-          , onBlur: eventHandler this \this _ ->
+  blockContent this = case this.props.block^._blockRec of
+    {blockMode = Edit, blockType = Visual} ->
+      visualEditor {files: this.props.files} []
+    {blockMode = Edit}                     -> blockEditor this
+    {blockMode = Eval}                     -> evaluatedBlock this
+
+  blockEditor :: forall eff fields
+              .  ReactThis fields (BlockProps eff) BlockState
+              -> Component
+  blockEditor this = blockRow {styles: "block-content"}
+    [D.div {}
+      [D.textarea
+        { autoFocus: "true"
+        , className: "block-editor"
+        , onBlur: eventHandler this \this _ ->
+          let content = this.state.editContent
+              block' = this.props.block # _blockRec.._editContent .~ content
+          in this.props.request $ EvalBlock this.props.notebook block'
+        , onChange: eventHandler this \this e -> pure $
+          this.setState this.state{editContent = value e.target}
+        , onKeyUp: eventHandler this \this k ->
+          if k.ctrlKey && k.key == "Enter" then
             let content = this.state.editContent
                 block' = this.props.block # _blockRec.._editContent .~ content
-            in this.props.request $
-              EvalBlock this.props.notebook block'
-          , onChange: eventHandler this \this e -> pure $
-            this.setState this.state{editContent = value e.target}
-          , onKeyUp: eventHandler this \this k ->
-            if k.ctrlKey && k.key == "Enter" then
-              let content = this.state.editContent
-                  block' = this.props.block # _blockRec.._editContent .~ content
-              in this.props.request $
-                EvalBlock this.props.notebook block'
-            else
-              pure unit
-          , value: this.state.editContent
-          }
-          []
-        ]
+            in this.props.request $ EvalBlock this.props.notebook block'
+          else
+            pure unit
+        , value: this.state.editContent
+        }
+        []
       ]
-    Eval -> blockRow {styles: "block-content"}
+    ]
+
+  evaluatedBlock :: forall eff fields
+                 .  ReactThis fields (BlockProps eff) BlockState
+                 -> Component
+  evaluatedBlock this = let blockRec = this.props.block^._blockRec in
+    blockRow {styles: "block-content block-" ++ show blockRec.blockType}
       [D.div { className: "evaled-block"
              , onClick: eventHandler this \this _ -> this.props.request $
                 EditBlock this.props.notebook this.props.block
              }
-        [D.span {dangerouslySetInnerHTML: {__html: this.props.block^._blockRec.._evalContent}}
+        [D.span {dangerouslySetInnerHTML: {__html: blockRec.evalContent}}
           []
         ]
       ]
-
---   foreign import scu
---     "function scu(p, s) {\
---     \  return (!eqEditor(this.state.edit)(s.edit)) ||\
---     \         (!isEval(s.edit) && this.state.content !== s.content) ||\
---     \         (!eqBlockID(this.props.ident)(p.ident));\
---     \}" :: forall a. a
-
---   block :: forall eff state result extra. BlockProps eff state result extra -> UI
---   block =
---     mkUI spec{ getInitialState = pure {edit: Edit, content: ""}
---              , componentWillUpdate = mkFn2 cwu
---              , componentWillMount = cwm
---              , shouldComponentUpdate = scu
---              } do
---       state <- readState
---       props <- getProps
---       let content = state.content
---       let ty = props.blockType
---       pure $ D.div
---         [D.className "block"]
---         [ blockRow "block-toolbar toolbar" [blockType ty] [toolbar props]
---         , evalOrEdit state.edit props content
---         ]
-
---   cwm = do
---     props <- getProps
---     state <- readState
---     pure $ writeState state{content = props.content `getOrElse` ""}
---     pure {}
-
---   cwu :: forall eff state result a extra
---       .  BlockProps eff state result extra
---       -> BlockState
---       -> Eff a {}
---   cwu props state =
---     let rec = BlockSpec {blockType: props.blockType, content: Just $ state2Content state, ident: props.ident}
---         blocks = localGet Blocks
---         go (BlockSpec bs) = if bs.ident == props.ident then rec else BlockSpec bs
---         blocks' = go <$> blocks
---     in (pure $ localSet Blocks blocks') *> pure {}
-
---   evalOrEdit :: forall eff state result extra
---              .  Editor
---              -> BlockProps eff state result extra
---              -> String
---              -> UI
---   evalOrEdit _    p@{blockType=Visual}   = \s -> evalVisual s p
---   evalOrEdit Edit p                      = blockEditor
---   evalOrEdit Eval p@{blockType=Markdown} = \s -> evalMarkdown s {}
---   evalOrEdit Eval p@{blockType=SQL}      = \s -> evalSQL (deferred edit) s p
-
---   blockEditor :: String -> UI
---   blockEditor content = blockRow "block-content" []
---     [D.div'
---       [D.textarea [ D.autoFocus "true"
---                   , D.className "block-editor"
---                   , D.onBlur \_ -> eval
---                   , D.onChange $ \e -> do
---                       pure $ writeState {edit: Edit, content: e.target.value}
---                   , D.onKeyPress handleKeyPress
---                   , D.ref "editor"
---                   , D.value content
---                   ]
---                   []
---       ]
---     ]

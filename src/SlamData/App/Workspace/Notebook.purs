@@ -175,6 +175,7 @@ module SlamData.App.Workspace.Notebook
           , key: b'.ident
           , notebook: nb
           , request: this.props.request
+          , files: this.props.state.files
           }
       []
 

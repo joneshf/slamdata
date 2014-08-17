@@ -1,34 +1,27 @@
--- module SlamData.App.Workspace.Notebook.Block.Common where
+module SlamData.App.Workspace.Notebook.Block.Common
+  ( blockRow
+  , BlockRowProps()
+  , BlockRowState()
+  ) where
 
---   import React
+  import React (createClass, spec)
+  import React.Types (ComponentClass())
 
---   import SlamData.App.Notebook.Block.Types
---   import SlamData.Helpers
+  import qualified React.DOM as D
 
---   import qualified React.DOM as D
+  type BlockRowProps = {styles :: String}
+  type BlockRowState = {}
 
---   blockRow :: String -> [UI] -> [UI] -> UI
---   blockRow styles firstCol secondCol =
---     D.div [D.className $ styles ++ " row"]
---           [ D.div [D.className "large-1  columns"] firstCol
---           , D.div [D.className "large-11 columns right-side"] secondCol
---           ]
-
---   eval :: forall attrs.
---     EventHandlerContext (f :: ReadRefsEff { editor :: Component attrs {value :: String} })
---                         {}
---                         BlockState
---                         (ReactStateRW BlockState BlockState)
---   eval = do
---     refs <- getRefs
---     state <- readState
---     pure $ writeState state{edit = Eval, content = (getDOMNode refs.editor).value}
-
---   edit :: forall attrs.
---     EventHandlerContext (f :: ReadRefsEff { editor :: Component attrs {value :: String} }) -- Not sure why psc can't infer this with a type variable.
---                         {}
---                         BlockState
---                         (ReactStateRW BlockState BlockState)
---   edit = do
---     state <- readState
---     pure $ writeState state{edit = Edit, content = state.content}
+  blockRow :: ComponentClass BlockRowProps BlockRowState
+  blockRow = createClass spec
+    { displayName = "BlockRow"
+    , render = \this -> pure $ D.div {className: this.props.styles ++ " row"}
+      case this.props.children of
+        (l:r:_) -> [ D.div {className: "large-1  columns"} [l]
+                   , D.div {className: "large-11 columns right-side"} [r]
+                   ]
+        [r]     -> [ D.div {className: "large-1  columns"} []
+                   , D.div {className: "large-11 columns right-side"} [r]
+                   ]
+        []      -> []
+    }

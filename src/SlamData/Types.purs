@@ -40,6 +40,8 @@ module SlamData.Types where
 
   import qualified Data.Map as M
 
+  type FilePath = String
+
   -- TODO: These ports should be their own type, not `Number`.
   type Settings =
     { sdConfig :: SDConfig
@@ -65,7 +67,7 @@ module SlamData.Types where
 
   newtype SEConfig = SEConfig SEConfigRec
   type SEConfigRec =
-    { mountings :: M.Map String Mounting
+    { mountings :: M.Map FilePath Mounting
     , server    :: SEConfigServer
     }
 
@@ -90,7 +92,7 @@ module SlamData.Types where
 
   data SlamDataEventTy = SaveSDConfig SDConfig
                        | SaveSEConfig SEConfig
-                       | ReadFileSystem
+                       | ReadFileSystem FilePath
                        | CreateNotebook
                        | CloseNotebook NotebookID
                        | ShowSettings
@@ -102,15 +104,18 @@ module SlamData.Types where
 
   type SlamDataRequest eff
     =  SlamDataEventTy
-    -> Eff ( dom :: DOM
-           , event :: EventEff
-           , react :: React
-           , timer :: Timer
-           | eff
-           ) Unit
+    -> Eff (SlamDataRequestEff eff) Unit
+
+  type SlamDataRequestEff eff =
+    ( dom :: DOM
+    , event :: EventEff
+    , react :: React
+    , timer :: Timer
+    | eff
+    )
 
   type SlamDataState =
-    { files        :: [FileType]
+    { files        :: FileType
     , notebooks    :: [Notebook]
     , settings     :: Settings
     , showSettings :: Boolean

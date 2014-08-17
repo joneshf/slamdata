@@ -1,18 +1,24 @@
 module SlamData.App.Workspace (workspace, WorkspaceProps(), WorkspaceState()) where
 
+  import Control.Monad.Eff (Eff())
   import Control.Reactive.Timer (interval)
 
+  import Data.Array (head)
+  import Data.Tuple (fst)
+
   import React (createClass, spec)
-  import React.Types (Component(), ComponentClass())
+  import React.Types (Component(), ComponentClass(), ReactThis())
 
   import SlamData.App.Workspace.FileSystem (filesystem)
   import SlamData.App.Workspace.Notebook (notebooks)
-  import SlamData.Helpers (getOrElse, serverURI)
+  import SlamData.Helpers (defaultMountPath, getOrElse, serverURI)
   import SlamData.Lens (_mountings, _seConfigRec)
   import SlamData.Types
     ( SlamDataEventTy(..)
     , SlamDataRequest()
+    , SlamDataRequestEff()
     , SlamDataState()
+    , SEConfig(..)
     )
   import SlamData.Types.Workspace.FileSystem (FileType(), FileTypes(..))
 
@@ -30,7 +36,8 @@ module SlamData.App.Workspace (workspace, WorkspaceProps(), WorkspaceState()) wh
     { displayName = "Workspace"
     -- We need to use a method that has access to the current `this`
     -- so we don't get caught with an old state.
-    , requestFS = \this -> this.props.request ReadFileSystem
+    , requestFS = \this ->
+      this.props.request $ ReadFileSystem $ path this.props.state
     , componentDidMount = \this -> do
       this.requestFS
       interval 5000 $ this.requestFS -- Don't inline this!
@@ -44,7 +51,13 @@ module SlamData.App.Workspace (workspace, WorkspaceProps(), WorkspaceState()) wh
              -> Component
   workspace' props = D.div {className: "row", id: "main-row"}
     [ D.div {className: "small-5 medium-3 large-2 columns", id: "filesystem"}
-      [filesystem {files: props.state.files} []]
+      [filesystem {files: props.state.files, request: props.request}
+        []
+      ]
     , D.div {className: "small-7 medium-9 large-10 columns", id: "notebook"}
       [notebooks props []]
     ]
+
+  path :: SlamDataState -> String
+  path {settings = {seConfig = SEConfig {mountings = m}}} =
+    (fst <$> M.toList m # head) `getOrElse` defaultMountPath

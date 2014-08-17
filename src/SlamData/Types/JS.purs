@@ -12,8 +12,8 @@ module SlamData.Types.JS where
   isSaveSEConfig (SaveSEConfig _) = true
   isSaveSEConfig _                = false
   isReadFileSystem :: SlamDataEventTy -> Boolean
-  isReadFileSystem ReadFileSystem = true
-  isReadFileSystem _              = false
+  isReadFileSystem (ReadFileSystem _) = true
+  isReadFileSystem _                  = false
   isCreateNotebook :: SlamDataEventTy -> Boolean
   isCreateNotebook CreateNotebook = true
   isCreateNotebook _              = false

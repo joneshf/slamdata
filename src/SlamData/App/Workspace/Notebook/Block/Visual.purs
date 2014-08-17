@@ -1,57 +1,88 @@
--- module SlamData.App.Workspace.Notebook.Block.Visual (evalVisual) where
 
---   import React
+module SlamData.App.Workspace.Notebook.Block.Visual
+  ( visualEditor
+  , VisualProps()
+  , VisualState()
+  , VisualTab(..)
+  ) where
 
---   import SlamData.App.Notebook.Block.Common
---   import SlamData.App.Notebook.Block.Types
---   import SlamData.Helpers
+  import React (coerceThis, createClass, eventHandler, spec)
+  import React.Types (Component(), ComponentClass(), ReactThis())
 
---   import qualified Graphics.C3 as C3
---   import qualified React.DOM as D
+  import SlamData.Helpers (activate)
 
---   evalVisual :: forall eff state result extra
---              .  String
---              -> BlockProps eff state result extra
---              -> UI
---   evalVisual content = mkUI spec{componentDidMount=cdm} do
---     props <- getProps
---     pure $ blockRow "block-content" []
---       [D.div
---         [ D.className "evaled-block"
---         ]
---         [ D.div [D.idProp $ "chart-" ++ show props.ident] []
---         ]
---       ]
+  import SlamData.App.Workspace.Notebook.Block.Common (blockRow)
+  import SlamData.Types.Workspace.FileSystem (FileType(..))
 
---   -- ffi helpers
---   getOrElse_ = getOrElse
---   generate_ = C3.generate
+  import qualified React.DOM as D
 
---   foreign import cdm
---     "function cdm() {\
---     \  var defaultJson = '{\"dataSrc\": \"\", \"field\": \"\", \"visualType\": \"\"}';\
---     \  try {\
---     \    var content = JSON.parse(getOrElse_(this.props.content)(defaultJson));\
---     \  } catch (e) {\
---     \    var content = JSON.parse(defaultJson);\
---     \  }\
---     \  var opts = newOptions(this.props.ident)(content.field)(parseVisualType(content.visualType));\
---     \  var chart = generate_(opts)();\
---     \  var data = [];\
---     \  oboe(this.props.serverURI + '/data/fs' + this.props.serverFS + content.dataSrc)\
---     \    .node('!', function(json) {\
---     \      data.push(json[content.field]);\
---     \      chart.load({columns: [[content.field].concat(data)]});\
---     \    });\
---     \}" :: forall a. a
+  data VisualTab = DataSrcTab
+                 | FieldsTab
+                 | VisualTypeTab
 
---   newOptions :: BlockID -> String -> VisualType -> C3.Options
---   newOptions ident name ty = C3.options
---     { bindto= "#chart-" ++ show ident
---     , c3Data= [C3.c3Data{name= name, c3Type= ty}]
---     }
+  instance eqVisualTab :: Eq VisualTab where
+    (==) DataSrcTab    DataSrcTab    = true
+    (==) FieldsTab     FieldsTab     = true
+    (==) VisualTypeTab VisualTypeTab = true
+    (==) _             _             = false
+    (/=) vt vt' = not (vt == vt')
 
---   parseVisualType "bar" = C3.Bar
---   parseVisualType "line" = C3.Line
---   parseVisualType "pie" = C3.Pie
---   parseVisualType _ = C3.Bar
+  instance showVisualTab :: Show VisualTab where
+    show DataSrcTab    = "Data Source"
+    show FieldsTab     = "Fields"
+    show VisualTypeTab = "Type"
+
+  type VisualProps =
+    { files :: FileType
+    }
+  type VisualState =
+    { active :: VisualTab
+    }
+
+  visualEditor :: ComponentClass VisualProps VisualState
+  visualEditor = createClass spec
+    { displayName = "VisualEditor"
+    , getInitialState = \_ -> pure {active: DataSrcTab}
+    , render = \this -> pure $
+      blockRow {styles: "block-content edit-visual"}
+        [ visualTabs $ coerceThis this
+        , visualEditorContent $ coerceThis this
+        ]
+    }
+
+  visualTabs :: forall eff fields
+             .  ReactThis fields VisualProps VisualState
+             -> Component
+  visualTabs this = D.dl {className: "tabs vertical"}
+    (visualTab this <$> [DataSrcTab, FieldsTab, VisualTypeTab])
+
+  visualTab :: forall eff fields
+            .  ReactThis fields VisualProps VisualState
+            -> VisualTab
+            -> Component
+  visualTab this tab =
+    D.dd { className: "tab" ++ activate tab this.state.active
+         , onClick: eventHandler this \this _ -> pure $
+           this.setState this.state{active = tab}
+         }
+      [D.a {} [D.rawText $ show tab]]
+
+  visualEditorContent :: forall eff fields
+                      .  ReactThis fields VisualProps VisualState
+                      -> Component
+  visualEditorContent this = D.div {className: "tabs-content vertical"}
+    [ D.ul {className: "content" ++ activate DataSrcTab this.state.active}
+      []
+    , D.ul {className: "content" ++ activate FieldsTab this.state.active}
+      []
+    , D.div {className: "content" ++ activate VisualTypeTab this.state.active}
+      [ D.ul {className: "chart-type small-block-grid-5"}
+        []
+      , D.select {}
+        []
+      , D.div {className: "actions"}
+        [ D.a {className: "tiny button"}
+          [D.rawText "Create"]
+        ]
+      ]
+    ]

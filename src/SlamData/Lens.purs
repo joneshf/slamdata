@@ -81,8 +81,17 @@ module SlamData.Lens where
   _blockMode :: forall a r. LensP {blockMode :: a | r} a
   _blockMode f o@{blockMode = i} = (\i' -> o{blockMode = i'}) <$> f i
 
+  _blockType :: forall a r. LensP {blockType :: a | r} a
+  _blockType f o@{blockType = i} = (\i' -> o{blockType = i'}) <$> f i
+
   _editContent :: forall a r. LensP {editContent :: a | r} a
   _editContent f o@{editContent = i} = (\i' -> o{editContent = i'}) <$> f i
 
   _evalContent :: forall a r. LensP {evalContent :: a | r} a
   _evalContent f o@{evalContent = i} = (\i' -> o{evalContent = i'}) <$> f i
+
+  _children :: forall a r. LensP {children :: a | r} a
+  _children f o@{children = i} = (\i' -> o{children = i'}) <$> f i
+
+  _name :: forall a r. LensP {name :: a | r} a
+  _name f o@{name = i} = (\i' -> o{name = i'}) <$> f i
