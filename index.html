@@ -213,13 +213,17 @@
                         var out = data.out;
                         var xhr = new XMLHttpRequest();
                         xhr.onload = function() {
-                            var result = xhr.responseText;
-                            notebook.blocks = notebook.blocks.map(function(b) {
-                                if (b.ident === block.ident) {
-                                    b.evalContent = result;
-                                    b.blockMode = blockTypes.Eval.value;
+                            newState.notebooks = newState.notebooks.map(function(nb) {
+                                if (nb.ident === notebook.ident) {
+                                    nb.blocks = nb.blocks.map(function(b) {
+                                        if (b.ident === block.ident) {
+                                            b.evalContent = xhr.responseText;
+                                            b.blockMode = blockTypes.Eval.value;
+                                        }
+                                        return b;
+                                    });
                                 }
-                                return b;
+                                return nb;
                             });
                             respond(newState);
                         };
