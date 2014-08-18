@@ -230,6 +230,7 @@
                                         if (b.ident === block.ident) {
                                             b.evalContent = xhr.responseText;
                                             b.blockMode = blockTypes.Eval.value;
+                                            b.label = blockname;
                                         }
                                         return b;
                                     });

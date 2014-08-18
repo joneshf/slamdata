@@ -30,6 +30,7 @@ module SlamData.Types.Workspace.Notebook.Block where
     , blockType   :: BlockType
     , editContent :: String
     , evalContent :: String
+    , label       :: String
     }
 
   data BlockType = Markdown
@@ -89,11 +90,13 @@ module SlamData.Types.Workspace.Notebook.Block where
       blockType   <- M.lookup "blockType"   obj ?>>= "blockType"   >>= decodeJson
       editContent <- M.lookup "editContent" obj ?>>= "editContent" >>= decodeJson
       evalContent <- M.lookup "evalContent" obj ?>>= "evalContent" >>= decodeJson
+      label       <- M.lookup "label"       obj ?>>= "label"       >>= decodeJson
       pure $ Block { ident: ident
                    , blockMode: blockMode
                    , blockType: blockType
                    , editContent: editContent
                    , evalContent: evalContent
+                   , label: label
                    }
 
   instance decodeJsonBlockID :: DecodeJson BlockID where
@@ -120,6 +123,7 @@ module SlamData.Types.Workspace.Notebook.Block where
       ~> "blockMode"   := encodeJson b.blockMode
       ~> "editContent" := encodeJson b.editContent
       ~> "evalContent" := encodeJson b.evalContent
+      ~> "label"       := encodeJson b.label
       ~> jsonEmptyObject
 
   instance encodeJsonBlockID :: EncodeJson BlockID where

@@ -134,7 +134,9 @@ module SlamData.App.Workspace.Notebook.Block
                  -> Component
   evaluatedBlock this = let blockRec = this.props.block^._blockRec in
     blockRow {styles: "block-content block-" ++ show blockRec.blockType}
-      [D.div { className: "evaled-block"
+      [ D.div {className: "block-label"}
+        [D.rawText blockRec.label]
+      , D.div { className: "evaled-block"
              , onClick: eventHandler this \this _ -> this.props.request $
                 EditBlock this.props.notebook this.props.block
              }
@@ -148,7 +150,9 @@ module SlamData.App.Workspace.Notebook.Block
                        -> Component
   evaluatedVisualBlock this = let blockRec = this.props.block^._blockRec in
     blockRow {styles: "block-content block-" ++ show blockRec.blockType}
-      [D.div { className: "evaled-block"
+      [ D.div {className: "block-label"}
+        [D.rawText blockRec.label]
+      , D.div { className: "evaled-block"
              , onClick: eventHandler this \this _ -> this.props.request $
                 EditBlock this.props.notebook this.props.block
              }
