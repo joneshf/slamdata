@@ -11,20 +11,22 @@ module SlamData.NodeWebkit where
   --    The way it works is that it spins up the SlamEngine server and
   --    then starts SlamData.
 
+  import Control.Alt ((<|>))
   import Control.Lens ((^.), (..))
   import Control.Monad.Eff (Eff(..))
   import Control.Monad.Identity (Identity())
   import Control.Monad.Cont.Trans (runContT)
   import Control.Monad.Eff.Exception (Error())
 
-  import Data.Argonaut.Encode (encodeIdentity, EncodeJson)
-  import Data.Argonaut.Decode (decodeMaybe, DecodeJson)
-  import Data.Argonaut.Parser (parseMaybe)
-  import Data.Argonaut.Printer (printToString)
-  import Data.Either (either, Either())
+  import Data.Argonaut (decodeMaybe, encodeJson, jsonParser, printJson)
+  import Data.Argonaut.Decode (DecodeJson)
+  import Data.Argonaut.Encode (EncodeJson)
+  import Data.Array (head)
+  import Data.Either (either, Either(..))
   import Data.Function (mkFn0, mkFn1, mkFn3, runFn1, Fn1())
   import Data.Maybe (Maybe(..))
   import Data.Maybe.Unsafe (fromJust)
+  import Data.Tuple (fst)
 
   import Debug.Trace (trace, print, Trace())
 
@@ -46,9 +48,13 @@ module SlamData.NodeWebkit where
     )
 
   import SlamData (slamData)
-  import SlamData.Lens (_java, _nodeWebkit, _sdConfigRec)
-  import SlamData.Helpers (defaultSDConfig, defaultSEConfig, getOrElse)
-  import SlamData.Types (requestEvent, responseEvent, SlamDataEvent(..))
+  import SlamData.Lens (_java, _nodeWebkit, _sdConfigRec, _sdConfigNodeWebkit, _seConfigRec, _mountings)
+  import SlamData.Helpers (defaultMountPath, defaultSDConfig, defaultSEConfig, getOrElse)
+  import SlamData.Types (requestEvent, responseEvent, SlamDataEventTy(..))
+  import SlamData.Types.Workspace.FileSystem (FileType(..))
+  import Text.Parsing.Parser (runParser)
+
+  import qualified Data.Map as M
 
   foreign import platform "var platform = process.platform;" :: String
 
@@ -99,11 +105,13 @@ module SlamData.NodeWebkit where
   seJar :: FilePath
   seJar = "jar" </> "slamengine_2.10-0.1-SNAPSHOT-one-jar.jar"
 
-  showConfig :: forall a. (EncodeJson Identity Identity a) => a -> String
-  showConfig = encodeIdentity >>> printToString
+  showConfig :: forall a. (EncodeJson a) => a -> String
+  showConfig = encodeJson >>> printJson
 
-  parseConfig :: forall a. (DecodeJson Identity (Either String) a) => String -> Maybe a
-  parseConfig config = parseMaybe (requireConfig config) >>= decodeMaybe
+  parseConfig :: forall a. (DecodeJson a) => String -> Maybe a
+  parseConfig config = case runParser (requireConfig config) jsonParser of
+    Left err -> Nothing
+    Right config -> decodeMaybe config
 
   showError :: forall eff. Either Error Unit -> Eff (trace :: Trace | eff) Unit
   showError = either print pure
@@ -111,7 +119,9 @@ module SlamData.NodeWebkit where
   main = do
     let sdConfig = parseConfig sdConfigFile `getOrElse` defaultSDConfig
     let seConfig = parseConfig seConfigFile `getOrElse` defaultSEConfig
-    let java = sdConfig^._sdConfigRec.._nodeWebkit.._java
+    let java = sdConfig^._sdConfigRec.._nodeWebkit.._sdConfigNodeWebkit.._java
+    let mounts = head $ M.toList $ seConfig^._seConfigRec.._mountings
+    let mount = (fst <$> mounts) `getOrElse` defaultMountPath
 
     -- Start up SlamEngine.
     ChildProcess se <- spawn java ["-jar", seJar, seConfigFile] defaultSpawnOptions
@@ -135,10 +145,14 @@ module SlamData.NodeWebkit where
     e <- emitter
     e # on requestEvent (\event -> case event of
       SaveSDConfig sdC ->
-        writeTextFile UTF8 sdConfigFile (showConfig sdC) >>= showError
+        writeTextFile UTF8 sdConfigFile (showConfig sdC)
       SaveSEConfig seC ->
-        writeTextFile UTF8 seConfigFile (showConfig seC) >>= showError
+        writeTextFile UTF8 seConfigFile (showConfig seC)
       _ -> (e # emit responseEvent "butts") >>= \_ -> trace "butts")
 
     -- Start up SlamData.
-    slamData e {sdConfig: sdConfig, seConfig: seConfig}
+    slamData e { files: FileType {name: mount, "type": "directory", children: []}
+               , notebooks: []
+               , settings: {sdConfig: sdConfig, seConfig: seConfig}
+               , showSettings: false
+               }

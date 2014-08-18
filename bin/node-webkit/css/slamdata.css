@@ -2085,6 +2085,35 @@
   content: "\f1e2";
 }
 
+/* the tree node's style */
+.tree-view {
+  overflow-y: hidden;
+}
+
+/* style for the container */
+.tree-view_children {
+  margin-left: 16px;
+}
+
+.tree-view_children-collapsed {
+  height: 0px;
+}
+
+.tree-view_arrow {
+  cursor: pointer;
+  margin-right: 6px;
+  display: inline-block;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* rotate the triangle to close it */
+.tree-view_arrow-collapsed {
+  -webkit-transform: rotate(-90deg);
+}
+
 /* TODO: This needs to be re-factored into more manageable pieces. */
 /* line 324, ../bower_components/foundation/scss/foundation/components/_global.scss */
 meta.foundation-version {
@@ -10050,29 +10079,8 @@ th.hide-for-touch {
   }
 }
 /* line 2, ../style/_filesystem.scss */
-#filesystem .actual-content > ul {
-  margin-left: 0;
-}
-/* line 4, ../style/_filesystem.scss */
-#filesystem .actual-content > ul i {
-  padding-left: 10px;
-}
-/* line 7, ../style/_filesystem.scss */
-#filesystem .actual-content > ul span {
-  padding: 5px;
-}
-/* line 10, ../style/_filesystem.scss */
-#filesystem .actual-content > ul .selected i, #filesystem .actual-content > ul .selected span {
-  font-weight: bold;
-}
-/* line 13, ../style/_filesystem.scss */
-#filesystem .actual-content > ul, #filesystem .actual-content > ul ul {
-  list-style-type: none;
-  margin-bottom: 0;
-}
-/* line 16, ../style/_filesystem.scss */
-#filesystem .actual-content > ul li, #filesystem .actual-content > ul ul li {
-  margin-left: 15px;
+#filesystem .tree-view span {
+  cursor: pointer;
 }
 
 /* line 1, ../style/_notebook.scss */
@@ -10165,21 +10173,23 @@ th.hide-for-touch {
 }
 
 /* line 57, ../style/_notebook.scss */
-.block-sql .evaled-block {
-  max-height: 250px;
+.block-label {
+  padding: 10px;
+  text-align: center;
+}
+
+/* line 62, ../style/_notebook.scss */
+.block-SQL .evaled-block {
+  max-height: 150px;
   overflow-y: auto;
 }
-/* line 58, ../style/_notebook.scss */
-.block-sql .evaled-block ul {
-  list-style-type: none;
-}
-/* line 60, ../style/_notebook.scss */
-.block-sql .evaled-block ul span {
+/* line 63, ../style/_notebook.scss */
+.block-SQL .evaled-block span {
   font-family: monospace;
   font-size: 10pt;
 }
 
-/* line 70, ../style/_notebook.scss */
+/* line 72, ../style/_notebook.scss */
 #visual-modal:before {
   background: rgba(0, 0, 0, 0.6);
   bottom: 0;
@@ -10190,7 +10200,7 @@ th.hide-for-touch {
   top: 0;
   z-index: 100;
 }
-/* line 81, ../style/_notebook.scss */
+/* line 83, ../style/_notebook.scss */
 #visual-modal #visual-modal-content {
   display: block;
   height: 60%;
@@ -10204,55 +10214,55 @@ th.hide-for-touch {
   position: fixed;
   z-index: 200;
 }
-/* line 95, ../style/_notebook.scss */
+/* line 97, ../style/_notebook.scss */
 #visual-modal #visual-modal-content .tabs.vertical {
   width: 15%;
 }
-/* line 99, ../style/_notebook.scss */
+/* line 101, ../style/_notebook.scss */
 #visual-modal #visual-modal-content .tabs-content {
   height: 100%;
   overflow-x: hidden;
   width: 85%;
 }
-/* line 103, ../style/_notebook.scss */
+/* line 105, ../style/_notebook.scss */
 #visual-modal #visual-modal-content .tabs-content ul {
   list-style-type: none;
   width: auto;
 }
-/* line 108, ../style/_notebook.scss */
+/* line 110, ../style/_notebook.scss */
 #visual-modal #visual-modal-content .tabs-content .chart-type li {
   border: 1px solid lightgrey;
   color: #ff8000;
   margin: 10px;
   text-align: center;
 }
-/* line 113, ../style/_notebook.scss */
+/* line 115, ../style/_notebook.scss */
 #visual-modal #visual-modal-content .tabs-content .chart-type li.selected {
   box-shadow: 0 0 5px #ff8000;
 }
-/* line 116, ../style/_notebook.scss */
+/* line 118, ../style/_notebook.scss */
 #visual-modal #visual-modal-content .tabs-content .chart-type li:hover {
   color: #d66c00;
   cursor: pointer;
 }
-/* line 120, ../style/_notebook.scss */
+/* line 122, ../style/_notebook.scss */
 #visual-modal #visual-modal-content .tabs-content .chart-type li span {
   display: block;
   color: #222;
 }
-/* line 124, ../style/_notebook.scss */
+/* line 126, ../style/_notebook.scss */
 #visual-modal #visual-modal-content .tabs-content .chart-type li a {
   color: inherit;
 }
-/* line 127, ../style/_notebook.scss */
+/* line 129, ../style/_notebook.scss */
 #visual-modal #visual-modal-content .tabs-content .chart-type li i {
   font-size: 72px;
 }
-/* line 132, ../style/_notebook.scss */
+/* line 134, ../style/_notebook.scss */
 #visual-modal #visual-modal-content .tabs-content .actions {
   float: right;
 }
-/* line 134, ../style/_notebook.scss */
+/* line 136, ../style/_notebook.scss */
 #visual-modal #visual-modal-content .tabs-content .actions a {
   margin: 10px;
 }

@@ -54837,6 +54837,63 @@ module.exports = warning;
 },{"./emptyFunction":116}]},{},[88])
 (88)
 });
+/** * @jsx React.DOM */
+
+(function (window, React){
+  'use strict';
+
+  var TreeView = React.createClass({displayName: 'TreeView',
+    propTypes: {
+      collapsed: React.PropTypes.bool,
+      defaultCollapsed: React.PropTypes.bool,
+      nodeLabel: React.PropTypes.renderable.isRequired
+    },
+
+    getInitialState: function() {
+      return {collapsed: this.props.defaultCollapsed};
+    },
+
+    handleClick: function(a, b, c) {
+      this.setState({
+        collapsed: !this.state.collapsed
+      });
+      this.props.onClick && this.props.onClick(a, b, c);
+    },
+
+    render: function() {
+      var collapsed = this.props.collapsed != null ?
+        this.props.collapsed :
+        this.state.collapsed;
+
+      var arrowClassName = 'tree-view_arrow';
+      var containerClassName = 'tree-view_children';
+      if (collapsed) {
+        arrowClassName += ' tree-view_arrow-collapsed';
+        containerClassName += ' tree-view_children-collapsed';
+      }
+
+      var arrow =
+        React.DOM.div( {className:arrowClassName, onClick:this.handleClick}, "▾");
+
+      return (
+        React.DOM.div( {className:"tree-view"}, 
+          this.transferPropsTo(arrow),
+          this.props.nodeLabel,
+          React.DOM.div( {className:containerClassName}, 
+            this.props.children
+          )
+        )
+      );
+    }
+  });
+
+  if (typeof module === 'undefined') {
+    window.TreeView = TreeView;
+  } else {
+    module.exports = TreeView;
+  }
+})(window, typeof require === 'function' ? require('react') : React);
+
 //
 // showdown.js -- A javascript port of Markdown.
 //
@@ -56292,1480 +56349,16020 @@ if (typeof define === 'function' && define.amd) {
     });
 }
 
-var PS = PS || {};
-PS.Prelude = (function () {
-    "use strict";
-    var Unit = {
-        create: function (value) {
-            return value;
+require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+window.onload = function() {
+  require("SlamData");
+};
+
+},{"SlamData":undefined}],2:[function(require,module,exports){
+/*!
+ * The buffer module from node.js, for the browser.
+ *
+ * @author   Feross Aboukhadijeh <feross@feross.org> <http://feross.org>
+ * @license  MIT
+ */
+
+var base64 = require('base64-js')
+var ieee754 = require('ieee754')
+
+exports.Buffer = Buffer
+exports.SlowBuffer = Buffer
+exports.INSPECT_MAX_BYTES = 50
+Buffer.poolSize = 8192
+
+/**
+ * If `TYPED_ARRAY_SUPPORT`:
+ *   === true    Use Uint8Array implementation (fastest)
+ *   === false   Use Object implementation (most compatible, even IE6)
+ *
+ * Browsers that support typed arrays are IE 10+, Firefox 4+, Chrome 7+, Safari 5.1+,
+ * Opera 11.6+, iOS 4.2+.
+ *
+ * Note:
+ *
+ * - Implementation must support adding new properties to `Uint8Array` instances.
+ *   Firefox 4-29 lacked support, fixed in Firefox 30+.
+ *   See: https://bugzilla.mozilla.org/show_bug.cgi?id=695438.
+ *
+ *  - Chrome 9-10 is missing the `TypedArray.prototype.subarray` function.
+ *
+ *  - IE10 has a broken `TypedArray.prototype.subarray` function which returns arrays of
+ *    incorrect length in some situations.
+ *
+ * We detect these buggy browsers and set `TYPED_ARRAY_SUPPORT` to `false` so they will
+ * get the Object implementation, which is slower but will work correctly.
+ */
+var TYPED_ARRAY_SUPPORT = (function () {
+  try {
+    var buf = new ArrayBuffer(0)
+    var arr = new Uint8Array(buf)
+    arr.foo = function () { return 42 }
+    return 42 === arr.foo() && // typed array instances can be augmented
+        typeof arr.subarray === 'function' && // chrome 9-10 lack `subarray`
+        new Uint8Array(1).subarray(1, 1).byteLength === 0 // ie10 has broken `subarray`
+  } catch (e) {
+    return false
+  }
+})()
+
+/**
+ * Class: Buffer
+ * =============
+ *
+ * The Buffer constructor returns instances of `Uint8Array` that are augmented
+ * with function properties for all the node `Buffer` API functions. We use
+ * `Uint8Array` so that square bracket notation works as expected -- it returns
+ * a single octet.
+ *
+ * By augmenting the instances, we can avoid modifying the `Uint8Array`
+ * prototype.
+ */
+function Buffer (subject, encoding, noZero) {
+  if (!(this instanceof Buffer))
+    return new Buffer(subject, encoding, noZero)
+
+  var type = typeof subject
+
+  // Find the length
+  var length
+  if (type === 'number')
+    length = subject > 0 ? subject >>> 0 : 0
+  else if (type === 'string') {
+    if (encoding === 'base64')
+      subject = base64clean(subject)
+    length = Buffer.byteLength(subject, encoding)
+  } else if (type === 'object' && subject !== null) { // assume object is array-like
+    if (subject.type === 'Buffer' && isArray(subject.data))
+      subject = subject.data
+    length = +subject.length > 0 ? Math.floor(+subject.length) : 0
+  } else
+    throw new Error('First argument needs to be a number, array or string.')
+
+  var buf
+  if (TYPED_ARRAY_SUPPORT) {
+    // Preferred: Return an augmented `Uint8Array` instance for best performance
+    buf = Buffer._augment(new Uint8Array(length))
+  } else {
+    // Fallback: Return THIS instance of Buffer (created by `new`)
+    buf = this
+    buf.length = length
+    buf._isBuffer = true
+  }
+
+  var i
+  if (TYPED_ARRAY_SUPPORT && typeof subject.byteLength === 'number') {
+    // Speed optimization -- use set if we're copying from a typed array
+    buf._set(subject)
+  } else if (isArrayish(subject)) {
+    // Treat array-ish objects as a byte array
+    if (Buffer.isBuffer(subject)) {
+      for (i = 0; i < length; i++)
+        buf[i] = subject.readUInt8(i)
+    } else {
+      for (i = 0; i < length; i++)
+        buf[i] = ((subject[i] % 256) + 256) % 256
+    }
+  } else if (type === 'string') {
+    buf.write(subject, 0, encoding)
+  } else if (type === 'number' && !TYPED_ARRAY_SUPPORT && !noZero) {
+    for (i = 0; i < length; i++) {
+      buf[i] = 0
+    }
+  }
+
+  return buf
+}
+
+// STATIC METHODS
+// ==============
+
+Buffer.isEncoding = function (encoding) {
+  switch (String(encoding).toLowerCase()) {
+    case 'hex':
+    case 'utf8':
+    case 'utf-8':
+    case 'ascii':
+    case 'binary':
+    case 'base64':
+    case 'raw':
+    case 'ucs2':
+    case 'ucs-2':
+    case 'utf16le':
+    case 'utf-16le':
+      return true
+    default:
+      return false
+  }
+}
+
+Buffer.isBuffer = function (b) {
+  return !!(b != null && b._isBuffer)
+}
+
+Buffer.byteLength = function (str, encoding) {
+  var ret
+  str = str.toString()
+  switch (encoding || 'utf8') {
+    case 'hex':
+      ret = str.length / 2
+      break
+    case 'utf8':
+    case 'utf-8':
+      ret = utf8ToBytes(str).length
+      break
+    case 'ascii':
+    case 'binary':
+    case 'raw':
+      ret = str.length
+      break
+    case 'base64':
+      ret = base64ToBytes(str).length
+      break
+    case 'ucs2':
+    case 'ucs-2':
+    case 'utf16le':
+    case 'utf-16le':
+      ret = str.length * 2
+      break
+    default:
+      throw new Error('Unknown encoding')
+  }
+  return ret
+}
+
+Buffer.concat = function (list, totalLength) {
+  assert(isArray(list), 'Usage: Buffer.concat(list[, length])')
+
+  if (list.length === 0) {
+    return new Buffer(0)
+  } else if (list.length === 1) {
+    return list[0]
+  }
+
+  var i
+  if (totalLength === undefined) {
+    totalLength = 0
+    for (i = 0; i < list.length; i++) {
+      totalLength += list[i].length
+    }
+  }
+
+  var buf = new Buffer(totalLength)
+  var pos = 0
+  for (i = 0; i < list.length; i++) {
+    var item = list[i]
+    item.copy(buf, pos)
+    pos += item.length
+  }
+  return buf
+}
+
+Buffer.compare = function (a, b) {
+  assert(Buffer.isBuffer(a) && Buffer.isBuffer(b), 'Arguments must be Buffers')
+  var x = a.length
+  var y = b.length
+  for (var i = 0, len = Math.min(x, y); i < len && a[i] === b[i]; i++) {}
+  if (i !== len) {
+    x = a[i]
+    y = b[i]
+  }
+  if (x < y) {
+    return -1
+  }
+  if (y < x) {
+    return 1
+  }
+  return 0
+}
+
+// BUFFER INSTANCE METHODS
+// =======================
+
+function hexWrite (buf, string, offset, length) {
+  offset = Number(offset) || 0
+  var remaining = buf.length - offset
+  if (!length) {
+    length = remaining
+  } else {
+    length = Number(length)
+    if (length > remaining) {
+      length = remaining
+    }
+  }
+
+  // must be an even number of digits
+  var strLen = string.length
+  assert(strLen % 2 === 0, 'Invalid hex string')
+
+  if (length > strLen / 2) {
+    length = strLen / 2
+  }
+  for (var i = 0; i < length; i++) {
+    var byte = parseInt(string.substr(i * 2, 2), 16)
+    assert(!isNaN(byte), 'Invalid hex string')
+    buf[offset + i] = byte
+  }
+  return i
+}
+
+function utf8Write (buf, string, offset, length) {
+  var charsWritten = blitBuffer(utf8ToBytes(string), buf, offset, length)
+  return charsWritten
+}
+
+function asciiWrite (buf, string, offset, length) {
+  var charsWritten = blitBuffer(asciiToBytes(string), buf, offset, length)
+  return charsWritten
+}
+
+function binaryWrite (buf, string, offset, length) {
+  return asciiWrite(buf, string, offset, length)
+}
+
+function base64Write (buf, string, offset, length) {
+  var charsWritten = blitBuffer(base64ToBytes(string), buf, offset, length)
+  return charsWritten
+}
+
+function utf16leWrite (buf, string, offset, length) {
+  var charsWritten = blitBuffer(utf16leToBytes(string), buf, offset, length)
+  return charsWritten
+}
+
+Buffer.prototype.write = function (string, offset, length, encoding) {
+  // Support both (string, offset, length, encoding)
+  // and the legacy (string, encoding, offset, length)
+  if (isFinite(offset)) {
+    if (!isFinite(length)) {
+      encoding = length
+      length = undefined
+    }
+  } else {  // legacy
+    var swap = encoding
+    encoding = offset
+    offset = length
+    length = swap
+  }
+
+  offset = Number(offset) || 0
+  var remaining = this.length - offset
+  if (!length) {
+    length = remaining
+  } else {
+    length = Number(length)
+    if (length > remaining) {
+      length = remaining
+    }
+  }
+  encoding = String(encoding || 'utf8').toLowerCase()
+
+  var ret
+  switch (encoding) {
+    case 'hex':
+      ret = hexWrite(this, string, offset, length)
+      break
+    case 'utf8':
+    case 'utf-8':
+      ret = utf8Write(this, string, offset, length)
+      break
+    case 'ascii':
+      ret = asciiWrite(this, string, offset, length)
+      break
+    case 'binary':
+      ret = binaryWrite(this, string, offset, length)
+      break
+    case 'base64':
+      ret = base64Write(this, string, offset, length)
+      break
+    case 'ucs2':
+    case 'ucs-2':
+    case 'utf16le':
+    case 'utf-16le':
+      ret = utf16leWrite(this, string, offset, length)
+      break
+    default:
+      throw new Error('Unknown encoding')
+  }
+  return ret
+}
+
+Buffer.prototype.toString = function (encoding, start, end) {
+  var self = this
+
+  encoding = String(encoding || 'utf8').toLowerCase()
+  start = Number(start) || 0
+  end = (end === undefined) ? self.length : Number(end)
+
+  // Fastpath empty strings
+  if (end === start)
+    return ''
+
+  var ret
+  switch (encoding) {
+    case 'hex':
+      ret = hexSlice(self, start, end)
+      break
+    case 'utf8':
+    case 'utf-8':
+      ret = utf8Slice(self, start, end)
+      break
+    case 'ascii':
+      ret = asciiSlice(self, start, end)
+      break
+    case 'binary':
+      ret = binarySlice(self, start, end)
+      break
+    case 'base64':
+      ret = base64Slice(self, start, end)
+      break
+    case 'ucs2':
+    case 'ucs-2':
+    case 'utf16le':
+    case 'utf-16le':
+      ret = utf16leSlice(self, start, end)
+      break
+    default:
+      throw new Error('Unknown encoding')
+  }
+  return ret
+}
+
+Buffer.prototype.toJSON = function () {
+  return {
+    type: 'Buffer',
+    data: Array.prototype.slice.call(this._arr || this, 0)
+  }
+}
+
+Buffer.prototype.equals = function (b) {
+  assert(Buffer.isBuffer(b), 'Argument must be a Buffer')
+  return Buffer.compare(this, b) === 0
+}
+
+Buffer.prototype.compare = function (b) {
+  assert(Buffer.isBuffer(b), 'Argument must be a Buffer')
+  return Buffer.compare(this, b)
+}
+
+// copy(targetBuffer, targetStart=0, sourceStart=0, sourceEnd=buffer.length)
+Buffer.prototype.copy = function (target, target_start, start, end) {
+  var source = this
+
+  if (!start) start = 0
+  if (!end && end !== 0) end = this.length
+  if (!target_start) target_start = 0
+
+  // Copy 0 bytes; we're done
+  if (end === start) return
+  if (target.length === 0 || source.length === 0) return
+
+  // Fatal error conditions
+  assert(end >= start, 'sourceEnd < sourceStart')
+  assert(target_start >= 0 && target_start < target.length,
+      'targetStart out of bounds')
+  assert(start >= 0 && start < source.length, 'sourceStart out of bounds')
+  assert(end >= 0 && end <= source.length, 'sourceEnd out of bounds')
+
+  // Are we oob?
+  if (end > this.length)
+    end = this.length
+  if (target.length - target_start < end - start)
+    end = target.length - target_start + start
+
+  var len = end - start
+
+  if (len < 100 || !TYPED_ARRAY_SUPPORT) {
+    for (var i = 0; i < len; i++) {
+      target[i + target_start] = this[i + start]
+    }
+  } else {
+    target._set(this.subarray(start, start + len), target_start)
+  }
+}
+
+function base64Slice (buf, start, end) {
+  if (start === 0 && end === buf.length) {
+    return base64.fromByteArray(buf)
+  } else {
+    return base64.fromByteArray(buf.slice(start, end))
+  }
+}
+
+function utf8Slice (buf, start, end) {
+  var res = ''
+  var tmp = ''
+  end = Math.min(buf.length, end)
+
+  for (var i = start; i < end; i++) {
+    if (buf[i] <= 0x7F) {
+      res += decodeUtf8Char(tmp) + String.fromCharCode(buf[i])
+      tmp = ''
+    } else {
+      tmp += '%' + buf[i].toString(16)
+    }
+  }
+
+  return res + decodeUtf8Char(tmp)
+}
+
+function asciiSlice (buf, start, end) {
+  var ret = ''
+  end = Math.min(buf.length, end)
+
+  for (var i = start; i < end; i++) {
+    ret += String.fromCharCode(buf[i])
+  }
+  return ret
+}
+
+function binarySlice (buf, start, end) {
+  return asciiSlice(buf, start, end)
+}
+
+function hexSlice (buf, start, end) {
+  var len = buf.length
+
+  if (!start || start < 0) start = 0
+  if (!end || end < 0 || end > len) end = len
+
+  var out = ''
+  for (var i = start; i < end; i++) {
+    out += toHex(buf[i])
+  }
+  return out
+}
+
+function utf16leSlice (buf, start, end) {
+  var bytes = buf.slice(start, end)
+  var res = ''
+  for (var i = 0; i < bytes.length; i += 2) {
+    res += String.fromCharCode(bytes[i] + bytes[i + 1] * 256)
+  }
+  return res
+}
+
+Buffer.prototype.slice = function (start, end) {
+  var len = this.length
+  start = ~~start
+  end = end === undefined ? len : ~~end
+
+  if (start < 0) {
+    start += len;
+    if (start < 0)
+      start = 0
+  } else if (start > len) {
+    start = len
+  }
+
+  if (end < 0) {
+    end += len
+    if (end < 0)
+      end = 0
+  } else if (end > len) {
+    end = len
+  }
+
+  if (end < start)
+    end = start
+
+  if (TYPED_ARRAY_SUPPORT) {
+    return Buffer._augment(this.subarray(start, end))
+  } else {
+    var sliceLen = end - start
+    var newBuf = new Buffer(sliceLen, undefined, true)
+    for (var i = 0; i < sliceLen; i++) {
+      newBuf[i] = this[i + start]
+    }
+    return newBuf
+  }
+}
+
+// `get` will be removed in Node 0.13+
+Buffer.prototype.get = function (offset) {
+  console.log('.get() is deprecated. Access using array indexes instead.')
+  return this.readUInt8(offset)
+}
+
+// `set` will be removed in Node 0.13+
+Buffer.prototype.set = function (v, offset) {
+  console.log('.set() is deprecated. Access using array indexes instead.')
+  return this.writeUInt8(v, offset)
+}
+
+Buffer.prototype.readUInt8 = function (offset, noAssert) {
+  if (!noAssert) {
+    assert(offset !== undefined && offset !== null, 'missing offset')
+    assert(offset < this.length, 'Trying to read beyond buffer length')
+  }
+
+  if (offset >= this.length)
+    return
+
+  return this[offset]
+}
+
+function readUInt16 (buf, offset, littleEndian, noAssert) {
+  if (!noAssert) {
+    assert(typeof littleEndian === 'boolean', 'missing or invalid endian')
+    assert(offset !== undefined && offset !== null, 'missing offset')
+    assert(offset + 1 < buf.length, 'Trying to read beyond buffer length')
+  }
+
+  var len = buf.length
+  if (offset >= len)
+    return
+
+  var val
+  if (littleEndian) {
+    val = buf[offset]
+    if (offset + 1 < len)
+      val |= buf[offset + 1] << 8
+  } else {
+    val = buf[offset] << 8
+    if (offset + 1 < len)
+      val |= buf[offset + 1]
+  }
+  return val
+}
+
+Buffer.prototype.readUInt16LE = function (offset, noAssert) {
+  return readUInt16(this, offset, true, noAssert)
+}
+
+Buffer.prototype.readUInt16BE = function (offset, noAssert) {
+  return readUInt16(this, offset, false, noAssert)
+}
+
+function readUInt32 (buf, offset, littleEndian, noAssert) {
+  if (!noAssert) {
+    assert(typeof littleEndian === 'boolean', 'missing or invalid endian')
+    assert(offset !== undefined && offset !== null, 'missing offset')
+    assert(offset + 3 < buf.length, 'Trying to read beyond buffer length')
+  }
+
+  var len = buf.length
+  if (offset >= len)
+    return
+
+  var val
+  if (littleEndian) {
+    if (offset + 2 < len)
+      val = buf[offset + 2] << 16
+    if (offset + 1 < len)
+      val |= buf[offset + 1] << 8
+    val |= buf[offset]
+    if (offset + 3 < len)
+      val = val + (buf[offset + 3] << 24 >>> 0)
+  } else {
+    if (offset + 1 < len)
+      val = buf[offset + 1] << 16
+    if (offset + 2 < len)
+      val |= buf[offset + 2] << 8
+    if (offset + 3 < len)
+      val |= buf[offset + 3]
+    val = val + (buf[offset] << 24 >>> 0)
+  }
+  return val
+}
+
+Buffer.prototype.readUInt32LE = function (offset, noAssert) {
+  return readUInt32(this, offset, true, noAssert)
+}
+
+Buffer.prototype.readUInt32BE = function (offset, noAssert) {
+  return readUInt32(this, offset, false, noAssert)
+}
+
+Buffer.prototype.readInt8 = function (offset, noAssert) {
+  if (!noAssert) {
+    assert(offset !== undefined && offset !== null,
+        'missing offset')
+    assert(offset < this.length, 'Trying to read beyond buffer length')
+  }
+
+  if (offset >= this.length)
+    return
+
+  var neg = this[offset] & 0x80
+  if (neg)
+    return (0xff - this[offset] + 1) * -1
+  else
+    return this[offset]
+}
+
+function readInt16 (buf, offset, littleEndian, noAssert) {
+  if (!noAssert) {
+    assert(typeof littleEndian === 'boolean', 'missing or invalid endian')
+    assert(offset !== undefined && offset !== null, 'missing offset')
+    assert(offset + 1 < buf.length, 'Trying to read beyond buffer length')
+  }
+
+  var len = buf.length
+  if (offset >= len)
+    return
+
+  var val = readUInt16(buf, offset, littleEndian, true)
+  var neg = val & 0x8000
+  if (neg)
+    return (0xffff - val + 1) * -1
+  else
+    return val
+}
+
+Buffer.prototype.readInt16LE = function (offset, noAssert) {
+  return readInt16(this, offset, true, noAssert)
+}
+
+Buffer.prototype.readInt16BE = function (offset, noAssert) {
+  return readInt16(this, offset, false, noAssert)
+}
+
+function readInt32 (buf, offset, littleEndian, noAssert) {
+  if (!noAssert) {
+    assert(typeof littleEndian === 'boolean', 'missing or invalid endian')
+    assert(offset !== undefined && offset !== null, 'missing offset')
+    assert(offset + 3 < buf.length, 'Trying to read beyond buffer length')
+  }
+
+  var len = buf.length
+  if (offset >= len)
+    return
+
+  var val = readUInt32(buf, offset, littleEndian, true)
+  var neg = val & 0x80000000
+  if (neg)
+    return (0xffffffff - val + 1) * -1
+  else
+    return val
+}
+
+Buffer.prototype.readInt32LE = function (offset, noAssert) {
+  return readInt32(this, offset, true, noAssert)
+}
+
+Buffer.prototype.readInt32BE = function (offset, noAssert) {
+  return readInt32(this, offset, false, noAssert)
+}
+
+function readFloat (buf, offset, littleEndian, noAssert) {
+  if (!noAssert) {
+    assert(typeof littleEndian === 'boolean', 'missing or invalid endian')
+    assert(offset + 3 < buf.length, 'Trying to read beyond buffer length')
+  }
+
+  return ieee754.read(buf, offset, littleEndian, 23, 4)
+}
+
+Buffer.prototype.readFloatLE = function (offset, noAssert) {
+  return readFloat(this, offset, true, noAssert)
+}
+
+Buffer.prototype.readFloatBE = function (offset, noAssert) {
+  return readFloat(this, offset, false, noAssert)
+}
+
+function readDouble (buf, offset, littleEndian, noAssert) {
+  if (!noAssert) {
+    assert(typeof littleEndian === 'boolean', 'missing or invalid endian')
+    assert(offset + 7 < buf.length, 'Trying to read beyond buffer length')
+  }
+
+  return ieee754.read(buf, offset, littleEndian, 52, 8)
+}
+
+Buffer.prototype.readDoubleLE = function (offset, noAssert) {
+  return readDouble(this, offset, true, noAssert)
+}
+
+Buffer.prototype.readDoubleBE = function (offset, noAssert) {
+  return readDouble(this, offset, false, noAssert)
+}
+
+Buffer.prototype.writeUInt8 = function (value, offset, noAssert) {
+  if (!noAssert) {
+    assert(value !== undefined && value !== null, 'missing value')
+    assert(offset !== undefined && offset !== null, 'missing offset')
+    assert(offset < this.length, 'trying to write beyond buffer length')
+    verifuint(value, 0xff)
+  }
+
+  if (offset >= this.length) return
+
+  this[offset] = value
+  return offset + 1
+}
+
+function writeUInt16 (buf, value, offset, littleEndian, noAssert) {
+  if (!noAssert) {
+    assert(value !== undefined && value !== null, 'missing value')
+    assert(typeof littleEndian === 'boolean', 'missing or invalid endian')
+    assert(offset !== undefined && offset !== null, 'missing offset')
+    assert(offset + 1 < buf.length, 'trying to write beyond buffer length')
+    verifuint(value, 0xffff)
+  }
+
+  var len = buf.length
+  if (offset >= len)
+    return
+
+  for (var i = 0, j = Math.min(len - offset, 2); i < j; i++) {
+    buf[offset + i] =
+        (value & (0xff << (8 * (littleEndian ? i : 1 - i)))) >>>
+            (littleEndian ? i : 1 - i) * 8
+  }
+  return offset + 2
+}
+
+Buffer.prototype.writeUInt16LE = function (value, offset, noAssert) {
+  return writeUInt16(this, value, offset, true, noAssert)
+}
+
+Buffer.prototype.writeUInt16BE = function (value, offset, noAssert) {
+  return writeUInt16(this, value, offset, false, noAssert)
+}
+
+function writeUInt32 (buf, value, offset, littleEndian, noAssert) {
+  if (!noAssert) {
+    assert(value !== undefined && value !== null, 'missing value')
+    assert(typeof littleEndian === 'boolean', 'missing or invalid endian')
+    assert(offset !== undefined && offset !== null, 'missing offset')
+    assert(offset + 3 < buf.length, 'trying to write beyond buffer length')
+    verifuint(value, 0xffffffff)
+  }
+
+  var len = buf.length
+  if (offset >= len)
+    return
+
+  for (var i = 0, j = Math.min(len - offset, 4); i < j; i++) {
+    buf[offset + i] =
+        (value >>> (littleEndian ? i : 3 - i) * 8) & 0xff
+  }
+  return offset + 4
+}
+
+Buffer.prototype.writeUInt32LE = function (value, offset, noAssert) {
+  return writeUInt32(this, value, offset, true, noAssert)
+}
+
+Buffer.prototype.writeUInt32BE = function (value, offset, noAssert) {
+  return writeUInt32(this, value, offset, false, noAssert)
+}
+
+Buffer.prototype.writeInt8 = function (value, offset, noAssert) {
+  if (!noAssert) {
+    assert(value !== undefined && value !== null, 'missing value')
+    assert(offset !== undefined && offset !== null, 'missing offset')
+    assert(offset < this.length, 'Trying to write beyond buffer length')
+    verifsint(value, 0x7f, -0x80)
+  }
+
+  if (offset >= this.length)
+    return
+
+  if (value >= 0)
+    this.writeUInt8(value, offset, noAssert)
+  else
+    this.writeUInt8(0xff + value + 1, offset, noAssert)
+  return offset + 1
+}
+
+function writeInt16 (buf, value, offset, littleEndian, noAssert) {
+  if (!noAssert) {
+    assert(value !== undefined && value !== null, 'missing value')
+    assert(typeof littleEndian === 'boolean', 'missing or invalid endian')
+    assert(offset !== undefined && offset !== null, 'missing offset')
+    assert(offset + 1 < buf.length, 'Trying to write beyond buffer length')
+    verifsint(value, 0x7fff, -0x8000)
+  }
+
+  var len = buf.length
+  if (offset >= len)
+    return
+
+  if (value >= 0)
+    writeUInt16(buf, value, offset, littleEndian, noAssert)
+  else
+    writeUInt16(buf, 0xffff + value + 1, offset, littleEndian, noAssert)
+  return offset + 2
+}
+
+Buffer.prototype.writeInt16LE = function (value, offset, noAssert) {
+  return writeInt16(this, value, offset, true, noAssert)
+}
+
+Buffer.prototype.writeInt16BE = function (value, offset, noAssert) {
+  return writeInt16(this, value, offset, false, noAssert)
+}
+
+function writeInt32 (buf, value, offset, littleEndian, noAssert) {
+  if (!noAssert) {
+    assert(value !== undefined && value !== null, 'missing value')
+    assert(typeof littleEndian === 'boolean', 'missing or invalid endian')
+    assert(offset !== undefined && offset !== null, 'missing offset')
+    assert(offset + 3 < buf.length, 'Trying to write beyond buffer length')
+    verifsint(value, 0x7fffffff, -0x80000000)
+  }
+
+  var len = buf.length
+  if (offset >= len)
+    return
+
+  if (value >= 0)
+    writeUInt32(buf, value, offset, littleEndian, noAssert)
+  else
+    writeUInt32(buf, 0xffffffff + value + 1, offset, littleEndian, noAssert)
+  return offset + 4
+}
+
+Buffer.prototype.writeInt32LE = function (value, offset, noAssert) {
+  return writeInt32(this, value, offset, true, noAssert)
+}
+
+Buffer.prototype.writeInt32BE = function (value, offset, noAssert) {
+  return writeInt32(this, value, offset, false, noAssert)
+}
+
+function writeFloat (buf, value, offset, littleEndian, noAssert) {
+  if (!noAssert) {
+    assert(value !== undefined && value !== null, 'missing value')
+    assert(typeof littleEndian === 'boolean', 'missing or invalid endian')
+    assert(offset !== undefined && offset !== null, 'missing offset')
+    assert(offset + 3 < buf.length, 'Trying to write beyond buffer length')
+    verifIEEE754(value, 3.4028234663852886e+38, -3.4028234663852886e+38)
+  }
+
+  var len = buf.length
+  if (offset >= len)
+    return
+
+  ieee754.write(buf, value, offset, littleEndian, 23, 4)
+  return offset + 4
+}
+
+Buffer.prototype.writeFloatLE = function (value, offset, noAssert) {
+  return writeFloat(this, value, offset, true, noAssert)
+}
+
+Buffer.prototype.writeFloatBE = function (value, offset, noAssert) {
+  return writeFloat(this, value, offset, false, noAssert)
+}
+
+function writeDouble (buf, value, offset, littleEndian, noAssert) {
+  if (!noAssert) {
+    assert(value !== undefined && value !== null, 'missing value')
+    assert(typeof littleEndian === 'boolean', 'missing or invalid endian')
+    assert(offset !== undefined && offset !== null, 'missing offset')
+    assert(offset + 7 < buf.length,
+        'Trying to write beyond buffer length')
+    verifIEEE754(value, 1.7976931348623157E+308, -1.7976931348623157E+308)
+  }
+
+  var len = buf.length
+  if (offset >= len)
+    return
+
+  ieee754.write(buf, value, offset, littleEndian, 52, 8)
+  return offset + 8
+}
+
+Buffer.prototype.writeDoubleLE = function (value, offset, noAssert) {
+  return writeDouble(this, value, offset, true, noAssert)
+}
+
+Buffer.prototype.writeDoubleBE = function (value, offset, noAssert) {
+  return writeDouble(this, value, offset, false, noAssert)
+}
+
+// fill(value, start=0, end=buffer.length)
+Buffer.prototype.fill = function (value, start, end) {
+  if (!value) value = 0
+  if (!start) start = 0
+  if (!end) end = this.length
+
+  assert(end >= start, 'end < start')
+
+  // Fill 0 bytes; we're done
+  if (end === start) return
+  if (this.length === 0) return
+
+  assert(start >= 0 && start < this.length, 'start out of bounds')
+  assert(end >= 0 && end <= this.length, 'end out of bounds')
+
+  var i
+  if (typeof value === 'number') {
+    for (i = start; i < end; i++) {
+      this[i] = value
+    }
+  } else {
+    var bytes = utf8ToBytes(value.toString())
+    var len = bytes.length
+    for (i = start; i < end; i++) {
+      this[i] = bytes[i % len]
+    }
+  }
+
+  return this
+}
+
+Buffer.prototype.inspect = function () {
+  var out = []
+  var len = this.length
+  for (var i = 0; i < len; i++) {
+    out[i] = toHex(this[i])
+    if (i === exports.INSPECT_MAX_BYTES) {
+      out[i + 1] = '...'
+      break
+    }
+  }
+  return '<Buffer ' + out.join(' ') + '>'
+}
+
+/**
+ * Creates a new `ArrayBuffer` with the *copied* memory of the buffer instance.
+ * Added in Node 0.12. Only available in browsers that support ArrayBuffer.
+ */
+Buffer.prototype.toArrayBuffer = function () {
+  if (typeof Uint8Array !== 'undefined') {
+    if (TYPED_ARRAY_SUPPORT) {
+      return (new Buffer(this)).buffer
+    } else {
+      var buf = new Uint8Array(this.length)
+      for (var i = 0, len = buf.length; i < len; i += 1) {
+        buf[i] = this[i]
+      }
+      return buf.buffer
+    }
+  } else {
+    throw new Error('Buffer.toArrayBuffer not supported in this browser')
+  }
+}
+
+// HELPER FUNCTIONS
+// ================
+
+var BP = Buffer.prototype
+
+/**
+ * Augment a Uint8Array *instance* (not the Uint8Array class!) with Buffer methods
+ */
+Buffer._augment = function (arr) {
+  arr._isBuffer = true
+
+  // save reference to original Uint8Array get/set methods before overwriting
+  arr._get = arr.get
+  arr._set = arr.set
+
+  // deprecated, will be removed in node 0.13+
+  arr.get = BP.get
+  arr.set = BP.set
+
+  arr.write = BP.write
+  arr.toString = BP.toString
+  arr.toLocaleString = BP.toString
+  arr.toJSON = BP.toJSON
+  arr.equals = BP.equals
+  arr.compare = BP.compare
+  arr.copy = BP.copy
+  arr.slice = BP.slice
+  arr.readUInt8 = BP.readUInt8
+  arr.readUInt16LE = BP.readUInt16LE
+  arr.readUInt16BE = BP.readUInt16BE
+  arr.readUInt32LE = BP.readUInt32LE
+  arr.readUInt32BE = BP.readUInt32BE
+  arr.readInt8 = BP.readInt8
+  arr.readInt16LE = BP.readInt16LE
+  arr.readInt16BE = BP.readInt16BE
+  arr.readInt32LE = BP.readInt32LE
+  arr.readInt32BE = BP.readInt32BE
+  arr.readFloatLE = BP.readFloatLE
+  arr.readFloatBE = BP.readFloatBE
+  arr.readDoubleLE = BP.readDoubleLE
+  arr.readDoubleBE = BP.readDoubleBE
+  arr.writeUInt8 = BP.writeUInt8
+  arr.writeUInt16LE = BP.writeUInt16LE
+  arr.writeUInt16BE = BP.writeUInt16BE
+  arr.writeUInt32LE = BP.writeUInt32LE
+  arr.writeUInt32BE = BP.writeUInt32BE
+  arr.writeInt8 = BP.writeInt8
+  arr.writeInt16LE = BP.writeInt16LE
+  arr.writeInt16BE = BP.writeInt16BE
+  arr.writeInt32LE = BP.writeInt32LE
+  arr.writeInt32BE = BP.writeInt32BE
+  arr.writeFloatLE = BP.writeFloatLE
+  arr.writeFloatBE = BP.writeFloatBE
+  arr.writeDoubleLE = BP.writeDoubleLE
+  arr.writeDoubleBE = BP.writeDoubleBE
+  arr.fill = BP.fill
+  arr.inspect = BP.inspect
+  arr.toArrayBuffer = BP.toArrayBuffer
+
+  return arr
+}
+
+var INVALID_BASE64_RE = /[^+\/0-9A-z]/g
+
+function base64clean (str) {
+  // Node strips out invalid characters like \n and \t from the string, base64-js does not
+  str = stringtrim(str).replace(INVALID_BASE64_RE, '')
+  // Node allows for non-padded base64 strings (missing trailing ===), base64-js does not
+  while (str.length % 4 !== 0) {
+    str = str + '='
+  }
+  return str
+}
+
+function stringtrim (str) {
+  if (str.trim) return str.trim()
+  return str.replace(/^\s+|\s+$/g, '')
+}
+
+function isArray (subject) {
+  return (Array.isArray || function (subject) {
+    return Object.prototype.toString.call(subject) === '[object Array]'
+  })(subject)
+}
+
+function isArrayish (subject) {
+  return isArray(subject) || Buffer.isBuffer(subject) ||
+      subject && typeof subject === 'object' &&
+      typeof subject.length === 'number'
+}
+
+function toHex (n) {
+  if (n < 16) return '0' + n.toString(16)
+  return n.toString(16)
+}
+
+function utf8ToBytes (str) {
+  var byteArray = []
+  for (var i = 0; i < str.length; i++) {
+    var b = str.charCodeAt(i)
+    if (b <= 0x7F) {
+      byteArray.push(b)
+    } else {
+      var start = i
+      if (b >= 0xD800 && b <= 0xDFFF) i++
+      var h = encodeURIComponent(str.slice(start, i+1)).substr(1).split('%')
+      for (var j = 0; j < h.length; j++) {
+        byteArray.push(parseInt(h[j], 16))
+      }
+    }
+  }
+  return byteArray
+}
+
+function asciiToBytes (str) {
+  var byteArray = []
+  for (var i = 0; i < str.length; i++) {
+    // Node's code seems to be doing this and not & 0x7F..
+    byteArray.push(str.charCodeAt(i) & 0xFF)
+  }
+  return byteArray
+}
+
+function utf16leToBytes (str) {
+  var c, hi, lo
+  var byteArray = []
+  for (var i = 0; i < str.length; i++) {
+    c = str.charCodeAt(i)
+    hi = c >> 8
+    lo = c % 256
+    byteArray.push(lo)
+    byteArray.push(hi)
+  }
+
+  return byteArray
+}
+
+function base64ToBytes (str) {
+  return base64.toByteArray(str)
+}
+
+function blitBuffer (src, dst, offset, length) {
+  for (var i = 0; i < length; i++) {
+    if ((i + offset >= dst.length) || (i >= src.length))
+      break
+    dst[i + offset] = src[i]
+  }
+  return i
+}
+
+function decodeUtf8Char (str) {
+  try {
+    return decodeURIComponent(str)
+  } catch (err) {
+    return String.fromCharCode(0xFFFD) // UTF 8 invalid char
+  }
+}
+
+/*
+ * We have to make sure that the value is a valid integer. This means that it
+ * is non-negative. It has no fractional component and that it does not
+ * exceed the maximum allowed value.
+ */
+function verifuint (value, max) {
+  assert(typeof value === 'number', 'cannot write a non-number as a number')
+  assert(value >= 0, 'specified a negative value for writing an unsigned value')
+  assert(value <= max, 'value is larger than maximum value for type')
+  assert(Math.floor(value) === value, 'value has a fractional component')
+}
+
+function verifsint (value, max, min) {
+  assert(typeof value === 'number', 'cannot write a non-number as a number')
+  assert(value <= max, 'value larger than maximum allowed value')
+  assert(value >= min, 'value smaller than minimum allowed value')
+  assert(Math.floor(value) === value, 'value has a fractional component')
+}
+
+function verifIEEE754 (value, max, min) {
+  assert(typeof value === 'number', 'cannot write a non-number as a number')
+  assert(value <= max, 'value larger than maximum allowed value')
+  assert(value >= min, 'value smaller than minimum allowed value')
+}
+
+function assert (test, message) {
+  if (!test) throw new Error(message || 'Failed assertion')
+}
+
+},{"base64-js":3,"ieee754":4}],3:[function(require,module,exports){
+var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+
+;(function (exports) {
+	'use strict';
+
+  var Arr = (typeof Uint8Array !== 'undefined')
+    ? Uint8Array
+    : Array
+
+	var PLUS   = '+'.charCodeAt(0)
+	var SLASH  = '/'.charCodeAt(0)
+	var NUMBER = '0'.charCodeAt(0)
+	var LOWER  = 'a'.charCodeAt(0)
+	var UPPER  = 'A'.charCodeAt(0)
+
+	function decode (elt) {
+		var code = elt.charCodeAt(0)
+		if (code === PLUS)
+			return 62 // '+'
+		if (code === SLASH)
+			return 63 // '/'
+		if (code < NUMBER)
+			return -1 //no match
+		if (code < NUMBER + 10)
+			return code - NUMBER + 26 + 26
+		if (code < UPPER + 26)
+			return code - UPPER
+		if (code < LOWER + 26)
+			return code - LOWER + 26
+	}
+
+	function b64ToByteArray (b64) {
+		var i, j, l, tmp, placeHolders, arr
+
+		if (b64.length % 4 > 0) {
+			throw new Error('Invalid string. Length must be a multiple of 4')
+		}
+
+		// the number of equal signs (place holders)
+		// if there are two placeholders, than the two characters before it
+		// represent one byte
+		// if there is only one, then the three characters before it represent 2 bytes
+		// this is just a cheap hack to not do indexOf twice
+		var len = b64.length
+		placeHolders = '=' === b64.charAt(len - 2) ? 2 : '=' === b64.charAt(len - 1) ? 1 : 0
+
+		// base64 is 4/3 + up to two characters of the original data
+		arr = new Arr(b64.length * 3 / 4 - placeHolders)
+
+		// if there are placeholders, only get up to the last complete 4 chars
+		l = placeHolders > 0 ? b64.length - 4 : b64.length
+
+		var L = 0
+
+		function push (v) {
+			arr[L++] = v
+		}
+
+		for (i = 0, j = 0; i < l; i += 4, j += 3) {
+			tmp = (decode(b64.charAt(i)) << 18) | (decode(b64.charAt(i + 1)) << 12) | (decode(b64.charAt(i + 2)) << 6) | decode(b64.charAt(i + 3))
+			push((tmp & 0xFF0000) >> 16)
+			push((tmp & 0xFF00) >> 8)
+			push(tmp & 0xFF)
+		}
+
+		if (placeHolders === 2) {
+			tmp = (decode(b64.charAt(i)) << 2) | (decode(b64.charAt(i + 1)) >> 4)
+			push(tmp & 0xFF)
+		} else if (placeHolders === 1) {
+			tmp = (decode(b64.charAt(i)) << 10) | (decode(b64.charAt(i + 1)) << 4) | (decode(b64.charAt(i + 2)) >> 2)
+			push((tmp >> 8) & 0xFF)
+			push(tmp & 0xFF)
+		}
+
+		return arr
+	}
+
+	function uint8ToBase64 (uint8) {
+		var i,
+			extraBytes = uint8.length % 3, // if we have 1 byte left, pad 2 bytes
+			output = "",
+			temp, length
+
+		function encode (num) {
+			return lookup.charAt(num)
+		}
+
+		function tripletToBase64 (num) {
+			return encode(num >> 18 & 0x3F) + encode(num >> 12 & 0x3F) + encode(num >> 6 & 0x3F) + encode(num & 0x3F)
+		}
+
+		// go through the array every three bytes, we'll deal with trailing stuff later
+		for (i = 0, length = uint8.length - extraBytes; i < length; i += 3) {
+			temp = (uint8[i] << 16) + (uint8[i + 1] << 8) + (uint8[i + 2])
+			output += tripletToBase64(temp)
+		}
+
+		// pad the end with zeros, but make sure to not forget the extra bytes
+		switch (extraBytes) {
+			case 1:
+				temp = uint8[uint8.length - 1]
+				output += encode(temp >> 2)
+				output += encode((temp << 4) & 0x3F)
+				output += '=='
+				break
+			case 2:
+				temp = (uint8[uint8.length - 2] << 8) + (uint8[uint8.length - 1])
+				output += encode(temp >> 10)
+				output += encode((temp >> 4) & 0x3F)
+				output += encode((temp << 2) & 0x3F)
+				output += '='
+				break
+		}
+
+		return output
+	}
+
+	exports.toByteArray = b64ToByteArray
+	exports.fromByteArray = uint8ToBase64
+}(typeof exports === 'undefined' ? (this.base64js = {}) : exports))
+
+},{}],4:[function(require,module,exports){
+exports.read = function(buffer, offset, isLE, mLen, nBytes) {
+  var e, m,
+      eLen = nBytes * 8 - mLen - 1,
+      eMax = (1 << eLen) - 1,
+      eBias = eMax >> 1,
+      nBits = -7,
+      i = isLE ? (nBytes - 1) : 0,
+      d = isLE ? -1 : 1,
+      s = buffer[offset + i];
+
+  i += d;
+
+  e = s & ((1 << (-nBits)) - 1);
+  s >>= (-nBits);
+  nBits += eLen;
+  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8);
+
+  m = e & ((1 << (-nBits)) - 1);
+  e >>= (-nBits);
+  nBits += mLen;
+  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8);
+
+  if (e === 0) {
+    e = 1 - eBias;
+  } else if (e === eMax) {
+    return m ? NaN : ((s ? -1 : 1) * Infinity);
+  } else {
+    m = m + Math.pow(2, mLen);
+    e = e - eBias;
+  }
+  return (s ? -1 : 1) * m * Math.pow(2, e - mLen);
+};
+
+exports.write = function(buffer, value, offset, isLE, mLen, nBytes) {
+  var e, m, c,
+      eLen = nBytes * 8 - mLen - 1,
+      eMax = (1 << eLen) - 1,
+      eBias = eMax >> 1,
+      rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0),
+      i = isLE ? 0 : (nBytes - 1),
+      d = isLE ? 1 : -1,
+      s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0;
+
+  value = Math.abs(value);
+
+  if (isNaN(value) || value === Infinity) {
+    m = isNaN(value) ? 1 : 0;
+    e = eMax;
+  } else {
+    e = Math.floor(Math.log(value) / Math.LN2);
+    if (value * (c = Math.pow(2, -e)) < 1) {
+      e--;
+      c *= 2;
+    }
+    if (e + eBias >= 1) {
+      value += rt / c;
+    } else {
+      value += rt * Math.pow(2, 1 - eBias);
+    }
+    if (value * c >= 2) {
+      e++;
+      c /= 2;
+    }
+
+    if (e + eBias >= eMax) {
+      m = 0;
+      e = eMax;
+    } else if (e + eBias >= 1) {
+      m = (value * c - 1) * Math.pow(2, mLen);
+      e = e + eBias;
+    } else {
+      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen);
+      e = 0;
+    }
+  }
+
+  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8);
+
+  e = (e << mLen) | m;
+  eLen += mLen;
+  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8);
+
+  buffer[offset + i - d] |= s * 128;
+};
+
+},{}],5:[function(require,module,exports){
+(function (Buffer){
+var createHash = require('sha.js')
+
+var md5 = toConstructor(require('./md5'))
+var rmd160 = toConstructor(require('ripemd160'))
+
+function toConstructor (fn) {
+  return function () {
+    var buffers = []
+    var m= {
+      update: function (data, enc) {
+        if(!Buffer.isBuffer(data)) data = new Buffer(data, enc)
+        buffers.push(data)
+        return this
+      },
+      digest: function (enc) {
+        var buf = Buffer.concat(buffers)
+        var r = fn(buf)
+        buffers = null
+        return enc ? r.toString(enc) : r
+      }
+    }
+    return m
+  }
+}
+
+module.exports = function (alg) {
+  if('md5' === alg) return new md5()
+  if('rmd160' === alg) return new rmd160()
+  return createHash(alg)
+}
+
+}).call(this,require("buffer").Buffer)
+},{"./md5":9,"buffer":2,"ripemd160":10,"sha.js":12}],6:[function(require,module,exports){
+(function (Buffer){
+var createHash = require('./create-hash')
+
+var blocksize = 64
+var zeroBuffer = new Buffer(blocksize); zeroBuffer.fill(0)
+
+module.exports = Hmac
+
+function Hmac (alg, key) {
+  if(!(this instanceof Hmac)) return new Hmac(alg, key)
+  this._opad = opad
+  this._alg = alg
+
+  key = this._key = !Buffer.isBuffer(key) ? new Buffer(key) : key
+
+  if(key.length > blocksize) {
+    key = createHash(alg).update(key).digest()
+  } else if(key.length < blocksize) {
+    key = Buffer.concat([key, zeroBuffer], blocksize)
+  }
+
+  var ipad = this._ipad = new Buffer(blocksize)
+  var opad = this._opad = new Buffer(blocksize)
+
+  for(var i = 0; i < blocksize; i++) {
+    ipad[i] = key[i] ^ 0x36
+    opad[i] = key[i] ^ 0x5C
+  }
+
+  this._hash = createHash(alg).update(ipad)
+}
+
+Hmac.prototype.update = function (data, enc) {
+  this._hash.update(data, enc)
+  return this
+}
+
+Hmac.prototype.digest = function (enc) {
+  var h = this._hash.digest()
+  return createHash(this._alg).update(this._opad).update(h).digest(enc)
+}
+
+
+}).call(this,require("buffer").Buffer)
+},{"./create-hash":5,"buffer":2}],7:[function(require,module,exports){
+(function (Buffer){
+var intSize = 4;
+var zeroBuffer = new Buffer(intSize); zeroBuffer.fill(0);
+var chrsz = 8;
+
+function toArray(buf, bigEndian) {
+  if ((buf.length % intSize) !== 0) {
+    var len = buf.length + (intSize - (buf.length % intSize));
+    buf = Buffer.concat([buf, zeroBuffer], len);
+  }
+
+  var arr = [];
+  var fn = bigEndian ? buf.readInt32BE : buf.readInt32LE;
+  for (var i = 0; i < buf.length; i += intSize) {
+    arr.push(fn.call(buf, i));
+  }
+  return arr;
+}
+
+function toBuffer(arr, size, bigEndian) {
+  var buf = new Buffer(size);
+  var fn = bigEndian ? buf.writeInt32BE : buf.writeInt32LE;
+  for (var i = 0; i < arr.length; i++) {
+    fn.call(buf, arr[i], i * 4, true);
+  }
+  return buf;
+}
+
+function hash(buf, fn, hashSize, bigEndian) {
+  if (!Buffer.isBuffer(buf)) buf = new Buffer(buf);
+  var arr = fn(toArray(buf, bigEndian), buf.length * chrsz);
+  return toBuffer(arr, hashSize, bigEndian);
+}
+
+module.exports = { hash: hash };
+
+}).call(this,require("buffer").Buffer)
+},{"buffer":2}],8:[function(require,module,exports){
+(function (Buffer){
+var rng = require('./rng')
+
+function error () {
+  var m = [].slice.call(arguments).join(' ')
+  throw new Error([
+    m,
+    'we accept pull requests',
+    'http://github.com/dominictarr/crypto-browserify'
+    ].join('\n'))
+}
+
+exports.createHash = require('./create-hash')
+
+exports.createHmac = require('./create-hmac')
+
+exports.randomBytes = function(size, callback) {
+  if (callback && callback.call) {
+    try {
+      callback.call(this, undefined, new Buffer(rng(size)))
+    } catch (err) { callback(err) }
+  } else {
+    return new Buffer(rng(size))
+  }
+}
+
+function each(a, f) {
+  for(var i in a)
+    f(a[i], i)
+}
+
+exports.getHashes = function () {
+  return ['sha1', 'sha256', 'md5', 'rmd160']
+
+}
+
+var p = require('./pbkdf2')(exports.createHmac)
+exports.pbkdf2 = p.pbkdf2
+exports.pbkdf2Sync = p.pbkdf2Sync
+
+
+// the least I can do is make error messages for the rest of the node.js/crypto api.
+each(['createCredentials'
+, 'createCipher'
+, 'createCipheriv'
+, 'createDecipher'
+, 'createDecipheriv'
+, 'createSign'
+, 'createVerify'
+, 'createDiffieHellman'
+], function (name) {
+  exports[name] = function () {
+    error('sorry,', name, 'is not implemented yet')
+  }
+})
+
+}).call(this,require("buffer").Buffer)
+},{"./create-hash":5,"./create-hmac":6,"./pbkdf2":16,"./rng":17,"buffer":2}],9:[function(require,module,exports){
+/*
+ * A JavaScript implementation of the RSA Data Security, Inc. MD5 Message
+ * Digest Algorithm, as defined in RFC 1321.
+ * Version 2.1 Copyright (C) Paul Johnston 1999 - 2002.
+ * Other contributors: Greg Holt, Andrew Kepert, Ydnar, Lostinet
+ * Distributed under the BSD License
+ * See http://pajhome.org.uk/crypt/md5 for more info.
+ */
+
+var helpers = require('./helpers');
+
+/*
+ * Calculate the MD5 of an array of little-endian words, and a bit length
+ */
+function core_md5(x, len)
+{
+  /* append padding */
+  x[len >> 5] |= 0x80 << ((len) % 32);
+  x[(((len + 64) >>> 9) << 4) + 14] = len;
+
+  var a =  1732584193;
+  var b = -271733879;
+  var c = -1732584194;
+  var d =  271733878;
+
+  for(var i = 0; i < x.length; i += 16)
+  {
+    var olda = a;
+    var oldb = b;
+    var oldc = c;
+    var oldd = d;
+
+    a = md5_ff(a, b, c, d, x[i+ 0], 7 , -680876936);
+    d = md5_ff(d, a, b, c, x[i+ 1], 12, -389564586);
+    c = md5_ff(c, d, a, b, x[i+ 2], 17,  606105819);
+    b = md5_ff(b, c, d, a, x[i+ 3], 22, -1044525330);
+    a = md5_ff(a, b, c, d, x[i+ 4], 7 , -176418897);
+    d = md5_ff(d, a, b, c, x[i+ 5], 12,  1200080426);
+    c = md5_ff(c, d, a, b, x[i+ 6], 17, -1473231341);
+    b = md5_ff(b, c, d, a, x[i+ 7], 22, -45705983);
+    a = md5_ff(a, b, c, d, x[i+ 8], 7 ,  1770035416);
+    d = md5_ff(d, a, b, c, x[i+ 9], 12, -1958414417);
+    c = md5_ff(c, d, a, b, x[i+10], 17, -42063);
+    b = md5_ff(b, c, d, a, x[i+11], 22, -1990404162);
+    a = md5_ff(a, b, c, d, x[i+12], 7 ,  1804603682);
+    d = md5_ff(d, a, b, c, x[i+13], 12, -40341101);
+    c = md5_ff(c, d, a, b, x[i+14], 17, -1502002290);
+    b = md5_ff(b, c, d, a, x[i+15], 22,  1236535329);
+
+    a = md5_gg(a, b, c, d, x[i+ 1], 5 , -165796510);
+    d = md5_gg(d, a, b, c, x[i+ 6], 9 , -1069501632);
+    c = md5_gg(c, d, a, b, x[i+11], 14,  643717713);
+    b = md5_gg(b, c, d, a, x[i+ 0], 20, -373897302);
+    a = md5_gg(a, b, c, d, x[i+ 5], 5 , -701558691);
+    d = md5_gg(d, a, b, c, x[i+10], 9 ,  38016083);
+    c = md5_gg(c, d, a, b, x[i+15], 14, -660478335);
+    b = md5_gg(b, c, d, a, x[i+ 4], 20, -405537848);
+    a = md5_gg(a, b, c, d, x[i+ 9], 5 ,  568446438);
+    d = md5_gg(d, a, b, c, x[i+14], 9 , -1019803690);
+    c = md5_gg(c, d, a, b, x[i+ 3], 14, -187363961);
+    b = md5_gg(b, c, d, a, x[i+ 8], 20,  1163531501);
+    a = md5_gg(a, b, c, d, x[i+13], 5 , -1444681467);
+    d = md5_gg(d, a, b, c, x[i+ 2], 9 , -51403784);
+    c = md5_gg(c, d, a, b, x[i+ 7], 14,  1735328473);
+    b = md5_gg(b, c, d, a, x[i+12], 20, -1926607734);
+
+    a = md5_hh(a, b, c, d, x[i+ 5], 4 , -378558);
+    d = md5_hh(d, a, b, c, x[i+ 8], 11, -2022574463);
+    c = md5_hh(c, d, a, b, x[i+11], 16,  1839030562);
+    b = md5_hh(b, c, d, a, x[i+14], 23, -35309556);
+    a = md5_hh(a, b, c, d, x[i+ 1], 4 , -1530992060);
+    d = md5_hh(d, a, b, c, x[i+ 4], 11,  1272893353);
+    c = md5_hh(c, d, a, b, x[i+ 7], 16, -155497632);
+    b = md5_hh(b, c, d, a, x[i+10], 23, -1094730640);
+    a = md5_hh(a, b, c, d, x[i+13], 4 ,  681279174);
+    d = md5_hh(d, a, b, c, x[i+ 0], 11, -358537222);
+    c = md5_hh(c, d, a, b, x[i+ 3], 16, -722521979);
+    b = md5_hh(b, c, d, a, x[i+ 6], 23,  76029189);
+    a = md5_hh(a, b, c, d, x[i+ 9], 4 , -640364487);
+    d = md5_hh(d, a, b, c, x[i+12], 11, -421815835);
+    c = md5_hh(c, d, a, b, x[i+15], 16,  530742520);
+    b = md5_hh(b, c, d, a, x[i+ 2], 23, -995338651);
+
+    a = md5_ii(a, b, c, d, x[i+ 0], 6 , -198630844);
+    d = md5_ii(d, a, b, c, x[i+ 7], 10,  1126891415);
+    c = md5_ii(c, d, a, b, x[i+14], 15, -1416354905);
+    b = md5_ii(b, c, d, a, x[i+ 5], 21, -57434055);
+    a = md5_ii(a, b, c, d, x[i+12], 6 ,  1700485571);
+    d = md5_ii(d, a, b, c, x[i+ 3], 10, -1894986606);
+    c = md5_ii(c, d, a, b, x[i+10], 15, -1051523);
+    b = md5_ii(b, c, d, a, x[i+ 1], 21, -2054922799);
+    a = md5_ii(a, b, c, d, x[i+ 8], 6 ,  1873313359);
+    d = md5_ii(d, a, b, c, x[i+15], 10, -30611744);
+    c = md5_ii(c, d, a, b, x[i+ 6], 15, -1560198380);
+    b = md5_ii(b, c, d, a, x[i+13], 21,  1309151649);
+    a = md5_ii(a, b, c, d, x[i+ 4], 6 , -145523070);
+    d = md5_ii(d, a, b, c, x[i+11], 10, -1120210379);
+    c = md5_ii(c, d, a, b, x[i+ 2], 15,  718787259);
+    b = md5_ii(b, c, d, a, x[i+ 9], 21, -343485551);
+
+    a = safe_add(a, olda);
+    b = safe_add(b, oldb);
+    c = safe_add(c, oldc);
+    d = safe_add(d, oldd);
+  }
+  return Array(a, b, c, d);
+
+}
+
+/*
+ * These functions implement the four basic operations the algorithm uses.
+ */
+function md5_cmn(q, a, b, x, s, t)
+{
+  return safe_add(bit_rol(safe_add(safe_add(a, q), safe_add(x, t)), s),b);
+}
+function md5_ff(a, b, c, d, x, s, t)
+{
+  return md5_cmn((b & c) | ((~b) & d), a, b, x, s, t);
+}
+function md5_gg(a, b, c, d, x, s, t)
+{
+  return md5_cmn((b & d) | (c & (~d)), a, b, x, s, t);
+}
+function md5_hh(a, b, c, d, x, s, t)
+{
+  return md5_cmn(b ^ c ^ d, a, b, x, s, t);
+}
+function md5_ii(a, b, c, d, x, s, t)
+{
+  return md5_cmn(c ^ (b | (~d)), a, b, x, s, t);
+}
+
+/*
+ * Add integers, wrapping at 2^32. This uses 16-bit operations internally
+ * to work around bugs in some JS interpreters.
+ */
+function safe_add(x, y)
+{
+  var lsw = (x & 0xFFFF) + (y & 0xFFFF);
+  var msw = (x >> 16) + (y >> 16) + (lsw >> 16);
+  return (msw << 16) | (lsw & 0xFFFF);
+}
+
+/*
+ * Bitwise rotate a 32-bit number to the left.
+ */
+function bit_rol(num, cnt)
+{
+  return (num << cnt) | (num >>> (32 - cnt));
+}
+
+module.exports = function md5(buf) {
+  return helpers.hash(buf, core_md5, 16);
+};
+
+},{"./helpers":7}],10:[function(require,module,exports){
+(function (Buffer){
+
+module.exports = ripemd160
+
+
+
+/*
+CryptoJS v3.1.2
+code.google.com/p/crypto-js
+(c) 2009-2013 by Jeff Mott. All rights reserved.
+code.google.com/p/crypto-js/wiki/License
+*/
+/** @preserve
+(c) 2012 by Cédric Mesnil. All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+    - Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+    - Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+
+// Constants table
+var zl = [
+    0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15,
+    7,  4, 13,  1, 10,  6, 15,  3, 12,  0,  9,  5,  2, 14, 11,  8,
+    3, 10, 14,  4,  9, 15,  8,  1,  2,  7,  0,  6, 13, 11,  5, 12,
+    1,  9, 11, 10,  0,  8, 12,  4, 13,  3,  7, 15, 14,  5,  6,  2,
+    4,  0,  5,  9,  7, 12,  2, 10, 14,  1,  3,  8, 11,  6, 15, 13];
+var zr = [
+    5, 14,  7,  0,  9,  2, 11,  4, 13,  6, 15,  8,  1, 10,  3, 12,
+    6, 11,  3,  7,  0, 13,  5, 10, 14, 15,  8, 12,  4,  9,  1,  2,
+    15,  5,  1,  3,  7, 14,  6,  9, 11,  8, 12,  2, 10,  0,  4, 13,
+    8,  6,  4,  1,  3, 11, 15,  0,  5, 12,  2, 13,  9,  7, 10, 14,
+    12, 15, 10,  4,  1,  5,  8,  7,  6,  2, 13, 14,  0,  3,  9, 11];
+var sl = [
+     11, 14, 15, 12,  5,  8,  7,  9, 11, 13, 14, 15,  6,  7,  9,  8,
+    7, 6,   8, 13, 11,  9,  7, 15,  7, 12, 15,  9, 11,  7, 13, 12,
+    11, 13,  6,  7, 14,  9, 13, 15, 14,  8, 13,  6,  5, 12,  7,  5,
+      11, 12, 14, 15, 14, 15,  9,  8,  9, 14,  5,  6,  8,  6,  5, 12,
+    9, 15,  5, 11,  6,  8, 13, 12,  5, 12, 13, 14, 11,  8,  5,  6 ];
+var sr = [
+    8,  9,  9, 11, 13, 15, 15,  5,  7,  7,  8, 11, 14, 14, 12,  6,
+    9, 13, 15,  7, 12,  8,  9, 11,  7,  7, 12,  7,  6, 15, 13, 11,
+    9,  7, 15, 11,  8,  6,  6, 14, 12, 13,  5, 14, 13, 13,  7,  5,
+    15,  5,  8, 11, 14, 14,  6, 14,  6,  9, 12,  9, 12,  5, 15,  8,
+    8,  5, 12,  9, 12,  5, 14,  6,  8, 13,  6,  5, 15, 13, 11, 11 ];
+
+var hl =  [ 0x00000000, 0x5A827999, 0x6ED9EBA1, 0x8F1BBCDC, 0xA953FD4E];
+var hr =  [ 0x50A28BE6, 0x5C4DD124, 0x6D703EF3, 0x7A6D76E9, 0x00000000];
+
+var bytesToWords = function (bytes) {
+  var words = [];
+  for (var i = 0, b = 0; i < bytes.length; i++, b += 8) {
+    words[b >>> 5] |= bytes[i] << (24 - b % 32);
+  }
+  return words;
+};
+
+var wordsToBytes = function (words) {
+  var bytes = [];
+  for (var b = 0; b < words.length * 32; b += 8) {
+    bytes.push((words[b >>> 5] >>> (24 - b % 32)) & 0xFF);
+  }
+  return bytes;
+};
+
+var processBlock = function (H, M, offset) {
+
+  // Swap endian
+  for (var i = 0; i < 16; i++) {
+    var offset_i = offset + i;
+    var M_offset_i = M[offset_i];
+
+    // Swap
+    M[offset_i] = (
+        (((M_offset_i << 8)  | (M_offset_i >>> 24)) & 0x00ff00ff) |
+        (((M_offset_i << 24) | (M_offset_i >>> 8))  & 0xff00ff00)
+    );
+  }
+
+  // Working variables
+  var al, bl, cl, dl, el;
+  var ar, br, cr, dr, er;
+
+  ar = al = H[0];
+  br = bl = H[1];
+  cr = cl = H[2];
+  dr = dl = H[3];
+  er = el = H[4];
+  // Computation
+  var t;
+  for (var i = 0; i < 80; i += 1) {
+    t = (al +  M[offset+zl[i]])|0;
+    if (i<16){
+        t +=  f1(bl,cl,dl) + hl[0];
+    } else if (i<32) {
+        t +=  f2(bl,cl,dl) + hl[1];
+    } else if (i<48) {
+        t +=  f3(bl,cl,dl) + hl[2];
+    } else if (i<64) {
+        t +=  f4(bl,cl,dl) + hl[3];
+    } else {// if (i<80) {
+        t +=  f5(bl,cl,dl) + hl[4];
+    }
+    t = t|0;
+    t =  rotl(t,sl[i]);
+    t = (t+el)|0;
+    al = el;
+    el = dl;
+    dl = rotl(cl, 10);
+    cl = bl;
+    bl = t;
+
+    t = (ar + M[offset+zr[i]])|0;
+    if (i<16){
+        t +=  f5(br,cr,dr) + hr[0];
+    } else if (i<32) {
+        t +=  f4(br,cr,dr) + hr[1];
+    } else if (i<48) {
+        t +=  f3(br,cr,dr) + hr[2];
+    } else if (i<64) {
+        t +=  f2(br,cr,dr) + hr[3];
+    } else {// if (i<80) {
+        t +=  f1(br,cr,dr) + hr[4];
+    }
+    t = t|0;
+    t =  rotl(t,sr[i]) ;
+    t = (t+er)|0;
+    ar = er;
+    er = dr;
+    dr = rotl(cr, 10);
+    cr = br;
+    br = t;
+  }
+  // Intermediate hash value
+  t    = (H[1] + cl + dr)|0;
+  H[1] = (H[2] + dl + er)|0;
+  H[2] = (H[3] + el + ar)|0;
+  H[3] = (H[4] + al + br)|0;
+  H[4] = (H[0] + bl + cr)|0;
+  H[0] =  t;
+};
+
+function f1(x, y, z) {
+  return ((x) ^ (y) ^ (z));
+}
+
+function f2(x, y, z) {
+  return (((x)&(y)) | ((~x)&(z)));
+}
+
+function f3(x, y, z) {
+  return (((x) | (~(y))) ^ (z));
+}
+
+function f4(x, y, z) {
+  return (((x) & (z)) | ((y)&(~(z))));
+}
+
+function f5(x, y, z) {
+  return ((x) ^ ((y) |(~(z))));
+}
+
+function rotl(x,n) {
+  return (x<<n) | (x>>>(32-n));
+}
+
+function ripemd160(message) {
+  var H = [0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476, 0xC3D2E1F0];
+
+  if (typeof message == 'string')
+    message = new Buffer(message, 'utf8');
+
+  var m = bytesToWords(message);
+
+  var nBitsLeft = message.length * 8;
+  var nBitsTotal = message.length * 8;
+
+  // Add padding
+  m[nBitsLeft >>> 5] |= 0x80 << (24 - nBitsLeft % 32);
+  m[(((nBitsLeft + 64) >>> 9) << 4) + 14] = (
+      (((nBitsTotal << 8)  | (nBitsTotal >>> 24)) & 0x00ff00ff) |
+      (((nBitsTotal << 24) | (nBitsTotal >>> 8))  & 0xff00ff00)
+  );
+
+  for (var i=0 ; i<m.length; i += 16) {
+    processBlock(H, m, i);
+  }
+
+  // Swap endian
+  for (var i = 0; i < 5; i++) {
+      // Shortcut
+    var H_i = H[i];
+
+    // Swap
+    H[i] = (((H_i << 8)  | (H_i >>> 24)) & 0x00ff00ff) |
+          (((H_i << 24) | (H_i >>> 8))  & 0xff00ff00);
+  }
+
+  var digestbytes = wordsToBytes(H);
+  return new Buffer(digestbytes);
+}
+
+
+
+}).call(this,require("buffer").Buffer)
+},{"buffer":2}],11:[function(require,module,exports){
+var u = require('./util')
+var write = u.write
+var fill = u.zeroFill
+
+module.exports = function (Buffer) {
+
+  //prototype class for hash functions
+  function Hash (blockSize, finalSize) {
+    this._block = new Buffer(blockSize) //new Uint32Array(blockSize/4)
+    this._finalSize = finalSize
+    this._blockSize = blockSize
+    this._len = 0
+    this._s = 0
+  }
+
+  Hash.prototype.init = function () {
+    this._s = 0
+    this._len = 0
+  }
+
+  function lengthOf(data, enc) {
+    if(enc == null)     return data.byteLength || data.length
+    if(enc == 'ascii' || enc == 'binary')  return data.length
+    if(enc == 'hex')    return data.length/2
+    if(enc == 'base64') return data.length/3
+  }
+
+  Hash.prototype.update = function (data, enc) {
+    var bl = this._blockSize
+
+    //I'd rather do this with a streaming encoder, like the opposite of
+    //http://nodejs.org/api/string_decoder.html
+    var length
+      if(!enc && 'string' === typeof data)
+        enc = 'utf8'
+
+    if(enc) {
+      if(enc === 'utf-8')
+        enc = 'utf8'
+
+      if(enc === 'base64' || enc === 'utf8')
+        data = new Buffer(data, enc), enc = null
+
+      length = lengthOf(data, enc)
+    } else
+      length = data.byteLength || data.length
+
+    var l = this._len += length
+    var s = this._s = (this._s || 0)
+    var f = 0
+    var buffer = this._block
+    while(s < l) {
+      var t = Math.min(length, f + bl - s%bl)
+      write(buffer, data, enc, s%bl, f, t)
+      var ch = (t - f);
+      s += ch; f += ch
+
+      if(!(s%bl))
+        this._update(buffer)
+    }
+    this._s = s
+
+    return this
+
+  }
+
+  Hash.prototype.digest = function (enc) {
+    var bl = this._blockSize
+    var fl = this._finalSize
+    var len = this._len*8
+
+    var x = this._block
+
+    var bits = len % (bl*8)
+
+    //add end marker, so that appending 0's creats a different hash.
+    x[this._len % bl] = 0x80
+    fill(this._block, this._len % bl + 1)
+
+    if(bits >= fl*8) {
+      this._update(this._block)
+      u.zeroFill(this._block, 0)
+    }
+
+    //TODO: handle case where the bit length is > Math.pow(2, 29)
+    x.writeInt32BE(len, fl + 4) //big endian
+
+    var hash = this._update(this._block) || this._hash()
+    if(enc == null) return hash
+    return hash.toString(enc)
+  }
+
+  Hash.prototype._update = function () {
+    throw new Error('_update must be implemented by subclass')
+  }
+
+  return Hash
+}
+
+},{"./util":15}],12:[function(require,module,exports){
+var exports = module.exports = function (alg) {
+  var Alg = exports[alg]
+  if(!Alg) throw new Error(alg + ' is not supported (we accept pull requests)')
+  return new Alg()
+}
+
+var Buffer = require('buffer').Buffer
+var Hash   = require('./hash')(Buffer)
+
+exports.sha =
+exports.sha1 = require('./sha1')(Buffer, Hash)
+exports.sha256 = require('./sha256')(Buffer, Hash)
+
+},{"./hash":11,"./sha1":13,"./sha256":14,"buffer":2}],13:[function(require,module,exports){
+/*
+ * A JavaScript implementation of the Secure Hash Algorithm, SHA-1, as defined
+ * in FIPS PUB 180-1
+ * Version 2.1a Copyright Paul Johnston 2000 - 2002.
+ * Other contributors: Greg Holt, Andrew Kepert, Ydnar, Lostinet
+ * Distributed under the BSD License
+ * See http://pajhome.org.uk/crypt/md5 for details.
+ */
+module.exports = function (Buffer, Hash) {
+
+  var inherits = require('util').inherits
+
+  inherits(Sha1, Hash)
+
+  var A = 0|0
+  var B = 4|0
+  var C = 8|0
+  var D = 12|0
+  var E = 16|0
+
+  var BE = false
+  var LE = true
+
+  var W = new Int32Array(80)
+
+  var POOL = []
+
+  function Sha1 () {
+    if(POOL.length)
+      return POOL.pop().init()
+
+    if(!(this instanceof Sha1)) return new Sha1()
+    this._w = W
+    Hash.call(this, 16*4, 14*4)
+  
+    this._h = null
+    this.init()
+  }
+
+  Sha1.prototype.init = function () {
+    this._a = 0x67452301
+    this._b = 0xefcdab89
+    this._c = 0x98badcfe
+    this._d = 0x10325476
+    this._e = 0xc3d2e1f0
+
+    Hash.prototype.init.call(this)
+    return this
+  }
+
+  Sha1.prototype._POOL = POOL
+
+  // assume that array is a Uint32Array with length=16,
+  // and that if it is the last block, it already has the length and the 1 bit appended.
+
+
+  var isDV = new Buffer(1) instanceof DataView
+  function readInt32BE (X, i) {
+    return isDV
+      ? X.getInt32(i, false)
+      : X.readInt32BE(i)
+  }
+
+  Sha1.prototype._update = function (array) {
+
+    var X = this._block
+    var h = this._h
+    var a, b, c, d, e, _a, _b, _c, _d, _e
+
+    a = _a = this._a
+    b = _b = this._b
+    c = _c = this._c
+    d = _d = this._d
+    e = _e = this._e
+
+    var w = this._w
+
+    for(var j = 0; j < 80; j++) {
+      var W = w[j]
+        = j < 16
+        //? X.getInt32(j*4, false)
+        //? readInt32BE(X, j*4) //*/ X.readInt32BE(j*4) //*/
+        ? X.readInt32BE(j*4)
+        : rol(w[j - 3] ^ w[j -  8] ^ w[j - 14] ^ w[j - 16], 1)
+
+      var t =
+        add(
+          add(rol(a, 5), sha1_ft(j, b, c, d)),
+          add(add(e, W), sha1_kt(j))
+        );
+
+      e = d
+      d = c
+      c = rol(b, 30)
+      b = a
+      a = t
+    }
+
+    this._a = add(a, _a)
+    this._b = add(b, _b)
+    this._c = add(c, _c)
+    this._d = add(d, _d)
+    this._e = add(e, _e)
+  }
+
+  Sha1.prototype._hash = function () {
+    if(POOL.length < 100) POOL.push(this)
+    var H = new Buffer(20)
+    //console.log(this._a|0, this._b|0, this._c|0, this._d|0, this._e|0)
+    H.writeInt32BE(this._a|0, A)
+    H.writeInt32BE(this._b|0, B)
+    H.writeInt32BE(this._c|0, C)
+    H.writeInt32BE(this._d|0, D)
+    H.writeInt32BE(this._e|0, E)
+    return H
+  }
+
+  /*
+   * Perform the appropriate triplet combination function for the current
+   * iteration
+   */
+  function sha1_ft(t, b, c, d) {
+    if(t < 20) return (b & c) | ((~b) & d);
+    if(t < 40) return b ^ c ^ d;
+    if(t < 60) return (b & c) | (b & d) | (c & d);
+    return b ^ c ^ d;
+  }
+
+  /*
+   * Determine the appropriate additive constant for the current iteration
+   */
+  function sha1_kt(t) {
+    return (t < 20) ?  1518500249 : (t < 40) ?  1859775393 :
+           (t < 60) ? -1894007588 : -899497514;
+  }
+
+  /*
+   * Add integers, wrapping at 2^32. This uses 16-bit operations internally
+   * to work around bugs in some JS interpreters.
+   * //dominictarr: this is 10 years old, so maybe this can be dropped?)
+   *
+   */
+  function add(x, y) {
+    return (x + y ) | 0
+  //lets see how this goes on testling.
+  //  var lsw = (x & 0xFFFF) + (y & 0xFFFF);
+  //  var msw = (x >> 16) + (y >> 16) + (lsw >> 16);
+  //  return (msw << 16) | (lsw & 0xFFFF);
+  }
+
+  /*
+   * Bitwise rotate a 32-bit number to the left.
+   */
+  function rol(num, cnt) {
+    return (num << cnt) | (num >>> (32 - cnt));
+  }
+
+  return Sha1
+}
+
+},{"util":22}],14:[function(require,module,exports){
+
+/**
+ * A JavaScript implementation of the Secure Hash Algorithm, SHA-256, as defined
+ * in FIPS 180-2
+ * Version 2.2-beta Copyright Angel Marin, Paul Johnston 2000 - 2009.
+ * Other contributors: Greg Holt, Andrew Kepert, Ydnar, Lostinet
+ *
+ */
+
+var inherits = require('util').inherits
+var BE       = false
+var LE       = true
+var u        = require('./util')
+
+module.exports = function (Buffer, Hash) {
+
+  var K = [
+      0x428A2F98, 0x71374491, 0xB5C0FBCF, 0xE9B5DBA5,
+      0x3956C25B, 0x59F111F1, 0x923F82A4, 0xAB1C5ED5,
+      0xD807AA98, 0x12835B01, 0x243185BE, 0x550C7DC3,
+      0x72BE5D74, 0x80DEB1FE, 0x9BDC06A7, 0xC19BF174,
+      0xE49B69C1, 0xEFBE4786, 0x0FC19DC6, 0x240CA1CC,
+      0x2DE92C6F, 0x4A7484AA, 0x5CB0A9DC, 0x76F988DA,
+      0x983E5152, 0xA831C66D, 0xB00327C8, 0xBF597FC7,
+      0xC6E00BF3, 0xD5A79147, 0x06CA6351, 0x14292967,
+      0x27B70A85, 0x2E1B2138, 0x4D2C6DFC, 0x53380D13,
+      0x650A7354, 0x766A0ABB, 0x81C2C92E, 0x92722C85,
+      0xA2BFE8A1, 0xA81A664B, 0xC24B8B70, 0xC76C51A3,
+      0xD192E819, 0xD6990624, 0xF40E3585, 0x106AA070,
+      0x19A4C116, 0x1E376C08, 0x2748774C, 0x34B0BCB5,
+      0x391C0CB3, 0x4ED8AA4A, 0x5B9CCA4F, 0x682E6FF3,
+      0x748F82EE, 0x78A5636F, 0x84C87814, 0x8CC70208,
+      0x90BEFFFA, 0xA4506CEB, 0xBEF9A3F7, 0xC67178F2
+    ]
+
+  inherits(Sha256, Hash)
+  var W = new Array(64)
+  var POOL = []
+  function Sha256() {
+    if(POOL.length) {
+      //return POOL.shift().init()
+    }
+    //this._data = new Buffer(32)
+
+    this.init()
+
+    this._w = W //new Array(64)
+
+    Hash.call(this, 16*4, 14*4)
+  };
+
+  Sha256.prototype.init = function () {
+
+    this._a = 0x6a09e667|0
+    this._b = 0xbb67ae85|0
+    this._c = 0x3c6ef372|0
+    this._d = 0xa54ff53a|0
+    this._e = 0x510e527f|0
+    this._f = 0x9b05688c|0
+    this._g = 0x1f83d9ab|0
+    this._h = 0x5be0cd19|0
+
+    this._len = this._s = 0
+
+    return this
+  }
+
+  var safe_add = function(x, y) {
+    var lsw = (x & 0xFFFF) + (y & 0xFFFF);
+    var msw = (x >> 16) + (y >> 16) + (lsw >> 16);
+    return (msw << 16) | (lsw & 0xFFFF);
+  }
+
+  function S (X, n) {
+    return (X >>> n) | (X << (32 - n));
+  }
+
+  function R (X, n) {
+    return (X >>> n);
+  }
+
+  function Ch (x, y, z) {
+    return ((x & y) ^ ((~x) & z));
+  }
+
+  function Maj (x, y, z) {
+    return ((x & y) ^ (x & z) ^ (y & z));
+  }
+
+  function Sigma0256 (x) {
+    return (S(x, 2) ^ S(x, 13) ^ S(x, 22));
+  }
+
+  function Sigma1256 (x) {
+    return (S(x, 6) ^ S(x, 11) ^ S(x, 25));
+  }
+
+  function Gamma0256 (x) {
+    return (S(x, 7) ^ S(x, 18) ^ R(x, 3));
+  }
+
+  function Gamma1256 (x) {
+    return (S(x, 17) ^ S(x, 19) ^ R(x, 10));
+  }
+
+  Sha256.prototype._update = function(m) {
+    var M = this._block
+    var W = this._w
+    var a, b, c, d, e, f, g, h
+    var T1, T2
+
+    a = this._a | 0
+    b = this._b | 0
+    c = this._c | 0
+    d = this._d | 0
+    e = this._e | 0
+    f = this._f | 0
+    g = this._g | 0
+    h = this._h | 0
+
+    for (var j = 0; j < 64; j++) {
+      var w = W[j] = j < 16
+        ? M.readInt32BE(j * 4)
+        : Gamma1256(W[j - 2]) + W[j - 7] + Gamma0256(W[j - 15]) + W[j - 16]
+
+      T1 = h + Sigma1256(e) + Ch(e, f, g) + K[j] + w
+
+      T2 = Sigma0256(a) + Maj(a, b, c);
+      h = g; g = f; f = e; e = d + T1; d = c; c = b; b = a; a = T1 + T2;
+    }
+
+    this._a = (a + this._a) | 0
+    this._b = (b + this._b) | 0
+    this._c = (c + this._c) | 0
+    this._d = (d + this._d) | 0
+    this._e = (e + this._e) | 0
+    this._f = (f + this._f) | 0
+    this._g = (g + this._g) | 0
+    this._h = (h + this._h) | 0
+
+  };
+
+  Sha256.prototype._hash = function () {
+    if(POOL.length < 10)
+      POOL.push(this)
+
+    var H = new Buffer(32)
+
+    H.writeInt32BE(this._a,  0)
+    H.writeInt32BE(this._b,  4)
+    H.writeInt32BE(this._c,  8)
+    H.writeInt32BE(this._d, 12)
+    H.writeInt32BE(this._e, 16)
+    H.writeInt32BE(this._f, 20)
+    H.writeInt32BE(this._g, 24)
+    H.writeInt32BE(this._h, 28)
+
+    return H
+  }
+
+  return Sha256
+
+}
+
+},{"./util":15,"util":22}],15:[function(require,module,exports){
+exports.write = write
+exports.zeroFill = zeroFill
+
+exports.toString = toString
+
+function write (buffer, string, enc, start, from, to, LE) {
+  var l = (to - from)
+  if(enc === 'ascii' || enc === 'binary') {
+    for( var i = 0; i < l; i++) {
+      buffer[start + i] = string.charCodeAt(i + from)
+    }
+  }
+  else if(enc == null) {
+    for( var i = 0; i < l; i++) {
+      buffer[start + i] = string[i + from]
+    }
+  }
+  else if(enc === 'hex') {
+    for(var i = 0; i < l; i++) {
+      var j = from + i
+      buffer[start + i] = parseInt(string[j*2] + string[(j*2)+1], 16)
+    }
+  }
+  else if(enc === 'base64') {
+    throw new Error('base64 encoding not yet supported')
+  }
+  else
+    throw new Error(enc +' encoding not yet supported')
+}
+
+//always fill to the end!
+function zeroFill(buf, from) {
+  for(var i = from; i < buf.length; i++)
+    buf[i] = 0
+}
+
+
+},{}],16:[function(require,module,exports){
+(function (Buffer){
+// JavaScript PBKDF2 Implementation
+// Based on http://git.io/qsv2zw
+// Licensed under LGPL v3
+// Copyright (c) 2013 jduncanator
+
+var blocksize = 64
+var zeroBuffer = new Buffer(blocksize); zeroBuffer.fill(0)
+
+module.exports = function (createHmac, exports) {
+  exports = exports || {}
+
+  exports.pbkdf2 = function(password, salt, iterations, keylen, cb) {
+    if('function' !== typeof cb)
+      throw new Error('No callback provided to pbkdf2');
+    setTimeout(function () {
+      cb(null, exports.pbkdf2Sync(password, salt, iterations, keylen))
+    })
+  }
+
+  exports.pbkdf2Sync = function(key, salt, iterations, keylen) {
+    if('number' !== typeof iterations)
+      throw new TypeError('Iterations not a number')
+    if(iterations < 0)
+      throw new TypeError('Bad iterations')
+    if('number' !== typeof keylen)
+      throw new TypeError('Key length not a number')
+    if(keylen < 0)
+      throw new TypeError('Bad key length')
+
+    //stretch key to the correct length that hmac wants it,
+    //otherwise this will happen every time hmac is called
+    //twice per iteration.
+    var key = !Buffer.isBuffer(key) ? new Buffer(key) : key
+
+    if(key.length > blocksize) {
+      key = createHash(alg).update(key).digest()
+    } else if(key.length < blocksize) {
+      key = Buffer.concat([key, zeroBuffer], blocksize)
+    }
+
+    var HMAC;
+    var cplen, p = 0, i = 1, itmp = new Buffer(4), digtmp;
+    var out = new Buffer(keylen);
+    out.fill(0);
+    while(keylen) {
+      if(keylen > 20)
+        cplen = 20;
+      else
+        cplen = keylen;
+
+      /* We are unlikely to ever use more than 256 blocks (5120 bits!)
+         * but just in case...
+         */
+        itmp[0] = (i >> 24) & 0xff;
+        itmp[1] = (i >> 16) & 0xff;
+          itmp[2] = (i >> 8) & 0xff;
+          itmp[3] = i & 0xff;
+
+          HMAC = createHmac('sha1', key);
+          HMAC.update(salt)
+          HMAC.update(itmp);
+        digtmp = HMAC.digest();
+        digtmp.copy(out, p, 0, cplen);
+
+        for(var j = 1; j < iterations; j++) {
+          HMAC = createHmac('sha1', key);
+          HMAC.update(digtmp);
+          digtmp = HMAC.digest();
+          for(var k = 0; k < cplen; k++) {
+            out[k] ^= digtmp[k];
+          }
         }
-    };
-    function Semigroupoid($less$less$less) {
-        this["<<<"] = $less$less$less;
-    };
-    function Category(__superclass_Prelude$dotSemigroupoid_0, id) {
-        this["__superclass_Prelude.Semigroupoid_0"] = __superclass_Prelude$dotSemigroupoid_0;
-        this.id = id;
-    };
-    function Show(show) {
-        this.show = show;
-    };
-    function Functor($less$dollar$greater) {
-        this["<$>"] = $less$dollar$greater;
-    };
-    function Apply($less$times$greater, __superclass_Prelude$dotFunctor_0) {
-        this["<*>"] = $less$times$greater;
-        this["__superclass_Prelude.Functor_0"] = __superclass_Prelude$dotFunctor_0;
-    };
-    function Applicative(__superclass_Prelude$dotApply_0, pure) {
-        this["__superclass_Prelude.Apply_0"] = __superclass_Prelude$dotApply_0;
-        this.pure = pure;
-    };
-    function Bind($greater$greater$eq, __superclass_Prelude$dotApply_0) {
-        this[">>="] = $greater$greater$eq;
-        this["__superclass_Prelude.Apply_0"] = __superclass_Prelude$dotApply_0;
-    };
-    function Monad(__superclass_Prelude$dotApplicative_0, __superclass_Prelude$dotBind_1) {
-        this["__superclass_Prelude.Applicative_0"] = __superclass_Prelude$dotApplicative_0;
-        this["__superclass_Prelude.Bind_1"] = __superclass_Prelude$dotBind_1;
-    };
-    function Semigroup($less$greater) {
-        this["<>"] = $less$greater;
-    };
-    function cons(e) {  return function (l) {    return [e].concat(l);  };};
-    function showNumberImpl(n) {  return n.toString();};
-    function concatString(s1) {  return function(s2) {    return s1 + s2;  };};
-    var $greater$greater$eq = function (dict) {
-        return dict[">>="];
-    };
-    var $less$greater = function (dict) {
-        return dict["<>"];
-    };
-    var $less$less$less = function (dict) {
-        return dict["<<<"];
-    };
-    var $less$times$greater = function (dict) {
-        return dict["<*>"];
-    };
-    var $less$dollar$greater = function (dict) {
-        return dict["<$>"];
-    };
-    var $colon = cons;
-    var $plus$plus = function (__dict_Semigroup_1) {
-        return $less$greater(__dict_Semigroup_1);
-    };
-    var $dollar = function (f) {
-        return function (x) {
-            return f(x);
+      keylen -= cplen;
+      i++;
+      p += cplen;
+    }
+
+    return out;
+  }
+
+  return exports
+}
+
+}).call(this,require("buffer").Buffer)
+},{"buffer":2}],17:[function(require,module,exports){
+(function (Buffer){
+(function() {
+  module.exports = function(size) {
+    var bytes = new Buffer(size); //in browserify, this is an extended Uint8Array
+    /* This will not work in older browsers.
+     * See https://developer.mozilla.org/en-US/docs/Web/API/window.crypto.getRandomValues
+     */
+    crypto.getRandomValues(bytes);
+    return bytes;
+  }
+}())
+
+}).call(this,require("buffer").Buffer)
+},{"buffer":2}],18:[function(require,module,exports){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+function EventEmitter() {
+  this._events = this._events || {};
+  this._maxListeners = this._maxListeners || undefined;
+}
+module.exports = EventEmitter;
+
+// Backwards-compat with node 0.10.x
+EventEmitter.EventEmitter = EventEmitter;
+
+EventEmitter.prototype._events = undefined;
+EventEmitter.prototype._maxListeners = undefined;
+
+// By default EventEmitters will print a warning if more than 10 listeners are
+// added to it. This is a useful default which helps finding memory leaks.
+EventEmitter.defaultMaxListeners = 10;
+
+// Obviously not all Emitters should be limited to 10. This function allows
+// that to be increased. Set to zero for unlimited.
+EventEmitter.prototype.setMaxListeners = function(n) {
+  if (!isNumber(n) || n < 0 || isNaN(n))
+    throw TypeError('n must be a positive number');
+  this._maxListeners = n;
+  return this;
+};
+
+EventEmitter.prototype.emit = function(type) {
+  var er, handler, len, args, i, listeners;
+
+  if (!this._events)
+    this._events = {};
+
+  // If there is no 'error' event listener then throw.
+  if (type === 'error') {
+    if (!this._events.error ||
+        (isObject(this._events.error) && !this._events.error.length)) {
+      er = arguments[1];
+      if (er instanceof Error) {
+        throw er; // Unhandled 'error' event
+      } else {
+        throw TypeError('Uncaught, unspecified "error" event.');
+      }
+      return false;
+    }
+  }
+
+  handler = this._events[type];
+
+  if (isUndefined(handler))
+    return false;
+
+  if (isFunction(handler)) {
+    switch (arguments.length) {
+      // fast cases
+      case 1:
+        handler.call(this);
+        break;
+      case 2:
+        handler.call(this, arguments[1]);
+        break;
+      case 3:
+        handler.call(this, arguments[1], arguments[2]);
+        break;
+      // slower
+      default:
+        len = arguments.length;
+        args = new Array(len - 1);
+        for (i = 1; i < len; i++)
+          args[i - 1] = arguments[i];
+        handler.apply(this, args);
+    }
+  } else if (isObject(handler)) {
+    len = arguments.length;
+    args = new Array(len - 1);
+    for (i = 1; i < len; i++)
+      args[i - 1] = arguments[i];
+
+    listeners = handler.slice();
+    len = listeners.length;
+    for (i = 0; i < len; i++)
+      listeners[i].apply(this, args);
+  }
+
+  return true;
+};
+
+EventEmitter.prototype.addListener = function(type, listener) {
+  var m;
+
+  if (!isFunction(listener))
+    throw TypeError('listener must be a function');
+
+  if (!this._events)
+    this._events = {};
+
+  // To avoid recursion in the case that type === "newListener"! Before
+  // adding it to the listeners, first emit "newListener".
+  if (this._events.newListener)
+    this.emit('newListener', type,
+              isFunction(listener.listener) ?
+              listener.listener : listener);
+
+  if (!this._events[type])
+    // Optimize the case of one listener. Don't need the extra array object.
+    this._events[type] = listener;
+  else if (isObject(this._events[type]))
+    // If we've already got an array, just append.
+    this._events[type].push(listener);
+  else
+    // Adding the second element, need to change to array.
+    this._events[type] = [this._events[type], listener];
+
+  // Check for listener leak
+  if (isObject(this._events[type]) && !this._events[type].warned) {
+    var m;
+    if (!isUndefined(this._maxListeners)) {
+      m = this._maxListeners;
+    } else {
+      m = EventEmitter.defaultMaxListeners;
+    }
+
+    if (m && m > 0 && this._events[type].length > m) {
+      this._events[type].warned = true;
+      console.error('(node) warning: possible EventEmitter memory ' +
+                    'leak detected. %d listeners added. ' +
+                    'Use emitter.setMaxListeners() to increase limit.',
+                    this._events[type].length);
+      if (typeof console.trace === 'function') {
+        // not supported in IE 10
+        console.trace();
+      }
+    }
+  }
+
+  return this;
+};
+
+EventEmitter.prototype.on = EventEmitter.prototype.addListener;
+
+EventEmitter.prototype.once = function(type, listener) {
+  if (!isFunction(listener))
+    throw TypeError('listener must be a function');
+
+  var fired = false;
+
+  function g() {
+    this.removeListener(type, g);
+
+    if (!fired) {
+      fired = true;
+      listener.apply(this, arguments);
+    }
+  }
+
+  g.listener = listener;
+  this.on(type, g);
+
+  return this;
+};
+
+// emits a 'removeListener' event iff the listener was removed
+EventEmitter.prototype.removeListener = function(type, listener) {
+  var list, position, length, i;
+
+  if (!isFunction(listener))
+    throw TypeError('listener must be a function');
+
+  if (!this._events || !this._events[type])
+    return this;
+
+  list = this._events[type];
+  length = list.length;
+  position = -1;
+
+  if (list === listener ||
+      (isFunction(list.listener) && list.listener === listener)) {
+    delete this._events[type];
+    if (this._events.removeListener)
+      this.emit('removeListener', type, listener);
+
+  } else if (isObject(list)) {
+    for (i = length; i-- > 0;) {
+      if (list[i] === listener ||
+          (list[i].listener && list[i].listener === listener)) {
+        position = i;
+        break;
+      }
+    }
+
+    if (position < 0)
+      return this;
+
+    if (list.length === 1) {
+      list.length = 0;
+      delete this._events[type];
+    } else {
+      list.splice(position, 1);
+    }
+
+    if (this._events.removeListener)
+      this.emit('removeListener', type, listener);
+  }
+
+  return this;
+};
+
+EventEmitter.prototype.removeAllListeners = function(type) {
+  var key, listeners;
+
+  if (!this._events)
+    return this;
+
+  // not listening for removeListener, no need to emit
+  if (!this._events.removeListener) {
+    if (arguments.length === 0)
+      this._events = {};
+    else if (this._events[type])
+      delete this._events[type];
+    return this;
+  }
+
+  // emit removeListener for all listeners on all events
+  if (arguments.length === 0) {
+    for (key in this._events) {
+      if (key === 'removeListener') continue;
+      this.removeAllListeners(key);
+    }
+    this.removeAllListeners('removeListener');
+    this._events = {};
+    return this;
+  }
+
+  listeners = this._events[type];
+
+  if (isFunction(listeners)) {
+    this.removeListener(type, listeners);
+  } else {
+    // LIFO order
+    while (listeners.length)
+      this.removeListener(type, listeners[listeners.length - 1]);
+  }
+  delete this._events[type];
+
+  return this;
+};
+
+EventEmitter.prototype.listeners = function(type) {
+  var ret;
+  if (!this._events || !this._events[type])
+    ret = [];
+  else if (isFunction(this._events[type]))
+    ret = [this._events[type]];
+  else
+    ret = this._events[type].slice();
+  return ret;
+};
+
+EventEmitter.listenerCount = function(emitter, type) {
+  var ret;
+  if (!emitter._events || !emitter._events[type])
+    ret = 0;
+  else if (isFunction(emitter._events[type]))
+    ret = 1;
+  else
+    ret = emitter._events[type].length;
+  return ret;
+};
+
+function isFunction(arg) {
+  return typeof arg === 'function';
+}
+
+function isNumber(arg) {
+  return typeof arg === 'number';
+}
+
+function isObject(arg) {
+  return typeof arg === 'object' && arg !== null;
+}
+
+function isUndefined(arg) {
+  return arg === void 0;
+}
+
+},{}],19:[function(require,module,exports){
+if (typeof Object.create === 'function') {
+  // implementation from standard node.js 'util' module
+  module.exports = function inherits(ctor, superCtor) {
+    ctor.super_ = superCtor
+    ctor.prototype = Object.create(superCtor.prototype, {
+      constructor: {
+        value: ctor,
+        enumerable: false,
+        writable: true,
+        configurable: true
+      }
+    });
+  };
+} else {
+  // old school shim for old browsers
+  module.exports = function inherits(ctor, superCtor) {
+    ctor.super_ = superCtor
+    var TempCtor = function () {}
+    TempCtor.prototype = superCtor.prototype
+    ctor.prototype = new TempCtor()
+    ctor.prototype.constructor = ctor
+  }
+}
+
+},{}],20:[function(require,module,exports){
+// shim for using process in browser
+
+var process = module.exports = {};
+
+process.nextTick = (function () {
+    var canSetImmediate = typeof window !== 'undefined'
+    && window.setImmediate;
+    var canPost = typeof window !== 'undefined'
+    && window.postMessage && window.addEventListener
+    ;
+
+    if (canSetImmediate) {
+        return function (f) { return window.setImmediate(f) };
+    }
+
+    if (canPost) {
+        var queue = [];
+        window.addEventListener('message', function (ev) {
+            var source = ev.source;
+            if ((source === window || source === null) && ev.data === 'process-tick') {
+                ev.stopPropagation();
+                if (queue.length > 0) {
+                    var fn = queue.shift();
+                    fn();
+                }
+            }
+        }, true);
+
+        return function nextTick(fn) {
+            queue.push(fn);
+            window.postMessage('process-tick', '*');
         };
+    }
+
+    return function nextTick(fn) {
+        setTimeout(fn, 0);
     };
-    var unit = {};
-    var showNumber = function (_) {
-        return new Show(showNumberImpl);
+})();
+
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+}
+
+// TODO(shtylman)
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+
+},{}],21:[function(require,module,exports){
+module.exports = function isBuffer(arg) {
+  return arg && typeof arg === 'object'
+    && typeof arg.copy === 'function'
+    && typeof arg.fill === 'function'
+    && typeof arg.readUInt8 === 'function';
+}
+},{}],22:[function(require,module,exports){
+(function (process,global){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+var formatRegExp = /%[sdj%]/g;
+exports.format = function(f) {
+  if (!isString(f)) {
+    var objects = [];
+    for (var i = 0; i < arguments.length; i++) {
+      objects.push(inspect(arguments[i]));
+    }
+    return objects.join(' ');
+  }
+
+  var i = 1;
+  var args = arguments;
+  var len = args.length;
+  var str = String(f).replace(formatRegExp, function(x) {
+    if (x === '%%') return '%';
+    if (i >= len) return x;
+    switch (x) {
+      case '%s': return String(args[i++]);
+      case '%d': return Number(args[i++]);
+      case '%j':
+        try {
+          return JSON.stringify(args[i++]);
+        } catch (_) {
+          return '[Circular]';
+        }
+      default:
+        return x;
+    }
+  });
+  for (var x = args[i]; i < len; x = args[++i]) {
+    if (isNull(x) || !isObject(x)) {
+      str += ' ' + x;
+    } else {
+      str += ' ' + inspect(x);
+    }
+  }
+  return str;
+};
+
+
+// Mark that a method should not be used.
+// Returns a modified function which warns once by default.
+// If --no-deprecation is set, then it is a no-op.
+exports.deprecate = function(fn, msg) {
+  // Allow for deprecating things in the process of starting up.
+  if (isUndefined(global.process)) {
+    return function() {
+      return exports.deprecate(fn, msg).apply(this, arguments);
     };
-    var show = function (dict) {
-        return dict.show;
+  }
+
+  if (process.noDeprecation === true) {
+    return fn;
+  }
+
+  var warned = false;
+  function deprecated() {
+    if (!warned) {
+      if (process.throwDeprecation) {
+        throw new Error(msg);
+      } else if (process.traceDeprecation) {
+        console.trace(msg);
+      } else {
+        console.error(msg);
+      }
+      warned = true;
+    }
+    return fn.apply(this, arguments);
+  }
+
+  return deprecated;
+};
+
+
+var debugs = {};
+var debugEnviron;
+exports.debuglog = function(set) {
+  if (isUndefined(debugEnviron))
+    debugEnviron = process.env.NODE_DEBUG || '';
+  set = set.toUpperCase();
+  if (!debugs[set]) {
+    if (new RegExp('\\b' + set + '\\b', 'i').test(debugEnviron)) {
+      var pid = process.pid;
+      debugs[set] = function() {
+        var msg = exports.format.apply(exports, arguments);
+        console.error('%s %d: %s', set, pid, msg);
+      };
+    } else {
+      debugs[set] = function() {};
+    }
+  }
+  return debugs[set];
+};
+
+
+/**
+ * Echos the value of a value. Trys to print the value out
+ * in the best way possible given the different types.
+ *
+ * @param {Object} obj The object to print out.
+ * @param {Object} opts Optional options object that alters the output.
+ */
+/* legacy: obj, showHidden, depth, colors*/
+function inspect(obj, opts) {
+  // default options
+  var ctx = {
+    seen: [],
+    stylize: stylizeNoColor
+  };
+  // legacy...
+  if (arguments.length >= 3) ctx.depth = arguments[2];
+  if (arguments.length >= 4) ctx.colors = arguments[3];
+  if (isBoolean(opts)) {
+    // legacy...
+    ctx.showHidden = opts;
+  } else if (opts) {
+    // got an "options" object
+    exports._extend(ctx, opts);
+  }
+  // set default options
+  if (isUndefined(ctx.showHidden)) ctx.showHidden = false;
+  if (isUndefined(ctx.depth)) ctx.depth = 2;
+  if (isUndefined(ctx.colors)) ctx.colors = false;
+  if (isUndefined(ctx.customInspect)) ctx.customInspect = true;
+  if (ctx.colors) ctx.stylize = stylizeWithColor;
+  return formatValue(ctx, obj, ctx.depth);
+}
+exports.inspect = inspect;
+
+
+// http://en.wikipedia.org/wiki/ANSI_escape_code#graphics
+inspect.colors = {
+  'bold' : [1, 22],
+  'italic' : [3, 23],
+  'underline' : [4, 24],
+  'inverse' : [7, 27],
+  'white' : [37, 39],
+  'grey' : [90, 39],
+  'black' : [30, 39],
+  'blue' : [34, 39],
+  'cyan' : [36, 39],
+  'green' : [32, 39],
+  'magenta' : [35, 39],
+  'red' : [31, 39],
+  'yellow' : [33, 39]
+};
+
+// Don't use 'blue' not visible on cmd.exe
+inspect.styles = {
+  'special': 'cyan',
+  'number': 'yellow',
+  'boolean': 'yellow',
+  'undefined': 'grey',
+  'null': 'bold',
+  'string': 'green',
+  'date': 'magenta',
+  // "name": intentionally not styling
+  'regexp': 'red'
+};
+
+
+function stylizeWithColor(str, styleType) {
+  var style = inspect.styles[styleType];
+
+  if (style) {
+    return '\u001b[' + inspect.colors[style][0] + 'm' + str +
+           '\u001b[' + inspect.colors[style][1] + 'm';
+  } else {
+    return str;
+  }
+}
+
+
+function stylizeNoColor(str, styleType) {
+  return str;
+}
+
+
+function arrayToHash(array) {
+  var hash = {};
+
+  array.forEach(function(val, idx) {
+    hash[val] = true;
+  });
+
+  return hash;
+}
+
+
+function formatValue(ctx, value, recurseTimes) {
+  // Provide a hook for user-specified inspect functions.
+  // Check that value is an object with an inspect function on it
+  if (ctx.customInspect &&
+      value &&
+      isFunction(value.inspect) &&
+      // Filter out the util module, it's inspect function is special
+      value.inspect !== exports.inspect &&
+      // Also filter out any prototype objects using the circular check.
+      !(value.constructor && value.constructor.prototype === value)) {
+    var ret = value.inspect(recurseTimes, ctx);
+    if (!isString(ret)) {
+      ret = formatValue(ctx, ret, recurseTimes);
+    }
+    return ret;
+  }
+
+  // Primitive types cannot have properties
+  var primitive = formatPrimitive(ctx, value);
+  if (primitive) {
+    return primitive;
+  }
+
+  // Look up the keys of the object.
+  var keys = Object.keys(value);
+  var visibleKeys = arrayToHash(keys);
+
+  if (ctx.showHidden) {
+    keys = Object.getOwnPropertyNames(value);
+  }
+
+  // IE doesn't make error fields non-enumerable
+  // http://msdn.microsoft.com/en-us/library/ie/dww52sbt(v=vs.94).aspx
+  if (isError(value)
+      && (keys.indexOf('message') >= 0 || keys.indexOf('description') >= 0)) {
+    return formatError(value);
+  }
+
+  // Some type of object without properties can be shortcutted.
+  if (keys.length === 0) {
+    if (isFunction(value)) {
+      var name = value.name ? ': ' + value.name : '';
+      return ctx.stylize('[Function' + name + ']', 'special');
+    }
+    if (isRegExp(value)) {
+      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
+    }
+    if (isDate(value)) {
+      return ctx.stylize(Date.prototype.toString.call(value), 'date');
+    }
+    if (isError(value)) {
+      return formatError(value);
+    }
+  }
+
+  var base = '', array = false, braces = ['{', '}'];
+
+  // Make Array say that they are Array
+  if (isArray(value)) {
+    array = true;
+    braces = ['[', ']'];
+  }
+
+  // Make functions say that they are functions
+  if (isFunction(value)) {
+    var n = value.name ? ': ' + value.name : '';
+    base = ' [Function' + n + ']';
+  }
+
+  // Make RegExps say that they are RegExps
+  if (isRegExp(value)) {
+    base = ' ' + RegExp.prototype.toString.call(value);
+  }
+
+  // Make dates with properties first say the date
+  if (isDate(value)) {
+    base = ' ' + Date.prototype.toUTCString.call(value);
+  }
+
+  // Make error with message first say the error
+  if (isError(value)) {
+    base = ' ' + formatError(value);
+  }
+
+  if (keys.length === 0 && (!array || value.length == 0)) {
+    return braces[0] + base + braces[1];
+  }
+
+  if (recurseTimes < 0) {
+    if (isRegExp(value)) {
+      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
+    } else {
+      return ctx.stylize('[Object]', 'special');
+    }
+  }
+
+  ctx.seen.push(value);
+
+  var output;
+  if (array) {
+    output = formatArray(ctx, value, recurseTimes, visibleKeys, keys);
+  } else {
+    output = keys.map(function(key) {
+      return formatProperty(ctx, value, recurseTimes, visibleKeys, key, array);
+    });
+  }
+
+  ctx.seen.pop();
+
+  return reduceToSingleString(output, base, braces);
+}
+
+
+function formatPrimitive(ctx, value) {
+  if (isUndefined(value))
+    return ctx.stylize('undefined', 'undefined');
+  if (isString(value)) {
+    var simple = '\'' + JSON.stringify(value).replace(/^"|"$/g, '')
+                                             .replace(/'/g, "\\'")
+                                             .replace(/\\"/g, '"') + '\'';
+    return ctx.stylize(simple, 'string');
+  }
+  if (isNumber(value))
+    return ctx.stylize('' + value, 'number');
+  if (isBoolean(value))
+    return ctx.stylize('' + value, 'boolean');
+  // For some reason typeof null is "object", so special case here.
+  if (isNull(value))
+    return ctx.stylize('null', 'null');
+}
+
+
+function formatError(value) {
+  return '[' + Error.prototype.toString.call(value) + ']';
+}
+
+
+function formatArray(ctx, value, recurseTimes, visibleKeys, keys) {
+  var output = [];
+  for (var i = 0, l = value.length; i < l; ++i) {
+    if (hasOwnProperty(value, String(i))) {
+      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
+          String(i), true));
+    } else {
+      output.push('');
+    }
+  }
+  keys.forEach(function(key) {
+    if (!key.match(/^\d+$/)) {
+      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
+          key, true));
+    }
+  });
+  return output;
+}
+
+
+function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
+  var name, str, desc;
+  desc = Object.getOwnPropertyDescriptor(value, key) || { value: value[key] };
+  if (desc.get) {
+    if (desc.set) {
+      str = ctx.stylize('[Getter/Setter]', 'special');
+    } else {
+      str = ctx.stylize('[Getter]', 'special');
+    }
+  } else {
+    if (desc.set) {
+      str = ctx.stylize('[Setter]', 'special');
+    }
+  }
+  if (!hasOwnProperty(visibleKeys, key)) {
+    name = '[' + key + ']';
+  }
+  if (!str) {
+    if (ctx.seen.indexOf(desc.value) < 0) {
+      if (isNull(recurseTimes)) {
+        str = formatValue(ctx, desc.value, null);
+      } else {
+        str = formatValue(ctx, desc.value, recurseTimes - 1);
+      }
+      if (str.indexOf('\n') > -1) {
+        if (array) {
+          str = str.split('\n').map(function(line) {
+            return '  ' + line;
+          }).join('\n').substr(2);
+        } else {
+          str = '\n' + str.split('\n').map(function(line) {
+            return '   ' + line;
+          }).join('\n');
+        }
+      }
+    } else {
+      str = ctx.stylize('[Circular]', 'special');
+    }
+  }
+  if (isUndefined(name)) {
+    if (array && key.match(/^\d+$/)) {
+      return str;
+    }
+    name = JSON.stringify('' + key);
+    if (name.match(/^"([a-zA-Z_][a-zA-Z_0-9]*)"$/)) {
+      name = name.substr(1, name.length - 2);
+      name = ctx.stylize(name, 'name');
+    } else {
+      name = name.replace(/'/g, "\\'")
+                 .replace(/\\"/g, '"')
+                 .replace(/(^"|"$)/g, "'");
+      name = ctx.stylize(name, 'string');
+    }
+  }
+
+  return name + ': ' + str;
+}
+
+
+function reduceToSingleString(output, base, braces) {
+  var numLinesEst = 0;
+  var length = output.reduce(function(prev, cur) {
+    numLinesEst++;
+    if (cur.indexOf('\n') >= 0) numLinesEst++;
+    return prev + cur.replace(/\u001b\[\d\d?m/g, '').length + 1;
+  }, 0);
+
+  if (length > 60) {
+    return braces[0] +
+           (base === '' ? '' : base + '\n ') +
+           ' ' +
+           output.join(',\n  ') +
+           ' ' +
+           braces[1];
+  }
+
+  return braces[0] + base + ' ' + output.join(', ') + ' ' + braces[1];
+}
+
+
+// NOTE: These type checking functions intentionally don't use `instanceof`
+// because it is fragile and can be easily faked with `Object.create()`.
+function isArray(ar) {
+  return Array.isArray(ar);
+}
+exports.isArray = isArray;
+
+function isBoolean(arg) {
+  return typeof arg === 'boolean';
+}
+exports.isBoolean = isBoolean;
+
+function isNull(arg) {
+  return arg === null;
+}
+exports.isNull = isNull;
+
+function isNullOrUndefined(arg) {
+  return arg == null;
+}
+exports.isNullOrUndefined = isNullOrUndefined;
+
+function isNumber(arg) {
+  return typeof arg === 'number';
+}
+exports.isNumber = isNumber;
+
+function isString(arg) {
+  return typeof arg === 'string';
+}
+exports.isString = isString;
+
+function isSymbol(arg) {
+  return typeof arg === 'symbol';
+}
+exports.isSymbol = isSymbol;
+
+function isUndefined(arg) {
+  return arg === void 0;
+}
+exports.isUndefined = isUndefined;
+
+function isRegExp(re) {
+  return isObject(re) && objectToString(re) === '[object RegExp]';
+}
+exports.isRegExp = isRegExp;
+
+function isObject(arg) {
+  return typeof arg === 'object' && arg !== null;
+}
+exports.isObject = isObject;
+
+function isDate(d) {
+  return isObject(d) && objectToString(d) === '[object Date]';
+}
+exports.isDate = isDate;
+
+function isError(e) {
+  return isObject(e) &&
+      (objectToString(e) === '[object Error]' || e instanceof Error);
+}
+exports.isError = isError;
+
+function isFunction(arg) {
+  return typeof arg === 'function';
+}
+exports.isFunction = isFunction;
+
+function isPrimitive(arg) {
+  return arg === null ||
+         typeof arg === 'boolean' ||
+         typeof arg === 'number' ||
+         typeof arg === 'string' ||
+         typeof arg === 'symbol' ||  // ES6 symbol
+         typeof arg === 'undefined';
+}
+exports.isPrimitive = isPrimitive;
+
+exports.isBuffer = require('./support/isBuffer');
+
+function objectToString(o) {
+  return Object.prototype.toString.call(o);
+}
+
+
+function pad(n) {
+  return n < 10 ? '0' + n.toString(10) : n.toString(10);
+}
+
+
+var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
+              'Oct', 'Nov', 'Dec'];
+
+// 26 Feb 16:19:34
+function timestamp() {
+  var d = new Date();
+  var time = [pad(d.getHours()),
+              pad(d.getMinutes()),
+              pad(d.getSeconds())].join(':');
+  return [d.getDate(), months[d.getMonth()], time].join(' ');
+}
+
+
+// log is just a thin wrapper to console.log that prepends a timestamp
+exports.log = function() {
+  console.log('%s - %s', timestamp(), exports.format.apply(exports, arguments));
+};
+
+
+/**
+ * Inherit the prototype methods from one constructor into another.
+ *
+ * The Function.prototype.inherits from lang.js rewritten as a standalone
+ * function (not on Function.prototype). NOTE: If this file is to be loaded
+ * during bootstrapping this function needs to be rewritten using some native
+ * functions as prototype setup using normal JavaScript does not work as
+ * expected during bootstrapping (see mirror.js in r114903).
+ *
+ * @param {function} ctor Constructor function which needs to inherit the
+ *     prototype.
+ * @param {function} superCtor Constructor function to inherit prototype from.
+ */
+exports.inherits = require('inherits');
+
+exports._extend = function(origin, add) {
+  // Don't do anything if add isn't an object
+  if (!add || !isObject(add)) return origin;
+
+  var keys = Object.keys(add);
+  var i = keys.length;
+  while (i--) {
+    origin[keys[i]] = add[keys[i]];
+  }
+  return origin;
+};
+
+function hasOwnProperty(obj, prop) {
+  return Object.prototype.hasOwnProperty.call(obj, prop);
+}
+
+}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./support/isBuffer":21,"_process":20,"inherits":19}],23:[function(require,module,exports){
+(function (Buffer){
+//     uuid.js
+//
+//     Copyright (c) 2010-2012 Robert Kieffer
+//     MIT License - http://opensource.org/licenses/mit-license.php
+
+(function() {
+  var _global = this;
+
+  // Unique ID creation requires a high quality random # generator.  We feature
+  // detect to determine the best RNG source, normalizing to a function that
+  // returns 128-bits of randomness, since that's what's usually required
+  var _rng;
+
+  // Node.js crypto-based RNG - http://nodejs.org/docs/v0.6.2/api/crypto.html
+  //
+  // Moderately fast, high quality
+  if (typeof(require) == 'function') {
+    try {
+      var _rb = require('crypto').randomBytes;
+      _rng = _rb && function() {return _rb(16);};
+    } catch(e) {}
+  }
+
+  if (!_rng && _global.crypto && crypto.getRandomValues) {
+    // WHATWG crypto-based RNG - http://wiki.whatwg.org/wiki/Crypto
+    //
+    // Moderately fast, high quality
+    var _rnds8 = new Uint8Array(16);
+    _rng = function whatwgRNG() {
+      crypto.getRandomValues(_rnds8);
+      return _rnds8;
     };
-    var semigroupoidArr = function (_) {
-        return new Semigroupoid(function (f) {
-            return function (g) {
-                return function (x) {
-                    return f(g(x));
-                };
-            };
-        });
+  }
+
+  if (!_rng) {
+    // Math.random()-based (RNG)
+    //
+    // If all else fails, use Math.random().  It's fast, but is of unspecified
+    // quality.
+    var  _rnds = new Array(16);
+    _rng = function() {
+      for (var i = 0, r; i < 16; i++) {
+        if ((i & 0x03) === 0) r = Math.random() * 0x100000000;
+        _rnds[i] = r >>> ((i & 0x03) << 3) & 0xff;
+      }
+
+      return _rnds;
     };
-    var semigroupString = function (_) {
-        return new Semigroup(concatString);
+  }
+
+  // Buffer class to use
+  var BufferClass = typeof(Buffer) == 'function' ? Buffer : Array;
+
+  // Maps for number <-> hex string conversion
+  var _byteToHex = [];
+  var _hexToByte = {};
+  for (var i = 0; i < 256; i++) {
+    _byteToHex[i] = (i + 0x100).toString(16).substr(1);
+    _hexToByte[_byteToHex[i]] = i;
+  }
+
+  // **`parse()` - Parse a UUID into it's component bytes**
+  function parse(s, buf, offset) {
+    var i = (buf && offset) || 0, ii = 0;
+
+    buf = buf || [];
+    s.toLowerCase().replace(/[0-9a-f]{2}/g, function(oct) {
+      if (ii < 16) { // Don't overflow!
+        buf[i + ii++] = _hexToByte[oct];
+      }
+    });
+
+    // Zero out remaining bytes if string was short
+    while (ii < 16) {
+      buf[i + ii++] = 0;
+    }
+
+    return buf;
+  }
+
+  // **`unparse()` - Convert UUID byte array (ala parse()) into a string**
+  function unparse(buf, offset) {
+    var i = offset || 0, bth = _byteToHex;
+    return  bth[buf[i++]] + bth[buf[i++]] +
+            bth[buf[i++]] + bth[buf[i++]] + '-' +
+            bth[buf[i++]] + bth[buf[i++]] + '-' +
+            bth[buf[i++]] + bth[buf[i++]] + '-' +
+            bth[buf[i++]] + bth[buf[i++]] + '-' +
+            bth[buf[i++]] + bth[buf[i++]] +
+            bth[buf[i++]] + bth[buf[i++]] +
+            bth[buf[i++]] + bth[buf[i++]];
+  }
+
+  // **`v1()` - Generate time-based UUID**
+  //
+  // Inspired by https://github.com/LiosK/UUID.js
+  // and http://docs.python.org/library/uuid.html
+
+  // random #'s we need to init node and clockseq
+  var _seedBytes = _rng();
+
+  // Per 4.5, create and 48-bit node id, (47 random bits + multicast bit = 1)
+  var _nodeId = [
+    _seedBytes[0] | 0x01,
+    _seedBytes[1], _seedBytes[2], _seedBytes[3], _seedBytes[4], _seedBytes[5]
+  ];
+
+  // Per 4.2.2, randomize (14 bit) clockseq
+  var _clockseq = (_seedBytes[6] << 8 | _seedBytes[7]) & 0x3fff;
+
+  // Previous uuid creation time
+  var _lastMSecs = 0, _lastNSecs = 0;
+
+  // See https://github.com/broofa/node-uuid for API details
+  function v1(options, buf, offset) {
+    var i = buf && offset || 0;
+    var b = buf || [];
+
+    options = options || {};
+
+    var clockseq = options.clockseq != null ? options.clockseq : _clockseq;
+
+    // UUID timestamps are 100 nano-second units since the Gregorian epoch,
+    // (1582-10-15 00:00).  JSNumbers aren't precise enough for this, so
+    // time is handled internally as 'msecs' (integer milliseconds) and 'nsecs'
+    // (100-nanoseconds offset from msecs) since unix epoch, 1970-01-01 00:00.
+    var msecs = options.msecs != null ? options.msecs : new Date().getTime();
+
+    // Per 4.2.1.2, use count of uuid's generated during the current clock
+    // cycle to simulate higher resolution clock
+    var nsecs = options.nsecs != null ? options.nsecs : _lastNSecs + 1;
+
+    // Time since last uuid creation (in msecs)
+    var dt = (msecs - _lastMSecs) + (nsecs - _lastNSecs)/10000;
+
+    // Per 4.2.1.2, Bump clockseq on clock regression
+    if (dt < 0 && options.clockseq == null) {
+      clockseq = clockseq + 1 & 0x3fff;
+    }
+
+    // Reset nsecs if clock regresses (new clockseq) or we've moved onto a new
+    // time interval
+    if ((dt < 0 || msecs > _lastMSecs) && options.nsecs == null) {
+      nsecs = 0;
+    }
+
+    // Per 4.2.1.2 Throw error if too many uuids are requested
+    if (nsecs >= 10000) {
+      throw new Error('uuid.v1(): Can\'t create more than 10M uuids/sec');
+    }
+
+    _lastMSecs = msecs;
+    _lastNSecs = nsecs;
+    _clockseq = clockseq;
+
+    // Per 4.1.4 - Convert from unix epoch to Gregorian epoch
+    msecs += 12219292800000;
+
+    // `time_low`
+    var tl = ((msecs & 0xfffffff) * 10000 + nsecs) % 0x100000000;
+    b[i++] = tl >>> 24 & 0xff;
+    b[i++] = tl >>> 16 & 0xff;
+    b[i++] = tl >>> 8 & 0xff;
+    b[i++] = tl & 0xff;
+
+    // `time_mid`
+    var tmh = (msecs / 0x100000000 * 10000) & 0xfffffff;
+    b[i++] = tmh >>> 8 & 0xff;
+    b[i++] = tmh & 0xff;
+
+    // `time_high_and_version`
+    b[i++] = tmh >>> 24 & 0xf | 0x10; // include version
+    b[i++] = tmh >>> 16 & 0xff;
+
+    // `clock_seq_hi_and_reserved` (Per 4.2.2 - include variant)
+    b[i++] = clockseq >>> 8 | 0x80;
+
+    // `clock_seq_low`
+    b[i++] = clockseq & 0xff;
+
+    // `node`
+    var node = options.node || _nodeId;
+    for (var n = 0; n < 6; n++) {
+      b[i + n] = node[n];
+    }
+
+    return buf ? buf : unparse(b);
+  }
+
+  // **`v4()` - Generate random UUID**
+
+  // See https://github.com/broofa/node-uuid for API details
+  function v4(options, buf, offset) {
+    // Deprecated - 'format' argument, as supported in v1.2
+    var i = buf && offset || 0;
+
+    if (typeof(options) == 'string') {
+      buf = options == 'binary' ? new BufferClass(16) : null;
+      options = null;
+    }
+    options = options || {};
+
+    var rnds = options.random || (options.rng || _rng)();
+
+    // Per 4.4, set bits for version and `clock_seq_hi_and_reserved`
+    rnds[6] = (rnds[6] & 0x0f) | 0x40;
+    rnds[8] = (rnds[8] & 0x3f) | 0x80;
+
+    // Copy bytes to buffer, if provided
+    if (buf) {
+      for (var ii = 0; ii < 16; ii++) {
+        buf[i + ii] = rnds[ii];
+      }
+    }
+
+    return buf || unparse(rnds);
+  }
+
+  // Export public API
+  var uuid = v4;
+  uuid.v1 = v1;
+  uuid.v4 = v4;
+  uuid.parse = parse;
+  uuid.unparse = unparse;
+  uuid.BufferClass = BufferClass;
+
+  if (typeof define === 'function' && define.amd) {
+    // Publish as AMD module
+    define(function() {return uuid;});
+  } else if (typeof(module) != 'undefined' && module.exports) {
+    // Publish as node.js module
+    module.exports = uuid;
+  } else {
+    // Publish as global (in browsers)
+    var _previousRoot = _global.uuid;
+
+    // **`noConflict()` - (browser only) to reset global 'uuid' var**
+    uuid.noConflict = function() {
+      _global.uuid = _previousRoot;
+      return uuid;
     };
-    var pure = function (dict) {
-        return dict.pure;
-    };
-    var $$return = function (__dict_Monad_4) {
-        return pure(__dict_Monad_4["__superclass_Prelude.Applicative_0"]({}));
-    };
-    var liftA1 = function (__dict_Applicative_6) {
-        return function (f) {
-            return function (a) {
-                return $less$times$greater(__dict_Applicative_6["__superclass_Prelude.Apply_0"]({}))(pure(__dict_Applicative_6)(f))(a);
-            };
-        };
-    };
-    var id = function (dict) {
-        return dict.id;
-    };
-    var flip = function (f) {
+
+    _global.uuid = uuid;
+  }
+}).call(this);
+
+}).call(this,require("buffer").Buffer)
+},{"buffer":2,"crypto":8}],24:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+function Alt($less$bar$greater, __superclass_Prelude$dotFunctor_0) {
+    this["<|>"] = $less$bar$greater;
+    this["__superclass_Prelude.Functor_0"] = __superclass_Prelude$dotFunctor_0;
+};
+var $less$bar$greater = function (dict) {
+    return dict["<|>"];
+};
+module.exports = {
+    Alt: Alt, 
+    "<|>": $less$bar$greater
+};
+},{"Prelude":undefined}],25:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var $less$times = function (__dict_Apply_0) {
+    return function (a) {
         return function (b) {
-            return function (a) {
-                return f(a)(b);
-            };
+            return Prelude["<*>"](__dict_Apply_0)(Prelude["<$>"](__dict_Apply_0["__superclass_Prelude.Functor_0"]({}))(Prelude["const"])(a))(b);
         };
     };
-    var categoryArr = function (_) {
-        return new Category(function (__1) {
-            return semigroupoidArr({});
-        }, function (x) {
-            return x;
-        });
-    };
-    var ap = function (__dict_Monad_14) {
-        return function (f) {
-            return function (a) {
-                return $greater$greater$eq(__dict_Monad_14["__superclass_Prelude.Bind_1"]({}))(f)(function (_2) {
-                    return $greater$greater$eq(__dict_Monad_14["__superclass_Prelude.Bind_1"]({}))(a)(function (_1) {
-                        return $$return(__dict_Monad_14)(_2(_1));
-                    });
-                });
-            };
+};
+var $times$greater = function (__dict_Apply_1) {
+    return function (a) {
+        return function (b) {
+            return Prelude["<*>"](__dict_Apply_1)(Prelude["<$>"](__dict_Apply_1["__superclass_Prelude.Functor_0"]({}))(Prelude["const"](Prelude.id(Prelude.categoryArr({}))))(a))(b);
         };
     };
-    return {
-        Unit: Unit, 
-        Semigroup: Semigroup, 
-        Monad: Monad, 
-        Bind: Bind, 
-        Applicative: Applicative, 
-        Apply: Apply, 
-        Functor: Functor, 
-        Show: Show, 
-        Category: Category, 
-        Semigroupoid: Semigroupoid, 
-        unit: unit, 
-        "++": $plus$plus, 
-        "<>": $less$greater, 
-        ap: ap, 
-        "return": $$return, 
-        ">>=": $greater$greater$eq, 
-        liftA1: liftA1, 
-        pure: pure, 
-        "<*>": $less$times$greater, 
-        "<$>": $less$dollar$greater, 
-        show: show, 
-        cons: cons, 
-        ":": $colon, 
-        "$": $dollar, 
-        id: id, 
-        "<<<": $less$less$less, 
-        flip: flip, 
-        semigroupoidArr: semigroupoidArr, 
-        categoryArr: categoryArr, 
-        showNumber: showNumber, 
-        semigroupString: semigroupString
-    };
-})();
-var PS = PS || {};
-PS.Data_Maybe = (function () {
-    "use strict";
-    var Prelude = PS.Prelude;
-    function Nothing() {
-
-    };
-    Nothing.value = new Nothing();
-    function Just(value0) {
-        this.value0 = value0;
-    };
-    Just.create = function (value0) {
-        return new Just(value0);
-    };
-    var maybe = function (_155) {
-        return function (_156) {
-            return function (_157) {
-                if (_157 instanceof Nothing) {
-                    return _155;
-                };
-                if (_157 instanceof Just) {
-                    return _156(_157.value0);
-                };
-                throw new Error("Failed pattern match");
-            };
-        };
-    };
-    var fromMaybe = function (a) {
-        return maybe(a)(Prelude.id(Prelude.categoryArr({})));
-    };
-    return {
-        Nothing: Nothing, 
-        Just: Just, 
-        fromMaybe: fromMaybe, 
-        maybe: maybe
-    };
-})();
-var PS = PS || {};
-PS.Data_Function = (function () {
-    "use strict";
-    var Prelude = PS.Prelude;
-    function runFn3(fn) {  return function(a) {    return function(b) {      return function(c) {        return fn(a, b, c);      };    };  };};
-    return {
-        runFn3: runFn3
-    };
-})();
-var PS = PS || {};
-PS.Data_Const = (function () {
-    "use strict";
-    var Prelude = PS.Prelude;
-    function Const(value0) {
-        this.value0 = value0;
-    };
-    Const.create = function (value0) {
-        return new Const(value0);
-    };
-    var getConst = function (_191) {
-        return _191.value0;
-    };
-    var functorConst = function (_) {
-        return new Prelude.Functor(function (_197) {
-            return function (_198) {
-                return new Const(_198.value0);
-            };
-        });
-    };
-    return {
-        Const: Const, 
-        getConst: getConst, 
-        functorConst: functorConst
-    };
-})();
-var PS = PS || {};
-PS.Data_Array = (function () {
-    "use strict";
-    var Prelude = PS.Prelude;
-    var Data_Maybe = PS.Data_Maybe;
-    function append (l1) {  return function (l2) {    return l1.concat(l2);  };};
-    function map (f) {  return function (arr) {    var l = arr.length;    var result = new Array(l);    for (var i = 0; i < l; i++) {      result[i] = f(arr[i]);    }    return result;  };};
-    var semigroupArray = function (_) {
-        return new Prelude.Semigroup(append);
-    };
-    var head = function (_201) {
-        if (_201.length > 0) {
-            var _672 = _201.slice(1);
-            return new Data_Maybe.Just(_201[0]);
-        };
-        return Data_Maybe.Nothing.value;
-    };
-    var functorArray = function (_) {
-        return new Prelude.Functor(map);
-    };
-    return {
-        append: append, 
-        map: map, 
-        head: head, 
-        functorArray: functorArray, 
-        semigroupArray: semigroupArray
-    };
-})();
-var PS = PS || {};
-PS.Control_Monad_Trans = (function () {
-    "use strict";
-    function MonadTrans(lift) {
-        this.lift = lift;
-    };
-    return {
-        MonadTrans: MonadTrans
-    };
-})();
-var PS = PS || {};
-PS.Control_Monad_Eff = (function () {
-    "use strict";
-    var Prelude = PS.Prelude;
-    function returnE(a) {  return function() {    return a;  };};
-    function bindE(a) {  return function(f) {    return function() {      return f(a())();    };  };};
-    var applicativeEff = function (_) {
-        return new Prelude.Applicative(function (__1) {
-            return applyEff({});
-        }, returnE);
-    };
-    var applyEff = function (_) {
-        return new Prelude.Apply(Prelude.ap(monadEff({})), function (__1) {
-            return functorEff({});
-        });
-    };
-    var monadEff = function (_) {
-        return new Prelude.Monad(function (__1) {
-            return applicativeEff({});
-        }, function (__1) {
-            return bindEff({});
-        });
-    };
-    var bindEff = function (_) {
-        return new Prelude.Bind(bindE, function (__1) {
-            return applyEff({});
-        });
-    };
-    var functorEff = function (_) {
-        return new Prelude.Functor(Prelude.liftA1(applicativeEff({})));
-    };
-    return {
-        bindE: bindE, 
-        returnE: returnE, 
-        functorEff: functorEff, 
-        applyEff: applyEff, 
-        applicativeEff: applicativeEff, 
-        bindEff: bindEff, 
-        monadEff: monadEff
-    };
-})();
-var PS = PS || {};
-PS.Control_Reactive_Timer = (function () {
-    "use strict";
-    var Prelude = PS.Prelude;
-    function interval(time){                        return function(fn){                           return function(){                             return window.setInterval(function(){          fn();                                      }, time);                                  };                                         };                                         };
-    return {
-        interval: interval
-    };
-})();
-var PS = PS || {};
-PS.Debug_Trace = (function () {
-    "use strict";
-    var Prelude = PS.Prelude;
-    function trace(s) {  return function() {    console.log(s);    return {};  };};
-    return {
-        trace: trace
-    };
-})();
-var PS = PS || {};
-PS.Node_Events = (function () {
-    "use strict";
-    var Prelude = PS.Prelude;
-    var Event = {
-        create: function (value) {
-            return value;
-        }
-    };
-    function EventEmitter() {
-
-    };
-    function Variadic() {
-
-    };
-    function emitterHelper2(__emitter) {  return function(__variadic) {    return function(method) {      return function(event) {        return function(cb) {          return function(emitter) {            return function() {              return emitter[method](event, function() {                return cb.apply(this, arguments)();              }.bind(this));            }          }        }      }    }  }};
-    function emit(__dict) {  return function(event) {    return function(arg) {      return function(emitter) {        return function() {          return emitter.emit(event, arg);        }      }    }  }};
-    var variadicArr = function (_) {
-        return new Variadic();
-    };
-    var on = function (__dict_EventEmitter_175) {
-        return function (__dict_Variadic_176) {
-            return emitterHelper2(__dict_EventEmitter_175)(__dict_Variadic_176)("on");
-        };
-    };
-    var eventEmitterEmitter = function (_) {
-        return new EventEmitter();
-    };
-    return {
-        Event: Event, 
-        Variadic: Variadic, 
-        EventEmitter: EventEmitter, 
-        emit: emit, 
-        on: on, 
-        eventEmitterEmitter: eventEmitterEmitter, 
-        variadicArr: variadicArr
-    };
-})();
-var PS = PS || {};
-PS.React = (function () {
-    "use strict";
-    var Prelude = PS.Prelude;
-    var spec = {};;
-    function coerceThis(t) {  return t;};
-    function createClass(psSpec) {  var spec = {};  for (var fun in psSpec) {    if (psSpec.hasOwnProperty(fun)) {      (function(f) {        if (typeof psSpec[f] === 'function') {          spec[f] = function() {            return psSpec[f].apply(this, [this].concat([].slice.call(arguments)))() ;          }        } else {          spec[f] = psSpec[f];        }      })(fun);    }  }  var Class = React.createClass(spec);  return function(props) {    return function(children) {      return Class(props, children);    }  }};
-    function renderComponent(component) {  return function(element) {    return function() {      return React.renderComponent(component, element);    }  }};
-    var renderComponentById = function (component) {
-        return function (id) {
-            return renderComponent(component)(document.getElementById(id));
-        };
-    };
-    return {
-        renderComponentById: renderComponentById, 
-        renderComponent: renderComponent, 
-        createClass: createClass, 
-        coerceThis: coerceThis, 
-        spec: spec, 
-        document: document
-    };
-})();
-var PS = PS || {};
-PS.React_DOM = (function () {
-    "use strict";
-    var Prelude = PS.Prelude;
-    function dom(el) {  return function(props) {    return function(children) {      return React.DOM[el].apply(this, [props].concat(children));    }  }};
-    function rawText(text) {  return text;};
-    var ul = dom("ul");
-    var section = dom("section");
-    var nav = dom("nav");
-    var li = dom("li");
-    var img = dom("img");
-    var i = dom("i");
-    var hr = dom("hr");
-    var dl = dom("dl");
-    var div = dom("div");
-    var dd = dom("dd");
-    var a = dom("a");
-    return {
-        ul: ul, 
-        section: section, 
-        nav: nav, 
-        li: li, 
-        img: img, 
-        i: i, 
-        hr: hr, 
-        dl: dl, 
-        div: div, 
-        dd: dd, 
-        a: a, 
-        rawText: rawText, 
-        dom: dom
-    };
-})();
-var PS = PS || {};
-PS.SlamData_Components = (function () {
-    "use strict";
-    var Prelude = PS.Prelude;
-    var React_DOM = PS.React_DOM;
-    var icon = function (name) {
-        return React_DOM.i({
-            className: name
-        })([  ]);
-    };
-    var newNotebookIcon = icon("fa fa-plus");
-    var fileIcon = icon("fa fa-file-o");
-    var dirOpenIcon = icon("fa fa-folder-open-o");
-    return {
-        newNotebookIcon: newNotebookIcon, 
-        fileIcon: fileIcon, 
-        dirOpenIcon: dirOpenIcon, 
-        icon: icon
-    };
-})();
-var PS = PS || {};
-PS.Control_Monad_Cont_Trans = (function () {
-    "use strict";
-    var Control_Monad_Trans = PS.Control_Monad_Trans;
-    var Prelude = PS.Prelude;
-    function ContT(value0) {
-        this.value0 = value0;
-    };
-    ContT.create = function (value0) {
-        return new ContT(value0);
-    };
-    var runContT = function (_377) {
-        return function (_378) {
-            return _377.value0(_378);
-        };
-    };
-    var withContT = function (f) {
-        return function (m) {
-            return new ContT(function (k) {
-                return runContT(m)(f(k));
-            });
-        };
-    };
-    var monadTransContT = function (_) {
-        return new Control_Monad_Trans.MonadTrans(function (__dict_Monad_180) {
-            return function (m) {
-                return new ContT(function (k) {
-                    return Prelude[">>="](__dict_Monad_180["__superclass_Prelude.Bind_1"]({}))(m)(k);
-                });
-            };
-        });
-    };
-    var mapContT = function (f) {
-        return function (m) {
-            return new ContT(function (k) {
-                return f(runContT(m)(k));
-            });
-        };
-    };
-    var functorContT = function (__dict_Monad_182) {
-        return new Prelude.Functor(function (f) {
-            return function (m) {
-                return new ContT(function (k) {
-                    return runContT(m)(function (a) {
-                        return k(f(a));
-                    });
-                });
-            };
-        });
-    };
-    var callCC = function (f) {
-        return new ContT(function (k) {
-            return runContT(f(function (a) {
-                return new ContT(function (_) {
-                    return k(a);
-                });
-            }))(k);
-        });
-    };
-    var appluContT = function (__dict_Functor_184) {
-        return function (__dict_Monad_185) {
-            return new Prelude.Apply(function (f) {
-                return function (v) {
-                    return new ContT(function (k) {
-                        return runContT(f)(function (g) {
-                            return runContT(v)(function (a) {
-                                return k(g(a));
-                            });
-                        });
-                    });
-                };
-            }, function (_) {
-                return functorContT(__dict_Monad_185);
-            });
-        };
-    };
-    var bindContT = function (__dict_Monad_183) {
-        return new Prelude.Bind(function (m) {
-            return function (k) {
-                return new ContT(function (k$prime) {
-                    return runContT(m)(function (a) {
-                        return runContT(k(a))(k$prime);
-                    });
-                });
-            };
-        }, function (_) {
-            return appluContT(((__dict_Monad_183["__superclass_Prelude.Applicative_0"]({}))["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(__dict_Monad_183);
-        });
-    };
-    var applicativeContT = function (__dict_Functor_186) {
-        return function (__dict_Monad_187) {
-            return new Prelude.Applicative(function (_) {
-                return appluContT(__dict_Functor_186)(__dict_Monad_187);
-            }, function (a) {
-                return new ContT(function (k) {
-                    return k(a);
-                });
-            });
-        };
-    };
-    var monadContT = function (__dict_Monad_181) {
-        return new Prelude.Monad(function (_) {
-            return applicativeContT(((__dict_Monad_181["__superclass_Prelude.Applicative_0"]({}))["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(__dict_Monad_181);
-        }, function (_) {
-            return bindContT(__dict_Monad_181);
-        });
-    };
-    return {
-        ContT: ContT, 
-        callCC: callCC, 
-        withContT: withContT, 
-        mapContT: mapContT, 
-        runContT: runContT, 
-        functorContT: functorContT, 
-        appluContT: appluContT, 
-        applicativeContT: applicativeContT, 
-        bindContT: bindContT, 
-        monadContT: monadContT, 
-        monadTransContT: monadTransContT
-    };
-})();
-var PS = PS || {};
-PS.Data_Map = (function () {
-    "use strict";
-    var Prelude = PS.Prelude;
-    var Data_Array = PS.Data_Array;
-    function Leaf() {
-
-    };
-    Leaf.value = new Leaf();
-    function Two(value0, value1, value2, value3) {
-        this.value0 = value0;
-        this.value1 = value1;
-        this.value2 = value2;
-        this.value3 = value3;
-    };
-    Two.create = function (value0) {
-        return function (value1) {
-            return function (value2) {
-                return function (value3) {
-                    return new Two(value0, value1, value2, value3);
-                };
-            };
-        };
-    };
-    function Three(value0, value1, value2, value3, value4, value5, value6) {
-        this.value0 = value0;
-        this.value1 = value1;
-        this.value2 = value2;
-        this.value3 = value3;
-        this.value4 = value4;
-        this.value5 = value5;
-        this.value6 = value6;
-    };
-    Three.create = function (value0) {
-        return function (value1) {
-            return function (value2) {
-                return function (value3) {
-                    return function (value4) {
-                        return function (value5) {
-                            return function (value6) {
-                                return new Three(value0, value1, value2, value3, value4, value5, value6);
-                            };
+};
+var lift5 = function (__dict_Apply_2) {
+    return function (f) {
+        return function (a) {
+            return function (b) {
+                return function (c) {
+                    return function (d) {
+                        return function (e) {
+                            return Prelude["<*>"](__dict_Apply_2)(Prelude["<*>"](__dict_Apply_2)(Prelude["<*>"](__dict_Apply_2)(Prelude["<*>"](__dict_Apply_2)(Prelude["<$>"](__dict_Apply_2["__superclass_Prelude.Functor_0"]({}))(f)(a))(b))(c))(d))(e);
                         };
                     };
                 };
             };
         };
     };
-    var singleton = function (k) {
-        return function (v) {
-            return new Two(Leaf.value, k, v, Leaf.value);
-        };
-    };
-    var keys = function (_459) {
-        if (_459 instanceof Leaf) {
-            return [  ];
-        };
-        if (_459 instanceof Two) {
-            return Prelude["++"](Data_Array.semigroupArray({}))(keys(_459.value0))(Prelude["++"](Data_Array.semigroupArray({}))([ _459.value1 ])(keys(_459.value3)));
-        };
-        if (_459 instanceof Three) {
-            return Prelude["++"](Data_Array.semigroupArray({}))(keys(_459.value0))(Prelude["++"](Data_Array.semigroupArray({}))([ _459.value1 ])(Prelude["++"](Data_Array.semigroupArray({}))(keys(_459.value3))(Prelude["++"](Data_Array.semigroupArray({}))([ _459.value4 ])(keys(_459.value6)))));
-        };
-        throw new Error("Failed pattern match");
-    };
-    return {
-        keys: keys, 
-        singleton: singleton
-    };
-})();
-var PS = PS || {};
-PS.Control_Lens_Getter = (function () {
-    "use strict";
-    var Prelude = PS.Prelude;
-    var Data_Const = PS.Data_Const;
-    var $up$dot = function (s) {
-        return function (asa) {
-            return Data_Const.getConst(asa(Data_Const.Const.create)(s));
-        };
-    };
-    return {
-        "^.": $up$dot
-    };
-})();
-var PS = PS || {};
-PS.Control_Lens_Lens = (function () {
-    "use strict";
-    var Prelude = PS.Prelude;
-    var lens = function (s2a) {
-        return function (s2b2t) {
-            return function (__dict_Functor_439) {
-                return function (a2fb) {
-                    return function (s) {
-                        return Prelude["<$>"](__dict_Functor_439)(s2b2t(s))(a2fb(s2a(s)));
+};
+var lift4 = function (__dict_Apply_3) {
+    return function (f) {
+        return function (a) {
+            return function (b) {
+                return function (c) {
+                    return function (d) {
+                        return Prelude["<*>"](__dict_Apply_3)(Prelude["<*>"](__dict_Apply_3)(Prelude["<*>"](__dict_Apply_3)(Prelude["<$>"](__dict_Apply_3["__superclass_Prelude.Functor_0"]({}))(f)(a))(b))(c))(d);
                     };
                 };
             };
         };
     };
-    return {
-        lens: lens
+};
+var lift3 = function (__dict_Apply_4) {
+    return function (f) {
+        return function (a) {
+            return function (b) {
+                return function (c) {
+                    return Prelude["<*>"](__dict_Apply_4)(Prelude["<*>"](__dict_Apply_4)(Prelude["<$>"](__dict_Apply_4["__superclass_Prelude.Functor_0"]({}))(f)(a))(b))(c);
+                };
+            };
+        };
     };
+};
+var lift2 = function (__dict_Apply_5) {
+    return function (f) {
+        return function (a) {
+            return function (b) {
+                return Prelude["<*>"](__dict_Apply_5)(Prelude["<$>"](__dict_Apply_5["__superclass_Prelude.Functor_0"]({}))(f)(a))(b);
+            };
+        };
+    };
+};
+var forever = function (__dict_Apply_6) {
+    return function (a) {
+        return $times$greater(__dict_Apply_6)(a)(forever(__dict_Apply_6)(a));
+    };
+};
+module.exports = {
+    forever: forever, 
+    lift5: lift5, 
+    lift4: lift4, 
+    lift3: lift3, 
+    lift2: lift2, 
+    "*>": $times$greater, 
+    "<*": $less$times
+};
+},{"Prelude":undefined}],26:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+function Lazy(defer) {
+    this.defer = defer;
+};
+function Lazy1(defer1) {
+    this.defer1 = defer1;
+};
+function Lazy2(defer2) {
+    this.defer2 = defer2;
+};
+var defer2 = function (dict) {
+    return dict.defer2;
+};
+var fix2 = function (__dict_Lazy2_0) {
+    return function (f) {
+        return defer2(__dict_Lazy2_0)(function (_) {
+            return f(fix2(__dict_Lazy2_0)(f));
+        });
+    };
+};
+var defer1 = function (dict) {
+    return dict.defer1;
+};
+var fix1 = function (__dict_Lazy1_1) {
+    return function (f) {
+        return defer1(__dict_Lazy1_1)(function (_) {
+            return f(fix1(__dict_Lazy1_1)(f));
+        });
+    };
+};
+var defer = function (dict) {
+    return dict.defer;
+};
+var fix = function (__dict_Lazy_2) {
+    return function (f) {
+        return defer(__dict_Lazy_2)(function (_) {
+            return f(fix(__dict_Lazy_2)(f));
+        });
+    };
+};
+module.exports = {
+    Lazy2: Lazy2, 
+    Lazy1: Lazy1, 
+    Lazy: Lazy, 
+    fix2: fix2, 
+    fix1: fix1, 
+    fix: fix, 
+    defer2: defer2, 
+    defer1: defer1, 
+    defer: defer
+};
+},{"Prelude":undefined}],27:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Data_Set = require("Data.Set");
+var Data_Maybe = require("Data.Maybe");
+var Data_Map = require("Data.Map");
+var Control_Monad_Identity = require("Control.Monad.Identity");
+var Data_Traversable = require("Data.Traversable");
+function Contains(contains) {
+    this.contains = contains;
+};
+function Ixed(ix) {
+    this.ix = ix;
+};
+function At(__superclass_Control$dotLens$dotAt$dotIxed_0, at) {
+    this["__superclass_Control.Lens.At.Ixed_0"] = __superclass_Control$dotLens$dotAt$dotIxed_0;
+    this.at = at;
+};
+var ixedSetKKUnit = function (__dict_Ord_0) {
+    return new Ixed(function (k) {
+        return function (__dict_Applicative_1) {
+            return function (u2fu) {
+                return function (setK) {
+                    return Data_Set.member(__dict_Ord_0)(k)(setK) ? Prelude["<$>"]((__dict_Applicative_1["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(function (_) {
+    return Data_Set.insert(__dict_Ord_0)(k)(setK);
+})(u2fu(Prelude.unit)) : Prelude.pure(__dict_Applicative_1)(setK);
+                };
+            };
+        };
+    });
+};
+var ixedMaybeUnitUnitA = function (__unused) {
+    return new Ixed(function (_59) {
+        return function (__dict_Applicative_2) {
+            return function (_60) {
+                return function (_61) {
+                    if (_61 instanceof Data_Maybe.Nothing) {
+                        return Prelude.pure(__dict_Applicative_2)(Data_Maybe.Nothing.value);
+                    };
+                    if (_61 instanceof Data_Maybe.Just) {
+                        return Prelude["<$>"]((__dict_Applicative_2["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(Data_Maybe.Just.create)(Prelude.pure(__dict_Applicative_2)(_61.value0));
+                    };
+                    throw new Error("Failed pattern match");
+                };
+            };
+        };
+    });
+};
+var ixedMaybeAUnitA = function (__unused) {
+    return new Ixed(function (_56) {
+        return function (__dict_Applicative_3) {
+            return function (_57) {
+                return function (_58) {
+                    if (_58 instanceof Data_Maybe.Nothing) {
+                        return Prelude.pure(__dict_Applicative_3)(Data_Maybe.Nothing.value);
+                    };
+                    if (_58 instanceof Data_Maybe.Just) {
+                        return Prelude["<$>"]((__dict_Applicative_3["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(Data_Maybe.Just.create)(_57(_58.value0));
+                    };
+                    throw new Error("Failed pattern match");
+                };
+            };
+        };
+    });
+};
+var ixedMapKVKV = function (__dict_Ord_4) {
+    return new Ixed(function (k) {
+        return function (__dict_Applicative_5) {
+            return function (v2fv) {
+                return function (mapKV) {
+                    var _252 = Data_Map.lookup(__dict_Ord_4)(k)(mapKV);
+                    if (_252 instanceof Data_Maybe.Nothing) {
+                        return Prelude.pure(__dict_Applicative_5)(mapKV);
+                    };
+                    if (_252 instanceof Data_Maybe.Just) {
+                        return Prelude["<$>"]((__dict_Applicative_5["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(function (v$prime) {
+                            return Data_Map.insert(__dict_Ord_4)(k)(v$prime)(mapKV);
+                        })(v2fv(_252.value0));
+                    };
+                    throw new Error("Failed pattern match");
+                };
+            };
+        };
+    });
+};
+var ixedIdentityAAA = function (__unused) {
+    return new Ixed(function (_62) {
+        return function (__dict_Applicative_6) {
+            return function (_63) {
+                return function (_64) {
+                    return Prelude["<$>"]((__dict_Applicative_6["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(Control_Monad_Identity.Identity.create)(_63(_64));
+                };
+            };
+        };
+    });
+};
+var ixedArrEAEA = function (__dict_Eq_7) {
+    return new Ixed(function (e) {
+        return function (__dict_Applicative_8) {
+            return function (a2fa) {
+                return function (e2a) {
+                    return Prelude["<$>"]((__dict_Applicative_8["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(function (a) {
+                        return function (e$prime) {
+                            return Prelude["=="](__dict_Eq_7)(e)(e$prime) ? a : e2a(e$prime);
+                        };
+                    })(a2fa(e2a(e)));
+                };
+            };
+        };
+    });
+};
+var ix = function (dict) {
+    return dict.ix;
+};
+var ixedArrayaNumberA = function (__unused) {
+    return new Ixed(function (_65) {
+        return function (__dict_Applicative_9) {
+            return function (_66) {
+                return function (_67) {
+                    if (_65 < 0) {
+                        return Prelude.pure(__dict_Applicative_9)(_67);
+                    };
+                    if (_67.length === 0) {
+                        return Prelude.pure(__dict_Applicative_9)([  ]);
+                    };
+                    if (_65 === 0 && _67.length > 0) {
+                        var _261 = _67.slice(1);
+                        return Prelude["<$>"]((__dict_Applicative_9["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(Prelude.flip(Prelude[":"])(_261))(_66(_67[0]));
+                    };
+                    if (_67.length > 0) {
+                        var _263 = _67.slice(1);
+                        return Prelude["<$>"]((__dict_Applicative_9["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(Prelude[":"](_67[0]))(ix(ixedArrayaNumberA({}))(_65 - 1)(__dict_Applicative_9)(_66)(_263));
+                    };
+                    throw new Error("Failed pattern match");
+                };
+            };
+        };
+    });
+};
+var containsMapK = function (__dict_Ord_10) {
+    return new Contains(function (k) {
+        return function (__dict_Functor_11) {
+            return function (f) {
+                return function (s) {
+                    return Prelude["<$>"](__dict_Functor_11)(function (x) {
+                        return x ? Data_Set.insert(__dict_Ord_10)(k)(s) : Data_Set["delete"](__dict_Ord_10)(k)(s);
+                    })(f(Data_Set.member(__dict_Ord_10)(k)(s)));
+                };
+            };
+        };
+    });
+};
+var contains = function (dict) {
+    return dict.contains;
+};
+var atSetKKUnit = function (__dict_Ord_12) {
+    return new At(function (__unused) {
+        return ixedSetKKUnit(__dict_Ord_12);
+    }, function (k) {
+        return function (__dict_Functor_13) {
+            return function (a2fa) {
+                return function (setK) {
+                    var setK$prime = Data_Set.member(__dict_Ord_12)(k)(setK) ? new Data_Maybe.Just(Prelude.unit) : Data_Maybe.Nothing.value;
+                    var go = function (_69) {
+                        if (_69 instanceof Data_Maybe.Nothing) {
+                            return Data_Maybe.maybe(setK)(Prelude["const"](Data_Set["delete"](__dict_Ord_12)(k)(setK)))(setK$prime);
+                        };
+                        if (_69 instanceof Data_Maybe.Just) {
+                            return Data_Set.insert(__dict_Ord_12)(k)(setK);
+                        };
+                        throw new Error("Failed pattern match");
+                    };
+                    return Prelude["<$>"](__dict_Functor_13)(go)(a2fa(setK$prime));
+                };
+            };
+        };
+    });
+};
+var atMaybe = function (__unused) {
+    return new At(ixedMaybeUnitUnitA, function (_) {
+        return function (__dict_Functor_14) {
+            return function (a2fa) {
+                return a2fa;
+            };
+        };
+    });
+};
+var atMapKVKV = function (__dict_Ord_15) {
+    return new At(function (__unused) {
+        return ixedMapKVKV(__dict_Ord_15);
+    }, function (k) {
+        return function (__dict_Functor_16) {
+            return function (a2fa) {
+                return function (mapKV) {
+                    var mapKV$prime = Data_Map.lookup(__dict_Ord_15)(k)(mapKV);
+                    var go = function (_68) {
+                        if (_68 instanceof Data_Maybe.Nothing) {
+                            return Data_Maybe.maybe(mapKV)(Prelude["const"](Data_Map["delete"](__dict_Ord_15)(k)(mapKV)))(mapKV$prime);
+                        };
+                        if (_68 instanceof Data_Maybe.Just) {
+                            return Data_Map.insert(__dict_Ord_15)(k)(_68.value0)(mapKV);
+                        };
+                        throw new Error("Failed pattern match");
+                    };
+                    return Prelude["<$>"](__dict_Functor_16)(go)(a2fa(mapKV$prime));
+                };
+            };
+        };
+    });
+};
+var at = function (dict) {
+    return dict.at;
+};
+var ixAt = function (__dict_At_17) {
+    return function (i) {
+        return function (__dict_Applicative_18) {
+            return Prelude[">>>"](Prelude.semigroupoidArr({}))(Data_Traversable.traverse(Data_Traversable.traversableMaybe({}))(__dict_Applicative_18))(at(__dict_At_17)(i)((__dict_Applicative_18["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({})));
+        };
+    };
+};
+module.exports = {
+    Ixed: Ixed, 
+    At: At, 
+    ix: ix, 
+    at: at, 
+    ixedArrEAEA: ixedArrEAEA, 
+    ixedMaybeAUnitA: ixedMaybeAUnitA, 
+    ixedMaybeUnitUnitA: ixedMaybeUnitUnitA, 
+    ixedIdentityAAA: ixedIdentityAAA, 
+    ixedArrayaNumberA: ixedArrayaNumberA, 
+    ixedMapKVKV: ixedMapKVKV, 
+    ixedSetKKUnit: ixedSetKKUnit, 
+    atMaybe: atMaybe, 
+    atMapKVKV: atMapKVKV, 
+    atSetKKUnit: atSetKKUnit
+};
+},{"Control.Monad.Identity":undefined,"Data.Map":74,"Data.Maybe":76,"Data.Set":85,"Data.Traversable":87,"Prelude":undefined}],28:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Data_Const = require("Data.Const");
+var Data_Profunctor = require("Data.Profunctor");
+var Data_Monoid_Dual = require("Data.Monoid.Dual");
+var Data_Monoid_Endo = require("Data.Monoid.Endo");
+var Data_Monoid_First = require("Data.Monoid.First");
+var Data_Maybe = require("Data.Maybe");
+var Data_Either = require("Data.Either");
+var Data_Profunctor_Choice = require("Data.Profunctor.Choice");
+var foldOf = function (asa) {
+    return function (s) {
+        return Data_Const.getConst(asa(Data_Const.Const.create)(s));
+    };
+};
+var foldMapOf = function (__dict_Profunctor_0) {
+    return function (prsa) {
+        return function (par) {
+            return Data_Profunctor.rmap(Data_Profunctor.profunctorArr({}))(Data_Const.getConst)(prsa(Data_Profunctor.rmap(__dict_Profunctor_0)(Data_Const.Const.create)(par)));
+        };
+    };
+};
+var foldlOf = function (pErsa) {
+    return function (par2r) {
+        return function (r) {
+            return Data_Profunctor.rmap(Data_Profunctor.profunctorArr({}))(Data_Profunctor.lmap(Data_Profunctor.profunctorArr({}))(Data_Monoid_Dual.runDual)(Prelude.flip(Data_Monoid_Endo.runEndo)(r)))(foldMapOf(Data_Profunctor.profunctorArr({}))(pErsa)(Data_Profunctor.rmap(Data_Profunctor.profunctorArr({}))(Data_Profunctor.rmap(Data_Profunctor.profunctorArr({}))(Data_Monoid_Dual.Dual.create)(Data_Monoid_Endo.Endo.create))(Prelude.flip(par2r))));
+        };
+    };
+};
+var foldrOf = function (__dict_Profunctor_1) {
+    return function (pErsa) {
+        return function (par2r) {
+            return function (r) {
+                return Data_Profunctor.rmap(Data_Profunctor.profunctorArr({}))(Prelude.flip(Data_Monoid_Endo.runEndo)(r))(foldMapOf(__dict_Profunctor_1)(pErsa)(Data_Profunctor.rmap(__dict_Profunctor_1)(Data_Monoid_Endo.Endo.create)(par2r)));
+            };
+        };
+    };
+};
+var toListOf = function (easa) {
+    return foldrOf(Data_Profunctor.profunctorArr({}))(easa)(Prelude[":"])([  ]);
+};
+var $up$dot$dot = Prelude.flip(toListOf);
+var $up$qmark = function (s) {
+    return function (fasa) {
+        return Data_Monoid_First.runFirst(foldMapOf(Data_Profunctor.profunctorArr({}))(fasa)(Data_Profunctor.rmap(Data_Profunctor.profunctorArr({}))(Data_Monoid_First.First.create)(Data_Maybe.Just.create))(s));
+    };
+};
+var filtered = function (__dict_Applicative_2) {
+    return function (__dict_Choice_3) {
+        return function (p) {
+            return Prelude["<<<"](Prelude.semigroupoidArr({}))(Data_Profunctor.dimap(__dict_Choice_3["__superclass_Data.Profunctor.Profunctor_0"]({}))(function (x) {
+                return p(x) ? new Data_Either.Right(x) : new Data_Either.Left(x);
+            })(Data_Either.either(Prelude.pure(__dict_Applicative_2))(Prelude.id(Prelude.categoryArr({})))))(Data_Profunctor_Choice["right'"](__dict_Choice_3));
+        };
+    };
+};
+module.exports = {
+    toListOf: toListOf, 
+    foldrOf: foldrOf, 
+    foldOf: foldOf, 
+    foldMapOf: foldMapOf, 
+    foldlOf: foldlOf, 
+    filtered: filtered, 
+    "^?": $up$qmark, 
+    "^..": $up$dot$dot
+};
+},{"Data.Const":66,"Data.Either":undefined,"Data.Maybe":76,"Data.Monoid.Dual":79,"Data.Monoid.Endo":80,"Data.Monoid.First":81,"Data.Profunctor":84,"Data.Profunctor.Choice":83,"Prelude":undefined}],29:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Data_Const = require("Data.Const");
+var Control_Monad_Reader_Class = require("Control.Monad.Reader.Class");
+var Data_Profunctor = require("Data.Profunctor");
+var Control_Monad_State_Class = require("Control.Monad.State.Class");
+var Data_Contravariant = require("Data.Contravariant");
+var Void = {
+    create: function (value) {
+        return value;
+    }
+};
+var $up$dot = function (s) {
+    return function (asa) {
+        return Data_Const.getConst(asa(Data_Const.Const.create)(s));
+    };
+};
+var view = function (__dict_Monad_0) {
+    return function (__dict_MonadReader_1) {
+        return function (ara) {
+            return Control_Monad_Reader_Class.reader(__dict_Monad_0)(__dict_MonadReader_1)(Data_Profunctor.rmap(Data_Profunctor.profunctorArr({}))(Data_Const.getConst)(ara(Data_Const.Const.create)));
+        };
+    };
+};
+var use = function (__dict_Monad_2) {
+    return function (__dict_MonadState_3) {
+        return function (asa) {
+            return Control_Monad_State_Class.gets(__dict_Monad_2)(__dict_MonadState_3)(Data_Profunctor.rmap(Data_Profunctor.profunctorArr({}))(Data_Const.getConst)(asa(Data_Const.Const.create)));
+        };
+    };
+};
+var absurd = function (a) {
+    var spin = function (__copy__568) {
+        var _568 = __copy__568;
+        tco: while (true) {
+            var __tco__568 = _568;
+            _568 = __tco__568;
+            continue tco;
+        };
+    };
+    return spin(a);
+};
+var coerce = function (__dict_Contravariant_4) {
+    return function (__dict_Functor_5) {
+        return function (a) {
+            return Prelude["<$>"](__dict_Functor_5)(absurd)(Data_Contravariant[">$<"](__dict_Contravariant_4)(absurd)(a));
+        };
+    };
+};
+var to = function (__dict_Conjoined_6) {
+    return function (__dict_Contravariant_7) {
+        return function (__dict_Functor_8) {
+            return function (__dict_Profunctor_9) {
+                return function (s2a) {
+                    return Data_Profunctor.dimap(__dict_Profunctor_9)(s2a)(coerce(__dict_Contravariant_7)(__dict_Functor_8));
+                };
+            };
+        };
+    };
+};
+module.exports = {
+    view: view, 
+    use: use, 
+    to: to, 
+    "^.": $up$dot
+};
+},{"Control.Monad.Reader.Class":47,"Control.Monad.State.Class":49,"Data.Const":66,"Data.Contravariant":67,"Data.Profunctor":84,"Prelude":undefined}],30:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+function FunctorWithIndex(__superclass_Prelude$dotFunctor_0, imap) {
+    this["__superclass_Prelude.Functor_0"] = __superclass_Prelude$dotFunctor_0;
+    this.imap = imap;
+};
+function FoldableWithIndex(__superclass_Data$dotFoldable$dotFoldable_0, ifoldMap) {
+    this["__superclass_Data.Foldable.Foldable_0"] = __superclass_Data$dotFoldable$dotFoldable_0;
+    this.ifoldMap = ifoldMap;
+};
+function TraversableWithIndex(__superclass_Control$dotLens$dotIndexed$dotFoldableWithIndex_1, __superclass_Control$dotLens$dotIndexed$dotFunctorWithIndex_0, __superclass_Data$dotTraversable$dotTraversable_2, itraverse, itraversed) {
+    this["__superclass_Control.Lens.Indexed.FoldableWithIndex_1"] = __superclass_Control$dotLens$dotIndexed$dotFoldableWithIndex_1;
+    this["__superclass_Control.Lens.Indexed.FunctorWithIndex_0"] = __superclass_Control$dotLens$dotIndexed$dotFunctorWithIndex_0;
+    this["__superclass_Data.Traversable.Traversable_2"] = __superclass_Data$dotTraversable$dotTraversable_2;
+    this.itraverse = itraverse;
+    this.itraversed = itraversed;
+};
+var itraversed = function (dict) {
+    return dict.itraversed;
+};
+var itraverse = function (dict) {
+    return dict.itraverse;
+};
+var imap = function (dict) {
+    return dict.imap;
+};
+var ifoldMap = function (dict) {
+    return dict.ifoldMap;
+};
+module.exports = {
+    TraversableWithIndex: TraversableWithIndex, 
+    FunctorWithIndex: FunctorWithIndex, 
+    FoldableWithIndex: FoldableWithIndex, 
+    itraversed: itraversed, 
+    itraverse: itraverse, 
+    ifoldMap: ifoldMap, 
+    imap: imap
+};
+},{"Prelude":undefined}],31:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Data_Profunctor = require("Data.Profunctor");
+function Exchange(value0, value1) {
+    this.value0 = value0;
+    this.value1 = value1;
+};
+Exchange.create = function (value0) {
+    return function (value1) {
+        return new Exchange(value0, value1);
+    };
+};
+var profunctorExchange = function (__unused) {
+    return new Data_Profunctor.Profunctor(function (_215) {
+        return function (_216) {
+            return function (_217) {
+                return new Exchange(Prelude[">>>"](Prelude.semigroupoidArr({}))(_215)(_217.value0), Prelude[">>>"](Prelude.semigroupoidArr({}))(_217.value1)(_216));
+            };
+        };
+    });
+};
+var functorExchange = function (__unused) {
+    return new Prelude.Functor(function (_213) {
+        return function (_214) {
+            return new Exchange(_214.value0, Prelude[">>>"](Prelude.semigroupoidArr({}))(_214.value1)(_213));
+        };
+    });
+};
+module.exports = {
+    Exchange: Exchange, 
+    functorExchange: functorExchange, 
+    profunctorExchange: profunctorExchange
+};
+},{"Data.Profunctor":84,"Prelude":undefined}],32:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Data_Profunctor = require("Data.Profunctor");
+var Data_Either = require("Data.Either");
+var Data_Profunctor_Choice = require("Data.Profunctor.Choice");
+function Market(value0, value1) {
+    this.value0 = value0;
+    this.value1 = value1;
+};
+Market.create = function (value0) {
+    return function (value1) {
+        return new Market(value0, value1);
+    };
+};
+var profunctorMarket = function (__unused) {
+    return new Data_Profunctor.Profunctor(function (_208) {
+        return function (_209) {
+            return function (_210) {
+                return new Market(Prelude[">>>"](Prelude.semigroupoidArr({}))(_210.value0)(_209), Prelude[">>>"](Prelude.semigroupoidArr({}))(_208)(Prelude[">>>"](Prelude.semigroupoidArr({}))(_210.value1)(Data_Either.either(Prelude[">>>"](Prelude.semigroupoidArr({}))(_209)(Data_Either.Left.create))(Data_Either.Right.create))));
+            };
+        };
+    });
+};
+var functorMarket = function (__unused) {
+    return new Prelude.Functor(function (_206) {
+        return function (_207) {
+            return new Market(Prelude[">>>"](Prelude.semigroupoidArr({}))(_207.value0)(_206), Prelude[">>>"](Prelude.semigroupoidArr({}))(_207.value1)(Data_Either.either(Prelude[">>>"](Prelude.semigroupoidArr({}))(_206)(Data_Either.Left.create))(Data_Either.Right.create)));
+        };
+    });
+};
+var choiceMarket = function (__unused) {
+    return new Data_Profunctor_Choice.Choice(profunctorMarket, function (_211) {
+        return new Market(Prelude[">>>"](Prelude.semigroupoidArr({}))(_211.value0)(Data_Either.Left.create), function (thing) {
+            if (thing instanceof Data_Either.Left) {
+                return Data_Either.either(Prelude[">>>"](Prelude.semigroupoidArr({}))(Data_Either.Left.create)(Data_Either.Left.create))(Data_Either.Right.create)(_211.value1(thing.value0));
+            };
+            if (thing instanceof Data_Either.Right) {
+                return Data_Either.Left.create(new Data_Either.Right(thing.value0));
+            };
+            throw new Error("Failed pattern match");
+        });
+    }, function (_212) {
+        return new Market(Prelude[">>>"](Prelude.semigroupoidArr({}))(_212.value0)(Data_Either.Right.create), function (thing) {
+            if (thing instanceof Data_Either.Left) {
+                return Data_Either.Left.create(new Data_Either.Left(thing.value0));
+            };
+            if (thing instanceof Data_Either.Right) {
+                return Data_Either.either(Prelude[">>>"](Prelude.semigroupoidArr({}))(Data_Either.Right.create)(Data_Either.Left.create))(Data_Either.Right.create)(_212.value1(thing.value0));
+            };
+            throw new Error("Failed pattern match");
+        });
+    });
+};
+module.exports = {
+    Market: Market, 
+    functorMarket: functorMarket, 
+    profunctorMarket: profunctorMarket, 
+    choiceMarket: choiceMarket
+};
+},{"Data.Either":undefined,"Data.Profunctor":84,"Data.Profunctor.Choice":83,"Prelude":undefined}],33:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Data_Foldable = require("Data.Foldable");
+var Control_Monad_Identity = require("Control.Monad.Identity");
+var Data_Traversable = require("Data.Traversable");
+var Data_Profunctor = require("Data.Profunctor");
+var Data_Distributive = require("Data.Distributive");
+function Settable(__superclass_Data$dotDistributive$dotDistributive_1, __superclass_Data$dotTraversable$dotTraversable_2, __superclass_Prelude$dotApplicative_0, taintedDot, untainted, untaintedDot) {
+    this["__superclass_Data.Distributive.Distributive_1"] = __superclass_Data$dotDistributive$dotDistributive_1;
+    this["__superclass_Data.Traversable.Traversable_2"] = __superclass_Data$dotTraversable$dotTraversable_2;
+    this["__superclass_Prelude.Applicative_0"] = __superclass_Prelude$dotApplicative_0;
+    this.taintedDot = taintedDot;
+    this.untainted = untainted;
+    this.untaintedDot = untaintedDot;
+};
+var untaintedDot = function (dict) {
+    return dict.untaintedDot;
+};
+var untainted = function (dict) {
+    return dict.untainted;
+};
+var taintedDot = function (dict) {
+    return dict.taintedDot;
+};
+var foldableIdentity = function (__unused) {
+    return new Data_Foldable.Foldable(function (__dict_Monoid_4) {
+        return function (_563) {
+            return function (_564) {
+                return _563(_564);
+            };
+        };
+    }, function (_560) {
+        return function (_561) {
+            return function (_562) {
+                return _560(_561)(_562);
+            };
+        };
+    }, function (_557) {
+        return function (_558) {
+            return function (_559) {
+                return _557(_559)(_558);
+            };
+        };
+    });
+};
+var traversableIdentity = function (__unused) {
+    return new Data_Traversable.Traversable(foldableIdentity, function (__unused) {
+        return Control_Monad_Identity.functorIdentity({});
+    }, function (__dict_Applicative_1) {
+        return function (_567) {
+            return Prelude["<$>"]((__dict_Applicative_1["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(Control_Monad_Identity.Identity.create)(_567);
+        };
+    }, function (__dict_Applicative_0) {
+        return function (_565) {
+            return function (_566) {
+                return Prelude["<$>"]((__dict_Applicative_0["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(Control_Monad_Identity.Identity.create)(_565(_566));
+            };
+        };
+    });
+};
+var settableIdentity = function (__unused) {
+    return new Settable(function (__unused) {
+        return Data_Distributive.distributiveIdentity({});
+    }, traversableIdentity, function (__unused) {
+        return Control_Monad_Identity.applicativeIdentity({});
+    }, function (__dict_Profunctor_3) {
+        return Data_Profunctor.rmap(__dict_Profunctor_3)(Control_Monad_Identity.Identity.create);
+    }, function (_556) {
+        return _556;
+    }, function (__dict_Profunctor_2) {
+        return Data_Profunctor.rmap(__dict_Profunctor_2)(Control_Monad_Identity.runIdentity);
+    });
+};
+module.exports = {
+    Settable: Settable, 
+    taintedDot: taintedDot, 
+    untaintedDot: untaintedDot, 
+    untainted: untainted, 
+    settableIdentity: settableIdentity, 
+    foldableIdentity: foldableIdentity, 
+    traversableIdentity: traversableIdentity
+};
+},{"Control.Monad.Identity":undefined,"Data.Distributive":68,"Data.Foldable":71,"Data.Profunctor":84,"Data.Traversable":87,"Prelude":undefined}],34:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Control_Lens_Internal_Iso = require("Control.Lens.Internal.Iso");
+var Control_Monad_Identity = require("Control.Monad.Identity");
+var Data_Profunctor = require("Data.Profunctor");
+var Data_Enum = require("Data.Enum");
+var Data_Maybe = require("Data.Maybe");
+var Data_Monoid = require("Data.Monoid");
+var withIso = function (stab) {
+    return function (f) {
+        var _2219 = stab(new Control_Lens_Internal_Iso.Exchange(Prelude.id(Prelude.categoryArr({})), Control_Monad_Identity.Identity.create));
+        return f(_2219.value0)(Prelude["<<<"](Prelude.semigroupoidArr({}))(Control_Monad_Identity.runIdentity)(_2219.value1));
+    };
+};
+var under = function (stab) {
+    return withIso(stab)(function (s2a) {
+        return function (b2t) {
+            return function (t2s) {
+                return Prelude[">>>"](Prelude.semigroupoidArr({}))(b2t)(Prelude[">>>"](Prelude.semigroupoidArr({}))(t2s)(s2a));
+            };
+        };
+    });
+};
+var iso = function (__dict_Profunctor_0) {
+    return function (__dict_Functor_1) {
+        return function (s2a) {
+            return function (b2t) {
+                return Data_Profunctor.dimap(__dict_Profunctor_0)(s2a)(Prelude["<$>"](__dict_Functor_1)(b2t));
+            };
+        };
+    };
+};
+var mapping = function (__dict_Functor_2) {
+    return function (__dict_Functor_3) {
+        return function (__dict_Profunctor_4) {
+            return function (stab) {
+                return withIso(stab)(function (s2a) {
+                    return function (b2t) {
+                        return iso(__dict_Profunctor_4)(__dict_Functor_2)(Prelude["<$>"](__dict_Functor_2)(s2a))(Prelude["<$>"](__dict_Functor_3)(b2t));
+                    };
+                });
+            };
+        };
+    };
+};
+var from = function (__dict_Profunctor_5) {
+    return function (__dict_Functor_6) {
+        return function (stab) {
+            return withIso(stab)(function (s2a) {
+                return function (b2t) {
+                    return iso(__dict_Profunctor_5)(__dict_Functor_6)(b2t)(s2a);
+                };
+            });
+        };
+    };
+};
+var $$enum = function (__dict_Enum_7) {
+    return function (__dict_Monoid_8) {
+        return function (__dict_Functor_9) {
+            return function (__dict_Profunctor_10) {
+                return iso(__dict_Profunctor_10)(__dict_Functor_9)(Prelude[">>>"](Prelude.semigroupoidArr({}))(Data_Enum.toEnum(__dict_Enum_7))(Data_Maybe.maybe(Data_Monoid.mempty(__dict_Monoid_8))(Prelude.id(Prelude.categoryArr({})))))(Data_Enum.fromEnum(__dict_Enum_7));
+            };
+        };
+    };
+};
+var cloneIso = function (__dict_Profunctor_11) {
+    return function (__dict_Functor_12) {
+        return function (stab) {
+            return withIso(stab)(iso(__dict_Profunctor_11)(__dict_Functor_12));
+        };
+    };
+};
+var auf = function (__dict_Profunctor_13) {
+    return function (stab) {
+        return withIso(stab)(function (s2a) {
+            return function (b2t) {
+                return function (f) {
+                    return function (prs) {
+                        return function (e) {
+                            return b2t(f(Data_Profunctor.rmap(__dict_Profunctor_13)(s2a)(prs))(e));
+                        };
+                    };
+                };
+            };
+        });
+    };
+};
+var au = function (stab) {
+    return withIso(stab)(function (s2a) {
+        return function (b2t) {
+            return function (f) {
+                return function (e) {
+                    return s2a(f(b2t)(e));
+                };
+            };
+        };
+    });
+};
+module.exports = {
+    withIso: withIso, 
+    under: under, 
+    mapping: mapping, 
+    iso: iso, 
+    from: from, 
+    "enum": $$enum, 
+    cloneIso: cloneIso, 
+    auf: auf, 
+    au: au
+};
+},{"Control.Lens.Internal.Iso":31,"Control.Monad.Identity":undefined,"Data.Enum":69,"Data.Maybe":76,"Data.Monoid":82,"Data.Profunctor":84,"Prelude":undefined}],35:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Control_Monad_State = require("Control.Monad.State");
+var $qmark$qmark = function (__dict_Functor_0) {
+    return function (ff) {
+        return function (x) {
+            return Prelude["<$>"](__dict_Functor_0)(function (f) {
+                return f(x);
+            })(ff);
+        };
+    };
+};
+var $less$hash$greater = function (__dict_Functor_1) {
+    return function (x) {
+        return function (f) {
+            return Prelude["<$>"](__dict_Functor_1)(f)(x);
+        };
+    };
+};
+var $hash$tilde = function (s) {
+    return function (sa) {
+        return Control_Monad_State.execState(sa)(s);
+    };
+};
+var lens = function (s2a) {
+    return function (s2b2t) {
+        return function (__dict_Functor_2) {
+            return function (a2fb) {
+                return function (s) {
+                    return Prelude["<$>"](__dict_Functor_2)(s2b2t(s))(a2fb(s2a(s)));
+                };
+            };
+        };
+    };
+};
+module.exports = {
+    lens: lens, 
+    "??": $qmark$qmark, 
+    "<#>": $less$hash$greater, 
+    "#~": $hash$tilde
+};
+},{"Control.Monad.State":51,"Prelude":undefined}],36:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Control_Lens_Internal_Prism = require("Control.Lens.Internal.Prism");
+var Control_Monad_Identity = require("Control.Monad.Identity");
+var Data_Either = require("Data.Either");
+var Data_Profunctor = require("Data.Profunctor");
+var Data_Profunctor_Choice = require("Data.Profunctor.Choice");
+var Data_Maybe = require("Data.Maybe");
+var withPrism = function (stab) {
+    return function (f) {
+        var _2216 = stab(new Control_Lens_Internal_Prism.Market(Control_Monad_Identity.Identity.create, Data_Either.Right.create));
+        return f(Prelude["<<<"](Prelude.semigroupoidArr({}))(Control_Monad_Identity.runIdentity)(_2216.value0))(Prelude[">>>"](Prelude.semigroupoidArr({}))(_2216.value1)(Data_Either.either(Prelude[">>>"](Prelude.semigroupoidArr({}))(Control_Monad_Identity.runIdentity)(Data_Either.Left.create))(Data_Either.Right.create)));
+    };
+};
+var prism = function (__dict_Applicative_0) {
+    return function (__dict_Choice_1) {
+        return function (b2t) {
+            return function (s2Eta) {
+                return function (pafb) {
+                    return Data_Profunctor.dimap(__dict_Choice_1["__superclass_Data.Profunctor.Profunctor_0"]({}))(s2Eta)(Data_Either.either(Prelude.pure(__dict_Applicative_0))(Prelude["<$>"]((__dict_Applicative_0["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(b2t)))(Data_Profunctor_Choice["right'"](__dict_Choice_1)(pafb));
+                };
+            };
+        };
+    };
+};
+var prism$prime = function (b2s) {
+    return function (s2Ma) {
+        return function (__dict_Applicative_2) {
+            return function (__dict_Choice_3) {
+                return prism(__dict_Applicative_2)(__dict_Choice_3)(b2s)(function (s) {
+                    return Data_Maybe.maybe(new Data_Either.Left(s))(Data_Either.Right.create)(s2Ma(s));
+                });
+            };
+        };
+    };
+};
+var clonePrism = function (__dict_Applicative_4) {
+    return function (__dict_Choice_5) {
+        return function (stab) {
+            return withPrism(stab)(prism(__dict_Applicative_4)(__dict_Choice_5));
+        };
+    };
+};
+var _Right = function (__dict_Applicative_6) {
+    return function (__dict_Choice_7) {
+        return prism(__dict_Applicative_6)(__dict_Choice_7)(Data_Either.Right.create)(Data_Either.either(Prelude["<<<"](Prelude.semigroupoidArr({}))(Data_Either.Left.create)(Data_Either.Left.create))(Data_Either.Right.create));
+    };
+};
+var _Nothing = function (__dict_Applicative_8) {
+    return function (__dict_Choice_9) {
+        return prism$prime(Prelude["const"](Data_Maybe.Nothing.value))(Data_Maybe.maybe(Data_Maybe.Nothing.value)(Prelude["const"](new Data_Maybe.Just(Prelude.unit))))(__dict_Applicative_8)(__dict_Choice_9);
+    };
+};
+var _Left = function (__dict_Applicative_10) {
+    return function (__dict_Choice_11) {
+        return prism(__dict_Applicative_10)(__dict_Choice_11)(Data_Either.Left.create)(Data_Either.either(Data_Either.Right.create)(Prelude["<<<"](Prelude.semigroupoidArr({}))(Data_Either.Left.create)(Data_Either.Right.create)));
+    };
+};
+var _Just = function (__dict_Applicative_12) {
+    return function (__dict_Choice_13) {
+        return prism(__dict_Applicative_12)(__dict_Choice_13)(Data_Maybe.Just.create)(Data_Maybe.maybe(new Data_Either.Left(Data_Maybe.Nothing.value))(Data_Either.Right.create));
+    };
+};
+module.exports = {
+    _Nothing: _Nothing, 
+    _Just: _Just, 
+    _Right: _Right, 
+    _Left: _Left, 
+    withPrism: withPrism, 
+    "prism'": prism$prime, 
+    prism: prism, 
+    clonePrism: clonePrism
+};
+},{"Control.Lens.Internal.Prism":32,"Control.Monad.Identity":undefined,"Data.Either":undefined,"Data.Maybe":76,"Data.Profunctor":84,"Data.Profunctor.Choice":83,"Prelude":undefined}],37:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Control_Lens_Internal_Setter = require("Control.Lens.Internal.Setter");
+var Control_Monad_Identity = require("Control.Monad.Identity");
+var Data_Maybe = require("Data.Maybe");
+var Data_Profunctor = require("Data.Profunctor");
+var Data_Contravariant = require("Data.Contravariant");
+var sets = function (__dict_Profunctor_0) {
+    return function (__dict_Profunctor_1) {
+        return function (__dict_Settable_2) {
+            return function (pab2qst) {
+                return Prelude[">>>"](Prelude.semigroupoidArr({}))(Control_Lens_Internal_Setter.untaintedDot(__dict_Settable_2)(__dict_Profunctor_0))(Prelude[">>>"](Prelude.semigroupoidArr({}))(pab2qst)(Control_Lens_Internal_Setter.taintedDot(__dict_Settable_2)(__dict_Profunctor_1)));
+            };
+        };
+    };
+};
+var set$prime = function (sa) {
+    return function (a) {
+        return Prelude["<<<"](Prelude.semigroupoidArr({}))(Control_Monad_Identity.runIdentity)(sa(Prelude["<<<"](Prelude.semigroupoidArr({}))(Control_Monad_Identity.Identity.create)(Prelude["const"](a))));
+    };
+};
+var set = function (stab) {
+    return function (b) {
+        return Prelude["<<<"](Prelude.semigroupoidArr({}))(Control_Monad_Identity.runIdentity)(stab(Prelude["<<<"](Prelude.semigroupoidArr({}))(Control_Monad_Identity.Identity.create)(Prelude["const"](b))));
+    };
+};
+var $dot$tilde = set;
+var $qmark$tilde = function (stab) {
+    return function (a) {
+        return set(stab)(new Data_Maybe.Just(a));
+    };
+};
+var over = function (__dict_Profunctor_3) {
+    return function (pstab) {
+        return function (pab) {
+            return Prelude["<<<"](Prelude.semigroupoidArr({}))(Control_Monad_Identity.runIdentity)(pstab(Data_Profunctor.rmap(__dict_Profunctor_3)(Control_Monad_Identity.Identity.create)(pab)));
+        };
+    };
+};
+var $percent$tilde = function (__dict_Profunctor_4) {
+    return over(__dict_Profunctor_4);
+};
+var $amp$amp$tilde = function (__dict_BoolLike_5) {
+    return function (staa) {
+        return function (a) {
+            return over(Data_Profunctor.profunctorArr({}))(staa)(Prelude["&&"](__dict_BoolLike_5)(a));
+        };
+    };
+};
+var $times$tilde = function (__dict_Num_6) {
+    return function (staa) {
+        return function (a) {
+            return over(Data_Profunctor.profunctorArr({}))(staa)(Prelude["*"](__dict_Num_6)(a));
+        };
+    };
+};
+var $plus$plus$tilde = function (__dict_Semigroup_7) {
+    return function (staa) {
+        return function (a) {
+            return over(Data_Profunctor.profunctorArr({}))(staa)(Prelude["++"](__dict_Semigroup_7)(a));
+        };
+    };
+};
+var $plus$tilde = function (__dict_Num_8) {
+    return function (staa) {
+        return function (a) {
+            return over(Data_Profunctor.profunctorArr({}))(staa)(Prelude["+"](__dict_Num_8)(a));
+        };
+    };
+};
+var $minus$tilde = function (__dict_Num_9) {
+    return function (staa) {
+        return function (a) {
+            return over(Data_Profunctor.profunctorArr({}))(staa)(Prelude["-"](__dict_Num_9)(a));
+        };
+    };
+};
+var $div$tilde = function (__dict_Num_10) {
+    return function (staa) {
+        return function (a) {
+            return over(Data_Profunctor.profunctorArr({}))(staa)(Prelude["/"](__dict_Num_10)(a));
+        };
+    };
+};
+var $less$greater$tilde = function (__dict_Semigroup_11) {
+    return function (staa) {
+        return function (a) {
+            return over(Data_Profunctor.profunctorArr({}))(staa)(Prelude["<>"](__dict_Semigroup_11)(a));
+        };
+    };
+};
+var $bar$bar$tilde = function (__dict_BoolLike_12) {
+    return function (staa) {
+        return function (a) {
+            return over(Data_Profunctor.profunctorArr({}))(staa)(Prelude["||"](__dict_BoolLike_12)(a));
+        };
+    };
+};
+var mapped = function (__dict_Functor_13) {
+    return function (__dict_Settable_14) {
+        return sets(Data_Profunctor.profunctorArr({}))(Data_Profunctor.profunctorArr({}))(__dict_Settable_14)(Prelude["<$>"](__dict_Functor_13));
+    };
+};
+var contramapped = function (__dict_Contravariant_15) {
+    return function (__dict_Settable_16) {
+        return sets(Data_Profunctor.profunctorArr({}))(Data_Profunctor.profunctorArr({}))(__dict_Settable_16)(Data_Contravariant[">$<"](__dict_Contravariant_15));
+    };
+};
+var argument = function (__dict_Profunctor_17) {
+    return function (__dict_Settable_18) {
+        return sets(Data_Profunctor.profunctorArr({}))(Data_Profunctor.profunctorArr({}))(__dict_Settable_18)(Data_Profunctor.lmap(__dict_Profunctor_17));
+    };
+};
+module.exports = {
+    sets: sets, 
+    "set'": set$prime, 
+    set: set, 
+    over: over, 
+    mapped: mapped, 
+    contramapped: contramapped, 
+    argument: argument, 
+    "?~": $qmark$tilde, 
+    "++~": $plus$plus$tilde, 
+    "<>~": $less$greater$tilde, 
+    "&&~": $amp$amp$tilde, 
+    "||~": $bar$bar$tilde, 
+    "/~": $div$tilde, 
+    "*~": $times$tilde, 
+    "-~": $minus$tilde, 
+    "+~": $plus$tilde, 
+    ".~": $dot$tilde, 
+    "%~": $percent$tilde
+};
+},{"Control.Lens.Internal.Setter":33,"Control.Monad.Identity":undefined,"Data.Contravariant":67,"Data.Maybe":76,"Data.Profunctor":84,"Prelude":undefined}],38:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Data_Bitraversable = require("Data.Bitraversable");
+var traverseOf = Prelude.id(Prelude.categoryArr({}));
+var sequenceOf = function (l) {
+    return l(Prelude.id(Prelude.categoryArr({})));
+};
+var forOf = Prelude.flip;
+var both = function (__dict_Bitraversable_0) {
+    return function (__dict_Applicative_1) {
+        return function (f) {
+            return Data_Bitraversable.bitraverse(__dict_Bitraversable_0)(__dict_Applicative_1)(f)(f);
+        };
+    };
+};
+module.exports = {
+    traverseOf: traverseOf, 
+    sequenceOf: sequenceOf, 
+    forOf: forOf, 
+    both: both
+};
+},{"Data.Bitraversable":65,"Prelude":undefined}],39:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Data_Tuple = require("Data.Tuple");
+var $tilde = Data_Tuple.Tuple.create;
+var _2 = function (__dict_Functor_0) {
+    return function (_585) {
+        return function (_586) {
+            return Prelude["<$>"](__dict_Functor_0)(Data_Tuple.Tuple.create(_586.value0))(_585(_586.value1));
+        };
+    };
+};
+var _1 = function (__dict_Functor_1) {
+    return function (_583) {
+        return function (_584) {
+            return Prelude["<$>"](__dict_Functor_1)(function (b) {
+                return new Data_Tuple.Tuple(b, _584.value1);
+            })(_583(_584.value0));
+        };
+    };
+};
+module.exports = {
+    _2: _2, 
+    _1: _1, 
+    "~": $tilde
+};
+},{"Data.Tuple":88,"Prelude":undefined}],40:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Control_Lens_Tuple = require("Control.Lens.Tuple");
+var Control_Lens_Setter = require("Control.Lens.Setter");
+var Control_Lens_Fold = require("Control.Lens.Fold");
+var Control_Lens_Getter = require("Control.Lens.Getter");
+var Control_Lens_Lens = require("Control.Lens.Lens");
+var Control_Lens_Prism = require("Control.Lens.Prism");
+var Control_Lens_Iso = require("Control.Lens.Iso");
+var Control_Lens_Traversal = require("Control.Lens.Traversal");
+var Control_Lens_At = require("Control.Lens.At");
+var Control_Lens_Indexed = require("Control.Lens.Indexed");
+var $tilde = Control_Lens_Tuple["~"];
+var $bar$bar$tilde = Control_Lens_Setter["||~"];
+var $up$qmark = Control_Lens_Fold["^?"];
+var $up$dot$dot = Control_Lens_Fold["^.."];
+var $up$dot = Control_Lens_Getter["^."];
+var $qmark$tilde = Control_Lens_Setter["?~"];
+var $qmark$qmark = Control_Lens_Lens["??"];
+var $less$greater$tilde = Control_Lens_Setter["<>~"];
+var $less$hash$greater = Control_Lens_Lens["<#>"];
+var $div$tilde = Control_Lens_Setter["/~"];
+var $dot$tilde = Control_Lens_Setter[".~"];
+var $dot$dot = Prelude["<<<"];
+var $minus$tilde = Control_Lens_Setter["-~"];
+var $plus$tilde = Control_Lens_Setter["+~"];
+var $plus$plus$tilde = Control_Lens_Setter["++~"];
+var $times$tilde = Control_Lens_Setter["*~"];
+var $amp$amp$tilde = Control_Lens_Setter["&&~"];
+var $percent$tilde = Control_Lens_Setter["%~"];
+var $hash$tilde = Control_Lens_Lens["#~"];
+var withPrism = Control_Lens_Prism.withPrism;
+var withIso = Control_Lens_Iso.withIso;
+var view = Control_Lens_Getter.view;
+var use = Control_Lens_Getter.use;
+var under = Control_Lens_Iso.under;
+var traverseOf = Control_Lens_Traversal.traverseOf;
+var toListOf = Control_Lens_Fold.toListOf;
+var to = Control_Lens_Getter.to;
+var sets = Control_Lens_Setter.sets;
+var set$prime = Control_Lens_Setter["set'"];
+var set = Control_Lens_Setter.set;
+var sequenceOf = Control_Lens_Traversal.sequenceOf;
+var prism$prime = Control_Lens_Prism["prism'"];
+var prism = Control_Lens_Prism.prism;
+var over = Control_Lens_Setter.over;
+var mapping = Control_Lens_Iso.mapping;
+var mapped = Control_Lens_Setter.mapped;
+var lens = Control_Lens_Lens.lens;
+var ix = Control_Lens_At.ix;
+var itraversed = Control_Lens_Indexed.itraversed;
+var itraverse = Control_Lens_Indexed.itraverse;
+var iso = Control_Lens_Iso.iso;
+var imap = Control_Lens_Indexed.imap;
+var ifoldMap = Control_Lens_Indexed.ifoldMap;
+var from = Control_Lens_Iso.from;
+var forOf = Control_Lens_Traversal.forOf;
+var foldrOf = Control_Lens_Fold.foldrOf;
+var foldlOf = Control_Lens_Fold.foldlOf;
+var foldOf = Control_Lens_Fold.foldOf;
+var foldMapOf = Control_Lens_Fold.foldMapOf;
+var filtered = Control_Lens_Fold.filtered;
+var $$enum = Control_Lens_Iso["enum"];
+var contramapped = Control_Lens_Setter.contramapped;
+var clonePrism = Control_Lens_Prism.clonePrism;
+var cloneIso = Control_Lens_Iso.cloneIso;
+var both = Control_Lens_Traversal.both;
+var auf = Control_Lens_Iso.auf;
+var au = Control_Lens_Iso.au;
+var at = Control_Lens_At.at;
+var argument = Control_Lens_Setter.argument;
+var _Right = Control_Lens_Prism._Right;
+var _Nothing = Control_Lens_Prism._Nothing;
+var _Left = Control_Lens_Prism._Left;
+var _Just = Control_Lens_Prism._Just;
+var _2 = Control_Lens_Tuple._2;
+var _1 = Control_Lens_Tuple._1;
+module.exports = {
+    _2: _2, 
+    _1: _1, 
+    "~": $tilde, 
+    traverseOf: traverseOf, 
+    sequenceOf: sequenceOf, 
+    forOf: forOf, 
+    both: both, 
+    sets: sets, 
+    "set'": set$prime, 
+    set: set, 
+    over: over, 
+    mapped: mapped, 
+    contramapped: contramapped, 
+    argument: argument, 
+    "?~": $qmark$tilde, 
+    "++~": $plus$plus$tilde, 
+    "<>~": $less$greater$tilde, 
+    "&&~": $amp$amp$tilde, 
+    "||~": $bar$bar$tilde, 
+    "/~": $div$tilde, 
+    "*~": $times$tilde, 
+    "-~": $minus$tilde, 
+    "+~": $plus$tilde, 
+    ".~": $dot$tilde, 
+    "%~": $percent$tilde, 
+    _Nothing: _Nothing, 
+    _Just: _Just, 
+    _Right: _Right, 
+    _Left: _Left, 
+    withPrism: withPrism, 
+    "prism'": prism$prime, 
+    prism: prism, 
+    clonePrism: clonePrism, 
+    lens: lens, 
+    "??": $qmark$qmark, 
+    "<#>": $less$hash$greater, 
+    "#~": $hash$tilde, 
+    withIso: withIso, 
+    under: under, 
+    mapping: mapping, 
+    iso: iso, 
+    from: from, 
+    "enum": $$enum, 
+    cloneIso: cloneIso, 
+    auf: auf, 
+    au: au, 
+    itraversed: itraversed, 
+    itraverse: itraverse, 
+    ifoldMap: ifoldMap, 
+    imap: imap, 
+    view: view, 
+    use: use, 
+    to: to, 
+    "^.": $up$dot, 
+    toListOf: toListOf, 
+    foldrOf: foldrOf, 
+    foldOf: foldOf, 
+    foldMapOf: foldMapOf, 
+    foldlOf: foldlOf, 
+    filtered: filtered, 
+    "^?": $up$qmark, 
+    "^..": $up$dot$dot, 
+    ix: ix, 
+    at: at, 
+    "..": $dot$dot
+};
+},{"Control.Lens.At":27,"Control.Lens.Fold":28,"Control.Lens.Getter":29,"Control.Lens.Indexed":30,"Control.Lens.Iso":34,"Control.Lens.Lens":35,"Control.Lens.Prism":36,"Control.Lens.Setter":37,"Control.Lens.Traversal":38,"Control.Lens.Tuple":39,"Prelude":undefined}],41:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+function returnE(a) {  return function() {    return a;  };};
+function bindE(a) {  return function(f) {    return function() {      return f(a())();    };  };};
+function runPure(f) {  return f();};
+function untilE(f) {  return function() {    while (!f()) { }    return {};  };};
+function whileE(f) {  return function(a) {    return function() {      while (f()) {        a();      }      return {};    };  };};
+function forE(lo) {  return function(hi) {    return function(f) {      return function() {        for (var i = lo; i < hi; i++) {          f(i)();        }      };    };  };};
+function foreachE(as) {  return function(f) {    return function() {      for (var i = 0; i < as.length; i++) {        f(as[i])();      }    };  };};
+var applicativeEff = function (__unused) {
+    return new Prelude.Applicative(applyEff, returnE);
+};
+var applyEff = function (__unused) {
+    return new Prelude.Apply(Prelude.ap(monadEff({})), functorEff);
+};
+var monadEff = function (__unused) {
+    return new Prelude.Monad(applicativeEff, bindEff);
+};
+var bindEff = function (__unused) {
+    return new Prelude.Bind(bindE, applyEff);
+};
+var functorEff = function (__unused) {
+    return new Prelude.Functor(Prelude.liftA1(applicativeEff({})));
+};
+module.exports = {
+    foreachE: foreachE, 
+    forE: forE, 
+    whileE: whileE, 
+    untilE: untilE, 
+    runPure: runPure, 
+    bindE: bindE, 
+    returnE: returnE, 
+    functorEff: functorEff, 
+    applyEff: applyEff, 
+    applicativeEff: applicativeEff, 
+    bindEff: bindEff, 
+    monadEff: monadEff
+};
+},{"Prelude":undefined}],42:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Control_Monad_Trans = require("Control.Monad.Trans");
+var Data_Either = require("Data.Either");
+var Data_Tuple = require("Data.Tuple");
+var Control_Alt = require("Control.Alt");
+var Control_Plus = require("Control.Plus");
+var Control_Monad_Error = require("Control.Monad.Error");
+var Control_Alternative = require("Control.Alternative");
+var Control_MonadPlus = require("Control.MonadPlus");
+var ErrorT = {
+    create: function (value) {
+        return value;
+    }
+};
+var runErrorT = function (_354) {
+    return _354;
+};
+var monadTransErrorT = function (__dict_Error_2) {
+    return new Control_Monad_Trans.MonadTrans(function (__dict_Monad_3) {
+        return function (m) {
+            return ErrorT.create(Prelude[">>="](__dict_Monad_3["__superclass_Prelude.Bind_1"]({}))(m)(function (_10) {
+                return Prelude["return"](__dict_Monad_3)(new Data_Either.Right(_10));
+            }));
+        };
+    });
+};
+var mapErrorT = function (f) {
+    return function (m) {
+        return ErrorT.create(f(runErrorT(m)));
+    };
+};
+var liftPassError = function (__dict_Monad_8) {
+    return function (pass) {
+        return mapErrorT(function (m) {
+            return pass(Prelude[">>="](__dict_Monad_8["__superclass_Prelude.Bind_1"]({}))(m)(function (_12) {
+                return Prelude["return"](__dict_Monad_8)((function () {
+                    if (_12 instanceof Data_Either.Left) {
+                        return new Data_Tuple.Tuple(new Data_Either.Left(_12.value0), Prelude.id(Prelude.categoryArr({})));
+                    };
+                    if (_12 instanceof Data_Either.Right) {
+                        return new Data_Tuple.Tuple(new Data_Either.Right(_12.value0.value0), _12.value0.value1);
+                    };
+                    throw new Error("Failed pattern match");
+                })());
+            }));
+        });
+    };
+};
+var liftListenError = function (__dict_Monad_9) {
+    return function (listen) {
+        return mapErrorT(function (m) {
+            return Prelude[">>="](__dict_Monad_9["__superclass_Prelude.Bind_1"]({}))(listen(m))(function (_11) {
+                return Prelude["return"](__dict_Monad_9)(Prelude["<$>"](Data_Either.functorEither({}))(function (r) {
+                    return new Data_Tuple.Tuple(r, _11.value1);
+                })(_11.value0));
+            });
+        });
+    };
+};
+var liftCallCCError = function (callCC) {
+    return function (f) {
+        return ErrorT.create(callCC(function (c) {
+            return runErrorT(f(function (a) {
+                return ErrorT.create(c(new Data_Either.Right(a)));
+            }));
+        }));
+    };
+};
+var functorErrorT = function (__dict_Functor_10) {
+    return new Prelude.Functor(function (f) {
+        return Prelude["<<<"](Prelude.semigroupoidArr({}))(ErrorT.create)(Prelude["<<<"](Prelude.semigroupoidArr({}))(Prelude["<$>"](__dict_Functor_10)(Prelude["<$>"](Data_Either.functorEither({}))(f)))(runErrorT));
+    });
+};
+var applyErrorT = function (__dict_Functor_13) {
+    return function (__dict_Monad_14) {
+        return new Prelude.Apply(function (f) {
+            return function (v) {
+                return ErrorT.create(Prelude[">>="](__dict_Monad_14["__superclass_Prelude.Bind_1"]({}))(runErrorT(f))(function (_8) {
+                    if (_8 instanceof Data_Either.Left) {
+                        return Prelude["return"](__dict_Monad_14)(new Data_Either.Left(_8.value0));
+                    };
+                    if (_8 instanceof Data_Either.Right) {
+                        return Prelude[">>="](__dict_Monad_14["__superclass_Prelude.Bind_1"]({}))(runErrorT(v))(function (_7) {
+                            return Prelude["return"](__dict_Monad_14)((function () {
+                                if (_7 instanceof Data_Either.Left) {
+                                    return new Data_Either.Left(_7.value0);
+                                };
+                                if (_7 instanceof Data_Either.Right) {
+                                    return new Data_Either.Right(_8.value0(_7.value0));
+                                };
+                                throw new Error("Failed pattern match");
+                            })());
+                        });
+                    };
+                    throw new Error("Failed pattern match");
+                }));
+            };
+        }, function (__unused) {
+            return functorErrorT(__dict_Functor_13);
+        });
+    };
+};
+var bindErrorT = function (__dict_Monad_11) {
+    return function (__dict_Error_12) {
+        return new Prelude.Bind(function (m) {
+            return function (f) {
+                return ErrorT.create(Prelude[">>="](__dict_Monad_11["__superclass_Prelude.Bind_1"]({}))(runErrorT(m))(function (_9) {
+                    if (_9 instanceof Data_Either.Left) {
+                        return Prelude["return"](__dict_Monad_11)(new Data_Either.Left(_9.value0));
+                    };
+                    if (_9 instanceof Data_Either.Right) {
+                        return runErrorT(f(_9.value0));
+                    };
+                    throw new Error("Failed pattern match");
+                }));
+            };
+        }, function (__unused) {
+            return applyErrorT(((__dict_Monad_11["__superclass_Prelude.Applicative_0"]({}))["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(__dict_Monad_11);
+        });
+    };
+};
+var applicativeErrorT = function (__dict_Functor_15) {
+    return function (__dict_Monad_16) {
+        return new Prelude.Applicative(function (__unused) {
+            return applyErrorT(__dict_Functor_15)(__dict_Monad_16);
+        }, function (a) {
+            return ErrorT.create(Prelude.pure(__dict_Monad_16["__superclass_Prelude.Applicative_0"]({}))(new Data_Either.Right(a)));
+        });
+    };
+};
+var monadErrorT = function (__dict_Monad_6) {
+    return function (__dict_Error_7) {
+        return new Prelude.Monad(function (__unused) {
+            return applicativeErrorT(((__dict_Monad_6["__superclass_Prelude.Applicative_0"]({}))["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(__dict_Monad_6);
+        }, function (__unused) {
+            return bindErrorT(__dict_Monad_6)(__dict_Error_7);
+        });
+    };
+};
+var altErrorT = function (__dict_Monad_19) {
+    return function (__dict_Error_20) {
+        return new Control_Alt.Alt(function (x) {
+            return function (y) {
+                return ErrorT.create(Prelude[">>="](__dict_Monad_19["__superclass_Prelude.Bind_1"]({}))(runErrorT(x))(function (e) {
+                    if (e instanceof Data_Either.Left) {
+                        return runErrorT(y);
+                    };
+                    return Prelude["return"](__dict_Monad_19)(e);
+                }));
+            };
+        }, function (__unused) {
+            return functorErrorT(((__dict_Monad_19["__superclass_Prelude.Applicative_0"]({}))["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}));
+        });
+    };
+};
+var plusErrorT = function (__dict_Monad_0) {
+    return function (__dict_Error_1) {
+        return new Control_Plus.Plus(function (__unused) {
+            return altErrorT(__dict_Monad_0)(__dict_Error_1);
+        }, Prelude["return"](__dict_Monad_0)(Data_Either.Left.create(Control_Monad_Error.strMsg(__dict_Error_1)("No alternative"))));
+    };
+};
+var alternativeErrorT = function (__dict_Monad_17) {
+    return function (__dict_Error_18) {
+        return new Control_Alternative.Alternative(function (__unused) {
+            return plusErrorT(__dict_Monad_17)(__dict_Error_18);
+        }, function (__unused) {
+            return applicativeErrorT(((__dict_Monad_17["__superclass_Prelude.Applicative_0"]({}))["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(__dict_Monad_17);
+        });
+    };
+};
+var monadPlusErrorT = function (__dict_Monad_4) {
+    return function (__dict_Error_5) {
+        return new Control_MonadPlus.MonadPlus(function (__unused) {
+            return alternativeErrorT(__dict_Monad_4)(__dict_Error_5);
+        }, function (__unused) {
+            return monadErrorT(__dict_Monad_4)(__dict_Error_5);
+        });
+    };
+};
+module.exports = {
+    ErrorT: ErrorT, 
+    liftCallCCError: liftCallCCError, 
+    liftPassError: liftPassError, 
+    liftListenError: liftListenError, 
+    mapErrorT: mapErrorT, 
+    runErrorT: runErrorT, 
+    functorErrorT: functorErrorT, 
+    applyErrorT: applyErrorT, 
+    applicativeErrorT: applicativeErrorT, 
+    altErrorT: altErrorT, 
+    plusErrorT: plusErrorT, 
+    alternativeErrorT: alternativeErrorT, 
+    bindErrorT: bindErrorT, 
+    monadErrorT: monadErrorT, 
+    monadPlusErrorT: monadPlusErrorT, 
+    monadTransErrorT: monadTransErrorT
+};
+},{"Control.Alt":24,"Control.Alternative":undefined,"Control.Monad.Error":43,"Control.Monad.Trans":52,"Control.MonadPlus":54,"Control.Plus":55,"Data.Either":undefined,"Data.Tuple":88,"Prelude":undefined}],43:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Control_Alt = require("Control.Alt");
+var Data_Either = require("Data.Either");
+var Control_Plus = require("Control.Plus");
+var Control_Alternative = require("Control.Alternative");
+function Error(noMsg, strMsg) {
+    this.noMsg = noMsg;
+    this.strMsg = strMsg;
+};
+var strMsg = function (dict) {
+    return dict.strMsg;
+};
+var noMsg = function (dict) {
+    return dict.noMsg;
+};
+var errorString = function (__unused) {
+    return new Error("", Prelude.id(Prelude.categoryArr({})));
+};
+var errorEitherAlt = function (__dict_Error_2) {
+    return new Control_Alt.Alt(function (_218) {
+        return function (_219) {
+            if (_218 instanceof Data_Either.Left) {
+                return _219;
+            };
+            return _218;
+        };
+    }, function (__unused) {
+        return Data_Either.functorEither({});
+    });
+};
+var errorEitherPlus = function (__dict_Error_0) {
+    return new Control_Plus.Plus(function (__unused) {
+        return errorEitherAlt(__dict_Error_0);
+    }, new Data_Either.Left(noMsg(__dict_Error_0)));
+};
+var errorEitherAlternative = function (__dict_Error_1) {
+    return new Control_Alternative.Alternative(function (__unused) {
+        return errorEitherPlus(__dict_Error_1);
+    }, function (__unused) {
+        return Data_Either.applicativeEither({});
+    });
+};
+module.exports = {
+    Error: Error, 
+    strMsg: strMsg, 
+    noMsg: noMsg, 
+    errorString: errorString, 
+    errorEitherAlt: errorEitherAlt, 
+    errorEitherPlus: errorEitherPlus, 
+    errorEitherAlternative: errorEitherAlternative
+};
+},{"Control.Alt":24,"Control.Alternative":undefined,"Control.Plus":55,"Data.Either":undefined,"Prelude":undefined}],44:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Control_Monad_Trans = require("Control.Monad.Trans");
+var Data_Maybe = require("Data.Maybe");
+var Data_Tuple = require("Data.Tuple");
+var MaybeT = {
+    create: function (value) {
+        return value;
+    }
+};
+var runMaybeT = function (_355) {
+    return _355;
+};
+var monadTransMaybeT = function (__unused) {
+    return new Control_Monad_Trans.MonadTrans(function (__dict_Monad_0) {
+        return Prelude["<<<"](Prelude.semigroupoidArr({}))(MaybeT.create)(Prelude.liftM1(__dict_Monad_0)(Data_Maybe.Just.create));
+    });
+};
+var mapMaybeT = function (f) {
+    return Prelude["<<<"](Prelude.semigroupoidArr({}))(MaybeT.create)(Prelude["<<<"](Prelude.semigroupoidArr({}))(f)(runMaybeT));
+};
+var liftPassMaybe = function (__dict_Monad_2) {
+    return function (pass) {
+        return mapMaybeT(function (m) {
+            return pass(Prelude[">>="](__dict_Monad_2["__superclass_Prelude.Bind_1"]({}))(m)(function (_15) {
+                return Prelude["return"](__dict_Monad_2)((function () {
+                    if (_15 instanceof Data_Maybe.Nothing) {
+                        return new Data_Tuple.Tuple(Data_Maybe.Nothing.value, Prelude.id(Prelude.categoryArr({})));
+                    };
+                    if (_15 instanceof Data_Maybe.Just) {
+                        return new Data_Tuple.Tuple(new Data_Maybe.Just(_15.value0.value0), _15.value0.value1);
+                    };
+                    throw new Error("Failed pattern match");
+                })());
+            }));
+        });
+    };
+};
+var liftListenMaybe = function (__dict_Monad_3) {
+    return function (listen) {
+        return mapMaybeT(function (m) {
+            return Prelude[">>="](__dict_Monad_3["__superclass_Prelude.Bind_1"]({}))(listen(m))(function (_14) {
+                return Prelude["return"](__dict_Monad_3)(Prelude["<$>"](Data_Maybe.functorMaybe({}))(function (r) {
+                    return new Data_Tuple.Tuple(r, _14.value1);
+                })(_14.value0));
+            });
+        });
+    };
+};
+var liftCatchMaybe = function ($$catch) {
+    return function (m) {
+        return function (h) {
+            return MaybeT.create($$catch(runMaybeT(m))(Prelude["<<<"](Prelude.semigroupoidArr({}))(runMaybeT)(h)));
+        };
+    };
+};
+var liftCallCCMaybe = function (callCC) {
+    return function (f) {
+        return MaybeT.create(callCC(function (c) {
+            return runMaybeT(f(function (a) {
+                return MaybeT.create(c(new Data_Maybe.Just(a)));
+            }));
+        }));
+    };
+};
+var applicativeMaybeT = function (__dict_Monad_7) {
+    return new Prelude.Applicative(function (__unused) {
+        return applyMaybeT(__dict_Monad_7);
+    }, Prelude["<<<"](Prelude.semigroupoidArr({}))(MaybeT.create)(Prelude["<<<"](Prelude.semigroupoidArr({}))(Prelude.pure(__dict_Monad_7["__superclass_Prelude.Applicative_0"]({})))(Data_Maybe.Just.create)));
+};
+var applyMaybeT = function (__dict_Monad_6) {
+    return new Prelude.Apply(Prelude.ap(monadMaybeT(__dict_Monad_6)), function (__unused) {
+        return functorMaybeT(__dict_Monad_6);
+    });
+};
+var monadMaybeT = function (__dict_Monad_1) {
+    return new Prelude.Monad(function (__unused) {
+        return applicativeMaybeT(__dict_Monad_1);
+    }, function (__unused) {
+        return bindMaybeT(__dict_Monad_1);
+    });
+};
+var bindMaybeT = function (__dict_Monad_5) {
+    return new Prelude.Bind(function (x) {
+        return function (f) {
+            return MaybeT.create(Prelude[">>="](__dict_Monad_5["__superclass_Prelude.Bind_1"]({}))(runMaybeT(x))(function (_13) {
+                if (_13 instanceof Data_Maybe.Nothing) {
+                    return Prelude["return"](__dict_Monad_5)(Data_Maybe.Nothing.value);
+                };
+                if (_13 instanceof Data_Maybe.Just) {
+                    return runMaybeT(f(_13.value0));
+                };
+                throw new Error("Failed pattern match");
+            }));
+        };
+    }, function (__unused) {
+        return applyMaybeT(__dict_Monad_5);
+    });
+};
+var functorMaybeT = function (__dict_Monad_4) {
+    return new Prelude.Functor(Prelude.liftA1(applicativeMaybeT(__dict_Monad_4)));
+};
+module.exports = {
+    MaybeT: MaybeT, 
+    liftCallCCMaybe: liftCallCCMaybe, 
+    liftPassMaybe: liftPassMaybe, 
+    liftListenMaybe: liftListenMaybe, 
+    liftCatchMaybe: liftCatchMaybe, 
+    mapMaybeT: mapMaybeT, 
+    runMaybeT: runMaybeT, 
+    functorMaybeT: functorMaybeT, 
+    applyMaybeT: applyMaybeT, 
+    applicativeMaybeT: applicativeMaybeT, 
+    bindMaybeT: bindMaybeT, 
+    monadMaybeT: monadMaybeT, 
+    monadTransMaybeT: monadTransMaybeT
+};
+},{"Control.Monad.Trans":52,"Data.Maybe":76,"Data.Tuple":88,"Prelude":undefined}],45:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Data_Tuple = require("Data.Tuple");
+var Control_Monad_Trans = require("Control.Monad.Trans");
+var Data_Monoid = require("Data.Monoid");
+var RWST = {
+    create: function (value) {
+        return value;
+    }
+};
+var runRWST = function (_358) {
+    return _358;
+};
+var withRWST = function (f) {
+    return function (m) {
+        return function (r) {
+            return function (s) {
+                return Data_Tuple.uncurry(runRWST(m))(f(r)(s));
+            };
+        };
+    };
+};
+var mkSee = function (__dict_Monoid_2) {
+    return function (s) {
+        return function (a) {
+            return function (w) {
+                return {
+                    state: s, 
+                    result: a, 
+                    log: w
+                };
+            };
+        };
+    };
+};
+var monadTransRWST = function (__dict_Monoid_3) {
+    return new Control_Monad_Trans.MonadTrans(function (__dict_Monad_4) {
+        return function (m) {
+            return function (_) {
+                return function (s) {
+                    return Prelude[">>="](__dict_Monad_4["__superclass_Prelude.Bind_1"]({}))(m)(function (a) {
+                        return Prelude["return"](__dict_Monad_4)(mkSee(__dict_Monoid_3)(s)(a)(Data_Monoid.mempty(__dict_Monoid_3)));
+                    });
+                };
+            };
+        };
+    });
+};
+var mapRWST = function (f) {
+    return function (m) {
+        return function (r) {
+            return function (s) {
+                return f(runRWST(m)(r)(s));
+            };
+        };
+    };
+};
+var functorRWST = function (__dict_Functor_5) {
+    return new Prelude.Functor(function (f) {
+        return function (m) {
+            return function (r) {
+                return function (s) {
+                    return Prelude["<$>"](__dict_Functor_5)(function (see) {
+                        var _1278 = {};
+                        for (var _1279 in see) {
+                            if (see.hasOwnProperty(_1279)) {
+                                _1278[_1279] = see[_1279];
+                            };
+                        };
+                        _1278.result = f(see.result);
+                        return _1278;
+                    })(runRWST(m)(r)(s));
+                };
+            };
+        };
+    });
+};
+var execRWST = function (__dict_Monad_6) {
+    return function (m) {
+        return function (r) {
+            return function (s) {
+                return Prelude[">>="](__dict_Monad_6["__superclass_Prelude.Bind_1"]({}))(runRWST(m)(r)(s))(function (see) {
+                    return Prelude["return"](__dict_Monad_6)(new Data_Tuple.Tuple(see.state, see.log));
+                });
+            };
+        };
+    };
+};
+var evalRWST = function (__dict_Monad_7) {
+    return function (m) {
+        return function (r) {
+            return function (s) {
+                return Prelude[">>="](__dict_Monad_7["__superclass_Prelude.Bind_1"]({}))(runRWST(m)(r)(s))(function (see) {
+                    return Prelude["return"](__dict_Monad_7)(new Data_Tuple.Tuple(see.result, see.log));
+                });
+            };
+        };
+    };
+};
+var applyRWST = function (__dict_Apply_10) {
+    return function (__dict_Semigroup_11) {
+        return new Prelude.Apply(function (f) {
+            return function (m) {
+                return function (r) {
+                    return function (s) {
+                        return Prelude["<*>"](__dict_Apply_10)(Prelude["<$>"](__dict_Apply_10["__superclass_Prelude.Functor_0"]({}))(function (_356) {
+                            return function (see) {
+                                var _1281 = {};
+                                for (var _1282 in see) {
+                                    if (see.hasOwnProperty(_1282)) {
+                                        _1281[_1282] = see[_1282];
+                                    };
+                                };
+                                _1281.result = _356.result(see.result);
+                                _1281.log = Prelude["<>"](__dict_Semigroup_11)(_356.log)(see.log);
+                                return _1281;
+                            };
+                        })(runRWST(f)(r)(s)))(runRWST(m)(r)(s));
+                    };
+                };
+            };
+        }, function (__unused) {
+            return functorRWST(__dict_Apply_10["__superclass_Prelude.Functor_0"]({}));
+        });
+    };
+};
+var bindRWST = function (__dict_Bind_8) {
+    return function (__dict_Semigroup_9) {
+        return new Prelude.Bind(function (m) {
+            return function (f) {
+                return function (r) {
+                    return function (s) {
+                        return Prelude[">>="](__dict_Bind_8)(runRWST(m)(r)(s))(function (_357) {
+                            return Prelude["<$>"]((__dict_Bind_8["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(function (see$prime) {
+                                var _1286 = {};
+                                for (var _1287 in see$prime) {
+                                    if (see$prime.hasOwnProperty(_1287)) {
+                                        _1286[_1287] = see$prime[_1287];
+                                    };
+                                };
+                                _1286.log = Prelude["<>"](__dict_Semigroup_9)(_357.log)(see$prime.log);
+                                return _1286;
+                            })(runRWST(f(_357.result))(r)(_357.state));
+                        });
+                    };
+                };
+            };
+        }, function (__unused) {
+            return applyRWST(__dict_Bind_8["__superclass_Prelude.Apply_0"]({}))(__dict_Semigroup_9);
+        });
+    };
+};
+var applicativeRWST = function (__dict_Applicative_12) {
+    return function (__dict_Monoid_13) {
+        return new Prelude.Applicative(function (__unused) {
+            return applyRWST(__dict_Applicative_12["__superclass_Prelude.Apply_0"]({}))(__dict_Monoid_13["__superclass_Prelude.Semigroup_0"]({}));
+        }, function (a) {
+            return function (_) {
+                return function (s) {
+                    return Prelude.pure(__dict_Applicative_12)(mkSee(__dict_Monoid_13)(s)(a)(Data_Monoid.mempty(__dict_Monoid_13)));
+                };
+            };
+        });
+    };
+};
+var monadRWST = function (__dict_Monad_0) {
+    return function (__dict_Monoid_1) {
+        return new Prelude.Monad(function (__unused) {
+            return applicativeRWST(__dict_Monad_0["__superclass_Prelude.Applicative_0"]({}))(__dict_Monoid_1);
+        }, function (__unused) {
+            return bindRWST(__dict_Monad_0["__superclass_Prelude.Bind_1"]({}))(__dict_Monoid_1["__superclass_Prelude.Semigroup_0"]({}));
+        });
+    };
+};
+module.exports = {
+    RWST: RWST, 
+    withRWST: withRWST, 
+    mapRWST: mapRWST, 
+    execRWST: execRWST, 
+    evalRWST: evalRWST, 
+    runRWST: runRWST, 
+    mkSee: mkSee, 
+    functorRWST: functorRWST, 
+    applyRWST: applyRWST, 
+    bindRWST: bindRWST, 
+    applicativeRWST: applicativeRWST, 
+    monadRWST: monadRWST, 
+    monadTransRWST: monadTransRWST
+};
+},{"Control.Monad.Trans":52,"Data.Monoid":82,"Data.Tuple":88,"Prelude":undefined}],46:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Data_Tuple = require("Data.Tuple");
+var Control_Monad_RWS_Trans = require("Control.Monad.RWS.Trans");
+var Data_Monoid = require("Data.Monoid");
+var Control_Monad_Identity = require("Control.Monad.Identity");
+var writer = function (__dict_Applicative_0) {
+    return function (_362) {
+        return function (_) {
+            return function (s) {
+                return Prelude.pure(__dict_Applicative_0)({
+                    state: s, 
+                    result: _362.value0, 
+                    log: _362.value1
+                });
+            };
+        };
+    };
+};
+var withRWS = Control_Monad_RWS_Trans.withRWST;
+var tell = function (__dict_Applicative_1) {
+    return function (w) {
+        return writer(__dict_Applicative_1)(new Data_Tuple.Tuple(Prelude.unit, w));
+    };
+};
+var state = function (__dict_Applicative_2) {
+    return function (__dict_Monoid_3) {
+        return function (f) {
+            return function (_) {
+                return function (s) {
+                    var _1294 = f(s);
+                    return Prelude.pure(__dict_Applicative_2)(Control_Monad_RWS_Trans.mkSee(__dict_Monoid_3)(_1294.value1)(_1294.value0)(Data_Monoid.mempty(__dict_Monoid_3)));
+                };
+            };
+        };
+    };
+};
+var rws = function (f) {
+    return function (r) {
+        return function (s) {
+            return Prelude["return"](Control_Monad_Identity.monadIdentity({}))(f(r)(s));
+        };
+    };
+};
+var runRWS = function (m) {
+    return function (r) {
+        return function (s) {
+            return Control_Monad_Identity.runIdentity(Control_Monad_RWS_Trans.runRWST(m)(r)(s));
+        };
+    };
+};
+var reader = function (__dict_Applicative_4) {
+    return function (__dict_Monoid_5) {
+        return function (f) {
+            return function (r) {
+                return function (s) {
+                    return Prelude.pure(__dict_Applicative_4)(Control_Monad_RWS_Trans.mkSee(__dict_Monoid_5)(s)(f(r))(Data_Monoid.mempty(__dict_Monoid_5)));
+                };
+            };
+        };
+    };
+};
+var put = function (__dict_Applicative_6) {
+    return function (__dict_Monoid_7) {
+        return function (s) {
+            return state(__dict_Applicative_6)(__dict_Monoid_7)(function (_) {
+                return new Data_Tuple.Tuple(Prelude.unit, s);
+            });
+        };
+    };
+};
+var pass = function (__dict_Monad_8) {
+    return function (m) {
+        return function (r) {
+            return function (s) {
+                return Prelude[">>="](__dict_Monad_8["__superclass_Prelude.Bind_1"]({}))(Control_Monad_RWS_Trans.runRWST(m)(r)(s))(function (_360) {
+                    return Prelude.pure(__dict_Monad_8["__superclass_Prelude.Applicative_0"]({}))({
+                        state: _360.state, 
+                        result: _360.result.value0, 
+                        log: _360.result.value1(_360.log)
+                    });
+                });
+            };
+        };
+    };
+};
+var modify = function (__dict_Applicative_9) {
+    return function (__dict_Monoid_10) {
+        return function (f) {
+            return state(__dict_Applicative_9)(__dict_Monoid_10)(function (s) {
+                return new Data_Tuple.Tuple(Prelude.unit, f(s));
+            });
+        };
+    };
+};
+var mapRWS = function (f) {
+    return Control_Monad_RWS_Trans.mapRWST(Prelude[">>>"](Prelude.semigroupoidArr({}))(Control_Monad_Identity.runIdentity)(Prelude[">>>"](Prelude.semigroupoidArr({}))(f)(Control_Monad_Identity.Identity.create)));
+};
+var local = function (f) {
+    return function (m) {
+        return function (r) {
+            return function (s) {
+                return Control_Monad_RWS_Trans.runRWST(m)(f(r))(s);
+            };
+        };
+    };
+};
+var listens = function (__dict_Monad_11) {
+    return function (f) {
+        return function (m) {
+            return function (r) {
+                return function (s) {
+                    return Prelude[">>="](__dict_Monad_11["__superclass_Prelude.Bind_1"]({}))(Control_Monad_RWS_Trans.runRWST(m)(r)(s))(function (_361) {
+                        return Prelude.pure(__dict_Monad_11["__superclass_Prelude.Applicative_0"]({}))({
+                            state: _361.state, 
+                            result: new Data_Tuple.Tuple(_361.result, f(_361.log)), 
+                            log: _361.log
+                        });
+                    });
+                };
+            };
+        };
+    };
+};
+var listen = function (__dict_Monad_12) {
+    return function (m) {
+        return function (r) {
+            return function (s) {
+                return Prelude[">>="](__dict_Monad_12["__superclass_Prelude.Bind_1"]({}))(Control_Monad_RWS_Trans.runRWST(m)(r)(s))(function (_359) {
+                    return Prelude.pure(__dict_Monad_12["__superclass_Prelude.Applicative_0"]({}))({
+                        state: _359.state, 
+                        result: new Data_Tuple.Tuple(_359.result, _359.log), 
+                        log: _359.log
+                    });
+                });
+            };
+        };
+    };
+};
+var gets = function (__dict_Applicative_13) {
+    return function (__dict_Monoid_14) {
+        return function (f) {
+            return state(__dict_Applicative_13)(__dict_Monoid_14)(function (s) {
+                return new Data_Tuple.Tuple(f(s), s);
+            });
+        };
+    };
+};
+var get = function (__dict_Applicative_15) {
+    return function (__dict_Monoid_16) {
+        return state(__dict_Applicative_15)(__dict_Monoid_16)(function (s) {
+            return new Data_Tuple.Tuple(s, s);
+        });
+    };
+};
+var execRWS = function (m) {
+    return function (r) {
+        return function (s) {
+            return Control_Monad_Identity.runIdentity(Control_Monad_RWS_Trans.execRWST(Control_Monad_Identity.monadIdentity({}))(m)(r)(s));
+        };
+    };
+};
+var evalRWS = function (m) {
+    return function (r) {
+        return function (s) {
+            return Control_Monad_Identity.runIdentity(Control_Monad_RWS_Trans.evalRWST(Control_Monad_Identity.monadIdentity({}))(m)(r)(s));
+        };
+    };
+};
+var censor = function (__dict_Monad_17) {
+    return function (f) {
+        return function (m) {
+            return function (r) {
+                return function (s) {
+                    return Prelude[">>="](__dict_Monad_17["__superclass_Prelude.Bind_1"]({}))(Control_Monad_RWS_Trans.runRWST(m)(r)(s))(function (see) {
+                        return Prelude.pure(__dict_Monad_17["__superclass_Prelude.Applicative_0"]({}))((function () {
+                            var _1311 = {};
+                            for (var _1312 in see) {
+                                if (see.hasOwnProperty(_1312)) {
+                                    _1311[_1312] = see[_1312];
+                                };
+                            };
+                            _1311.log = f(see.log);
+                            return _1311;
+                        })());
+                    });
+                };
+            };
+        };
+    };
+};
+var ask = function (__dict_Applicative_18) {
+    return function (__dict_Monoid_19) {
+        return function (r) {
+            return function (s) {
+                return Prelude.pure(__dict_Applicative_18)(Control_Monad_RWS_Trans.mkSee(__dict_Monoid_19)(s)(r)(Data_Monoid.mempty(__dict_Monoid_19)));
+            };
+        };
+    };
+};
+module.exports = {
+    modify: modify, 
+    put: put, 
+    gets: gets, 
+    get: get, 
+    state: state, 
+    censor: censor, 
+    listens: listens, 
+    tell: tell, 
+    pass: pass, 
+    listen: listen, 
+    writer: writer, 
+    reader: reader, 
+    local: local, 
+    ask: ask, 
+    withRWS: withRWS, 
+    mapRWS: mapRWS, 
+    execRWS: execRWS, 
+    evalRWS: evalRWS, 
+    runRWS: runRWS, 
+    rws: rws
+};
+},{"Control.Monad.Identity":undefined,"Control.Monad.RWS.Trans":45,"Data.Monoid":82,"Data.Tuple":88,"Prelude":undefined}],47:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Control_Monad_Reader_Trans = require("Control.Monad.Reader.Trans");
+var Control_Monad_RWS = require("Control.Monad.RWS");
+var Control_Monad_Trans = require("Control.Monad.Trans");
+var Control_Monad_Error_Trans = require("Control.Monad.Error.Trans");
+var Control_Monad_Maybe_Trans = require("Control.Monad.Maybe.Trans");
+var Control_Monad_State_Trans = require("Control.Monad.State.Trans");
+var Control_Monad_Writer_Trans = require("Control.Monad.Writer.Trans");
+function MonadReader(ask, local) {
+    this.ask = ask;
+    this.local = local;
+};
+var monadReaderReaderT = function (__dict_Monad_0) {
+    return new MonadReader(Prelude["return"](__dict_Monad_0), Control_Monad_Reader_Trans.withReaderT);
+};
+var monadReaderRWST = function (__dict_Monad_1) {
+    return function (__dict_Monoid_2) {
+        return new MonadReader(Control_Monad_RWS.ask(__dict_Monad_1["__superclass_Prelude.Applicative_0"]({}))(__dict_Monoid_2), Control_Monad_RWS.local);
+    };
+};
+var monadReaderFun = function (__unused) {
+    return new MonadReader(Prelude.id(Prelude.categoryArr({})), Prelude[">>>"](Prelude.semigroupoidArr({})));
+};
+var local = function (dict) {
+    return dict.local;
+};
+var ask = function (dict) {
+    return dict.ask;
+};
+var monadReaderErrorT = function (__dict_Monad_3) {
+    return function (__dict_Error_4) {
+        return function (__dict_MonadReader_5) {
+            return new MonadReader(Control_Monad_Trans.lift(Control_Monad_Error_Trans.monadTransErrorT(__dict_Error_4))(__dict_Monad_3)(ask(__dict_MonadReader_5)), function (f) {
+                return Control_Monad_Error_Trans.mapErrorT(local(__dict_MonadReader_5)(f));
+            });
+        };
+    };
+};
+var monadReaderMaybeT = function (__dict_Monad_6) {
+    return function (__dict_MonadReader_7) {
+        return new MonadReader(Control_Monad_Trans.lift(Control_Monad_Maybe_Trans.monadTransMaybeT({}))(__dict_Monad_6)(ask(__dict_MonadReader_7)), function (f) {
+            return Control_Monad_Maybe_Trans.mapMaybeT(local(__dict_MonadReader_7)(f));
+        });
+    };
+};
+var monadReaderStateT = function (__dict_Monad_8) {
+    return function (__dict_MonadReader_9) {
+        return new MonadReader(Control_Monad_Trans.lift(Control_Monad_State_Trans.monadTransStateT({}))(__dict_Monad_8)(ask(__dict_MonadReader_9)), function (f) {
+            return Control_Monad_State_Trans.mapStateT(local(__dict_MonadReader_9)(f));
+        });
+    };
+};
+var monadReaderWriterT = function (__dict_Monad_10) {
+    return function (__dict_Monoid_11) {
+        return function (__dict_MonadReader_12) {
+            return new MonadReader(Control_Monad_Trans.lift(Control_Monad_Writer_Trans.monadTransWriterT(__dict_Monoid_11))(__dict_Monad_10)(ask(__dict_MonadReader_12)), function (f) {
+                return Control_Monad_Writer_Trans.mapWriterT(local(__dict_MonadReader_12)(f));
+            });
+        };
+    };
+};
+var reader = function (__dict_Monad_13) {
+    return function (__dict_MonadReader_14) {
+        return function (f) {
+            return Prelude[">>="](__dict_Monad_13["__superclass_Prelude.Bind_1"]({}))(ask(__dict_MonadReader_14))(Prelude["<<<"](Prelude.semigroupoidArr({}))(Prelude["return"](__dict_Monad_13))(f));
+        };
+    };
+};
+module.exports = {
+    MonadReader: MonadReader, 
+    reader: reader, 
+    local: local, 
+    ask: ask, 
+    monadReaderFun: monadReaderFun, 
+    monadReaderReaderT: monadReaderReaderT, 
+    monadReaderErrorT: monadReaderErrorT, 
+    monadReaderMaybeT: monadReaderMaybeT, 
+    monadReaderWriterT: monadReaderWriterT, 
+    monadReaderStateT: monadReaderStateT, 
+    monadReaderRWST: monadReaderRWST
+};
+},{"Control.Monad.Error.Trans":42,"Control.Monad.Maybe.Trans":44,"Control.Monad.RWS":46,"Control.Monad.Reader.Trans":48,"Control.Monad.State.Trans":50,"Control.Monad.Trans":52,"Control.Monad.Writer.Trans":53,"Prelude":undefined}],48:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Control_Monad_Trans = require("Control.Monad.Trans");
+var Control_Alt = require("Control.Alt");
+var Control_Plus = require("Control.Plus");
+var Control_Alternative = require("Control.Alternative");
+var Control_MonadPlus = require("Control.MonadPlus");
+var ReaderT = {
+    create: function (value) {
+        return value;
+    }
+};
+var runReaderT = function (_221) {
+    return _221;
+};
+var withReaderT = function (f) {
+    return function (m) {
+        return ReaderT.create(Prelude["<<<"](Prelude.semigroupoidArr({}))(runReaderT(m))(f));
+    };
+};
+var mapReaderT = function (f) {
+    return function (m) {
+        return ReaderT.create(Prelude["<<<"](Prelude.semigroupoidArr({}))(f)(runReaderT(m)));
+    };
+};
+var liftReaderT = function (m) {
+    return Prelude["const"](m);
+};
+var monadTransReaderT = function (__unused) {
+    return new Control_Monad_Trans.MonadTrans(function (__dict_Monad_2) {
+        return liftReaderT;
+    });
+};
+var liftCatchReader = function ($$catch) {
+    return function (m) {
+        return function (h) {
+            return ReaderT.create(function (r) {
+                return $$catch(runReaderT(m)(r))(function (e) {
+                    return runReaderT(h(e))(r);
+                });
+            });
+        };
+    };
+};
+var liftCallCCReader = function (callCC) {
+    return function (f) {
+        return ReaderT.create(function (r) {
+            return callCC(function (c) {
+                return runReaderT(f(function (a) {
+                    return ReaderT.create(Prelude["const"](c(a)));
+                }))(r);
+            });
+        });
+    };
+};
+var functorReaderT = function (__dict_Functor_4) {
+    return new Prelude.Functor(function (f) {
+        return mapReaderT(Prelude["<$>"](__dict_Functor_4)(f));
+    });
+};
+var applyReaderT = function (__dict_Applicative_6) {
+    return new Prelude.Apply(function (f) {
+        return function (v) {
+            return function (r) {
+                return Prelude["<*>"](__dict_Applicative_6["__superclass_Prelude.Apply_0"]({}))(runReaderT(f)(r))(runReaderT(v)(r));
+            };
+        };
+    }, function (__unused) {
+        return functorReaderT((__dict_Applicative_6["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}));
+    });
+};
+var bindReaderT = function (__dict_Monad_5) {
+    return new Prelude.Bind(function (m) {
+        return function (k) {
+            return function (r) {
+                return Prelude[">>="](__dict_Monad_5["__superclass_Prelude.Bind_1"]({}))(runReaderT(m)(r))(function (_6) {
+                    return runReaderT(k(_6))(r);
+                });
+            };
+        };
+    }, function (__unused) {
+        return applyReaderT(__dict_Monad_5["__superclass_Prelude.Applicative_0"]({}));
+    });
+};
+var applicativeReaderT = function (__dict_Applicative_7) {
+    return new Prelude.Applicative(function (__unused) {
+        return applyReaderT(__dict_Applicative_7);
+    }, Prelude["<<<"](Prelude.semigroupoidArr({}))(liftReaderT)(Prelude.pure(__dict_Applicative_7)));
+};
+var monadReaderT = function (__dict_Monad_0) {
+    return new Prelude.Monad(function (__unused) {
+        return applicativeReaderT(__dict_Monad_0["__superclass_Prelude.Applicative_0"]({}));
+    }, function (__unused) {
+        return bindReaderT(__dict_Monad_0);
+    });
+};
+var altReaderT = function (__dict_Alt_9) {
+    return new Control_Alt.Alt(function (m) {
+        return function (n) {
+            return function (r) {
+                return Control_Alt["<|>"](__dict_Alt_9)(runReaderT(m)(r))(runReaderT(n)(r));
+            };
+        };
+    }, function (__unused) {
+        return functorReaderT(__dict_Alt_9["__superclass_Prelude.Functor_0"]({}));
+    });
+};
+var plusReaderT = function (__dict_Plus_3) {
+    return new Control_Plus.Plus(function (__unused) {
+        return altReaderT(__dict_Plus_3["__superclass_Control.Alt.Alt_0"]({}));
+    }, liftReaderT(Control_Plus.empty(__dict_Plus_3)));
+};
+var alternativeReaderT = function (__dict_Alternative_8) {
+    return new Control_Alternative.Alternative(function (__unused) {
+        return plusReaderT(__dict_Alternative_8["__superclass_Control.Plus.Plus_1"]({}));
+    }, function (__unused) {
+        return applicativeReaderT(__dict_Alternative_8["__superclass_Prelude.Applicative_0"]({}));
+    });
+};
+var monadPlusReaderT = function (__dict_MonadPlus_1) {
+    return new Control_MonadPlus.MonadPlus(function (__unused) {
+        return alternativeReaderT(__dict_MonadPlus_1["__superclass_Control.Alternative.Alternative_1"]({}));
+    }, function (__unused) {
+        return monadReaderT(__dict_MonadPlus_1["__superclass_Prelude.Monad_0"]({}));
+    });
+};
+module.exports = {
+    ReaderT: ReaderT, 
+    liftCallCCReader: liftCallCCReader, 
+    liftCatchReader: liftCatchReader, 
+    liftReaderT: liftReaderT, 
+    mapReaderT: mapReaderT, 
+    withReaderT: withReaderT, 
+    runReaderT: runReaderT, 
+    functorReaderT: functorReaderT, 
+    applyReaderT: applyReaderT, 
+    applicativeReaderT: applicativeReaderT, 
+    altReaderT: altReaderT, 
+    plusReaderT: plusReaderT, 
+    alternativeReaderT: alternativeReaderT, 
+    bindReaderT: bindReaderT, 
+    monadReaderT: monadReaderT, 
+    monadPlusReaderT: monadPlusReaderT, 
+    monadTransReaderT: monadTransReaderT
+};
+},{"Control.Alt":24,"Control.Alternative":undefined,"Control.Monad.Trans":52,"Control.MonadPlus":54,"Control.Plus":55,"Prelude":undefined}],49:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Data_Tuple = require("Data.Tuple");
+var Control_Monad_Trans = require("Control.Monad.Trans");
+var Control_Monad_Writer_Trans = require("Control.Monad.Writer.Trans");
+var Control_Monad_State_Trans = require("Control.Monad.State.Trans");
+var Control_Monad_Reader_Trans = require("Control.Monad.Reader.Trans");
+var Control_Monad_RWS = require("Control.Monad.RWS");
+var Control_Monad_Maybe_Trans = require("Control.Monad.Maybe.Trans");
+var Control_Monad_Error_Trans = require("Control.Monad.Error.Trans");
+function MonadState(state) {
+    this.state = state;
+};
+var state = function (dict) {
+    return dict.state;
+};
+var put = function (__dict_Monad_0) {
+    return function (__dict_MonadState_1) {
+        return function (s) {
+            return state(__dict_MonadState_1)(function (_) {
+                return new Data_Tuple.Tuple(Prelude.unit, s);
+            });
+        };
+    };
+};
+var monadStateWriterT = function (__dict_Monad_2) {
+    return function (__dict_Monoid_3) {
+        return function (__dict_MonadState_4) {
+            return new MonadState(function (f) {
+                return Control_Monad_Trans.lift(Control_Monad_Writer_Trans.monadTransWriterT(__dict_Monoid_3))(__dict_Monad_2)(state(__dict_MonadState_4)(f));
+            });
+        };
+    };
+};
+var monadStateStateT1 = function (__dict_Monad_5) {
+    return function (__dict_MonadState_6) {
+        return new MonadState(function (f) {
+            return Control_Monad_Trans.lift(Control_Monad_State_Trans.monadTransStateT({}))(__dict_Monad_5)(state(__dict_MonadState_6)(f));
+        });
+    };
+};
+var monadStateStateT = function (__dict_Monad_7) {
+    return new MonadState(function (f) {
+        return Control_Monad_State_Trans.StateT.create(Prelude["<<<"](Prelude.semigroupoidArr({}))(Prelude["return"](__dict_Monad_7))(f));
+    });
+};
+var monadStateReaderT = function (__dict_Monad_8) {
+    return function (__dict_MonadState_9) {
+        return new MonadState(function (f) {
+            return Control_Monad_Trans.lift(Control_Monad_Reader_Trans.monadTransReaderT({}))(__dict_Monad_8)(state(__dict_MonadState_9)(f));
+        });
+    };
+};
+var monadStateRWST = function (__dict_Monad_10) {
+    return function (__dict_Monoid_11) {
+        return new MonadState(Control_Monad_RWS.state(__dict_Monad_10["__superclass_Prelude.Applicative_0"]({}))(__dict_Monoid_11));
+    };
+};
+var monadStateMaybeT = function (__dict_Monad_12) {
+    return function (__dict_MonadState_13) {
+        return new MonadState(function (f) {
+            return Control_Monad_Trans.lift(Control_Monad_Maybe_Trans.monadTransMaybeT({}))(__dict_Monad_12)(state(__dict_MonadState_13)(f));
+        });
+    };
+};
+var monadStateErrorT = function (__dict_Monad_14) {
+    return function (__dict_Error_15) {
+        return function (__dict_MonadState_16) {
+            return new MonadState(function (f) {
+                return Control_Monad_Trans.lift(Control_Monad_Error_Trans.monadTransErrorT(__dict_Error_15))(__dict_Monad_14)(state(__dict_MonadState_16)(f));
+            });
+        };
+    };
+};
+var modify = function (__dict_Monad_17) {
+    return function (__dict_MonadState_18) {
+        return function (f) {
+            return state(__dict_MonadState_18)(function (s) {
+                return new Data_Tuple.Tuple(Prelude.unit, f(s));
+            });
+        };
+    };
+};
+var gets = function (__dict_Monad_19) {
+    return function (__dict_MonadState_20) {
+        return function (f) {
+            return state(__dict_MonadState_20)(function (s) {
+                return new Data_Tuple.Tuple(f(s), s);
+            });
+        };
+    };
+};
+var get = function (__dict_Monad_21) {
+    return function (__dict_MonadState_22) {
+        return state(__dict_MonadState_22)(function (s) {
+            return new Data_Tuple.Tuple(s, s);
+        });
+    };
+};
+module.exports = {
+    MonadState: MonadState, 
+    modify: modify, 
+    put: put, 
+    gets: gets, 
+    get: get, 
+    state: state, 
+    monadStateStateT: monadStateStateT, 
+    monadStateStateT1: monadStateStateT1, 
+    monadStateErrorT: monadStateErrorT, 
+    monadStateMaybeT: monadStateMaybeT, 
+    monadStateReaderT: monadStateReaderT, 
+    monadStateWriterT: monadStateWriterT, 
+    monadStateRWST: monadStateRWST
+};
+},{"Control.Monad.Error.Trans":42,"Control.Monad.Maybe.Trans":44,"Control.Monad.RWS":46,"Control.Monad.Reader.Trans":48,"Control.Monad.State.Trans":50,"Control.Monad.Trans":52,"Control.Monad.Writer.Trans":53,"Data.Tuple":88,"Prelude":undefined}],50:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Control_Monad_Trans = require("Control.Monad.Trans");
+var Data_Tuple = require("Data.Tuple");
+var Control_Alt = require("Control.Alt");
+var Control_Plus = require("Control.Plus");
+var Control_Alternative = require("Control.Alternative");
+var Control_MonadPlus = require("Control.MonadPlus");
+var StateT = {
+    create: function (value) {
+        return value;
+    }
+};
+var runStateT = function (_365) {
+    return _365;
+};
+var withStateT = function (f) {
+    return function (s) {
+        return StateT.create(Prelude["<<<"](Prelude.semigroupoidArr({}))(runStateT(s))(f));
+    };
+};
+var monadTransStateT = function (__unused) {
+    return new Control_Monad_Trans.MonadTrans(function (__dict_Monad_2) {
+        return function (m) {
+            return function (s) {
+                return Prelude[">>="](__dict_Monad_2["__superclass_Prelude.Bind_1"]({}))(m)(function (_17) {
+                    return Prelude["return"](__dict_Monad_2)(new Data_Tuple.Tuple(_17, s));
+                });
+            };
+        };
+    });
+};
+var mapStateT = function (f) {
+    return function (m) {
+        return StateT.create(Prelude["<<<"](Prelude.semigroupoidArr({}))(f)(runStateT(m)));
+    };
+};
+var liftPassState = function (__dict_Monad_5) {
+    return function (pass) {
+        return function (m) {
+            return StateT.create(function (s) {
+                return pass(Prelude[">>="](__dict_Monad_5["__superclass_Prelude.Bind_1"]({}))(runStateT(m)(s))(function (_19) {
+                    return Prelude["return"](__dict_Monad_5)(new Data_Tuple.Tuple(new Data_Tuple.Tuple(_19.value0.value0, _19.value1), _19.value0.value1));
+                }));
+            });
+        };
+    };
+};
+var liftListenState = function (__dict_Monad_6) {
+    return function (listen) {
+        return function (m) {
+            return StateT.create(function (s) {
+                return Prelude[">>="](__dict_Monad_6["__superclass_Prelude.Bind_1"]({}))(listen(runStateT(m)(s)))(function (_18) {
+                    return Prelude["return"](__dict_Monad_6)(new Data_Tuple.Tuple(new Data_Tuple.Tuple(_18.value0.value0, _18.value1), _18.value0.value1));
+                });
+            });
+        };
+    };
+};
+var liftCatchState = function ($$catch) {
+    return function (m) {
+        return function (h) {
+            return StateT.create(function (s) {
+                return $$catch(runStateT(m)(s))(function (e) {
+                    return runStateT(h(e))(s);
+                });
+            });
+        };
+    };
+};
+var liftCallCCState$prime = function (callCC) {
+    return function (f) {
+        return StateT.create(function (s) {
+            return callCC(function (c) {
+                return runStateT(f(function (a) {
+                    return StateT.create(function (s$prime) {
+                        return c(new Data_Tuple.Tuple(a, s$prime));
+                    });
+                }))(s);
+            });
+        });
+    };
+};
+var liftCallCCState = function (callCC) {
+    return function (f) {
+        return StateT.create(function (s) {
+            return callCC(function (c) {
+                return runStateT(f(function (a) {
+                    return StateT.create(function (_) {
+                        return c(new Data_Tuple.Tuple(a, s));
+                    });
+                }))(s);
+            });
+        });
+    };
+};
+var execStateT = function (__dict_Monad_8) {
+    return function (m) {
+        return function (s) {
+            return Prelude[">>="](__dict_Monad_8["__superclass_Prelude.Bind_1"]({}))(runStateT(m)(s))(function (_364) {
+                return Prelude["return"](__dict_Monad_8)(_364.value1);
+            });
+        };
+    };
+};
+var evalStateT = function (__dict_Monad_9) {
+    return function (m) {
+        return function (s) {
+            return Prelude[">>="](__dict_Monad_9["__superclass_Prelude.Bind_1"]({}))(runStateT(m)(s))(function (_363) {
+                return Prelude["return"](__dict_Monad_9)(_363.value0);
+            });
+        };
+    };
+};
+var applicativeStateT = function (__dict_Monad_12) {
+    return new Prelude.Applicative(function (__unused) {
+        return applyStateT(__dict_Monad_12);
+    }, function (a) {
+        return StateT.create(function (s) {
+            return Prelude["return"](__dict_Monad_12)(new Data_Tuple.Tuple(a, s));
+        });
+    });
+};
+var applyStateT = function (__dict_Monad_11) {
+    return new Prelude.Apply(Prelude.ap(monadStateT(__dict_Monad_11)), function (__unused) {
+        return functorStateT(__dict_Monad_11);
+    });
+};
+var monadStateT = function (__dict_Monad_3) {
+    return new Prelude.Monad(function (__unused) {
+        return applicativeStateT(__dict_Monad_3);
+    }, function (__unused) {
+        return bindStateT(__dict_Monad_3);
+    });
+};
+var bindStateT = function (__dict_Monad_10) {
+    return new Prelude.Bind(function (_366) {
+        return function (_367) {
+            return function (s) {
+                return Prelude[">>="](__dict_Monad_10["__superclass_Prelude.Bind_1"]({}))(_366(s))(function (_16) {
+                    return runStateT(_367(_16.value0))(_16.value1);
+                });
+            };
+        };
+    }, function (__unused) {
+        return applyStateT(__dict_Monad_10);
+    });
+};
+var functorStateT = function (__dict_Monad_7) {
+    return new Prelude.Functor(Prelude.liftM1(monadStateT(__dict_Monad_7)));
+};
+var altStateT = function (__dict_Monad_15) {
+    return function (__dict_Alt_16) {
+        return new Control_Alt.Alt(function (x) {
+            return function (y) {
+                return StateT.create(function (s) {
+                    return Control_Alt["<|>"](__dict_Alt_16)(runStateT(x)(s))(runStateT(y)(s));
+                });
+            };
+        }, function (__unused) {
+            return functorStateT(__dict_Monad_15);
+        });
+    };
+};
+var plusStateT = function (__dict_Monad_0) {
+    return function (__dict_Plus_1) {
+        return new Control_Plus.Plus(function (__unused) {
+            return altStateT(__dict_Monad_0)(__dict_Plus_1["__superclass_Control.Alt.Alt_0"]({}));
+        }, StateT.create(function (_) {
+            return Control_Plus.empty(__dict_Plus_1);
+        }));
+    };
+};
+var alternativeStateT = function (__dict_Monad_13) {
+    return function (__dict_Alternative_14) {
+        return new Control_Alternative.Alternative(function (__unused) {
+            return plusStateT(__dict_Monad_13)(__dict_Alternative_14["__superclass_Control.Plus.Plus_1"]({}));
+        }, function (__unused) {
+            return applicativeStateT(__dict_Monad_13);
+        });
+    };
+};
+var monadPlusStateT = function (__dict_MonadPlus_4) {
+    return new Control_MonadPlus.MonadPlus(function (__unused) {
+        return alternativeStateT(__dict_MonadPlus_4["__superclass_Prelude.Monad_0"]({}))(__dict_MonadPlus_4["__superclass_Control.Alternative.Alternative_1"]({}));
+    }, function (__unused) {
+        return monadStateT(__dict_MonadPlus_4["__superclass_Prelude.Monad_0"]({}));
+    });
+};
+module.exports = {
+    StateT: StateT, 
+    "liftCallCCState'": liftCallCCState$prime, 
+    liftCallCCState: liftCallCCState, 
+    liftPassState: liftPassState, 
+    liftListenState: liftListenState, 
+    liftCatchState: liftCatchState, 
+    withStateT: withStateT, 
+    mapStateT: mapStateT, 
+    execStateT: execStateT, 
+    evalStateT: evalStateT, 
+    runStateT: runStateT, 
+    functorStateT: functorStateT, 
+    applyStateT: applyStateT, 
+    applicativeStateT: applicativeStateT, 
+    altStateT: altStateT, 
+    plusStateT: plusStateT, 
+    alternativeStateT: alternativeStateT, 
+    bindStateT: bindStateT, 
+    monadStateT: monadStateT, 
+    monadPlusStateT: monadPlusStateT, 
+    monadTransStateT: monadTransStateT
+};
+},{"Control.Alt":24,"Control.Alternative":undefined,"Control.Monad.Trans":52,"Control.MonadPlus":54,"Control.Plus":55,"Data.Tuple":88,"Prelude":undefined}],51:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Control_Monad_State_Trans = require("Control.Monad.State.Trans");
+var Control_Monad_Identity = require("Control.Monad.Identity");
+var Data_Tuple = require("Data.Tuple");
+var withState = Control_Monad_State_Trans.withStateT;
+var runState = function (s) {
+    return Prelude["<<<"](Prelude.semigroupoidArr({}))(Control_Monad_Identity.runIdentity)(Control_Monad_State_Trans.runStateT(s));
+};
+var mapState = function (f) {
+    return Control_Monad_State_Trans.mapStateT(Prelude["<<<"](Prelude.semigroupoidArr({}))(Control_Monad_Identity.Identity.create)(Prelude["<<<"](Prelude.semigroupoidArr({}))(f)(Control_Monad_Identity.runIdentity)));
+};
+var execState = function (m) {
+    return function (s) {
+        return Data_Tuple.snd(runState(m)(s));
+    };
+};
+var evalState = function (m) {
+    return function (s) {
+        return Data_Tuple.fst(runState(m)(s));
+    };
+};
+module.exports = {
+    withState: withState, 
+    mapState: mapState, 
+    execState: execState, 
+    evalState: evalState, 
+    runState: runState
+};
+},{"Control.Monad.Identity":undefined,"Control.Monad.State.Trans":50,"Data.Tuple":88,"Prelude":undefined}],52:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+function MonadTrans(lift) {
+    this.lift = lift;
+};
+var lift = function (dict) {
+    return dict.lift;
+};
+module.exports = {
+    MonadTrans: MonadTrans, 
+    lift: lift
+};
+},{"Prelude":undefined}],53:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Control_Monad_Trans = require("Control.Monad.Trans");
+var Data_Tuple = require("Data.Tuple");
+var Data_Monoid = require("Data.Monoid");
+var Control_Alt = require("Control.Alt");
+var Control_Plus = require("Control.Plus");
+var Control_Alternative = require("Control.Alternative");
+var Control_MonadPlus = require("Control.MonadPlus");
+var WriterT = {
+    create: function (value) {
+        return value;
+    }
+};
+var runWriterT = function (_369) {
+    return _369;
+};
+var monadTransWriterT = function (__dict_Monoid_4) {
+    return new Control_Monad_Trans.MonadTrans(function (__dict_Monad_5) {
+        return function (m) {
+            return WriterT.create(Prelude[">>="](__dict_Monad_5["__superclass_Prelude.Bind_1"]({}))(m)(function (_22) {
+                return Prelude["return"](__dict_Monad_5)(new Data_Tuple.Tuple(_22, Data_Monoid.mempty(__dict_Monoid_4)));
+            }));
+        };
+    });
+};
+var mapWriterT = function (f) {
+    return function (m) {
+        return WriterT.create(f(runWriterT(m)));
+    };
+};
+var liftCatchWriter = function ($$catch) {
+    return function (m) {
+        return function (h) {
+            return WriterT.create($$catch(runWriterT(m))(function (e) {
+                return runWriterT(h(e));
+            }));
+        };
+    };
+};
+var liftCallCCWriter = function (__dict_Monoid_8) {
+    return function (callCC) {
+        return function (f) {
+            return WriterT.create(callCC(function (c) {
+                return runWriterT(f(function (a) {
+                    return WriterT.create(c(new Data_Tuple.Tuple(a, Data_Monoid.mempty(__dict_Monoid_8))));
+                }));
+            }));
+        };
+    };
+};
+var functorWriterT = function (__dict_Functor_9) {
+    return new Prelude.Functor(function (f) {
+        return mapWriterT(Prelude["<$>"](__dict_Functor_9)(function (_368) {
+            return new Data_Tuple.Tuple(f(_368.value0), _368.value1);
+        }));
+    });
+};
+var applyWriterT = function (__dict_Monoid_12) {
+    return function (__dict_Apply_13) {
+        return new Prelude.Apply(function (f) {
+            return function (v) {
+                return WriterT.create((function () {
+                    var k = function (_370) {
+                        return function (_371) {
+                            return new Data_Tuple.Tuple(_370.value0(_371.value0), Prelude["<>"](__dict_Monoid_12["__superclass_Prelude.Semigroup_0"]({}))(_370.value1)(_371.value1));
+                        };
+                    };
+                    return Prelude["<*>"](__dict_Apply_13)(Prelude["<$>"](__dict_Apply_13["__superclass_Prelude.Functor_0"]({}))(k)(runWriterT(f)))(runWriterT(v));
+                })());
+            };
+        }, function (__unused) {
+            return functorWriterT(__dict_Apply_13["__superclass_Prelude.Functor_0"]({}));
+        });
+    };
+};
+var bindWriterT = function (__dict_Monoid_10) {
+    return function (__dict_Monad_11) {
+        return new Prelude.Bind(function (m) {
+            return function (k) {
+                return WriterT.create(Prelude[">>="](__dict_Monad_11["__superclass_Prelude.Bind_1"]({}))(runWriterT(m))(function (_21) {
+                    return Prelude[">>="](__dict_Monad_11["__superclass_Prelude.Bind_1"]({}))(runWriterT(k(_21.value0)))(function (_20) {
+                        return Prelude["return"](__dict_Monad_11)(new Data_Tuple.Tuple(_20.value0, Prelude["<>"](__dict_Monoid_10["__superclass_Prelude.Semigroup_0"]({}))(_21.value1)(_20.value1)));
+                    });
+                }));
+            };
+        }, function (__unused) {
+            return applyWriterT(__dict_Monoid_10)((__dict_Monad_11["__superclass_Prelude.Applicative_0"]({}))["__superclass_Prelude.Apply_0"]({}));
+        });
+    };
+};
+var applicativeWriterT = function (__dict_Monoid_14) {
+    return function (__dict_Applicative_15) {
+        return new Prelude.Applicative(function (__unused) {
+            return applyWriterT(__dict_Monoid_14)(__dict_Applicative_15["__superclass_Prelude.Apply_0"]({}));
+        }, function (a) {
+            return WriterT.create(Prelude.pure(__dict_Applicative_15)(new Data_Tuple.Tuple(a, Data_Monoid.mempty(__dict_Monoid_14))));
+        });
+    };
+};
+var monadWriterT = function (__dict_Monoid_2) {
+    return function (__dict_Monad_3) {
+        return new Prelude.Monad(function (__unused) {
+            return applicativeWriterT(__dict_Monoid_2)(__dict_Monad_3["__superclass_Prelude.Applicative_0"]({}));
+        }, function (__unused) {
+            return bindWriterT(__dict_Monoid_2)(__dict_Monad_3);
+        });
+    };
+};
+var altWriterT = function (__dict_Monoid_18) {
+    return function (__dict_Alt_19) {
+        return new Control_Alt.Alt(function (m) {
+            return function (n) {
+                return WriterT.create(Control_Alt["<|>"](__dict_Alt_19)(runWriterT(m))(runWriterT(n)));
+            };
+        }, function (__unused) {
+            return functorWriterT(__dict_Alt_19["__superclass_Prelude.Functor_0"]({}));
+        });
+    };
+};
+var plusWriterT = function (__dict_Monoid_0) {
+    return function (__dict_Plus_1) {
+        return new Control_Plus.Plus(function (__unused) {
+            return altWriterT(__dict_Monoid_0)(__dict_Plus_1["__superclass_Control.Alt.Alt_0"]({}));
+        }, Control_Plus.empty(__dict_Plus_1));
+    };
+};
+var alternativeWriterT = function (__dict_Monoid_16) {
+    return function (__dict_Alternative_17) {
+        return new Control_Alternative.Alternative(function (__unused) {
+            return plusWriterT(__dict_Monoid_16)(__dict_Alternative_17["__superclass_Control.Plus.Plus_1"]({}));
+        }, function (__unused) {
+            return applicativeWriterT(__dict_Monoid_16)(__dict_Alternative_17["__superclass_Prelude.Applicative_0"]({}));
+        });
+    };
+};
+var monadPlusWriterT = function (__dict_Monoid_6) {
+    return function (__dict_MonadPlus_7) {
+        return new Control_MonadPlus.MonadPlus(function (__unused) {
+            return alternativeWriterT(__dict_Monoid_6)(__dict_MonadPlus_7["__superclass_Control.Alternative.Alternative_1"]({}));
+        }, function (__unused) {
+            return monadWriterT(__dict_Monoid_6)(__dict_MonadPlus_7["__superclass_Prelude.Monad_0"]({}));
+        });
+    };
+};
+module.exports = {
+    WriterT: WriterT, 
+    liftCallCCWriter: liftCallCCWriter, 
+    liftCatchWriter: liftCatchWriter, 
+    mapWriterT: mapWriterT, 
+    runWriterT: runWriterT, 
+    functorWriterT: functorWriterT, 
+    applyWriterT: applyWriterT, 
+    applicativeWriterT: applicativeWriterT, 
+    altWriterT: altWriterT, 
+    plusWriterT: plusWriterT, 
+    alternativeWriterT: alternativeWriterT, 
+    bindWriterT: bindWriterT, 
+    monadWriterT: monadWriterT, 
+    monadPlusWriterT: monadPlusWriterT, 
+    monadTransWriterT: monadTransWriterT
+};
+},{"Control.Alt":24,"Control.Alternative":undefined,"Control.Monad.Trans":52,"Control.MonadPlus":54,"Control.Plus":55,"Data.Monoid":82,"Data.Tuple":88,"Prelude":undefined}],54:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Control_Plus = require("Control.Plus");
+function MonadPlus(__superclass_Control$dotAlternative$dotAlternative_1, __superclass_Prelude$dotMonad_0) {
+    this["__superclass_Control.Alternative.Alternative_1"] = __superclass_Control$dotAlternative$dotAlternative_1;
+    this["__superclass_Prelude.Monad_0"] = __superclass_Prelude$dotMonad_0;
+};
+var guard = function (__dict_MonadPlus_0) {
+    return function (_220) {
+        if (_220) {
+            return Prelude["return"](__dict_MonadPlus_0["__superclass_Prelude.Monad_0"]({}))(Prelude.unit);
+        };
+        if (!_220) {
+            return Control_Plus.empty((__dict_MonadPlus_0["__superclass_Control.Alternative.Alternative_1"]({}))["__superclass_Control.Plus.Plus_1"]({}));
+        };
+        throw new Error("Failed pattern match");
+    };
+};
+module.exports = {
+    MonadPlus: MonadPlus, 
+    guard: guard
+};
+},{"Control.Plus":55,"Prelude":undefined}],55:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+function Plus(__superclass_Control$dotAlt$dotAlt_0, empty) {
+    this["__superclass_Control.Alt.Alt_0"] = __superclass_Control$dotAlt$dotAlt_0;
+    this.empty = empty;
+};
+var empty = function (dict) {
+    return dict.empty;
+};
+module.exports = {
+    Plus: Plus, 
+    empty: empty
+};
+},{"Prelude":undefined}],56:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+function timeout(time){                        return function(fn){                          return function(){                            return window.setTimeout(function(){          fn();                                     }, time);                                 };                                        };                                        };
+function clearTimeout(timer){   return function(){     return window.clearTimeout(timer);   }; };
+function interval(time){                        return function(fn){                           return function(){                             return window.setInterval(function(){          fn();                                      }, time);                                  };                                         };                                         };
+function clearInterval(timer){   return function(){     return window.clearInterval(timer);   }; };
+module.exports = {
+    clearInterval: clearInterval, 
+    interval: interval, 
+    clearTimeout: clearTimeout, 
+    timeout: timeout
+};
+},{"Prelude":undefined}],57:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Data_Tuple = require("Data.Tuple");
+var Data_Argonaut_Core = require("Data.Argonaut.Core");
+var Data_Map = require("Data.Map");
+var Data_Maybe = require("Data.Maybe");
+var Data_Either = require("Data.Either");
+var Data_Argonaut_Encode = require("Data.Argonaut.Encode");
+var $tilde$greater = function (_99) {
+    return Data_Argonaut_Core.foldJsonObject(Data_Argonaut_Core.jsonSingletonObject(_99.value0)(_99.value1))(Prelude[">>>"](Prelude.semigroupoidArr({}))(Data_Map.insert(Prelude.ordString({}))(_99.value0)(_99.value1))(Data_Argonaut_Core.fromObject));
+};
+var $qmark$greater$greater$eq = function (_100) {
+    return function (_101) {
+        if (_100 instanceof Data_Maybe.Just) {
+            return new Data_Either.Right(_100.value0);
+        };
+        return Data_Either.Left.create("Couldn't decode " + _101);
+    };
+};
+var $colon$eq = function (__dict_EncodeJson_0) {
+    return function (k) {
+        return function (v) {
+            return Data_Tuple.Tuple.create(k)(Data_Argonaut_Encode.encodeJson(__dict_EncodeJson_0)(v));
+        };
+    };
+};
+module.exports = {
+    "?>>=": $qmark$greater$greater$eq, 
+    "~>": $tilde$greater, 
+    ":=": $colon$eq
+};
+},{"Data.Argonaut.Core":undefined,"Data.Argonaut.Encode":59,"Data.Either":undefined,"Data.Map":74,"Data.Maybe":76,"Data.Tuple":88,"Prelude":undefined}],58:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Data_Foldable = require("Data.Foldable");
+var Data_Map = require("Data.Map");
+var Data_Traversable = require("Data.Traversable");
+var Data_Array = require("Data.Array");
+var Data_Tuple = require("Data.Tuple");
+var Data_Argonaut_Core = require("Data.Argonaut.Core");
+var Data_Either = require("Data.Either");
+var Data_Maybe = require("Data.Maybe");
+var Control_Lens = require("Control.Lens");
+var Data_Argonaut_Encode = require("Data.Argonaut.Encode");
+var Data_Profunctor_Choice = require("Data.Profunctor.Choice");
+var Control_Lens_At = require("Control.Lens.At");
+function DecodeJson(decodeJson) {
+    this.decodeJson = decodeJson;
+};
+var foldableMap = function (__unused) {
+    return new Data_Foldable.Foldable(function (__dict_Monoid_3) {
+        return function (f) {
+            return function (ms) {
+                return Data_Foldable.foldMap(Data_Foldable.foldableArray({}))(__dict_Monoid_3)(f)(Data_Map.values(ms));
+            };
+        };
+    }, function (f) {
+        return function (z) {
+            return function (ms) {
+                return Data_Foldable.foldl(Data_Foldable.foldableArray({}))(f)(z)(Data_Map.values(ms));
+            };
+        };
+    }, function (f) {
+        return function (z) {
+            return function (ms) {
+                return Data_Foldable.foldr(Data_Foldable.foldableArray({}))(f)(z)(Data_Map.values(ms));
+            };
+        };
+    });
+};
+var traversableMap = function (__dict_Ord_0) {
+    return new Data_Traversable.Traversable(foldableMap, function (__unused) {
+        return Data_Map.functorMap({});
+    }, function (__dict_Applicative_2) {
+        return Data_Traversable.traverse(traversableMap(__dict_Ord_0))(__dict_Applicative_2)(Prelude.id(Prelude.categoryArr({})));
+    }, function (__dict_Applicative_1) {
+        return function (f) {
+            return function (ms) {
+                return Data_Foldable.foldr(Data_Foldable.foldableArray({}))(function (x) {
+                    return function (acc) {
+                        return Prelude["<*>"](__dict_Applicative_1["__superclass_Prelude.Apply_0"]({}))(Prelude["<$>"]((__dict_Applicative_1["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(Data_Map.union(__dict_Ord_0))(x))(acc);
+                    };
+                })(Prelude.pure(__dict_Applicative_1)(Data_Map.empty))(Prelude["<$>"](Data_Array.functorArray({}))(function (fs) {
+                    return Prelude["<$>"]((__dict_Applicative_1["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(Data_Tuple.uncurry(Data_Map.singleton))(fs);
+                })(Prelude["<$>"](Data_Array.functorArray({}))(Data_Traversable.traverse(Data_Traversable.traversableTuple({}))(__dict_Applicative_1)(f))(Data_Map.toList(ms))));
+            };
+        };
+    });
+};
+var decodeJsonString = function (__unused) {
+    return new DecodeJson(Data_Argonaut_Core.foldJsonString(new Data_Either.Left("Not a String."))(Data_Either.Right.create));
+};
+var decodeJsonNumber = function (__unused) {
+    return new DecodeJson(Data_Argonaut_Core.foldJsonNumber(new Data_Either.Left("Not a Number."))(Data_Either.Right.create));
+};
+var decodeJsonNull = function (__unused) {
+    return new DecodeJson(Data_Argonaut_Core.foldJsonNull(new Data_Either.Left("Not null."))(Data_Either.Right.create));
+};
+var decodeJsonJson = function (__unused) {
+    return new DecodeJson(Data_Either.Right.create);
+};
+var decodeJsonBoolean = function (__unused) {
+    return new DecodeJson(Data_Argonaut_Core.foldJsonBoolean(new Data_Either.Left("Not a Boolean."))(Data_Either.Right.create));
+};
+var decodeJsonArray = function (__unused) {
+    return new DecodeJson(Data_Argonaut_Core.foldJsonArray(new Data_Either.Left("Not a Array."))(Data_Either.Right.create));
+};
+var decodeJson = function (dict) {
+    return dict.decodeJson;
+};
+var decodeMaybe = function (__dict_DecodeJson_4) {
+    return function (json) {
+        return Data_Either.either(Prelude["const"](Data_Maybe.Nothing.value))(Data_Maybe.Just.create)(decodeJson(__dict_DecodeJson_4)(json));
+    };
+};
+var decodeL = function (__dict_DecodeJson_5) {
+    return function (__dict_EncodeJson_6) {
+        return function (__dict_Applicative_7) {
+            return function (__dict_Choice_8) {
+                return Control_Lens["prism'"](Data_Argonaut_Encode.encodeJson(__dict_EncodeJson_6))(decodeMaybe(__dict_DecodeJson_5))(__dict_Applicative_7)(__dict_Choice_8);
+            };
+        };
+    };
+};
+var objectFieldL = function (__dict_DecodeJson_9) {
+    return function (__dict_EncodeJson_10) {
+        return function (key) {
+            return function (__dict_Applicative_11) {
+                return Prelude[">>>"](Prelude.semigroupoidArr({}))(decodeL(__dict_DecodeJson_9)(__dict_EncodeJson_10)(__dict_Applicative_11)(Data_Profunctor_Choice.choiceArr({})))(Prelude[">>>"](Prelude.semigroupoidArr({}))(Control_Lens.ix(Control_Lens_At.ixedMapKVKV(Prelude.ordString({})))(key)(__dict_Applicative_11))(Data_Argonaut_Core.objectL(__dict_Applicative_11)(Data_Profunctor_Choice.choiceArr({}))));
+            };
+        };
+    };
+};
+var decodeMap = function (__dict_DecodeJson_12) {
+    return new DecodeJson(function (json) {
+        return Data_Maybe.maybe(new Data_Either.Left("Couldn't decode."))(Data_Either.Right.create)(Prelude[">>="](Data_Maybe.bindMaybe({}))(Data_Argonaut_Core.toObject(json))(function (_0) {
+            return Data_Traversable.traverse(traversableMap(Prelude.ordString({})))(Data_Maybe.applicativeMaybe({}))(decodeMaybe(__dict_DecodeJson_12))(_0);
+        }));
+    });
+};
+var decodeArray = function (__dict_DecodeJson_13) {
+    return new DecodeJson(function (json) {
+        return Data_Maybe.maybe(new Data_Either.Left("Couldn't decode."))(Data_Either.Right.create)(Prelude[">>="](Data_Maybe.bindMaybe({}))(Data_Argonaut_Core.toArray(json))(function (_1) {
+            return Data_Traversable.traverse(Data_Traversable.traversableArray({}))(Data_Maybe.applicativeMaybe({}))(decodeMaybe(__dict_DecodeJson_13))(_1);
+        }));
+    });
+};
+var arrayIndexL = function (__dict_DecodeJson_14) {
+    return function (__dict_EncodeJson_15) {
+        return function (i) {
+            return function (__dict_Applicative_16) {
+                return Prelude[">>>"](Prelude.semigroupoidArr({}))(decodeL(__dict_DecodeJson_14)(__dict_EncodeJson_15)(__dict_Applicative_16)(Data_Profunctor_Choice.choiceArr({})))(Prelude[">>>"](Prelude.semigroupoidArr({}))(Control_Lens.ix(Control_Lens_At.ixedArrayaNumberA({}))(i)(__dict_Applicative_16))(Data_Argonaut_Core.arrayL(__dict_Applicative_16)(Data_Profunctor_Choice.choiceArr({}))));
+            };
+        };
+    };
+};
+module.exports = {
+    DecodeJson: DecodeJson, 
+    objectFieldL: objectFieldL, 
+    arrayIndexL: arrayIndexL, 
+    decodeL: decodeL, 
+    decodeMaybe: decodeMaybe, 
+    decodeJson: decodeJson, 
+    decodeJsonNull: decodeJsonNull, 
+    decodeJsonBoolean: decodeJsonBoolean, 
+    decodeJsonNumber: decodeJsonNumber, 
+    decodeJsonString: decodeJsonString, 
+    decodeJsonArray: decodeJsonArray, 
+    decodeJsonJson: decodeJsonJson, 
+    decodeMap: decodeMap, 
+    decodeArray: decodeArray, 
+    foldableMap: foldableMap, 
+    traversableMap: traversableMap
+};
+},{"Control.Lens":40,"Control.Lens.At":27,"Data.Argonaut.Core":undefined,"Data.Argonaut.Encode":59,"Data.Array":62,"Data.Either":undefined,"Data.Foldable":71,"Data.Map":74,"Data.Maybe":76,"Data.Profunctor.Choice":83,"Data.Traversable":87,"Data.Tuple":88,"Prelude":undefined}],59:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Data_Argonaut_Core = require("Data.Argonaut.Core");
+var Data_Array = require("Data.Array");
+var Data_Tuple = require("Data.Tuple");
+var Data_Map = require("Data.Map");
+var Data_Foldable = require("Data.Foldable");
+function EncodeJson(encodeJson) {
+    this.encodeJson = encodeJson;
+};
+var encodeJsonJson = function (__unused) {
+    return new EncodeJson(Prelude.id(Prelude.categoryArr({})));
+};
+var encodeJsonJString = function (__unused) {
+    return new EncodeJson(Data_Argonaut_Core.fromString);
+};
+var encodeJsonJNumber = function (__unused) {
+    return new EncodeJson(Data_Argonaut_Core.fromNumber);
+};
+var encodeJsonJNull = function (__unused) {
+    return new EncodeJson(Data_Argonaut_Core.fromNull);
+};
+var encodeJsonJBoolean = function (__unused) {
+    return new EncodeJson(Data_Argonaut_Core.fromBoolean);
+};
+var encodeJson = function (dict) {
+    return dict.encodeJson;
+};
+var encodeJsonArray = function (__dict_EncodeJson_0) {
+    return new EncodeJson(function (json) {
+        return Data_Argonaut_Core.fromArray(Prelude["<$>"](Data_Array.functorArray({}))(encodeJson(__dict_EncodeJson_0))(json));
+    });
+};
+var encodeMap = function (__dict_EncodeJson_1) {
+    return new EncodeJson(function (json) {
+        var assoc = function (_98) {
+            return Data_Tuple.Tuple.create(_98.value0)(encodeJson(__dict_EncodeJson_1)(_98.value1));
+        };
+        var append = function (_97) {
+            return Data_Argonaut_Core.foldJsonObject(Data_Argonaut_Core.jsonSingletonObject(_97.value0)(_97.value1))(Prelude[">>>"](Prelude.semigroupoidArr({}))(Data_Map.insert(Prelude.ordString({}))(_97.value0)(_97.value1))(Data_Argonaut_Core.fromObject));
+        };
+        return Data_Foldable.foldr(Data_Foldable.foldableArray({}))(append)(Data_Argonaut_Core.jsonEmptyObject)(Prelude["<$>"](Data_Array.functorArray({}))(assoc)(Data_Map.toList(json)));
+    });
+};
+module.exports = {
+    EncodeJson: EncodeJson, 
+    encodeJson: encodeJson, 
+    encodeJsonJNull: encodeJsonJNull, 
+    encodeJsonJBoolean: encodeJsonJBoolean, 
+    encodeJsonJNumber: encodeJsonJNumber, 
+    encodeJsonJString: encodeJsonJString, 
+    encodeJsonJson: encodeJsonJson, 
+    encodeJsonArray: encodeJsonArray, 
+    encodeMap: encodeMap
+};
+},{"Data.Argonaut.Core":undefined,"Data.Array":62,"Data.Foldable":71,"Data.Map":74,"Data.Tuple":88,"Prelude":undefined}],60:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Control_Apply = require("Control.Apply");
+var Text_Parsing_Parser = require("Text.Parsing.Parser");
+var Control_Monad_Identity = require("Control.Monad.Identity");
+var Text_Parsing_Parser_String = require("Text.Parsing.Parser.String");
+var Control_Alt = require("Control.Alt");
+var Data_String = require("Data.String");
+var Data_Argonaut_Core = require("Data.Argonaut.Core");
+var Data_Foldable = require("Data.Foldable");
+var Control_Alternative = require("Control.Alternative");
+var Text_Parsing_Parser_Combinators = require("Text.Parsing.Parser.Combinators");
+var Global = require("Global");
+var Data_Array = require("Data.Array");
+var Data_Map = require("Data.Map");
+var Data_Tuple = require("Data.Tuple");
+var solidus = "/";
+var skipSpaces = Control_Apply["*>"](Text_Parsing_Parser.applyParserT(Control_Monad_Identity.monadIdentity({})))(Text_Parsing_Parser_String.whiteSpace(Control_Monad_Identity.monadIdentity({})))(Prelude.pure(Text_Parsing_Parser.applicativeParserT(Control_Monad_Identity.monadIdentity({})))({}));
+var skipMany = function (__dict_Monad_0) {
+    return function (p) {
+        return Control_Alt["<|>"](Text_Parsing_Parser.altParserT(__dict_Monad_0))(skipMany1(__dict_Monad_0)(p))(Prelude.pure(Text_Parsing_Parser.applicativeParserT(__dict_Monad_0))({}));
+    };
+};
+var skipMany1 = function (__dict_Monad_1) {
+    return function (p) {
+        return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_1))(p)(function (_25) {
+            return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_1))(skipMany(__dict_Monad_1)(p))(function (_24) {
+                return Prelude.pure(Text_Parsing_Parser.applicativeParserT(__dict_Monad_1))({});
+            });
+        });
+    };
+};
+var showParseError = function (__unused) {
+    return new Prelude.Show(function (_116) {
+        return _116.value0.message;
+    });
+};
+var reverseSolidus = "\\";
+var ord = Data_String.charCodeAt(0);
+var openBracket = "[";
+var openBrace = "{";
+var nullParser = Control_Apply["*>"](Text_Parsing_Parser.applyParserT(Control_Monad_Identity.monadIdentity({})))(Control_Apply["*>"](Text_Parsing_Parser.applyParserT(Control_Monad_Identity.monadIdentity({})))(skipSpaces)(Text_Parsing_Parser_String.string(Control_Monad_Identity.monadIdentity({}))("null")))(Prelude.pure(Text_Parsing_Parser.applicativeParserT(Control_Monad_Identity.monadIdentity({})))(Data_Argonaut_Core.jsonNull));
+var noneOf = function (__dict_Monad_2) {
+    return function (ss) {
+        return Text_Parsing_Parser_String.satisfy(__dict_Monad_2)(Prelude.flip(Data_Foldable.notElem(Prelude.eqString({}))(Data_Foldable.foldableArray({})))(ss));
+    };
+};
+var newline = "n";
+var manyTill = function (__dict_Monad_3) {
+    return function (p) {
+        return function (end) {
+            var scan = Control_Alt["<|>"](Text_Parsing_Parser.altParserT(__dict_Monad_3))(Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_3))(end)(function (__unused) {
+                return Prelude.pure(Text_Parsing_Parser.applicativeParserT(__dict_Monad_3))([  ]);
+            }))(Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_3))(p)(function (_28) {
+                return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_3))(scan)(function (_27) {
+                    return Prelude.pure(Text_Parsing_Parser.applicativeParserT(__dict_Monad_3))(Prelude[":"](_28)(_27));
+                });
+            }));
+            return scan;
+        };
+    };
+};
+var many1Till = function (__dict_Monad_4) {
+    return function (p) {
+        return function (end) {
+            return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_4))(p)(function (_30) {
+                return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_4))(manyTill(__dict_Monad_4)(p)(end))(function (_29) {
+                    return Prelude.pure(Text_Parsing_Parser.applicativeParserT(__dict_Monad_4))(Prelude[":"](_30)(_29));
+                });
+            });
+        };
+    };
+};
+var lookAhead = function (__dict_Monad_5) {
+    return function (_115) {
+        return function (s) {
+            return Prelude[">>="](__dict_Monad_5["__superclass_Prelude.Bind_1"]({}))(_115(s))(function (_26) {
+                return Prelude.pure(__dict_Monad_5["__superclass_Prelude.Applicative_0"]({}))((function () {
+                    var _354 = {};
+                    for (var _355 in _26) {
+                        if (_26.hasOwnProperty(_355)) {
+                            _354[_355] = _26[_355];
+                        };
+                    };
+                    _354.input = s;
+                    _354.consumed = false;
+                    return _354;
+                })());
+            });
+        };
+    };
+};
+var isHexAlpha = function (str) {
+    var n = ord(str);
+    return 65 <= n && n <= 70 || 97 <= n && n <= 102;
+};
+var isDigit = function (_114) {
+    if (48 <= ord(_114) && ord(_114) <= 57) {
+        return true;
+    };
+    return false;
+};
+var isHex = Prelude["<*>"](Prelude.applyArr({}))(Prelude["<$>"](Prelude.functorArr({}))(Prelude["||"](Prelude.boolLikeBoolean({})))(isDigit))(isHexAlpha);
+var oneToNine = function (str) {
+    return isDigit(str) && str !== "0";
+};
+var invalidJson = function (expected) {
+    return Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(Control_Alternative.many(Text_Parsing_Parser.alternativeParserT(Control_Monad_Identity.monadIdentity({})))(Text_Parsing_Parser.lazy1ParserT({}))(Text_Parsing_Parser_String["char"](Control_Monad_Identity.monadIdentity({}))))(function (s) {
+        return Text_Parsing_Parser.fail(Control_Monad_Identity.monadIdentity({}))("Invalid JSON:\n\t" + "Expected " + expected + ".\n\t" + "Found: " + Data_String.joinWith("")(s));
+    });
+};
+var normalChar = Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(lookAhead(Control_Monad_Identity.monadIdentity({}))(Text_Parsing_Parser_String["char"](Control_Monad_Identity.monadIdentity({}))))(function (_16) {
+    if (_16 === "\"") {
+        return invalidJson("unicode character");
+    };
+    if (_16 === "\\") {
+        return invalidJson("unicode character");
+    };
+    return Text_Parsing_Parser_String["char"](Control_Monad_Identity.monadIdentity({}));
+});
+var horizontalTab = "t";
+var hexDigit = Text_Parsing_Parser_String.satisfy(Control_Monad_Identity.monadIdentity({}))(isHex);
+var unicodeParser = Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(Text_Parsing_Parser_String.string(Control_Monad_Identity.monadIdentity({}))("u"))(function (_23) {
+    return Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(hexDigit)(function (_22) {
+        return Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(hexDigit)(function (_21) {
+            return Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(hexDigit)(function (_20) {
+                return Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(hexDigit)(function (_19) {
+                    return Prelude.pure(Text_Parsing_Parser.applicativeParserT(Control_Monad_Identity.monadIdentity({})))(_23 + _22 + _21 + _20 + _19);
+                });
+            });
+        });
+    });
+});
+var formfeed = "f";
+var doubleQuote = "\"";
+var quoted = function (__dict_Monad_6) {
+    return Text_Parsing_Parser_Combinators.between(__dict_Monad_6)(Text_Parsing_Parser_String.string(__dict_Monad_6)(doubleQuote))(Text_Parsing_Parser_String.string(__dict_Monad_6)(doubleQuote));
+};
+var emptyStringParser = Control_Apply["*>"](Text_Parsing_Parser.applyParserT(Control_Monad_Identity.monadIdentity({})))(skipSpaces)(quoted(Control_Monad_Identity.monadIdentity({}))(Prelude.pure(Text_Parsing_Parser.applicativeParserT(Control_Monad_Identity.monadIdentity({})))("")));
+var digit = Text_Parsing_Parser_String.satisfy(Control_Monad_Identity.monadIdentity({}))(isDigit);
+var digits = Prelude["<$>"](Text_Parsing_Parser.functorParserT(Control_Monad_Identity.functorIdentity({})))(Data_String.joinWith(""))(manyTill(Control_Monad_Identity.monadIdentity({}))(digit)(lookAhead(Control_Monad_Identity.monadIdentity({}))(Text_Parsing_Parser_String.satisfy(Control_Monad_Identity.monadIdentity({}))(Prelude["<<<"](Prelude.semigroupoidArr({}))(Prelude.not(Prelude.boolLikeBoolean({})))(isDigit)))));
+var expParser = Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(Control_Alt["<|>"](Text_Parsing_Parser.altParserT(Control_Monad_Identity.monadIdentity({})))(Text_Parsing_Parser_Combinators["try"](Control_Monad_Identity.functorIdentity({}))(Text_Parsing_Parser_String.string(Control_Monad_Identity.monadIdentity({}))("e")))(Text_Parsing_Parser_String.string(Control_Monad_Identity.monadIdentity({}))("E")))(function (_15) {
+    return Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(Text_Parsing_Parser_Combinators.option(Control_Monad_Identity.monadIdentity({}))("")(Control_Alt["<|>"](Text_Parsing_Parser.altParserT(Control_Monad_Identity.monadIdentity({})))(Text_Parsing_Parser_Combinators["try"](Control_Monad_Identity.functorIdentity({}))(Text_Parsing_Parser_String.string(Control_Monad_Identity.monadIdentity({}))("+")))(Text_Parsing_Parser_Combinators["try"](Control_Monad_Identity.functorIdentity({}))(Text_Parsing_Parser_String.string(Control_Monad_Identity.monadIdentity({}))("-")))))(function (_14) {
+        return Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(digits)(function (_13) {
+            return Prelude.pure(Text_Parsing_Parser.applicativeParserT(Control_Monad_Identity.monadIdentity({})))(_15 + _14 + _13);
+        });
+    });
+});
+var fracParser = Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(Text_Parsing_Parser_String.string(Control_Monad_Identity.monadIdentity({}))("."))(function (__unused) {
+    return Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(digits)(function (_12) {
+        return Prelude.pure(Text_Parsing_Parser.applicativeParserT(Control_Monad_Identity.monadIdentity({})))("." + _12);
+    });
+});
+var numberParser = Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(skipSpaces)(function (__unused) {
+    return Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(Text_Parsing_Parser_Combinators.option(Control_Monad_Identity.monadIdentity({}))("")(Text_Parsing_Parser_String.string(Control_Monad_Identity.monadIdentity({}))("-")))(function (_11) {
+        return Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(lookAhead(Control_Monad_Identity.monadIdentity({}))(Text_Parsing_Parser_String["char"](Control_Monad_Identity.monadIdentity({}))))(function (_10) {
+            return Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))((function () {
+                if (_10 === "0") {
+                    return Text_Parsing_Parser_String["char"](Control_Monad_Identity.monadIdentity({}));
+                };
+                if (oneToNine(_10)) {
+                    return digits;
+                };
+                return invalidJson("digit");
+            })())(function (_9) {
+                return Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(Text_Parsing_Parser_Combinators.option(Control_Monad_Identity.monadIdentity({}))("")(fracParser))(function (_8) {
+                    return Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(Text_Parsing_Parser_Combinators.option(Control_Monad_Identity.monadIdentity({}))("")(expParser))(function (_7) {
+                        return Prelude.pure(Text_Parsing_Parser.applicativeParserT(Control_Monad_Identity.monadIdentity({})))(Data_Argonaut_Core.fromNumber(Global.readFloat(_11 + _9 + _8 + _7)));
+                    });
+                });
+            });
+        });
+    });
+});
+var controlChar = Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(lookAhead(Control_Monad_Identity.monadIdentity({}))(Text_Parsing_Parser_String["char"](Control_Monad_Identity.monadIdentity({}))))(function (_18) {
+    if (_18 === "\\") {
+        return Control_Apply["*>"](Text_Parsing_Parser.applyParserT(Control_Monad_Identity.monadIdentity({})))(Text_Parsing_Parser_String["char"](Control_Monad_Identity.monadIdentity({})))(Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(lookAhead(Control_Monad_Identity.monadIdentity({}))(Text_Parsing_Parser_String["char"](Control_Monad_Identity.monadIdentity({}))))(function (_17) {
+            return Text_Parsing_Parser_String["char"](Control_Monad_Identity.monadIdentity({}));
+        }));
+    };
+    return invalidJson("control character");
+});
+var nonEmptyStringParser = Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(skipSpaces)(function (__unused) {
+    return Prelude["<$>"](Text_Parsing_Parser.functorParserT(Control_Monad_Identity.functorIdentity({})))(Data_String.joinWith(""))(quoted(Control_Monad_Identity.monadIdentity({}))(manyTill(Control_Monad_Identity.monadIdentity({}))(Control_Alt["<|>"](Text_Parsing_Parser.altParserT(Control_Monad_Identity.monadIdentity({})))(Text_Parsing_Parser_Combinators["try"](Control_Monad_Identity.functorIdentity({}))(normalChar))(controlChar))(lookAhead(Control_Monad_Identity.monadIdentity({}))(Text_Parsing_Parser_String.string(Control_Monad_Identity.monadIdentity({}))(doubleQuote)))));
+});
+var rawStringParser = Control_Alt["<|>"](Text_Parsing_Parser.altParserT(Control_Monad_Identity.monadIdentity({})))(Text_Parsing_Parser_Combinators["try"](Control_Monad_Identity.functorIdentity({}))(emptyStringParser))(nonEmptyStringParser);
+var stringParser = Prelude["<$>"](Text_Parsing_Parser.functorParserT(Control_Monad_Identity.functorIdentity({})))(Data_Argonaut_Core.fromString)(rawStringParser);
+var comma = ",";
+var closeBracket = "]";
+var closeBrace = "}";
+var carriageReturn = "r";
+var brackets = function (__dict_Monad_7) {
+    return Text_Parsing_Parser_Combinators.between(__dict_Monad_7)(Text_Parsing_Parser_String.string(__dict_Monad_7)(openBracket))(Text_Parsing_Parser_String.string(__dict_Monad_7)(closeBracket));
+};
+var emptyArrayParser = Control_Apply["*>"](Text_Parsing_Parser.applyParserT(Control_Monad_Identity.monadIdentity({})))(skipSpaces)(brackets(Control_Monad_Identity.monadIdentity({}))(Control_Apply["*>"](Text_Parsing_Parser.applyParserT(Control_Monad_Identity.monadIdentity({})))(skipSpaces)(Prelude.pure(Text_Parsing_Parser.applicativeParserT(Control_Monad_Identity.monadIdentity({})))(Data_Argonaut_Core.jsonEmptyArray))));
+var braces = function (__dict_Monad_8) {
+    return Text_Parsing_Parser_Combinators.between(__dict_Monad_8)(Text_Parsing_Parser_String.string(__dict_Monad_8)(openBrace))(Text_Parsing_Parser_String.string(__dict_Monad_8)(closeBrace));
+};
+var emptyObjectParser = Control_Apply["*>"](Text_Parsing_Parser.applyParserT(Control_Monad_Identity.monadIdentity({})))(skipSpaces)(braces(Control_Monad_Identity.monadIdentity({}))(Control_Apply["*>"](Text_Parsing_Parser.applyParserT(Control_Monad_Identity.monadIdentity({})))(skipSpaces)(Prelude.pure(Text_Parsing_Parser.applicativeParserT(Control_Monad_Identity.monadIdentity({})))(Data_Argonaut_Core.jsonEmptyObject))));
+var booleanParser = Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(skipSpaces)(function (__unused) {
+    return Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(lookAhead(Control_Monad_Identity.monadIdentity({}))(Text_Parsing_Parser_String["char"](Control_Monad_Identity.monadIdentity({}))))(function (_6) {
+        if (_6 === "t") {
+            return Control_Apply["*>"](Text_Parsing_Parser.applyParserT(Control_Monad_Identity.monadIdentity({})))(Text_Parsing_Parser_String.string(Control_Monad_Identity.monadIdentity({}))("true"))(Prelude.pure(Text_Parsing_Parser.applicativeParserT(Control_Monad_Identity.monadIdentity({})))(Data_Argonaut_Core.jsonTrue));
+        };
+        if (_6 === "f") {
+            return Control_Apply["*>"](Text_Parsing_Parser.applyParserT(Control_Monad_Identity.monadIdentity({})))(Text_Parsing_Parser_String.string(Control_Monad_Identity.monadIdentity({}))("false"))(Prelude.pure(Text_Parsing_Parser.applicativeParserT(Control_Monad_Identity.monadIdentity({})))(Data_Argonaut_Core.jsonFalse));
+        };
+        return invalidJson("one of 'true' or 'false'");
+    });
+});
+var backspace = "b";
+var arrayParser = function (_107) {
+    return Control_Alt["<|>"](Text_Parsing_Parser.altParserT(Control_Monad_Identity.monadIdentity({})))(Text_Parsing_Parser_Combinators["try"](Control_Monad_Identity.functorIdentity({}))(emptyArrayParser))(nonEmptyArrayParser(Prelude.unit));
+};
+var nonEmptyArrayParser = function (unit) {
+    return Control_Apply["*>"](Text_Parsing_Parser.applyParserT(Control_Monad_Identity.monadIdentity({})))(skipSpaces)(brackets(Control_Monad_Identity.monadIdentity({}))(Control_Apply["<*"](Text_Parsing_Parser.applyParserT(Control_Monad_Identity.monadIdentity({})))(Control_Apply["*>"](Text_Parsing_Parser.applyParserT(Control_Monad_Identity.monadIdentity({})))(skipSpaces)(elementsParser(unit)))(skipSpaces)));
+};
+var elementsParser = function (_111) {
+    return Prelude["<$>"](Text_Parsing_Parser.functorParserT(Control_Monad_Identity.functorIdentity({})))(Data_Argonaut_Core.fromArray)(Text_Parsing_Parser_Combinators.sepBy1(Control_Monad_Identity.monadIdentity({}))(elementParser(Prelude.unit))(Text_Parsing_Parser_String.string(Control_Monad_Identity.monadIdentity({}))(comma)));
+};
+var elementParser = function (_112) {
+    return Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(skipSpaces)(function (__unused) {
+        return Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(valueParser(Prelude.unit))(function (_5) {
+            return Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(skipSpaces)(function (__unused) {
+                return Prelude.pure(Text_Parsing_Parser.applicativeParserT(Control_Monad_Identity.monadIdentity({})))(_5);
+            });
+        });
+    });
+};
+var valueParser = function (_113) {
+    return Text_Parsing_Parser_Combinators.choice(Control_Monad_Identity.monadIdentity({}))(Prelude["<$>"](Data_Array.functorArray({}))(Text_Parsing_Parser_Combinators["try"](Control_Monad_Identity.functorIdentity({})))([ nullParser, booleanParser, stringParser, objectParser(Prelude.unit), arrayParser(Prelude.unit), numberParser ]));
+};
+var objectParser = function (_106) {
+    return Control_Alt["<|>"](Text_Parsing_Parser.altParserT(Control_Monad_Identity.monadIdentity({})))(Text_Parsing_Parser_Combinators["try"](Control_Monad_Identity.functorIdentity({}))(emptyObjectParser))(nonEmptyObjectParser(Prelude.unit));
+};
+var nonEmptyObjectParser = function (_108) {
+    return Control_Apply["*>"](Text_Parsing_Parser.applyParserT(Control_Monad_Identity.monadIdentity({})))(skipSpaces)(braces(Control_Monad_Identity.monadIdentity({}))(Control_Apply["<*"](Text_Parsing_Parser.applyParserT(Control_Monad_Identity.monadIdentity({})))(Control_Apply["*>"](Text_Parsing_Parser.applyParserT(Control_Monad_Identity.monadIdentity({})))(skipSpaces)(membersParser(Prelude.unit)))(skipSpaces)));
+};
+var membersParser = function (_109) {
+    return Prelude["<$>"](Text_Parsing_Parser.functorParserT(Control_Monad_Identity.functorIdentity({})))(Prelude[">>>"](Prelude.semigroupoidArr({}))(Data_Map.fromList(Prelude.ordString({})))(Data_Argonaut_Core.fromObject))(Text_Parsing_Parser_Combinators.sepBy1(Control_Monad_Identity.monadIdentity({}))(memberParser(Prelude.unit))(Text_Parsing_Parser_String.string(Control_Monad_Identity.monadIdentity({}))(comma)));
+};
+var memberParser = function (_110) {
+    return Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(skipSpaces)(function (__unused) {
+        return Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(rawStringParser)(function (_4) {
+            return Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(skipSpaces)(function (__unused) {
+                return Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(Text_Parsing_Parser_String.string(Control_Monad_Identity.monadIdentity({}))(":"))(function (__unused) {
+                    return Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(skipSpaces)(function (__unused) {
+                        return Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(valueParser(Prelude.unit))(function (_3) {
+                            return Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(skipSpaces)(function (__unused) {
+                                return Prelude.pure(Text_Parsing_Parser.applicativeParserT(Control_Monad_Identity.monadIdentity({})))(new Data_Tuple.Tuple(_4, _3));
+                            });
+                        });
+                    });
+                });
+            });
+        });
+    });
+};
+var jsonParser = Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(skipSpaces)(function (__unused) {
+    return Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Identity.monadIdentity({})))(lookAhead(Control_Monad_Identity.monadIdentity({}))(Text_Parsing_Parser_String["char"](Control_Monad_Identity.monadIdentity({}))))(function (_2) {
+        if (_2 === "{") {
+            return objectParser(Prelude.unit);
+        };
+        if (_2 === "[") {
+            return arrayParser(Prelude.unit);
+        };
+        return invalidJson("object or array");
+    });
+});
+module.exports = {
+    jsonParser: jsonParser, 
+    showParseError: showParseError
+};
+},{"Control.Alt":24,"Control.Alternative":undefined,"Control.Apply":25,"Control.Monad.Identity":undefined,"Data.Argonaut.Core":undefined,"Data.Array":62,"Data.Foldable":71,"Data.Map":74,"Data.String":86,"Data.Tuple":88,"Global":89,"Prelude":undefined,"Text.Parsing.Parser":undefined,"Text.Parsing.Parser.Combinators":undefined,"Text.Parsing.Parser.String":undefined}],61:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Prelude_Unsafe = require("Prelude.Unsafe");
+var Data_Array = require("Data.Array");
+var Data_Maybe_Unsafe = require("Data.Maybe.Unsafe");
+var tail = function (_416) {
+    if (_416.length > 0) {
+        var _1447 = _416.slice(1);
+        return _1447;
+    };
+    throw new Error("Failed pattern match");
+};
+var last = function (xs) {
+    return xs[Data_Array.length(xs) - 1];
+};
+var init = Prelude["<<<"](Prelude.semigroupoidArr({}))(Data_Maybe_Unsafe.fromJust)(Data_Array.init);
+var head = function (_415) {
+    if (_415.length > 0) {
+        var _1450 = _415.slice(1);
+        return _415[0];
+    };
+    throw new Error("Failed pattern match");
+};
+module.exports = {
+    init: init, 
+    last: last, 
+    tail: tail, 
+    head: head
+};
+},{"Data.Array":62,"Data.Maybe.Unsafe":75,"Prelude":undefined,"Prelude.Unsafe":92}],62:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Data_Maybe = require("Data.Maybe");
+var Prelude_Unsafe = require("Prelude.Unsafe");
+var Control_Alt = require("Control.Alt");
+var Control_Plus = require("Control.Plus");
+var Control_Alternative = require("Control.Alternative");
+var Control_MonadPlus = require("Control.MonadPlus");
+function snoc(l) {  return function (e) {    var l1 = l.slice();    l1.push(e);     return l1;  };};
+function length (xs) {  return xs.length;};
+function findIndex (f) {  return function (arr) {    for (var i = 0, l = arr.length; i < l; i++) {      if (f(arr[i])) {        return i;      }    }    return -1;  };};
+function findLastIndex (f) {  return function (arr) {    for (var i = arr.length - 1; i >= 0; i--) {      if (f(arr[i])) {        return i;      }    }    return -1;  };};
+function append (l1) {  return function (l2) {    return l1.concat(l2);  };};
+function concat (xss) {  var result = [];  for (var i = 0, l = xss.length; i < l; i++) {    result.push.apply(result, xss[i]);  }  return result;};
+function reverse (l) {  return l.slice().reverse();};
+function drop (n) {  return function (l) {    return l.slice(n);  };};
+function slice (s) {  return function (e) {    return function (l) {      return l.slice(s, e);    };  };};
+function insertAt (index) {  return function (a) {    return function (l) {      var l1 = l.slice();      l1.splice(index, 0, a);      return l1;    };   };};
+function deleteAt (index) {  return function (n) {    return function (l) {      var l1 = l.slice();      l1.splice(index, n);      return l1;    };   };};
+function updateAt (index) {  return function (a) {    return function (l) {      var i = ~~index;      if (i < 0 || i >= l.length) return l;      var l1 = l.slice();      l1[i] = a;      return l1;    };   };};
+function concatMap (f) {  return function (arr) {    var result = [];    for (var i = 0, l = arr.length; i < l; i++) {      Array.prototype.push.apply(result, f(arr[i]));    }    return result;  };};
+function map (f) {  return function (arr) {    var l = arr.length;    var result = new Array(l);    for (var i = 0; i < l; i++) {      result[i] = f(arr[i]);    }    return result;  };};
+function filter (f) {  return function (arr) {    var n = 0;    var result = [];    for (var i = 0, l = arr.length; i < l; i++) {      if (f(arr[i])) {        result[n++] = arr[i];      }    }    return result;  };};
+function range (start) {  return function (end) {    var i = ~~start, e = ~~end;    var step = i > e ? -1 : 1;    var result = [i], n = 1;    while (i !== e) {      i += step;      result[n++] = i;    }    return result;  };};
+function zipWith (f) {  return function (xs) {    return function (ys) {      var l = xs.length < ys.length ? xs.length : ys.length;      var result = new Array(l);      for (var i = 0; i < l; i++) {        result[i] = f(xs[i])(ys[i]);      }      return result;    };  };};
+function sortJS (f) {  return function (l) {    return l.slice().sort(function (x, y) {      return f(x)(y);    });  };};
+var $bang$bang = function (xs) {
+    return function (n) {
+        var isInt = function (n_1) {
+            return n_1 !== ~~n_1;
+        };
+        return n < 0 || n >= length(xs) || isInt(n) ? Data_Maybe.Nothing.value : new Data_Maybe.Just(xs[n]);
+    };
+};
+var take = function (n) {
+    return slice(0)(n);
+};
+var tail = function (_240) {
+    if (_240.length > 0) {
+        var _1059 = _240.slice(1);
+        return new Data_Maybe.Just(_1059);
+    };
+    return Data_Maybe.Nothing.value;
+};
+var span = (function () {
+    var go = function (__copy__256) {
+        return function (__copy__257) {
+            return function (__copy__258) {
+                var _256 = __copy__256;
+                var _257 = __copy__257;
+                var _258 = __copy__258;
+                tco: while (true) {
+                    if (_258.length > 0) {
+                        var _1064 = _258.slice(1);
+                        if (_257(_258[0])) {
+                            var __tco__256 = Prelude[":"](_258[0])(_256);
+                            var __tco__257 = _257;
+                            _256 = __tco__256;
+                            _257 = __tco__257;
+                            _258 = _1064;
+                            continue tco;
+                        };
+                    };
+                    return {
+                        init: reverse(_256), 
+                        rest: _258
+                    };
+                };
+            };
+        };
+    };
+    return go([  ]);
 })();
-var PS = PS || {};
-PS.Control_Lens = (function () {
-    "use strict";
-    var Prelude = PS.Prelude;
-    var Control_Lens_Getter = PS.Control_Lens_Getter;
-    var Control_Lens_Lens = PS.Control_Lens_Lens;
-    var $up$dot = Control_Lens_Getter["^."];
-    var $dot$dot = Prelude["<<<"];
-    var lens = Control_Lens_Lens.lens;
-    return {
-        lens: lens, 
-        "^.": $up$dot, 
-        "..": $dot$dot
+var sortBy = function (comp) {
+    return function (xs) {
+        var comp$prime = function (x) {
+            return function (y) {
+                var _1065 = comp(x)(y);
+                if (_1065 instanceof Prelude.GT) {
+                    return 1;
+                };
+                if (_1065 instanceof Prelude.EQ) {
+                    return 0;
+                };
+                if (_1065 instanceof Prelude.LT) {
+                    return -1;
+                };
+                throw new Error("Failed pattern match");
+            };
+        };
+        return sortJS(comp$prime)(xs);
     };
-})();
-var PS = PS || {};
-PS.Data_Argonaut_Core = (function () {
-    "use strict";
-    var Prelude = PS.Prelude;
-    function JsonNull(value0) {
-        this.value0 = value0;
+};
+var sort = function (__dict_Ord_0) {
+    return function (xs) {
+        return sortBy(Prelude.compare(__dict_Ord_0))(xs);
     };
-    JsonNull.create = function (value0) {
-        return new JsonNull(value0);
+};
+var singleton = function (a) {
+    return [ a ];
+};
+var semigroupArray = function (__unused) {
+    return new Prelude.Semigroup(append);
+};
+var $$null = function (_242) {
+    if (_242.length === 0) {
+        return true;
     };
-    function JsonBoolean(value0) {
-        this.value0 = value0;
+    return false;
+};
+var nubBy = function (_249) {
+    return function (_250) {
+        if (_250.length === 0) {
+            return [  ];
+        };
+        if (_250.length > 0) {
+            var _1070 = _250.slice(1);
+            return Prelude[":"](_250[0])(nubBy(_249)(filter(function (y) {
+                return !_249(_250[0])(y);
+            })(_1070)));
+        };
+        throw new Error("Failed pattern match");
     };
-    JsonBoolean.create = function (value0) {
-        return new JsonBoolean(value0);
+};
+var nub = function (__dict_Eq_1) {
+    return nubBy(Prelude["=="](__dict_Eq_1));
+};
+var mapMaybe = function (f) {
+    return concatMap(Prelude["<<<"](Prelude.semigroupoidArr({}))(Data_Maybe.maybe([  ])(singleton))(f));
+};
+var last = function (__copy__239) {
+    var _239 = __copy__239;
+    tco: while (true) {
+        if (_239.length > 0) {
+            var _1073 = _239.slice(1);
+            if (_1073.length === 0) {
+                return new Data_Maybe.Just(_239[0]);
+            };
+        };
+        if (_239.length > 0) {
+            var _1075 = _239.slice(1);
+            _239 = _1075;
+            continue tco;
+        };
+        return Data_Maybe.Nothing.value;
     };
-    function JsonNumber(value0) {
-        this.value0 = value0;
-    };
-    JsonNumber.create = function (value0) {
-        return new JsonNumber(value0);
-    };
-    function JsonString(value0) {
-        this.value0 = value0;
-    };
-    JsonString.create = function (value0) {
-        return new JsonString(value0);
-    };
-    function JsonArray(value0) {
-        this.value0 = value0;
-    };
-    JsonArray.create = function (value0) {
-        return new JsonArray(value0);
-    };
-    function JsonObject(value0) {
-        this.value0 = value0;
-    };
-    JsonObject.create = function (value0) {
-        return new JsonObject(value0);
-    };
-    return {
-        JsonNull: JsonNull, 
-        JsonBoolean: JsonBoolean, 
-        JsonNumber: JsonNumber, 
-        JsonString: JsonString, 
-        JsonArray: JsonArray, 
-        JsonObject: JsonObject
-    };
-})();
-var PS = PS || {};
-PS.SlamData_Types = (function () {
-    "use strict";
-    var Prelude = PS.Prelude;
-    var Node_Events = PS.Node_Events;
-    var SDConfig = {
-        create: function (value) {
-            return value;
-        }
-    };
-    function MountMongo(value0) {
-        this.value0 = value0;
-    };
-    MountMongo.create = function (value0) {
-        return new MountMongo(value0);
-    };
-    var SEConfig = {
-        create: function (value) {
-            return value;
-        }
-    };
-    function SaveSDConfig(value0) {
-        this.value0 = value0;
-    };
-    SaveSDConfig.create = function (value0) {
-        return new SaveSDConfig(value0);
-    };
-    function SaveSEConfig(value0) {
-        this.value0 = value0;
-    };
-    SaveSEConfig.create = function (value0) {
-        return new SaveSEConfig(value0);
-    };
-    function ReadFileSystem() {
-
-    };
-    ReadFileSystem.value = new ReadFileSystem();
-    function CreateNotebook() {
-
-    };
-    CreateNotebook.value = new CreateNotebook();
-    var responseEvent = "response";
-    var requestEvent = "request";
-    return {
-        SaveSDConfig: SaveSDConfig, 
-        SaveSEConfig: SaveSEConfig, 
-        ReadFileSystem: ReadFileSystem, 
-        CreateNotebook: CreateNotebook, 
-        MountMongo: MountMongo, 
-        SEConfig: SEConfig, 
-        SDConfig: SDConfig, 
-        responseEvent: responseEvent, 
-        requestEvent: requestEvent
-    };
-})();
-var PS = PS || {};
-PS.SlamData_App_Menu = (function () {
-    "use strict";
-    var Prelude = PS.Prelude;
-    var React_DOM = PS.React_DOM;
-    var React = PS.React;
-    var Control_Monad_Eff = PS.Control_Monad_Eff;
-    var Data_Array = PS.Data_Array;
-    var Data_Maybe = PS.Data_Maybe;
-    var logo = React_DOM.li({})([ React_DOM.a({
-        href: "http://slamdata.com/", 
-        id: "slamdata-logo", 
-        target: "_blank"
-    })([ React_DOM.img({
-        alt: "SlamData home page", 
-        src: "imgs/slamdata-logo.png"
-    })([  ]) ]) ]);
-    var intersperse = function (_614) {
-        return function (_615) {
-            if (_615.length === 0) {
+};
+var intersectBy = function (_246) {
+    return function (_247) {
+        return function (_248) {
+            if (_247.length === 0) {
                 return [  ];
             };
-            if (_615.length === 1) {
-                return [ _615[0] ];
+            if (_248.length === 0) {
+                return [  ];
             };
-            if (_615.length > 0) {
-                var _692 = _615.slice(1);
-                return Prelude[":"](_615[0])(Prelude[":"](_614)(intersperse(_614)(_692)));
+            var el = function (x) {
+                return findIndex(_246(x))(_248) >= 0;
+            };
+            return filter(el)(_247);
+        };
+    };
+};
+var intersect = function (__dict_Eq_2) {
+    return intersectBy(Prelude["=="](__dict_Eq_2));
+};
+var init = function (_241) {
+    if (_241.length === 0) {
+        return Data_Maybe.Nothing.value;
+    };
+    return new Data_Maybe.Just(slice(0)(length(_241) - 1)(_241));
+};
+var head = function (_238) {
+    if (_238.length > 0) {
+        var _1082 = _238.slice(1);
+        return new Data_Maybe.Just(_238[0]);
+    };
+    return Data_Maybe.Nothing.value;
+};
+var groupBy = (function () {
+    var go = function (__copy__253) {
+        return function (__copy__254) {
+            return function (__copy__255) {
+                var _253 = __copy__253;
+                var _254 = __copy__254;
+                var _255 = __copy__255;
+                tco: while (true) {
+                    if (_255.length === 0) {
+                        return reverse(_253);
+                    };
+                    if (_255.length > 0) {
+                        var _1087 = _255.slice(1);
+                        var sp = span(_254(_255[0]))(_1087);
+                        var __tco__253 = Prelude[":"](Prelude[":"](_255[0])(sp.init))(_253);
+                        var __tco__254 = _254;
+                        _253 = __tco__253;
+                        _254 = __tco__254;
+                        _255 = sp.rest;
+                        continue tco;
+                    };
+                    throw new Error("Failed pattern match");
+                };
+            };
+        };
+    };
+    return go([  ]);
+})();
+var group = function (__dict_Eq_3) {
+    return function (xs) {
+        return groupBy(Prelude["=="](__dict_Eq_3))(xs);
+    };
+};
+var group$prime = function (__dict_Ord_4) {
+    return Prelude["<<<"](Prelude.semigroupoidArr({}))(group(__dict_Ord_4["__superclass_Prelude.Eq_0"]({})))(sort(__dict_Ord_4));
+};
+var functorArray = function (__unused) {
+    return new Prelude.Functor(map);
+};
+var elemLastIndex = function (__dict_Eq_5) {
+    return function (x) {
+        return findLastIndex(Prelude["=="](__dict_Eq_5)(x));
+    };
+};
+var elemIndex = function (__dict_Eq_6) {
+    return function (x) {
+        return findIndex(Prelude["=="](__dict_Eq_6)(x));
+    };
+};
+var deleteBy = function (_243) {
+    return function (_244) {
+        return function (_245) {
+            if (_245.length === 0) {
+                return [  ];
+            };
+            var _1091 = findIndex(_243(_244))(_245);
+            if (_1091 < 0) {
+                return _245;
+            };
+            return deleteAt(_1091)(1)(_245);
+        };
+    };
+};
+var $$delete = function (__dict_Eq_7) {
+    return deleteBy(Prelude["=="](__dict_Eq_7));
+};
+var $bslash$bslash = function (__dict_Eq_8) {
+    return function (xs) {
+        return function (ys) {
+            var go = function (__copy__251) {
+                return function (__copy__252) {
+                    var _251 = __copy__251;
+                    var _252 = __copy__252;
+                    tco: while (true) {
+                        if (_252.length === 0) {
+                            return _251;
+                        };
+                        if (_251.length === 0) {
+                            return [  ];
+                        };
+                        if (_252.length > 0) {
+                            var _1095 = _252.slice(1);
+                            var __tco__251 = $$delete(__dict_Eq_8)(_252[0])(_251);
+                            _251 = __tco__251;
+                            _252 = _1095;
+                            continue tco;
+                        };
+                        throw new Error("Failed pattern match");
+                    };
+                };
+            };
+            return go(xs)(ys);
+        };
+    };
+};
+var catMaybes = concatMap(Data_Maybe.maybe([  ])(singleton));
+var applicativeArray = function (__unused) {
+    return new Prelude.Applicative(applyArray, singleton);
+};
+var applyArray = function (__unused) {
+    return new Prelude.Apply(Prelude.ap(monadArray({})), functorArray);
+};
+var monadArray = function (__unused) {
+    return new Prelude.Monad(applicativeArray, bindArray);
+};
+var bindArray = function (__unused) {
+    return new Prelude.Bind(Prelude.flip(concatMap), applyArray);
+};
+var altArray = function (__unused) {
+    return new Control_Alt.Alt(append, functorArray);
+};
+var plusArray = function (__unused) {
+    return new Control_Plus.Plus(altArray, [  ]);
+};
+var alternativeArray = function (__unused) {
+    return new Control_Alternative.Alternative(plusArray, applicativeArray);
+};
+var monadPlusArray = function (__unused) {
+    return new Control_MonadPlus.MonadPlus(alternativeArray, monadArray);
+};
+module.exports = {
+    span: span, 
+    groupBy: groupBy, 
+    "group'": group$prime, 
+    group: group, 
+    sortBy: sortBy, 
+    sort: sort, 
+    nubBy: nubBy, 
+    nub: nub, 
+    zipWith: zipWith, 
+    range: range, 
+    filter: filter, 
+    concatMap: concatMap, 
+    intersect: intersect, 
+    intersectBy: intersectBy, 
+    "\\\\": $bslash$bslash, 
+    "delete": $$delete, 
+    deleteBy: deleteBy, 
+    updateAt: updateAt, 
+    deleteAt: deleteAt, 
+    insertAt: insertAt, 
+    take: take, 
+    drop: drop, 
+    reverse: reverse, 
+    concat: concat, 
+    append: append, 
+    elemLastIndex: elemLastIndex, 
+    elemIndex: elemIndex, 
+    findLastIndex: findLastIndex, 
+    findIndex: findIndex, 
+    length: length, 
+    catMaybes: catMaybes, 
+    mapMaybe: mapMaybe, 
+    map: map, 
+    "null": $$null, 
+    init: init, 
+    tail: tail, 
+    last: last, 
+    head: head, 
+    singleton: singleton, 
+    snoc: snoc, 
+    "!!": $bang$bang, 
+    functorArray: functorArray, 
+    applyArray: applyArray, 
+    applicativeArray: applicativeArray, 
+    bindArray: bindArray, 
+    monadArray: monadArray, 
+    semigroupArray: semigroupArray, 
+    altArray: altArray, 
+    plusArray: plusArray, 
+    alternativeArray: alternativeArray, 
+    monadPlusArray: monadPlusArray
+};
+},{"Control.Alt":24,"Control.Alternative":undefined,"Control.MonadPlus":54,"Control.Plus":55,"Data.Maybe":76,"Prelude":undefined,"Prelude.Unsafe":92}],63:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Control_Apply = require("Control.Apply");
+var Data_Tuple = require("Data.Tuple");
+var Data_Either = require("Data.Either");
+var Data_Monoid_Any = require("Data.Monoid.Any");
+var Data_Monoid_All = require("Data.Monoid.All");
+function Bifoldable(bifoldMap, bifoldl, bifoldr) {
+    this.bifoldMap = bifoldMap;
+    this.bifoldl = bifoldl;
+    this.bifoldr = bifoldr;
+};
+var bifoldr = function (dict) {
+    return dict.bifoldr;
+};
+var bitraverse_ = function (__dict_Bifoldable_0) {
+    return function (__dict_Applicative_1) {
+        return function (f) {
+            return function (g) {
+                return bifoldr(__dict_Bifoldable_0)(Prelude["<<<"](Prelude.semigroupoidArr({}))(Control_Apply["*>"](__dict_Applicative_1["__superclass_Prelude.Apply_0"]({})))(f))(Prelude["<<<"](Prelude.semigroupoidArr({}))(Control_Apply["*>"](__dict_Applicative_1["__superclass_Prelude.Apply_0"]({})))(g))(Prelude.pure(__dict_Applicative_1)(Prelude.unit));
+            };
+        };
+    };
+};
+var bifor_ = function (__dict_Bifoldable_2) {
+    return function (__dict_Applicative_3) {
+        return function (t) {
+            return function (f) {
+                return function (g) {
+                    return bitraverse_(__dict_Bifoldable_2)(__dict_Applicative_3)(f)(g)(t);
+                };
+            };
+        };
+    };
+};
+var bisequence_ = function (__dict_Bifoldable_4) {
+    return function (__dict_Applicative_5) {
+        return bitraverse_(__dict_Bifoldable_4)(__dict_Applicative_5)(Prelude.id(Prelude.categoryArr({})))(Prelude.id(Prelude.categoryArr({})));
+    };
+};
+var bifoldl = function (dict) {
+    return dict.bifoldl;
+};
+var bifoldableTuple = function (__unused) {
+    return new Bifoldable(function (__dict_Monoid_6) {
+        return function (_374) {
+            return function (_375) {
+                return function (_376) {
+                    return Prelude["<>"](__dict_Monoid_6["__superclass_Prelude.Semigroup_0"]({}))(_374(_376.value0))(_375(_376.value1));
+                };
+            };
+        };
+    }, function (_381) {
+        return function (_382) {
+            return function (_383) {
+                return function (_384) {
+                    return _382(_381(_383)(_384.value0))(_384.value1);
+                };
+            };
+        };
+    }, function (_377) {
+        return function (_378) {
+            return function (_379) {
+                return function (_380) {
+                    return _377(_380.value0)(_378(_380.value1)(_379));
+                };
+            };
+        };
+    });
+};
+var bifoldableEither = function (__unused) {
+    return new Bifoldable(function (__dict_Monoid_7) {
+        return function (_385) {
+            return function (_386) {
+                return function (_387) {
+                    if (_387 instanceof Data_Either.Left) {
+                        return _385(_387.value0);
+                    };
+                    if (_387 instanceof Data_Either.Right) {
+                        return _386(_387.value0);
+                    };
+                    throw new Error("Failed pattern match");
+                };
+            };
+        };
+    }, function (_392) {
+        return function (_393) {
+            return function (_394) {
+                return function (_395) {
+                    if (_395 instanceof Data_Either.Left) {
+                        return _392(_394)(_395.value0);
+                    };
+                    if (_395 instanceof Data_Either.Right) {
+                        return _393(_394)(_395.value0);
+                    };
+                    throw new Error("Failed pattern match");
+                };
+            };
+        };
+    }, function (_388) {
+        return function (_389) {
+            return function (_390) {
+                return function (_391) {
+                    if (_391 instanceof Data_Either.Left) {
+                        return _388(_391.value0)(_390);
+                    };
+                    if (_391 instanceof Data_Either.Right) {
+                        return _389(_391.value0)(_390);
+                    };
+                    throw new Error("Failed pattern match");
+                };
+            };
+        };
+    });
+};
+var bifoldMap = function (dict) {
+    return dict.bifoldMap;
+};
+var bifold = function (__dict_Bifoldable_8) {
+    return function (__dict_Monoid_9) {
+        return bifoldMap(__dict_Bifoldable_8)(__dict_Monoid_9)(Prelude.id(Prelude.categoryArr({})))(Prelude.id(Prelude.categoryArr({})));
+    };
+};
+var biany = function (__dict_Bifoldable_10) {
+    return function (p) {
+        return function (q) {
+            return Prelude["<<<"](Prelude.semigroupoidArr({}))(Data_Monoid_Any.runAny)(bifoldMap(__dict_Bifoldable_10)(Data_Monoid_Any.monoidAny({}))(Prelude["<<<"](Prelude.semigroupoidArr({}))(Data_Monoid_Any.Any.create)(p))(Prelude["<<<"](Prelude.semigroupoidArr({}))(Data_Monoid_Any.Any.create)(q)));
+        };
+    };
+};
+var biall = function (__dict_Bifoldable_11) {
+    return function (p) {
+        return function (q) {
+            return Prelude["<<<"](Prelude.semigroupoidArr({}))(Data_Monoid_All.runAll)(bifoldMap(__dict_Bifoldable_11)(Data_Monoid_All.monoidAll({}))(Prelude["<<<"](Prelude.semigroupoidArr({}))(Data_Monoid_All.All.create)(p))(Prelude["<<<"](Prelude.semigroupoidArr({}))(Data_Monoid_All.All.create)(q)));
+        };
+    };
+};
+module.exports = {
+    Bifoldable: Bifoldable, 
+    biall: biall, 
+    biany: biany, 
+    bisequence_: bisequence_, 
+    bifor_: bifor_, 
+    bitraverse_: bitraverse_, 
+    bifold: bifold, 
+    bifoldMap: bifoldMap, 
+    bifoldl: bifoldl, 
+    bifoldr: bifoldr, 
+    bifoldableTuple: bifoldableTuple, 
+    bifoldableEither: bifoldableEither
+};
+},{"Control.Apply":25,"Data.Either":undefined,"Data.Monoid.All":77,"Data.Monoid.Any":78,"Data.Tuple":88,"Prelude":undefined}],64:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Data_Tuple = require("Data.Tuple");
+var Data_Either = require("Data.Either");
+function Bifunctor(bimap) {
+    this.bimap = bimap;
+};
+var bimap = function (dict) {
+    return dict.bimap;
+};
+var lmap = function (__dict_Bifunctor_0) {
+    return function (f) {
+        return bimap(__dict_Bifunctor_0)(f)(Prelude.id(Prelude.categoryArr({})));
+    };
+};
+var rmap = function (__dict_Bifunctor_1) {
+    return bimap(__dict_Bifunctor_1)(Prelude.id(Prelude.categoryArr({})));
+};
+var bifunctorTuple = function (__unused) {
+    return new Bifunctor(function (_399) {
+        return function (_400) {
+            return function (_401) {
+                return new Data_Tuple.Tuple(_399(_401.value0), _400(_401.value1));
+            };
+        };
+    });
+};
+var bifunctorEither = function (__unused) {
+    return new Bifunctor(function (_396) {
+        return function (_397) {
+            return function (_398) {
+                if (_398 instanceof Data_Either.Left) {
+                    return new Data_Either.Left(_396(_398.value0));
+                };
+                if (_398 instanceof Data_Either.Right) {
+                    return new Data_Either.Right(_397(_398.value0));
+                };
+                throw new Error("Failed pattern match");
+            };
+        };
+    });
+};
+module.exports = {
+    Bifunctor: Bifunctor, 
+    rmap: rmap, 
+    lmap: lmap, 
+    bimap: bimap, 
+    bifunctorEither: bifunctorEither, 
+    bifunctorTuple: bifunctorTuple
+};
+},{"Data.Either":undefined,"Data.Tuple":88,"Prelude":undefined}],65:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Data_Tuple = require("Data.Tuple");
+var Data_Bifunctor = require("Data.Bifunctor");
+var Data_Bifoldable = require("Data.Bifoldable");
+var Data_Either = require("Data.Either");
+function Bitraversable(__superclass_Data$dotBifoldable$dotBifoldable_1, __superclass_Data$dotBifunctor$dotBifunctor_0, bisequence, bitraverse) {
+    this["__superclass_Data.Bifoldable.Bifoldable_1"] = __superclass_Data$dotBifoldable$dotBifoldable_1;
+    this["__superclass_Data.Bifunctor.Bifunctor_0"] = __superclass_Data$dotBifunctor$dotBifunctor_0;
+    this.bisequence = bisequence;
+    this.bitraverse = bitraverse;
+};
+var bitraverse = function (dict) {
+    return dict.bitraverse;
+};
+var bitraversableTuple = function (__unused) {
+    return new Bitraversable(function (__unused) {
+        return Data_Bifoldable.bifoldableTuple({});
+    }, function (__unused) {
+        return Data_Bifunctor.bifunctorTuple({});
+    }, function (__dict_Applicative_1) {
+        return function (_407) {
+            return Prelude["<*>"](__dict_Applicative_1["__superclass_Prelude.Apply_0"]({}))(Prelude["<$>"]((__dict_Applicative_1["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(Data_Tuple.Tuple.create)(_407.value0))(_407.value1);
+        };
+    }, function (__dict_Applicative_0) {
+        return function (_404) {
+            return function (_405) {
+                return function (_406) {
+                    return Prelude["<*>"](__dict_Applicative_0["__superclass_Prelude.Apply_0"]({}))(Prelude["<$>"]((__dict_Applicative_0["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(Data_Tuple.Tuple.create)(_404(_406.value0)))(_405(_406.value1));
+                };
+            };
+        };
+    });
+};
+var bitraversableEither = function (__unused) {
+    return new Bitraversable(function (__unused) {
+        return Data_Bifoldable.bifoldableEither({});
+    }, function (__unused) {
+        return Data_Bifunctor.bifunctorEither({});
+    }, function (__dict_Applicative_3) {
+        return function (_411) {
+            if (_411 instanceof Data_Either.Left) {
+                return Prelude["<$>"]((__dict_Applicative_3["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(Data_Either.Left.create)(_411.value0);
+            };
+            if (_411 instanceof Data_Either.Right) {
+                return Prelude["<$>"]((__dict_Applicative_3["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(Data_Either.Right.create)(_411.value0);
+            };
+            throw new Error("Failed pattern match");
+        };
+    }, function (__dict_Applicative_2) {
+        return function (_408) {
+            return function (_409) {
+                return function (_410) {
+                    if (_410 instanceof Data_Either.Left) {
+                        return Prelude["<$>"]((__dict_Applicative_2["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(Data_Either.Left.create)(_408(_410.value0));
+                    };
+                    if (_410 instanceof Data_Either.Right) {
+                        return Prelude["<$>"]((__dict_Applicative_2["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(Data_Either.Right.create)(_409(_410.value0));
+                    };
+                    throw new Error("Failed pattern match");
+                };
+            };
+        };
+    });
+};
+var bisequence = function (dict) {
+    return dict.bisequence;
+};
+var bifor = function (__dict_Bitraversable_4) {
+    return function (__dict_Applicative_5) {
+        return function (t) {
+            return function (f) {
+                return function (g) {
+                    return bitraverse(__dict_Bitraversable_4)(__dict_Applicative_5)(f)(g)(t);
+                };
+            };
+        };
+    };
+};
+module.exports = {
+    Bitraversable: Bitraversable, 
+    bifor: bifor, 
+    bisequence: bisequence, 
+    bitraverse: bitraverse, 
+    bitraversableTuple: bitraversableTuple, 
+    bitraversableEither: bitraversableEither
+};
+},{"Data.Bifoldable":63,"Data.Bifunctor":64,"Data.Either":undefined,"Data.Tuple":88,"Prelude":undefined}],66:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Data_Monoid = require("Data.Monoid");
+var Data_Contravariant = require("Data.Contravariant");
+var Const = {
+    create: function (value) {
+        return value;
+    }
+};
+var showConst = function (__dict_Show_0) {
+    return new Prelude.Show(function (_262) {
+        return Prelude.show(__dict_Show_0)(_262);
+    });
+};
+var semigroupoidConst = function (__unused) {
+    return new Prelude.Semigroupoid(function (_265) {
+        return function (_266) {
+            return _266;
+        };
+    });
+};
+var semigroupConst = function (__dict_Semigroup_1) {
+    return new Prelude.Semigroup(function (_267) {
+        return function (_268) {
+            return Prelude["<>"](__dict_Semigroup_1)(_267)(_268);
+        };
+    });
+};
+var monoidConst = function (__dict_Monoid_3) {
+    return new Data_Monoid.Monoid(function (__unused) {
+        return semigroupConst(__dict_Monoid_3["__superclass_Prelude.Semigroup_0"]({}));
+    }, Data_Monoid.mempty(__dict_Monoid_3));
+};
+var getConst = function (_259) {
+    return _259;
+};
+var functorConst = function (__unused) {
+    return new Prelude.Functor(function (_269) {
+        return function (_270) {
+            return _270;
+        };
+    });
+};
+var eqConst = function (__dict_Eq_4) {
+    return new Prelude.Eq(function (c) {
+        return function (c$prime) {
+            return !Prelude["=="](eqConst(__dict_Eq_4))(c)(c$prime);
+        };
+    }, function (_260) {
+        return function (_261) {
+            return Prelude["=="](__dict_Eq_4)(_260)(_261);
+        };
+    });
+};
+var ordConst = function (__dict_Ord_2) {
+    return new Prelude.Ord(function (__unused) {
+        return eqConst(__dict_Ord_2["__superclass_Prelude.Eq_0"]({}));
+    }, function (_263) {
+        return function (_264) {
+            return Prelude.compare(__dict_Ord_2)(_263)(_264);
+        };
+    });
+};
+var contravariantConst = function (__unused) {
+    return new Data_Contravariant.Contravariant(function (_276) {
+        return function (_277) {
+            return _277;
+        };
+    });
+};
+var applyConst = function (__dict_Semigroup_6) {
+    return new Prelude.Apply(function (_271) {
+        return function (_272) {
+            return Prelude["<>"](__dict_Semigroup_6)(_271)(_272);
+        };
+    }, functorConst);
+};
+var bindConst = function (__dict_Semigroup_5) {
+    return new Prelude.Bind(function (_273) {
+        return function (_274) {
+            return _273;
+        };
+    }, function (__unused) {
+        return applyConst(__dict_Semigroup_5);
+    });
+};
+var applicativeConst = function (__dict_Monoid_7) {
+    return new Prelude.Applicative(function (__unused) {
+        return applyConst(__dict_Monoid_7["__superclass_Prelude.Semigroup_0"]({}));
+    }, function (_275) {
+        return Data_Monoid.mempty(__dict_Monoid_7);
+    });
+};
+module.exports = {
+    Const: Const, 
+    getConst: getConst, 
+    eqConst: eqConst, 
+    showConst: showConst, 
+    ordConst: ordConst, 
+    semigroupoidConst: semigroupoidConst, 
+    semigroupConst: semigroupConst, 
+    monoidConst: monoidConst, 
+    functorConst: functorConst, 
+    applyConst: applyConst, 
+    bindConst: bindConst, 
+    applicativeConst: applicativeConst, 
+    contravariantConst: contravariantConst
+};
+},{"Data.Contravariant":67,"Data.Monoid":82,"Prelude":undefined}],67:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+function Contravariant($greater$dollar$less) {
+    this[">$<"] = $greater$dollar$less;
+};
+var $greater$dollar$less = function (dict) {
+    return dict[">$<"];
+};
+module.exports = {
+    Contravariant: Contravariant, 
+    ">$<": $greater$dollar$less
+};
+},{"Prelude":undefined}],68:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Control_Monad_Identity = require("Control.Monad.Identity");
+function Distributive(__superclass_Prelude$dotFunctor_0, collect, distribute) {
+    this["__superclass_Prelude.Functor_0"] = __superclass_Prelude$dotFunctor_0;
+    this.collect = collect;
+    this.distribute = distribute;
+};
+var distributiveIdentity = function (__unused) {
+    return new Distributive(function (__unused) {
+        return Control_Monad_Identity.functorIdentity({});
+    }, function (__dict_Functor_1) {
+        return function (a2Idb) {
+            return function (ga) {
+                return Prelude["<$>"](__dict_Functor_1)(Prelude["<<<"](Prelude.semigroupoidArr({}))(Control_Monad_Identity.runIdentity)(a2Idb))(ga);
+            };
+        };
+    }, function (__dict_Functor_0) {
+        return function (gIdb) {
+            return Prelude["<$>"](__dict_Functor_0)(Control_Monad_Identity.runIdentity)(gIdb);
+        };
+    });
+};
+var distribute = function (dict) {
+    return dict.distribute;
+};
+var cotraverse = function (__dict_Distributive_2) {
+    return function (__dict_Functor_3) {
+        return function (ga2b) {
+            return function (gfa) {
+                return Prelude["<$>"](__dict_Distributive_2["__superclass_Prelude.Functor_0"]({}))(ga2b)(distribute(__dict_Distributive_2)(__dict_Functor_3)(gfa));
+            };
+        };
+    };
+};
+var collect = function (dict) {
+    return dict.collect;
+};
+module.exports = {
+    Distributive: Distributive, 
+    cotraverse: cotraverse, 
+    collect: collect, 
+    distribute: distribute, 
+    distributiveIdentity: distributiveIdentity
+};
+},{"Control.Monad.Identity":undefined,"Prelude":undefined}],69:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+function Enum(fromEnum, toEnum) {
+    this.fromEnum = fromEnum;
+    this.toEnum = toEnum;
+};
+var toEnum = function (dict) {
+    return dict.toEnum;
+};
+var fromEnum = function (dict) {
+    return dict.fromEnum;
+};
+var pred = function (__dict_Enum_0) {
+    return function (x) {
+        return toEnum(__dict_Enum_0)(fromEnum(__dict_Enum_0)(x) - 1);
+    };
+};
+var succ = function (__dict_Enum_1) {
+    return function (x) {
+        return toEnum(__dict_Enum_1)(fromEnum(__dict_Enum_1)(x) + 1);
+    };
+};
+module.exports = {
+    Enum: Enum, 
+    pred: pred, 
+    succ: succ, 
+    fromEnum: fromEnum, 
+    toEnum: toEnum
+};
+},{"Prelude":undefined}],70:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Ref = {
+    create: function (value) {
+        return value;
+    }
+};
+var liftRef = function (_152) {
+    return function (_153) {
+        return function (_154) {
+            return _152(_153)(_154);
+        };
+    };
+};
+var functorRef = function (__unused) {
+    return new Prelude.Functor(function (_155) {
+        return function (_156) {
+            return _155(_156);
+        };
+    });
+};
+var eqRef = function (__unused) {
+    return new Prelude.Eq(liftRef(Prelude.refIneq), liftRef(Prelude.refEq));
+};
+module.exports = {
+    Ref: Ref, 
+    liftRef: liftRef, 
+    eqRef: eqRef, 
+    functorRef: functorRef
+};
+},{"Prelude":undefined}],71:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Control_Apply = require("Control.Apply");
+var Data_Monoid = require("Data.Monoid");
+var Data_Tuple = require("Data.Tuple");
+var Data_Eq = require("Data.Eq");
+var Data_Maybe = require("Data.Maybe");
+var Data_Either = require("Data.Either");
+var Data_Monoid_First = require("Data.Monoid.First");
+function Foldable(foldMap, foldl, foldr) {
+    this.foldMap = foldMap;
+    this.foldl = foldl;
+    this.foldr = foldr;
+};
+function foldrArray(f) {  return function(z) {    return function(xs) {      var acc = z;      for (var i = xs.length - 1; i >= 0; --i) {        acc = f(xs[i])(acc);      }      return acc;    }  }};
+function foldlArray(f) {  return function(z) {    return function(xs) {      var acc = z;      for (var i = 0, len = xs.length; i < len; ++i) {        acc = f(acc)(xs[i]);      }      return acc;    }  }};
+var foldr = function (dict) {
+    return dict.foldr;
+};
+var traverse_ = function (__dict_Applicative_0) {
+    return function (__dict_Foldable_1) {
+        return function (f) {
+            return foldr(__dict_Foldable_1)(Prelude["<<<"](Prelude.semigroupoidArr({}))(Control_Apply["*>"](__dict_Applicative_0["__superclass_Prelude.Apply_0"]({})))(f))(Prelude.pure(__dict_Applicative_0)(Prelude.unit));
+        };
+    };
+};
+var for_ = function (__dict_Applicative_2) {
+    return function (__dict_Foldable_3) {
+        return Prelude.flip(traverse_(__dict_Applicative_2)(__dict_Foldable_3));
+    };
+};
+var sequence_ = function (__dict_Applicative_4) {
+    return function (__dict_Foldable_5) {
+        return traverse_(__dict_Applicative_4)(__dict_Foldable_5)(Prelude.id(Prelude.categoryArr({})));
+    };
+};
+var foldl = function (dict) {
+    return dict.foldl;
+};
+var mconcat = function (__dict_Foldable_6) {
+    return function (__dict_Monoid_7) {
+        return foldl(__dict_Foldable_6)(Prelude["<>"](__dict_Monoid_7["__superclass_Prelude.Semigroup_0"]({})))(Data_Monoid.mempty(__dict_Monoid_7));
+    };
+};
+var or = function (__dict_Foldable_8) {
+    return foldl(__dict_Foldable_8)(Prelude["||"](Prelude.boolLikeBoolean({})))(false);
+};
+var product = function (__dict_Foldable_9) {
+    return foldl(__dict_Foldable_9)(Prelude["*"](Prelude.numNumber({})))(1);
+};
+var sum = function (__dict_Foldable_10) {
+    return foldl(__dict_Foldable_10)(Prelude["+"](Prelude.numNumber({})))(0);
+};
+var foldableTuple = function (__unused) {
+    return new Foldable(function (__dict_Monoid_11) {
+        return function (_478) {
+            return function (_479) {
+                return _478(_479.value1);
+            };
+        };
+    }, function (_475) {
+        return function (_476) {
+            return function (_477) {
+                return _475(_476)(_477.value1);
+            };
+        };
+    }, function (_472) {
+        return function (_473) {
+            return function (_474) {
+                return _472(_474.value1)(_473);
+            };
+        };
+    });
+};
+var foldableRef = function (__unused) {
+    return new Foldable(function (__dict_Monoid_12) {
+        return function (_470) {
+            return function (_471) {
+                return _470(_471);
+            };
+        };
+    }, function (_467) {
+        return function (_468) {
+            return function (_469) {
+                return _467(_468)(_469);
+            };
+        };
+    }, function (_464) {
+        return function (_465) {
+            return function (_466) {
+                return _464(_466)(_465);
+            };
+        };
+    });
+};
+var foldableMaybe = function (__unused) {
+    return new Foldable(function (__dict_Monoid_13) {
+        return function (_462) {
+            return function (_463) {
+                if (_463 instanceof Data_Maybe.Nothing) {
+                    return Data_Monoid.mempty(__dict_Monoid_13);
+                };
+                if (_463 instanceof Data_Maybe.Just) {
+                    return _462(_463.value0);
+                };
+                throw new Error("Failed pattern match");
+            };
+        };
+    }, function (_459) {
+        return function (_460) {
+            return function (_461) {
+                if (_461 instanceof Data_Maybe.Nothing) {
+                    return _460;
+                };
+                if (_461 instanceof Data_Maybe.Just) {
+                    return _459(_460)(_461.value0);
+                };
+                throw new Error("Failed pattern match");
+            };
+        };
+    }, function (_456) {
+        return function (_457) {
+            return function (_458) {
+                if (_458 instanceof Data_Maybe.Nothing) {
+                    return _457;
+                };
+                if (_458 instanceof Data_Maybe.Just) {
+                    return _456(_458.value0)(_457);
+                };
+                throw new Error("Failed pattern match");
+            };
+        };
+    });
+};
+var foldableEither = function (__unused) {
+    return new Foldable(function (__dict_Monoid_14) {
+        return function (_454) {
+            return function (_455) {
+                if (_455 instanceof Data_Either.Left) {
+                    return Data_Monoid.mempty(__dict_Monoid_14);
+                };
+                if (_455 instanceof Data_Either.Right) {
+                    return _454(_455.value0);
+                };
+                throw new Error("Failed pattern match");
+            };
+        };
+    }, function (_451) {
+        return function (_452) {
+            return function (_453) {
+                if (_453 instanceof Data_Either.Left) {
+                    return _452;
+                };
+                if (_453 instanceof Data_Either.Right) {
+                    return _451(_452)(_453.value0);
+                };
+                throw new Error("Failed pattern match");
+            };
+        };
+    }, function (_448) {
+        return function (_449) {
+            return function (_450) {
+                if (_450 instanceof Data_Either.Left) {
+                    return _449;
+                };
+                if (_450 instanceof Data_Either.Right) {
+                    return _448(_450.value0)(_449);
+                };
+                throw new Error("Failed pattern match");
+            };
+        };
+    });
+};
+var foldableArray = function (__unused) {
+    return new Foldable(function (__dict_Monoid_15) {
+        return function (f) {
+            return function (xs) {
+                return foldr(foldableArray({}))(function (x) {
+                    return function (acc) {
+                        return Prelude["<>"](__dict_Monoid_15["__superclass_Prelude.Semigroup_0"]({}))(f(x))(acc);
+                    };
+                })(Data_Monoid.mempty(__dict_Monoid_15))(xs);
+            };
+        };
+    }, function (f) {
+        return function (z) {
+            return function (xs) {
+                return foldlArray(f)(z)(xs);
+            };
+        };
+    }, function (f) {
+        return function (z) {
+            return function (xs) {
+                return foldrArray(f)(z)(xs);
+            };
+        };
+    });
+};
+var foldMap = function (dict) {
+    return dict.foldMap;
+};
+var lookup = function (__dict_Eq_16) {
+    return function (__dict_Foldable_17) {
+        return function (a) {
+            return function (f) {
+                return Data_Monoid_First.runFirst(foldMap(__dict_Foldable_17)(Data_Monoid_First.monoidFirst({}))(function (_447) {
+                    return Prelude["=="](__dict_Eq_16)(a)(_447.value0) ? new Data_Maybe.Just(_447.value1) : Data_Maybe.Nothing.value;
+                })(f));
+            };
+        };
+    };
+};
+var fold = function (__dict_Foldable_18) {
+    return function (__dict_Monoid_19) {
+        return foldMap(__dict_Foldable_18)(__dict_Monoid_19)(Prelude.id(Prelude.categoryArr({})));
+    };
+};
+var find = function (__dict_Foldable_20) {
+    return function (p) {
+        return function (f) {
+            var _1545 = foldMap(__dict_Foldable_20)(Data_Monoid.monoidArray({}))(function (x) {
+                return p(x) ? [ x ] : [  ];
+            })(f);
+            if (_1545.length > 0) {
+                var _1547 = _1545.slice(1);
+                return new Data_Maybe.Just(_1545[0]);
+            };
+            if (_1545.length === 0) {
+                return Data_Maybe.Nothing.value;
             };
             throw new Error("Failed pattern match");
         };
     };
-    var divider = React_DOM.li({
-        className: "divider"
-    })([  ]);
-    var menuSide = function (name) {
-        return React.createClass((function () {
-            var _693 = {};
-            for (var _694 in React.spec) {
-                if (React.spec.hasOwnProperty(_694)) {
-                    _693[_694] = React.spec[_694];
+};
+var any = function (__dict_Foldable_21) {
+    return function (p) {
+        return Prelude["<<<"](Prelude.semigroupoidArr({}))(or(foldableArray({})))(foldMap(__dict_Foldable_21)(Data_Monoid.monoidArray({}))(function (x) {
+            return [ p(x) ];
+        }));
+    };
+};
+var elem = function (__dict_Eq_22) {
+    return function (__dict_Foldable_23) {
+        return Prelude["<<<"](Prelude.semigroupoidArr({}))(any(__dict_Foldable_23))(Prelude["=="](__dict_Eq_22));
+    };
+};
+var notElem = function (__dict_Eq_24) {
+    return function (__dict_Foldable_25) {
+        return function (x) {
+            return Prelude["<<<"](Prelude.semigroupoidArr({}))(Prelude.not(Prelude.boolLikeBoolean({})))(elem(__dict_Eq_24)(__dict_Foldable_25)(x));
+        };
+    };
+};
+var and = function (__dict_Foldable_26) {
+    return foldl(__dict_Foldable_26)(Prelude["&&"](Prelude.boolLikeBoolean({})))(true);
+};
+var all = function (__dict_Foldable_27) {
+    return function (p) {
+        return Prelude["<<<"](Prelude.semigroupoidArr({}))(and(foldableArray({})))(foldMap(__dict_Foldable_27)(Data_Monoid.monoidArray({}))(function (x) {
+            return [ p(x) ];
+        }));
+    };
+};
+module.exports = {
+    Foldable: Foldable, 
+    foldlArray: foldlArray, 
+    foldrArray: foldrArray, 
+    lookup: lookup, 
+    find: find, 
+    notElem: notElem, 
+    elem: elem, 
+    product: product, 
+    sum: sum, 
+    all: all, 
+    any: any, 
+    or: or, 
+    and: and, 
+    mconcat: mconcat, 
+    sequence_: sequence_, 
+    for_: for_, 
+    traverse_: traverse_, 
+    fold: fold, 
+    foldMap: foldMap, 
+    foldl: foldl, 
+    foldr: foldr, 
+    foldableArray: foldableArray, 
+    foldableEither: foldableEither, 
+    foldableMaybe: foldableMaybe, 
+    foldableRef: foldableRef, 
+    foldableTuple: foldableTuple
+};
+},{"Control.Apply":25,"Data.Either":undefined,"Data.Eq":70,"Data.Maybe":76,"Data.Monoid":82,"Data.Monoid.First":81,"Data.Tuple":88,"Prelude":undefined}],72:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Data_Function = require("Data.Function");
+var Data_Either = require("Data.Either");
+var Data_Maybe = require("Data.Maybe");
+var Data_Tuple = require("Data.Tuple");
+var Data_Traversable = require("Data.Traversable");
+var Data_Array = require("Data.Array");
+function ForeignParser(value0) {
+    this.value0 = value0;
+};
+ForeignParser.create = function (value0) {
+    return new ForeignParser(value0);
+};
+function ReadForeign(read) {
+    this.read = read;
+};
+function fromStringImpl(left, right, str) {   try {     return right(JSON.parse(str));   } catch (e) {     return left(e.toString());   } };
+function readPrimTypeImpl(left, right, typeName, value) {   if (toString.call(value) == '[object ' + typeName + ']') {     return right(value);  }   return left('Value is not a ' + typeName + ''); };
+function readMaybeImpl(nothing, just, value) {   return value === undefined || value === null ? nothing : just(value); };
+function readPropImpl(k, obj) {     return obj == undefined ? undefined : obj[k];};
+function readKeysImpl(left, right, k, obj) {   if (obj == undefined) {     return left('cannot get a key from an undefined or null value');   } else if (obj[k] == undefined) {     return left('value is undefined or null');   } else if (Array.isArray(obj[k])) {     return left('value is an array');   } else if (typeof obj[k] !== 'object') {     return left('value is not an object');   }   return right(Object.keys(obj[k])); };
+var showForeignImpl = JSON.stringify;;
+var showForeign = function (__unused) {
+    return new Prelude.Show(showForeignImpl);
+};
+var readPrimType = function (ty) {
+    return function (x) {
+        return readPrimTypeImpl(Data_Either.Left.create, Data_Either.Right.create, ty, x);
+    };
+};
+var readString = function (__unused) {
+    return new ReadForeign(ForeignParser.create(readPrimType("String")));
+};
+var readNumber = function (__unused) {
+    return new ReadForeign(ForeignParser.create(readPrimType("Number")));
+};
+var readMaybeImpl$prime = function (x) {
+    return readMaybeImpl(Data_Maybe.Nothing.value, Data_Maybe.Just.create, x);
+};
+var readBoolean = function (__unused) {
+    return new ReadForeign(ForeignParser.create(readPrimType("Boolean")));
+};
+var read = function (dict) {
+    return dict.read;
+};
+var parseForeign = function (_663) {
+    return function (_664) {
+        return _663.value0(_664);
+    };
+};
+var functorForeignParser = function (__unused) {
+    return new Prelude.Functor(function (_665) {
+        return function (_666) {
+            return new ForeignParser(function (x) {
+                return Prelude["<$>"](Data_Either.functorEither({}))(_665)(_666.value0(x));
+            });
+        };
+    });
+};
+var fromString = function (s) {
+    return fromStringImpl(Data_Either.Left.create, Data_Either.Right.create, s);
+};
+var parseJSON = function (__dict_ReadForeign_4) {
+    return function (json) {
+        return Prelude[">>="](Data_Either.bindEither({}))(fromString(json))(parseForeign(read(__dict_ReadForeign_4)));
+    };
+};
+var applyForeignParser = function (__unused) {
+    return new Prelude.Apply(function (_669) {
+        return function (_670) {
+            return new ForeignParser(function (x) {
+                var _2404 = _669.value0(x);
+                if (_2404 instanceof Data_Either.Left) {
+                    return new Data_Either.Left(_2404.value0);
+                };
+                if (_2404 instanceof Data_Either.Right) {
+                    return Prelude["<$>"](Data_Either.functorEither({}))(_2404.value0)(_670.value0(x));
+                };
+                throw new Error("Failed pattern match");
+            });
+        };
+    }, functorForeignParser);
+};
+var bindForeignParser = function (__unused) {
+    return new Prelude.Bind(function (_667) {
+        return function (_668) {
+            return new ForeignParser(function (x) {
+                var _2411 = _667.value0(x);
+                if (_2411 instanceof Data_Either.Left) {
+                    return new Data_Either.Left(_2411.value0);
+                };
+                if (_2411 instanceof Data_Either.Right) {
+                    return parseForeign(_668(_2411.value0))(x);
+                };
+                throw new Error("Failed pattern match");
+            });
+        };
+    }, applyForeignParser);
+};
+var index = function (__dict_ReadForeign_3) {
+    return function (i) {
+        return Prelude[">>="](bindForeignParser({}))(new ForeignParser(function (x) {
+            return Data_Either.Right.create(readIndexImpl$prime(i)(x));
+        }))(function (x) {
+            return new ForeignParser(function (_) {
+                var _2415 = parseForeign(read(__dict_ReadForeign_3))(x);
+                if (_2415 instanceof Data_Either.Right) {
+                    return new Data_Either.Right(_2415.value0);
+                };
+                if (_2415 instanceof Data_Either.Left) {
+                    return Data_Either.Left.create("Error reading index '" + Prelude.show(Prelude.showNumber({}))(i) + "':\n" + _2415.value0);
+                };
+                throw new Error("Failed pattern match");
+            });
+        });
+    };
+};
+var readIndexImpl$prime = function (index_1) {
+    return function (x) {
+        return readPropImpl(index_1, x);
+    };
+};
+var prop = function (__dict_ReadForeign_0) {
+    return function (p) {
+        return Prelude[">>="](bindForeignParser({}))(new ForeignParser(function (x) {
+            return Data_Either.Right.create(readPropImpl$prime(p)(x));
+        }))(function (x) {
+            return new ForeignParser(function (_) {
+                var _2418 = parseForeign(read(__dict_ReadForeign_0))(x);
+                if (_2418 instanceof Data_Either.Right) {
+                    return new Data_Either.Right(_2418.value0);
+                };
+                if (_2418 instanceof Data_Either.Left) {
+                    return Data_Either.Left.create("Error reading property '" + p + "':\n" + _2418.value0);
+                };
+                throw new Error("Failed pattern match");
+            });
+        });
+    };
+};
+var readPropImpl$prime = function (prop_1) {
+    return function (x) {
+        return readPropImpl(prop_1, x);
+    };
+};
+var readKeysImpl$prime = function (prop_1) {
+    return function (x) {
+        return readKeysImpl(Data_Either.Left.create, Data_Either.Right.create, prop_1, x);
+    };
+};
+var keys = function (p) {
+    return new ForeignParser(function (x) {
+        var _2421 = readKeysImpl$prime(p)(x);
+        if (_2421 instanceof Data_Either.Right) {
+            return new Data_Either.Right(_2421.value0);
+        };
+        if (_2421 instanceof Data_Either.Left) {
+            return Data_Either.Left.create("Error reading object keys of '" + p + "':\n" + _2421.value0);
+        };
+        throw new Error("Failed pattern match");
+    });
+};
+var readArray = function (__dict_ReadForeign_1) {
+    return new ReadForeign((function () {
+        var arrayItem = function (_671) {
+            var _2425 = parseForeign(read(__dict_ReadForeign_1))(_671.value1);
+            if (_2425 instanceof Data_Either.Right) {
+                return new Data_Either.Right(_2425.value0);
+            };
+            if (_2425 instanceof Data_Either.Left) {
+                return Data_Either.Left.create("Error reading item at index " + Prelude.show(Prelude.showNumber({}))(_671.value0) + ":\n" + _2425.value0);
+            };
+            throw new Error("Failed pattern match");
+        };
+        return Prelude[">>="](bindForeignParser({}))(ForeignParser.create(readPrimType("Array")))(function (xs) {
+            return new ForeignParser(function (_) {
+                return Data_Traversable.traverse(Data_Traversable.traversableArray({}))(Data_Either.applicativeEither({}))(arrayItem)(Data_Tuple.zip(Data_Array.range(0)(Data_Array.length(xs)))(xs));
+            });
+        });
+    })());
+};
+var readMaybe = function (__dict_ReadForeign_2) {
+    return new ReadForeign(Prelude[">>="](bindForeignParser({}))(ForeignParser.create(Prelude["<<<"](Prelude.semigroupoidArr({}))(Data_Either.Right.create)(readMaybeImpl$prime)))(function (x) {
+        return new ForeignParser(function (_) {
+            if (x instanceof Data_Maybe.Just) {
+                return Prelude[">>="](Data_Either.bindEither({}))(parseForeign(read(__dict_ReadForeign_2))(x.value0))(Prelude["<<<"](Prelude.semigroupoidArr({}))(Prelude["return"](Data_Either.monadEither({})))(Data_Maybe.Just.create));
+            };
+            if (x instanceof Data_Maybe.Nothing) {
+                return Prelude["return"](Data_Either.monadEither({}))(Data_Maybe.Nothing.value);
+            };
+            throw new Error("Failed pattern match");
+        });
+    }));
+};
+var applicativeForeignParser = function (__unused) {
+    return new Prelude.Applicative(applyForeignParser, function (x) {
+        return new ForeignParser(function (_) {
+            return new Data_Either.Right(x);
+        });
+    });
+};
+var monadForeignParser = function (__unused) {
+    return new Prelude.Monad(applicativeForeignParser, bindForeignParser);
+};
+module.exports = {
+    ForeignParser: ForeignParser, 
+    ReadForeign: ReadForeign, 
+    keys: keys, 
+    index: index, 
+    prop: prop, 
+    read: read, 
+    parseJSON: parseJSON, 
+    parseForeign: parseForeign, 
+    showForeign: showForeign, 
+    functorForeignParser: functorForeignParser, 
+    bindForeignParser: bindForeignParser, 
+    applyForeignParser: applyForeignParser, 
+    applicativeForeignParser: applicativeForeignParser, 
+    monadForeignParser: monadForeignParser, 
+    readString: readString, 
+    readNumber: readNumber, 
+    readBoolean: readBoolean, 
+    readArray: readArray, 
+    readMaybe: readMaybe
+};
+},{"Data.Array":62,"Data.Either":undefined,"Data.Function":73,"Data.Maybe":76,"Data.Traversable":87,"Data.Tuple":88,"Prelude":undefined}],73:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+function mkFn0(fn) {  return function() {    return fn({});  };};
+function mkFn1(fn) {  return function(a) {    return fn(a);  };};
+function mkFn2(fn) {  return function(a, b) {    return fn(a)(b);  };};
+function mkFn3(fn) {  return function(a, b, c) {    return fn(a)(b)(c);  };};
+function mkFn4(fn) {  return function(a, b, c, d) {    return fn(a)(b)(c)(d);  };};
+function mkFn5(fn) {  return function(a, b, c, d, e) {    return fn(a)(b)(c)(d)(e);  };};
+function mkFn6(fn) {  return function(a, b, c, d, e, f) {    return fn(a)(b)(c)(d)(e)(f);  };};
+function mkFn7(fn) {  return function(a, b, c, d, e, f, g) {    return fn(a)(b)(c)(d)(e)(f)(g);  };};
+function mkFn8(fn) {  return function(a, b, c, d, e, f, g, h) {    return fn(a)(b)(c)(d)(e)(f)(g)(h);  };};
+function mkFn9(fn) {  return function(a, b, c, d, e, f, g, h, i) {    return fn(a)(b)(c)(d)(e)(f)(g)(h)(i);  };};
+function mkFn10(fn) {  return function(a, b, c, d, e, f, g, h, i, j) {    return fn(a)(b)(c)(d)(e)(f)(g)(h)(i)(j);  };};
+function runFn0(fn) {  return fn();};
+function runFn1(fn) {  return function(a) {    return fn(a);  };};
+function runFn2(fn) {  return function(a) {    return function(b) {      return fn(a, b);    };  };};
+function runFn3(fn) {  return function(a) {    return function(b) {      return function(c) {        return fn(a, b, c);      };    };  };};
+function runFn4(fn) {  return function(a) {    return function(b) {      return function(c) {        return function(d) {          return fn(a, b, c, d);        };      };    };  };};
+function runFn5(fn) {  return function(a) {    return function(b) {      return function(c) {        return function(d) {          return function(e) {            return fn(a, b, c, d, e);          };        };      };    };  };};
+function runFn6(fn) {  return function(a) {    return function(b) {      return function(c) {        return function(d) {          return function(e) {            return function(f) {              return fn(a, b, c, d, e, f);            };          };        };      };    };  };};
+function runFn7(fn) {  return function(a) {    return function(b) {      return function(c) {        return function(d) {          return function(e) {            return function(f) {              return function(g) {                return fn(a, b, c, d, e, f, g);              };            };          };        };      };    };  };};
+function runFn8(fn) {  return function(a) {    return function(b) {      return function(c) {        return function(d) {          return function(e) {            return function(f) {              return function(g) {                return function(h) {                  return fn(a, b, c, d, e, f, g, h);                };              };            };          };        };      };    };  };};
+function runFn9(fn) {  return function(a) {    return function(b) {      return function(c) {        return function(d) {          return function(e) {            return function(f) {              return function(g) {                return function(h) {                  return function(i) {                    return fn(a, b, c, d, e, f, g, h, i);                  };                };              };            };          };        };      };    };  };};
+function runFn10(fn) {  return function(a) {    return function(b) {      return function(c) {        return function(d) {          return function(e) {            return function(f) {              return function(g) {                return function(h) {                  return function(i) {                    return function(j) {                      return fn(a, b, c, d, e, f, g, h, i, j);                    };                  };                };              };            };          };        };      };    };  };};
+var on = function (f) {
+    return function (g) {
+        return function (x) {
+            return function (y) {
+                return f(g(x))(g(y));
+            };
+        };
+    };
+};
+module.exports = {
+    runFn10: runFn10, 
+    runFn9: runFn9, 
+    runFn8: runFn8, 
+    runFn7: runFn7, 
+    runFn6: runFn6, 
+    runFn5: runFn5, 
+    runFn4: runFn4, 
+    runFn3: runFn3, 
+    runFn2: runFn2, 
+    runFn1: runFn1, 
+    runFn0: runFn0, 
+    mkFn10: mkFn10, 
+    mkFn9: mkFn9, 
+    mkFn8: mkFn8, 
+    mkFn7: mkFn7, 
+    mkFn6: mkFn6, 
+    mkFn5: mkFn5, 
+    mkFn4: mkFn4, 
+    mkFn3: mkFn3, 
+    mkFn2: mkFn2, 
+    mkFn1: mkFn1, 
+    mkFn0: mkFn0, 
+    on: on
+};
+},{"Prelude":undefined}],74:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Data_Array = require("Data.Array");
+var Data_Tuple = require("Data.Tuple");
+var Data_Maybe = require("Data.Maybe");
+var Data_Foldable = require("Data.Foldable");
+function Leaf() {
+
+};
+Leaf.value = new Leaf();
+function Two(value0, value1, value2, value3) {
+    this.value0 = value0;
+    this.value1 = value1;
+    this.value2 = value2;
+    this.value3 = value3;
+};
+Two.create = function (value0) {
+    return function (value1) {
+        return function (value2) {
+            return function (value3) {
+                return new Two(value0, value1, value2, value3);
+            };
+        };
+    };
+};
+function Three(value0, value1, value2, value3, value4, value5, value6) {
+    this.value0 = value0;
+    this.value1 = value1;
+    this.value2 = value2;
+    this.value3 = value3;
+    this.value4 = value4;
+    this.value5 = value5;
+    this.value6 = value6;
+};
+Three.create = function (value0) {
+    return function (value1) {
+        return function (value2) {
+            return function (value3) {
+                return function (value4) {
+                    return function (value5) {
+                        return function (value6) {
+                            return new Three(value0, value1, value2, value3, value4, value5, value6);
+                        };
+                    };
                 };
             };
-            _693.displayName = "MenuSide";
-            _693.render = function ($$this) {
-                return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.ul({
-                    className: name
-                })(Prelude["++"](Data_Array.semigroupArray({}))(intersperse(divider)($$this.props.children))($$this.props.extra)));
-            };
-            return _693;
-        })());
-    };
-    var leftSide = menuSide("left");
-    var rightSide = menuSide("right");
-    var command = function (_613) {
-        if (_613.action instanceof Data_Maybe.Nothing) {
-            return React_DOM.li({})([ React_DOM.a({
-                id: "menu-command-" + _613.name
-            })([ React_DOM.rawText(_613.name) ]) ]);
         };
-        if (_613.action instanceof Data_Maybe.Just) {
-            return React_DOM.li({})([ React_DOM.a({
-                id: "menu-command-" + _613.name, 
-                onClick: _613.action.value0
-            })([ React_DOM.rawText(_613.name) ]) ]);
+    };
+};
+function TwoLeft(value0, value1, value2) {
+    this.value0 = value0;
+    this.value1 = value1;
+    this.value2 = value2;
+};
+TwoLeft.create = function (value0) {
+    return function (value1) {
+        return function (value2) {
+            return new TwoLeft(value0, value1, value2);
+        };
+    };
+};
+function TwoRight(value0, value1, value2) {
+    this.value0 = value0;
+    this.value1 = value1;
+    this.value2 = value2;
+};
+TwoRight.create = function (value0) {
+    return function (value1) {
+        return function (value2) {
+            return new TwoRight(value0, value1, value2);
+        };
+    };
+};
+function ThreeLeft(value0, value1, value2, value3, value4, value5) {
+    this.value0 = value0;
+    this.value1 = value1;
+    this.value2 = value2;
+    this.value3 = value3;
+    this.value4 = value4;
+    this.value5 = value5;
+};
+ThreeLeft.create = function (value0) {
+    return function (value1) {
+        return function (value2) {
+            return function (value3) {
+                return function (value4) {
+                    return function (value5) {
+                        return new ThreeLeft(value0, value1, value2, value3, value4, value5);
+                    };
+                };
+            };
+        };
+    };
+};
+function ThreeMiddle(value0, value1, value2, value3, value4, value5) {
+    this.value0 = value0;
+    this.value1 = value1;
+    this.value2 = value2;
+    this.value3 = value3;
+    this.value4 = value4;
+    this.value5 = value5;
+};
+ThreeMiddle.create = function (value0) {
+    return function (value1) {
+        return function (value2) {
+            return function (value3) {
+                return function (value4) {
+                    return function (value5) {
+                        return new ThreeMiddle(value0, value1, value2, value3, value4, value5);
+                    };
+                };
+            };
+        };
+    };
+};
+function ThreeRight(value0, value1, value2, value3, value4, value5) {
+    this.value0 = value0;
+    this.value1 = value1;
+    this.value2 = value2;
+    this.value3 = value3;
+    this.value4 = value4;
+    this.value5 = value5;
+};
+ThreeRight.create = function (value0) {
+    return function (value1) {
+        return function (value2) {
+            return function (value3) {
+                return function (value4) {
+                    return function (value5) {
+                        return new ThreeRight(value0, value1, value2, value3, value4, value5);
+                    };
+                };
+            };
+        };
+    };
+};
+function KickUp(value0, value1, value2, value3) {
+    this.value0 = value0;
+    this.value1 = value1;
+    this.value2 = value2;
+    this.value3 = value3;
+};
+KickUp.create = function (value0) {
+    return function (value1) {
+        return function (value2) {
+            return function (value3) {
+                return new KickUp(value0, value1, value2, value3);
+            };
+        };
+    };
+};
+var values = function (_490) {
+    if (_490 instanceof Leaf) {
+        return [  ];
+    };
+    if (_490 instanceof Two) {
+        return Prelude["++"](Data_Array.semigroupArray({}))(values(_490.value0))(Prelude["++"](Data_Array.semigroupArray({}))([ _490.value2 ])(values(_490.value3)));
+    };
+    if (_490 instanceof Three) {
+        return Prelude["++"](Data_Array.semigroupArray({}))(values(_490.value0))(Prelude["++"](Data_Array.semigroupArray({}))([ _490.value2 ])(Prelude["++"](Data_Array.semigroupArray({}))(values(_490.value3))(Prelude["++"](Data_Array.semigroupArray({}))([ _490.value5 ])(values(_490.value6)))));
+    };
+    throw new Error("Failed pattern match");
+};
+var toList = function (_488) {
+    if (_488 instanceof Leaf) {
+        return [  ];
+    };
+    if (_488 instanceof Two) {
+        return Prelude["++"](Data_Array.semigroupArray({}))(toList(_488.value0))(Prelude["++"](Data_Array.semigroupArray({}))([ new Data_Tuple.Tuple(_488.value1, _488.value2) ])(toList(_488.value3)));
+    };
+    if (_488 instanceof Three) {
+        return Prelude["++"](Data_Array.semigroupArray({}))(toList(_488.value0))(Prelude["++"](Data_Array.semigroupArray({}))([ new Data_Tuple.Tuple(_488.value1, _488.value2) ])(Prelude["++"](Data_Array.semigroupArray({}))(toList(_488.value3))(Prelude["++"](Data_Array.semigroupArray({}))([ new Data_Tuple.Tuple(_488.value4, _488.value5) ])(toList(_488.value6)))));
+    };
+    throw new Error("Failed pattern match");
+};
+var singleton = function (k) {
+    return function (v) {
+        return new Two(Leaf.value, k, v, Leaf.value);
+    };
+};
+var showTree = function (__dict_Show_0) {
+    return function (__dict_Show_1) {
+        return function (_482) {
+            if (_482 instanceof Leaf) {
+                return "Leaf";
+            };
+            if (_482 instanceof Two) {
+                return "Two (" + showTree(__dict_Show_0)(__dict_Show_1)(_482.value0) + ") (" + Prelude.show(__dict_Show_0)(_482.value1) + ") (" + Prelude.show(__dict_Show_1)(_482.value2) + ") (" + showTree(__dict_Show_0)(__dict_Show_1)(_482.value3) + ")";
+            };
+            if (_482 instanceof Three) {
+                return "Three (" + showTree(__dict_Show_0)(__dict_Show_1)(_482.value0) + ") (" + Prelude.show(__dict_Show_0)(_482.value1) + ") (" + Prelude.show(__dict_Show_1)(_482.value2) + ") (" + showTree(__dict_Show_0)(__dict_Show_1)(_482.value3) + ") (" + Prelude.show(__dict_Show_0)(_482.value4) + ") (" + Prelude.show(__dict_Show_1)(_482.value5) + ") (" + showTree(__dict_Show_0)(__dict_Show_1)(_482.value6) + ")";
+            };
+            throw new Error("Failed pattern match");
+        };
+    };
+};
+var showMap = function (__dict_Show_2) {
+    return function (__dict_Show_3) {
+        return new Prelude.Show(function (m) {
+            return "fromList " + Prelude.show(Prelude.showArray(Data_Tuple.showTuple(__dict_Show_2)(__dict_Show_3)))(toList(m));
+        });
+    };
+};
+var lookup = function (__copy___dict_Ord_4) {
+    return function (__copy__484) {
+        return function (__copy__485) {
+            var __dict_Ord_4 = __copy___dict_Ord_4;
+            var _484 = __copy__484;
+            var _485 = __copy__485;
+            tco: while (true) {
+                if (_485 instanceof Leaf) {
+                    return Data_Maybe.Nothing.value;
+                };
+                if (_485 instanceof Two && Prelude["=="](__dict_Ord_4["__superclass_Prelude.Eq_0"]({}))(_484)(_485.value1)) {
+                    return new Data_Maybe.Just(_485.value2);
+                };
+                if (_485 instanceof Two && Prelude["<"](__dict_Ord_4)(_484)(_485.value1)) {
+                    var __tco___dict_Ord_4 = __dict_Ord_4;
+                    var __tco__484 = _484;
+                    var __tco__485 = _485.value0;
+                    __dict_Ord_4 = __tco___dict_Ord_4;
+                    _484 = __tco__484;
+                    _485 = __tco__485;
+                    continue tco;
+                };
+                if (_485 instanceof Two) {
+                    var __tco___dict_Ord_4 = __dict_Ord_4;
+                    var __tco__484 = _484;
+                    var __tco__485 = _485.value3;
+                    __dict_Ord_4 = __tco___dict_Ord_4;
+                    _484 = __tco__484;
+                    _485 = __tco__485;
+                    continue tco;
+                };
+                if (_485 instanceof Three && Prelude["=="](__dict_Ord_4["__superclass_Prelude.Eq_0"]({}))(_484)(_485.value1)) {
+                    return new Data_Maybe.Just(_485.value2);
+                };
+                if (_485 instanceof Three && Prelude["=="](__dict_Ord_4["__superclass_Prelude.Eq_0"]({}))(_484)(_485.value4)) {
+                    return new Data_Maybe.Just(_485.value5);
+                };
+                if (_485 instanceof Three && Prelude["<"](__dict_Ord_4)(_484)(_485.value1)) {
+                    var __tco___dict_Ord_4 = __dict_Ord_4;
+                    var __tco__484 = _484;
+                    var __tco__485 = _485.value0;
+                    __dict_Ord_4 = __tco___dict_Ord_4;
+                    _484 = __tco__484;
+                    _485 = __tco__485;
+                    continue tco;
+                };
+                if (_485 instanceof Three && Prelude["<"](__dict_Ord_4)(_485.value1)(_484) && Prelude["<="](__dict_Ord_4)(_484)(_485.value4)) {
+                    var __tco___dict_Ord_4 = __dict_Ord_4;
+                    var __tco__484 = _484;
+                    var __tco__485 = _485.value3;
+                    __dict_Ord_4 = __tco___dict_Ord_4;
+                    _484 = __tco__484;
+                    _485 = __tco__485;
+                    continue tco;
+                };
+                if (_485 instanceof Three) {
+                    var __tco___dict_Ord_4 = __dict_Ord_4;
+                    var __tco__484 = _484;
+                    var __tco__485 = _485.value6;
+                    __dict_Ord_4 = __tco___dict_Ord_4;
+                    _484 = __tco__484;
+                    _485 = __tco__485;
+                    continue tco;
+                };
+                throw new Error("Failed pattern match");
+            };
+        };
+    };
+};
+var member = function (__dict_Ord_5) {
+    return function (k) {
+        return function (m) {
+            return Data_Maybe.isJust(lookup(__dict_Ord_5)(k)(m));
+        };
+    };
+};
+var keys = function (_489) {
+    if (_489 instanceof Leaf) {
+        return [  ];
+    };
+    if (_489 instanceof Two) {
+        return Prelude["++"](Data_Array.semigroupArray({}))(keys(_489.value0))(Prelude["++"](Data_Array.semigroupArray({}))([ _489.value1 ])(keys(_489.value3)));
+    };
+    if (_489 instanceof Three) {
+        return Prelude["++"](Data_Array.semigroupArray({}))(keys(_489.value0))(Prelude["++"](Data_Array.semigroupArray({}))([ _489.value1 ])(Prelude["++"](Data_Array.semigroupArray({}))(keys(_489.value3))(Prelude["++"](Data_Array.semigroupArray({}))([ _489.value4 ])(keys(_489.value6)))));
+    };
+    throw new Error("Failed pattern match");
+};
+var isEmpty = function (_483) {
+    if (_483 instanceof Leaf) {
+        return true;
+    };
+    return false;
+};
+var functorMap = function (__unused) {
+    return new Prelude.Functor(function (_491) {
+        return function (_492) {
+            if (_492 instanceof Leaf) {
+                return Leaf.value;
+            };
+            if (_492 instanceof Two) {
+                return new Two(Prelude["<$>"](functorMap({}))(_491)(_492.value0), _492.value1, _491(_492.value2), Prelude["<$>"](functorMap({}))(_491)(_492.value3));
+            };
+            if (_492 instanceof Three) {
+                return new Three(Prelude["<$>"](functorMap({}))(_491)(_492.value0), _492.value1, _491(_492.value2), Prelude["<$>"](functorMap({}))(_491)(_492.value3), _492.value4, _491(_492.value5), Prelude["<$>"](functorMap({}))(_491)(_492.value6));
+            };
+            throw new Error("Failed pattern match");
+        };
+    });
+};
+var map = Prelude["<$>"](functorMap({}));
+var fromZipper = function (__copy___dict_Ord_6) {
+    return function (__copy__486) {
+        return function (__copy__487) {
+            var __dict_Ord_6 = __copy___dict_Ord_6;
+            var _486 = __copy__486;
+            var _487 = __copy__487;
+            tco: while (true) {
+                if (_486.length === 0) {
+                    return _487;
+                };
+                if (_486.length > 0) {
+                    var _1662 = _486.slice(1);
+                    if (_486[0] instanceof TwoLeft) {
+                        var __tco___dict_Ord_6 = __dict_Ord_6;
+                        var __tco__487 = new Two(_487, (_486[0]).value0, (_486[0]).value1, (_486[0]).value2);
+                        __dict_Ord_6 = __tco___dict_Ord_6;
+                        _486 = _1662;
+                        _487 = __tco__487;
+                        continue tco;
+                    };
+                };
+                if (_486.length > 0) {
+                    var _1667 = _486.slice(1);
+                    if (_486[0] instanceof TwoRight) {
+                        var __tco___dict_Ord_6 = __dict_Ord_6;
+                        var __tco__487 = new Two((_486[0]).value0, (_486[0]).value1, (_486[0]).value2, _487);
+                        __dict_Ord_6 = __tco___dict_Ord_6;
+                        _486 = _1667;
+                        _487 = __tco__487;
+                        continue tco;
+                    };
+                };
+                if (_486.length > 0) {
+                    var _1672 = _486.slice(1);
+                    if (_486[0] instanceof ThreeLeft) {
+                        var __tco___dict_Ord_6 = __dict_Ord_6;
+                        var __tco__487 = new Three(_487, (_486[0]).value0, (_486[0]).value1, (_486[0]).value2, (_486[0]).value3, (_486[0]).value4, (_486[0]).value5);
+                        __dict_Ord_6 = __tco___dict_Ord_6;
+                        _486 = _1672;
+                        _487 = __tco__487;
+                        continue tco;
+                    };
+                };
+                if (_486.length > 0) {
+                    var _1680 = _486.slice(1);
+                    if (_486[0] instanceof ThreeMiddle) {
+                        var __tco___dict_Ord_6 = __dict_Ord_6;
+                        var __tco__487 = new Three((_486[0]).value0, (_486[0]).value1, (_486[0]).value2, _487, (_486[0]).value3, (_486[0]).value4, (_486[0]).value5);
+                        __dict_Ord_6 = __tco___dict_Ord_6;
+                        _486 = _1680;
+                        _487 = __tco__487;
+                        continue tco;
+                    };
+                };
+                if (_486.length > 0) {
+                    var _1688 = _486.slice(1);
+                    if (_486[0] instanceof ThreeRight) {
+                        var __tco___dict_Ord_6 = __dict_Ord_6;
+                        var __tco__487 = new Three((_486[0]).value0, (_486[0]).value1, (_486[0]).value2, (_486[0]).value3, (_486[0]).value4, (_486[0]).value5, _487);
+                        __dict_Ord_6 = __tco___dict_Ord_6;
+                        _486 = _1688;
+                        _487 = __tco__487;
+                        continue tco;
+                    };
+                };
+                throw new Error("Failed pattern match");
+            };
+        };
+    };
+};
+var insert = function (__dict_Ord_7) {
+    var up = function (__copy___dict_Ord_8) {
+        return function (__copy__498) {
+            return function (__copy__499) {
+                var __dict_Ord_8 = __copy___dict_Ord_8;
+                var _498 = __copy__498;
+                var _499 = __copy__499;
+                tco: while (true) {
+                    if (_498.length === 0) {
+                        return new Two(_499.value0, _499.value1, _499.value2, _499.value3);
+                    };
+                    if (_498.length > 0) {
+                        var _1706 = _498.slice(1);
+                        if (_498[0] instanceof TwoLeft) {
+                            return fromZipper(__dict_Ord_8)(_1706)(new Three(_499.value0, _499.value1, _499.value2, _499.value3, (_498[0]).value0, (_498[0]).value1, (_498[0]).value2));
+                        };
+                    };
+                    if (_498.length > 0) {
+                        var _1715 = _498.slice(1);
+                        if (_498[0] instanceof TwoRight) {
+                            return fromZipper(__dict_Ord_8)(_1715)(new Three((_498[0]).value0, (_498[0]).value1, (_498[0]).value2, _499.value0, _499.value1, _499.value2, _499.value3));
+                        };
+                    };
+                    if (_498.length > 0) {
+                        var _1724 = _498.slice(1);
+                        if (_498[0] instanceof ThreeLeft) {
+                            var __tco___dict_Ord_8 = __dict_Ord_8;
+                            var __tco__499 = new KickUp(new Two(_499.value0, _499.value1, _499.value2, _499.value3), (_498[0]).value0, (_498[0]).value1, new Two((_498[0]).value2, (_498[0]).value3, (_498[0]).value4, (_498[0]).value5));
+                            __dict_Ord_8 = __tco___dict_Ord_8;
+                            _498 = _1724;
+                            _499 = __tco__499;
+                            continue tco;
+                        };
+                    };
+                    if (_498.length > 0) {
+                        var _1736 = _498.slice(1);
+                        if (_498[0] instanceof ThreeMiddle) {
+                            var __tco___dict_Ord_8 = __dict_Ord_8;
+                            var __tco__499 = new KickUp(new Two((_498[0]).value0, (_498[0]).value1, (_498[0]).value2, _499.value0), _499.value1, _499.value2, new Two(_499.value3, (_498[0]).value3, (_498[0]).value4, (_498[0]).value5));
+                            __dict_Ord_8 = __tco___dict_Ord_8;
+                            _498 = _1736;
+                            _499 = __tco__499;
+                            continue tco;
+                        };
+                    };
+                    if (_498.length > 0) {
+                        var _1748 = _498.slice(1);
+                        if (_498[0] instanceof ThreeRight) {
+                            var __tco___dict_Ord_8 = __dict_Ord_8;
+                            var __tco__499 = new KickUp(new Two((_498[0]).value0, (_498[0]).value1, (_498[0]).value2, (_498[0]).value3), (_498[0]).value4, (_498[0]).value5, new Two(_499.value0, _499.value1, _499.value2, _499.value3));
+                            __dict_Ord_8 = __tco___dict_Ord_8;
+                            _498 = _1748;
+                            _499 = __tco__499;
+                            continue tco;
+                        };
+                    };
+                    throw new Error("Failed pattern match");
+                };
+            };
+        };
+    };
+    var down = function (__copy___dict_Ord_9) {
+        return function (__copy__494) {
+            return function (__copy__495) {
+                return function (__copy__496) {
+                    return function (__copy__497) {
+                        var __dict_Ord_9 = __copy___dict_Ord_9;
+                        var _494 = __copy__494;
+                        var _495 = __copy__495;
+                        var _496 = __copy__496;
+                        var _497 = __copy__497;
+                        tco: while (true) {
+                            if (_497 instanceof Leaf) {
+                                return up(__dict_Ord_9)(_494)(new KickUp(Leaf.value, _495, _496, Leaf.value));
+                            };
+                            if (_497 instanceof Two && Prelude["=="](__dict_Ord_9["__superclass_Prelude.Eq_0"]({}))(_495)(_497.value1)) {
+                                return fromZipper(__dict_Ord_9)(_494)(new Two(_497.value0, _495, _496, _497.value3));
+                            };
+                            if (_497 instanceof Two && Prelude["<"](__dict_Ord_9)(_495)(_497.value1)) {
+                                var __tco___dict_Ord_9 = __dict_Ord_9;
+                                var __tco__494 = Prelude[":"](new TwoLeft(_497.value1, _497.value2, _497.value3))(_494);
+                                var __tco__495 = _495;
+                                var __tco__496 = _496;
+                                var __tco__497 = _497.value0;
+                                __dict_Ord_9 = __tco___dict_Ord_9;
+                                _494 = __tco__494;
+                                _495 = __tco__495;
+                                _496 = __tco__496;
+                                _497 = __tco__497;
+                                continue tco;
+                            };
+                            if (_497 instanceof Two) {
+                                var __tco___dict_Ord_9 = __dict_Ord_9;
+                                var __tco__494 = Prelude[":"](new TwoRight(_497.value0, _497.value1, _497.value2))(_494);
+                                var __tco__495 = _495;
+                                var __tco__496 = _496;
+                                var __tco__497 = _497.value3;
+                                __dict_Ord_9 = __tco___dict_Ord_9;
+                                _494 = __tco__494;
+                                _495 = __tco__495;
+                                _496 = __tco__496;
+                                _497 = __tco__497;
+                                continue tco;
+                            };
+                            if (_497 instanceof Three && Prelude["=="](__dict_Ord_9["__superclass_Prelude.Eq_0"]({}))(_495)(_497.value1)) {
+                                return fromZipper(__dict_Ord_9)(_494)(new Three(_497.value0, _495, _496, _497.value3, _497.value4, _497.value5, _497.value6));
+                            };
+                            if (_497 instanceof Three && Prelude["=="](__dict_Ord_9["__superclass_Prelude.Eq_0"]({}))(_495)(_497.value4)) {
+                                return fromZipper(__dict_Ord_9)(_494)(new Three(_497.value0, _497.value1, _497.value2, _497.value3, _495, _496, _497.value6));
+                            };
+                            if (_497 instanceof Three && Prelude["<"](__dict_Ord_9)(_495)(_497.value1)) {
+                                var __tco___dict_Ord_9 = __dict_Ord_9;
+                                var __tco__494 = Prelude[":"](new ThreeLeft(_497.value1, _497.value2, _497.value3, _497.value4, _497.value5, _497.value6))(_494);
+                                var __tco__495 = _495;
+                                var __tco__496 = _496;
+                                var __tco__497 = _497.value0;
+                                __dict_Ord_9 = __tco___dict_Ord_9;
+                                _494 = __tco__494;
+                                _495 = __tco__495;
+                                _496 = __tco__496;
+                                _497 = __tco__497;
+                                continue tco;
+                            };
+                            if (_497 instanceof Three && Prelude["<"](__dict_Ord_9)(_497.value1)(_495) && Prelude["<="](__dict_Ord_9)(_495)(_497.value4)) {
+                                var __tco___dict_Ord_9 = __dict_Ord_9;
+                                var __tco__494 = Prelude[":"](new ThreeMiddle(_497.value0, _497.value1, _497.value2, _497.value4, _497.value5, _497.value6))(_494);
+                                var __tco__495 = _495;
+                                var __tco__496 = _496;
+                                var __tco__497 = _497.value3;
+                                __dict_Ord_9 = __tco___dict_Ord_9;
+                                _494 = __tco__494;
+                                _495 = __tco__495;
+                                _496 = __tco__496;
+                                _497 = __tco__497;
+                                continue tco;
+                            };
+                            if (_497 instanceof Three) {
+                                var __tco___dict_Ord_9 = __dict_Ord_9;
+                                var __tco__494 = Prelude[":"](new ThreeRight(_497.value0, _497.value1, _497.value2, _497.value3, _497.value4, _497.value5))(_494);
+                                var __tco__495 = _495;
+                                var __tco__496 = _496;
+                                var __tco__497 = _497.value6;
+                                __dict_Ord_9 = __tco___dict_Ord_9;
+                                _494 = __tco__494;
+                                _495 = __tco__495;
+                                _496 = __tco__496;
+                                _497 = __tco__497;
+                                continue tco;
+                            };
+                            throw new Error("Failed pattern match");
+                        };
+                    };
+                };
+            };
+        };
+    };
+    return down(__dict_Ord_7)([  ]);
+};
+var union = function (__dict_Ord_10) {
+    return function (m1) {
+        return function (m2) {
+            return Data_Foldable.foldl(Data_Foldable.foldableArray({}))(function (m) {
+                return function (_481) {
+                    return insert(__dict_Ord_10)(_481.value0)(_481.value1)(m);
+                };
+            })(m2)(toList(m1));
+        };
+    };
+};
+var eqMap = function (__dict_Eq_11) {
+    return function (__dict_Eq_12) {
+        return new Prelude.Eq(function (m1) {
+            return function (m2) {
+                return !Prelude["=="](eqMap(__dict_Eq_11)(__dict_Eq_12))(m1)(m2);
+            };
+        }, function (m1) {
+            return function (m2) {
+                return Prelude["=="](Prelude.eqArray(Data_Tuple.eqTuple(__dict_Eq_11)(__dict_Eq_12)))(toList(m1))(toList(m2));
+            };
+        });
+    };
+};
+var empty = Leaf.value;
+var fromList = function (__dict_Ord_13) {
+    return Data_Foldable.foldl(Data_Foldable.foldableArray({}))(function (m) {
+        return function (_480) {
+            return insert(__dict_Ord_13)(_480.value0)(_480.value1)(m);
+        };
+    })(empty);
+};
+var unions = function (__dict_Ord_14) {
+    return Data_Foldable.foldl(Data_Foldable.foldableArray({}))(union(__dict_Ord_14))(empty);
+};
+var $$delete = function (__dict_Ord_15) {
+    var up = function (__copy___dict_Ord_16) {
+        return function (__copy__503) {
+            return function (__copy__504) {
+                var __dict_Ord_16 = __copy___dict_Ord_16;
+                var _503 = __copy__503;
+                var _504 = __copy__504;
+                tco: while (true) {
+                    if (_503.length === 0) {
+                        return _504;
+                    };
+                    if (_503.length > 0) {
+                        var _1815 = _503.slice(1);
+                        if (_503[0] instanceof TwoLeft && (_503[0]).value2 instanceof Leaf && _504 instanceof Leaf) {
+                            return fromZipper(__dict_Ord_16)(_1815)(new Two(Leaf.value, (_503[0]).value0, (_503[0]).value1, Leaf.value));
+                        };
+                    };
+                    if (_503.length > 0) {
+                        var _1820 = _503.slice(1);
+                        if (_503[0] instanceof TwoRight && (_503[0]).value0 instanceof Leaf && _504 instanceof Leaf) {
+                            return fromZipper(__dict_Ord_16)(_1820)(new Two(Leaf.value, (_503[0]).value1, (_503[0]).value2, Leaf.value));
+                        };
+                    };
+                    if (_503.length > 0) {
+                        var _1825 = _503.slice(1);
+                        if (_503[0] instanceof TwoLeft && (_503[0]).value2 instanceof Two) {
+                            var __tco___dict_Ord_16 = __dict_Ord_16;
+                            var __tco__504 = new Three(_504, (_503[0]).value0, (_503[0]).value1, (_503[0]).value2.value0, (_503[0]).value2.value1, (_503[0]).value2.value2, (_503[0]).value2.value3);
+                            __dict_Ord_16 = __tco___dict_Ord_16;
+                            _503 = _1825;
+                            _504 = __tco__504;
+                            continue tco;
+                        };
+                    };
+                    if (_503.length > 0) {
+                        var _1834 = _503.slice(1);
+                        if (_503[0] instanceof TwoRight && (_503[0]).value0 instanceof Two) {
+                            var __tco___dict_Ord_16 = __dict_Ord_16;
+                            var __tco__504 = new Three((_503[0]).value0.value0, (_503[0]).value0.value1, (_503[0]).value0.value2, (_503[0]).value0.value3, (_503[0]).value1, (_503[0]).value2, _504);
+                            __dict_Ord_16 = __tco___dict_Ord_16;
+                            _503 = _1834;
+                            _504 = __tco__504;
+                            continue tco;
+                        };
+                    };
+                    if (_503.length > 0) {
+                        var _1843 = _503.slice(1);
+                        if (_503[0] instanceof TwoLeft && (_503[0]).value2 instanceof Three) {
+                            return fromZipper(__dict_Ord_16)(_1843)(new Two(new Two(_504, (_503[0]).value0, (_503[0]).value1, (_503[0]).value2.value0), (_503[0]).value2.value1, (_503[0]).value2.value2, new Two((_503[0]).value2.value3, (_503[0]).value2.value4, (_503[0]).value2.value5, (_503[0]).value2.value6)));
+                        };
+                    };
+                    if (_503.length > 0) {
+                        var _1855 = _503.slice(1);
+                        if (_503[0] instanceof TwoRight && (_503[0]).value0 instanceof Three) {
+                            return fromZipper(__dict_Ord_16)(_1855)(new Two(new Two((_503[0]).value0.value0, (_503[0]).value0.value1, (_503[0]).value0.value2, (_503[0]).value0.value3), (_503[0]).value0.value4, (_503[0]).value0.value5, new Two((_503[0]).value0.value6, (_503[0]).value1, (_503[0]).value2, _504)));
+                        };
+                    };
+                    if (_503.length > 0) {
+                        var _1867 = _503.slice(1);
+                        if (_503[0] instanceof ThreeLeft && (_503[0]).value2 instanceof Leaf && (_503[0]).value5 instanceof Leaf && _504 instanceof Leaf) {
+                            return fromZipper(__dict_Ord_16)(_1867)(new Three(Leaf.value, (_503[0]).value0, (_503[0]).value1, Leaf.value, (_503[0]).value3, (_503[0]).value4, Leaf.value));
+                        };
+                    };
+                    if (_503.length > 0) {
+                        var _1875 = _503.slice(1);
+                        if (_503[0] instanceof ThreeMiddle && (_503[0]).value0 instanceof Leaf && (_503[0]).value5 instanceof Leaf && _504 instanceof Leaf) {
+                            return fromZipper(__dict_Ord_16)(_1875)(new Three(Leaf.value, (_503[0]).value1, (_503[0]).value2, Leaf.value, (_503[0]).value3, (_503[0]).value4, Leaf.value));
+                        };
+                    };
+                    if (_503.length > 0) {
+                        var _1883 = _503.slice(1);
+                        if (_503[0] instanceof ThreeRight && (_503[0]).value0 instanceof Leaf && (_503[0]).value3 instanceof Leaf && _504 instanceof Leaf) {
+                            return fromZipper(__dict_Ord_16)(_1883)(new Three(Leaf.value, (_503[0]).value1, (_503[0]).value2, Leaf.value, (_503[0]).value4, (_503[0]).value5, Leaf.value));
+                        };
+                    };
+                    if (_503.length > 0) {
+                        var _1891 = _503.slice(1);
+                        if (_503[0] instanceof ThreeLeft && (_503[0]).value2 instanceof Two) {
+                            return fromZipper(__dict_Ord_16)(_1891)(new Two(new Three(_504, (_503[0]).value0, (_503[0]).value1, (_503[0]).value2.value0, (_503[0]).value2.value1, (_503[0]).value2.value2, (_503[0]).value2.value3), (_503[0]).value3, (_503[0]).value4, (_503[0]).value5));
+                        };
+                    };
+                    if (_503.length > 0) {
+                        var _1903 = _503.slice(1);
+                        if (_503[0] instanceof ThreeMiddle && (_503[0]).value0 instanceof Two) {
+                            return fromZipper(__dict_Ord_16)(_1903)(new Two(new Three((_503[0]).value0.value0, (_503[0]).value0.value1, (_503[0]).value0.value2, (_503[0]).value0.value3, (_503[0]).value1, (_503[0]).value2, _504), (_503[0]).value3, (_503[0]).value4, (_503[0]).value5));
+                        };
+                    };
+                    if (_503.length > 0) {
+                        var _1915 = _503.slice(1);
+                        if (_503[0] instanceof ThreeMiddle && (_503[0]).value5 instanceof Two) {
+                            return fromZipper(__dict_Ord_16)(_1915)(new Two((_503[0]).value0, (_503[0]).value1, (_503[0]).value2, new Three(_504, (_503[0]).value3, (_503[0]).value4, (_503[0]).value5.value0, (_503[0]).value5.value1, (_503[0]).value5.value2, (_503[0]).value5.value3)));
+                        };
+                    };
+                    if (_503.length > 0) {
+                        var _1927 = _503.slice(1);
+                        if (_503[0] instanceof ThreeRight && (_503[0]).value3 instanceof Two) {
+                            return fromZipper(__dict_Ord_16)(_1927)(new Two((_503[0]).value0, (_503[0]).value1, (_503[0]).value2, new Three((_503[0]).value3.value0, (_503[0]).value3.value1, (_503[0]).value3.value2, (_503[0]).value3.value3, (_503[0]).value4, (_503[0]).value5, _504)));
+                        };
+                    };
+                    if (_503.length > 0) {
+                        var _1939 = _503.slice(1);
+                        if (_503[0] instanceof ThreeLeft && (_503[0]).value2 instanceof Three) {
+                            return fromZipper(__dict_Ord_16)(_1939)(new Three(new Two(_504, (_503[0]).value0, (_503[0]).value1, (_503[0]).value2.value0), (_503[0]).value2.value1, (_503[0]).value2.value2, new Two((_503[0]).value2.value3, (_503[0]).value2.value4, (_503[0]).value2.value5, (_503[0]).value2.value6), (_503[0]).value3, (_503[0]).value4, (_503[0]).value5));
+                        };
+                    };
+                    if (_503.length > 0) {
+                        var _1954 = _503.slice(1);
+                        if (_503[0] instanceof ThreeMiddle && (_503[0]).value0 instanceof Three) {
+                            return fromZipper(__dict_Ord_16)(_1954)(new Three(new Two((_503[0]).value0.value0, (_503[0]).value0.value1, (_503[0]).value0.value2, (_503[0]).value0.value3), (_503[0]).value0.value4, (_503[0]).value0.value5, new Two((_503[0]).value0.value6, (_503[0]).value1, (_503[0]).value2, _504), (_503[0]).value3, (_503[0]).value4, (_503[0]).value5));
+                        };
+                    };
+                    if (_503.length > 0) {
+                        var _1969 = _503.slice(1);
+                        if (_503[0] instanceof ThreeMiddle && (_503[0]).value5 instanceof Three) {
+                            return fromZipper(__dict_Ord_16)(_1969)(new Three((_503[0]).value0, (_503[0]).value1, (_503[0]).value2, new Two(_504, (_503[0]).value3, (_503[0]).value4, (_503[0]).value5.value0), (_503[0]).value5.value1, (_503[0]).value5.value2, new Two((_503[0]).value5.value3, (_503[0]).value5.value4, (_503[0]).value5.value5, (_503[0]).value5.value6)));
+                        };
+                    };
+                    if (_503.length > 0) {
+                        var _1984 = _503.slice(1);
+                        if (_503[0] instanceof ThreeRight && (_503[0]).value3 instanceof Three) {
+                            return fromZipper(__dict_Ord_16)(_1984)(new Three((_503[0]).value0, (_503[0]).value1, (_503[0]).value2, new Two((_503[0]).value3.value0, (_503[0]).value3.value1, (_503[0]).value3.value2, (_503[0]).value3.value3), (_503[0]).value3.value4, (_503[0]).value3.value5, new Two((_503[0]).value3.value6, (_503[0]).value4, (_503[0]).value5, _504)));
+                        };
+                    };
+                    throw new Error("Failed pattern match");
+                };
+            };
+        };
+    };
+    var removeMaxNode = function (__copy___dict_Ord_17) {
+        return function (__copy__506) {
+            return function (__copy__507) {
+                var __dict_Ord_17 = __copy___dict_Ord_17;
+                var _506 = __copy__506;
+                var _507 = __copy__507;
+                tco: while (true) {
+                    if (_507 instanceof Two && _507.value0 instanceof Leaf && _507.value3 instanceof Leaf) {
+                        return up(__dict_Ord_17)(_506)(Leaf.value);
+                    };
+                    if (_507 instanceof Two) {
+                        var __tco___dict_Ord_17 = __dict_Ord_17;
+                        var __tco__506 = Prelude[":"](new TwoRight(_507.value0, _507.value1, _507.value2))(_506);
+                        var __tco__507 = _507.value3;
+                        __dict_Ord_17 = __tco___dict_Ord_17;
+                        _506 = __tco__506;
+                        _507 = __tco__507;
+                        continue tco;
+                    };
+                    if (_507 instanceof Three && _507.value0 instanceof Leaf && _507.value3 instanceof Leaf && _507.value6 instanceof Leaf) {
+                        return up(__dict_Ord_17)(Prelude[":"](new TwoRight(Leaf.value, _507.value1, _507.value2))(_506))(Leaf.value);
+                    };
+                    if (_507 instanceof Three) {
+                        var __tco___dict_Ord_17 = __dict_Ord_17;
+                        var __tco__506 = Prelude[":"](new ThreeRight(_507.value0, _507.value1, _507.value2, _507.value3, _507.value4, _507.value5))(_506);
+                        var __tco__507 = _507.value6;
+                        __dict_Ord_17 = __tco___dict_Ord_17;
+                        _506 = __tco__506;
+                        _507 = __tco__507;
+                        continue tco;
+                    };
+                    throw new Error("Failed pattern match");
+                };
+            };
+        };
+    };
+    var maxNode = function (__copy___dict_Ord_18) {
+        return function (__copy__505) {
+            var __dict_Ord_18 = __copy___dict_Ord_18;
+            var _505 = __copy__505;
+            tco: while (true) {
+                if (_505 instanceof Two && _505.value3 instanceof Leaf) {
+                    return {
+                        key: _505.value1, 
+                        value: _505.value2
+                    };
+                };
+                if (_505 instanceof Two) {
+                    var __tco___dict_Ord_18 = __dict_Ord_18;
+                    var __tco__505 = _505.value3;
+                    __dict_Ord_18 = __tco___dict_Ord_18;
+                    _505 = __tco__505;
+                    continue tco;
+                };
+                if (_505 instanceof Three && _505.value6 instanceof Leaf) {
+                    return {
+                        key: _505.value4, 
+                        value: _505.value5
+                    };
+                };
+                if (_505 instanceof Three) {
+                    var __tco___dict_Ord_18 = __dict_Ord_18;
+                    var __tco__505 = _505.value6;
+                    __dict_Ord_18 = __tco___dict_Ord_18;
+                    _505 = __tco__505;
+                    continue tco;
+                };
+                throw new Error("Failed pattern match");
+            };
+        };
+    };
+    var down = function (__copy___dict_Ord_19) {
+        return function (__copy__500) {
+            return function (__copy__501) {
+                return function (__copy__502) {
+                    var __dict_Ord_19 = __copy___dict_Ord_19;
+                    var _500 = __copy__500;
+                    var _501 = __copy__501;
+                    var _502 = __copy__502;
+                    tco: while (true) {
+                        if (_502 instanceof Leaf) {
+                            return fromZipper(__dict_Ord_19)(_500)(Leaf.value);
+                        };
+                        if (_502 instanceof Two && _502.value0 instanceof Leaf && _502.value3 instanceof Leaf && Prelude["=="](__dict_Ord_19["__superclass_Prelude.Eq_0"]({}))(_501)(_502.value1)) {
+                            return up(__dict_Ord_19)(_500)(Leaf.value);
+                        };
+                        if (_502 instanceof Two && Prelude["=="](__dict_Ord_19["__superclass_Prelude.Eq_0"]({}))(_501)(_502.value1)) {
+                            var max = maxNode(__dict_Ord_19)(_502.value0);
+                            return removeMaxNode(__dict_Ord_19)(Prelude[":"](new TwoLeft(max.key, max.value, _502.value3))(_500))(_502.value0);
+                        };
+                        if (_502 instanceof Two && Prelude["<"](__dict_Ord_19)(_501)(_502.value1)) {
+                            var __tco___dict_Ord_19 = __dict_Ord_19;
+                            var __tco__500 = Prelude[":"](new TwoLeft(_502.value1, _502.value2, _502.value3))(_500);
+                            var __tco__501 = _501;
+                            var __tco__502 = _502.value0;
+                            __dict_Ord_19 = __tco___dict_Ord_19;
+                            _500 = __tco__500;
+                            _501 = __tco__501;
+                            _502 = __tco__502;
+                            continue tco;
+                        };
+                        if (_502 instanceof Two) {
+                            var __tco___dict_Ord_19 = __dict_Ord_19;
+                            var __tco__500 = Prelude[":"](new TwoRight(_502.value0, _502.value1, _502.value2))(_500);
+                            var __tco__501 = _501;
+                            var __tco__502 = _502.value3;
+                            __dict_Ord_19 = __tco___dict_Ord_19;
+                            _500 = __tco__500;
+                            _501 = __tco__501;
+                            _502 = __tco__502;
+                            continue tco;
+                        };
+                        if (_502 instanceof Three && _502.value0 instanceof Leaf && _502.value3 instanceof Leaf && _502.value6 instanceof Leaf && Prelude["=="](__dict_Ord_19["__superclass_Prelude.Eq_0"]({}))(_501)(_502.value1)) {
+                            return fromZipper(__dict_Ord_19)(_500)(new Two(Leaf.value, _502.value4, _502.value5, Leaf.value));
+                        };
+                        if (_502 instanceof Three && _502.value0 instanceof Leaf && _502.value3 instanceof Leaf && _502.value6 instanceof Leaf && Prelude["=="](__dict_Ord_19["__superclass_Prelude.Eq_0"]({}))(_501)(_502.value4)) {
+                            return fromZipper(__dict_Ord_19)(_500)(new Two(Leaf.value, _502.value1, _502.value2, Leaf.value));
+                        };
+                        if (_502 instanceof Three && Prelude["=="](__dict_Ord_19["__superclass_Prelude.Eq_0"]({}))(_501)(_502.value1)) {
+                            var max = maxNode(__dict_Ord_19)(_502.value0);
+                            return removeMaxNode(__dict_Ord_19)(Prelude[":"](new ThreeLeft(max.key, max.value, _502.value3, _502.value4, _502.value5, _502.value6))(_500))(_502.value0);
+                        };
+                        if (_502 instanceof Three && Prelude["=="](__dict_Ord_19["__superclass_Prelude.Eq_0"]({}))(_501)(_502.value4)) {
+                            var max = maxNode(__dict_Ord_19)(_502.value3);
+                            return removeMaxNode(__dict_Ord_19)(Prelude[":"](new ThreeMiddle(_502.value0, _502.value1, _502.value2, max.key, max.value, _502.value6))(_500))(_502.value3);
+                        };
+                        if (_502 instanceof Three && Prelude["<"](__dict_Ord_19)(_501)(_502.value1)) {
+                            var __tco___dict_Ord_19 = __dict_Ord_19;
+                            var __tco__500 = Prelude[":"](new ThreeLeft(_502.value1, _502.value2, _502.value3, _502.value4, _502.value5, _502.value6))(_500);
+                            var __tco__501 = _501;
+                            var __tco__502 = _502.value0;
+                            __dict_Ord_19 = __tco___dict_Ord_19;
+                            _500 = __tco__500;
+                            _501 = __tco__501;
+                            _502 = __tco__502;
+                            continue tco;
+                        };
+                        if (_502 instanceof Three && Prelude["<"](__dict_Ord_19)(_502.value1)(_501) && Prelude["<"](__dict_Ord_19)(_501)(_502.value4)) {
+                            var __tco___dict_Ord_19 = __dict_Ord_19;
+                            var __tco__500 = Prelude[":"](new ThreeMiddle(_502.value0, _502.value1, _502.value2, _502.value4, _502.value5, _502.value6))(_500);
+                            var __tco__501 = _501;
+                            var __tco__502 = _502.value3;
+                            __dict_Ord_19 = __tco___dict_Ord_19;
+                            _500 = __tco__500;
+                            _501 = __tco__501;
+                            _502 = __tco__502;
+                            continue tco;
+                        };
+                        if (_502 instanceof Three) {
+                            var __tco___dict_Ord_19 = __dict_Ord_19;
+                            var __tco__500 = Prelude[":"](new ThreeRight(_502.value0, _502.value1, _502.value2, _502.value3, _502.value4, _502.value5))(_500);
+                            var __tco__501 = _501;
+                            var __tco__502 = _502.value6;
+                            __dict_Ord_19 = __tco___dict_Ord_19;
+                            _500 = __tco__500;
+                            _501 = __tco__501;
+                            _502 = __tco__502;
+                            continue tco;
+                        };
+                        throw new Error("Failed pattern match");
+                    };
+                };
+            };
+        };
+    };
+    return down(__dict_Ord_15)([  ]);
+};
+var checkValid = function (tree) {
+    var allHeights = function (_493) {
+        if (_493 instanceof Leaf) {
+            return [ 0 ];
+        };
+        if (_493 instanceof Two) {
+            return Data_Array.map(function (n) {
+                return n + 1;
+            })(Prelude["++"](Data_Array.semigroupArray({}))(allHeights(_493.value0))(allHeights(_493.value3)));
+        };
+        if (_493 instanceof Three) {
+            return Data_Array.map(function (n) {
+                return n + 1;
+            })(Prelude["++"](Data_Array.semigroupArray({}))(allHeights(_493.value0))(Prelude["++"](Data_Array.semigroupArray({}))(allHeights(_493.value3))(allHeights(_493.value6))));
         };
         throw new Error("Failed pattern match");
     };
-    var menuButton = React.createClass((function () {
-        var _701 = {};
-        for (var _702 in React.spec) {
-            if (React.spec.hasOwnProperty(_702)) {
-                _701[_702] = React.spec[_702];
+    return Data_Array.length(Data_Array.nub(Prelude.eqNumber({}))(allHeights(tree))) === 1;
+};
+var alter = function (__dict_Ord_20) {
+    return function (f) {
+        return function (k) {
+            return function (m) {
+                var _2125 = f(lookup(__dict_Ord_20)(k)(m));
+                if (_2125 instanceof Data_Maybe.Nothing) {
+                    return $$delete(__dict_Ord_20)(k)(m);
+                };
+                if (_2125 instanceof Data_Maybe.Just) {
+                    return insert(__dict_Ord_20)(k)(_2125.value0)(m);
+                };
+                throw new Error("Failed pattern match");
             };
         };
-        _701.displayName = "MenuButton";
-        _701.render = function ($$this) {
-            return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.li({
-                className: "has-dropdown"
-            })([ React_DOM.a({
-                id: "menu-button-" + $$this.props.name
-            })([ React_DOM.rawText($$this.props.name) ]), React_DOM.ul({
-                className: "dropdown"
-            })(Prelude["<$>"](Data_Array.functorArray({}))(command)($$this.props.commands)) ]));
+    };
+};
+var update = function (__dict_Ord_21) {
+    return function (f) {
+        return function (k) {
+            return function (m) {
+                return alter(__dict_Ord_21)(Data_Maybe.maybe(Data_Maybe.Nothing.value)(f))(k)(m);
+            };
         };
-        return _701;
+    };
+};
+module.exports = {
+    map: map, 
+    unions: unions, 
+    union: union, 
+    values: values, 
+    keys: keys, 
+    update: update, 
+    alter: alter, 
+    member: member, 
+    "delete": $$delete, 
+    fromList: fromList, 
+    toList: toList, 
+    lookup: lookup, 
+    insert: insert, 
+    checkValid: checkValid, 
+    singleton: singleton, 
+    isEmpty: isEmpty, 
+    empty: empty, 
+    showTree: showTree, 
+    eqMap: eqMap, 
+    showMap: showMap, 
+    functorMap: functorMap
+};
+},{"Data.Array":62,"Data.Foldable":71,"Data.Maybe":76,"Data.Tuple":88,"Prelude":undefined}],75:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Data_Maybe = require("Data.Maybe");
+var fromJust = function (_414) {
+    if (_414 instanceof Data_Maybe.Just) {
+        return _414.value0;
+    };
+    throw new Error("Failed pattern match");
+};
+module.exports = {
+    fromJust: fromJust
+};
+},{"Data.Maybe":76,"Prelude":undefined}],76:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Control_Alt = require("Control.Alt");
+var Control_Plus = require("Control.Plus");
+var Control_Alternative = require("Control.Alternative");
+var Control_MonadPlus = require("Control.MonadPlus");
+function Nothing() {
+
+};
+Nothing.value = new Nothing();
+function Just(value0) {
+    this.value0 = value0;
+};
+Just.create = function (value0) {
+    return new Just(value0);
+};
+var showMaybe = function (__dict_Show_0) {
+    return new Prelude.Show(function (_233) {
+        if (_233 instanceof Just) {
+            return "Just (" + Prelude.show(__dict_Show_0)(_233.value0) + ")";
+        };
+        if (_233 instanceof Nothing) {
+            return "Nothing";
+        };
+        throw new Error("Failed pattern match");
+    });
+};
+var maybe = function (_222) {
+    return function (_223) {
+        return function (_224) {
+            if (_224 instanceof Nothing) {
+                return _222;
+            };
+            if (_224 instanceof Just) {
+                return _223(_224.value0);
+            };
+            throw new Error("Failed pattern match");
+        };
+    };
+};
+var isNothing = maybe(true)(Prelude["const"](false));
+var isJust = maybe(false)(Prelude["const"](true));
+var functorMaybe = function (__unused) {
+    return new Prelude.Functor(function (_225) {
+        return function (_226) {
+            if (_226 instanceof Just) {
+                return new Just(_225(_226.value0));
+            };
+            return Nothing.value;
+        };
+    });
+};
+var fromMaybe = function (a) {
+    return maybe(a)(Prelude.id(Prelude.categoryArr({})));
+};
+var eqMaybe = function (__dict_Eq_2) {
+    return new Prelude.Eq(function (a) {
+        return function (b) {
+            return !Prelude["=="](eqMaybe(__dict_Eq_2))(a)(b);
+        };
+    }, function (_234) {
+        return function (_235) {
+            if (_234 instanceof Nothing && _235 instanceof Nothing) {
+                return true;
+            };
+            if (_234 instanceof Just && _235 instanceof Just) {
+                return Prelude["=="](__dict_Eq_2)(_234.value0)(_235.value0);
+            };
+            return false;
+        };
+    });
+};
+var ordMaybe = function (__dict_Ord_1) {
+    return new Prelude.Ord(function (__unused) {
+        return eqMaybe(__dict_Ord_1["__superclass_Prelude.Eq_0"]({}));
+    }, function (_236) {
+        return function (_237) {
+            if (_236 instanceof Just && _237 instanceof Just) {
+                return Prelude.compare(__dict_Ord_1)(_236.value0)(_237.value0);
+            };
+            if (_236 instanceof Nothing && _237 instanceof Nothing) {
+                return Prelude.EQ.value;
+            };
+            if (_236 instanceof Nothing) {
+                return Prelude.LT.value;
+            };
+            if (_237 instanceof Nothing) {
+                return Prelude.GT.value;
+            };
+            throw new Error("Failed pattern match");
+        };
+    });
+};
+var applyMaybe = function (__unused) {
+    return new Prelude.Apply(function (_227) {
+        return function (_228) {
+            if (_227 instanceof Just) {
+                return Prelude["<$>"](functorMaybe({}))(_227.value0)(_228);
+            };
+            if (_227 instanceof Nothing) {
+                return Nothing.value;
+            };
+            throw new Error("Failed pattern match");
+        };
+    }, functorMaybe);
+};
+var bindMaybe = function (__unused) {
+    return new Prelude.Bind(function (_231) {
+        return function (_232) {
+            if (_231 instanceof Just) {
+                return _232(_231.value0);
+            };
+            if (_231 instanceof Nothing) {
+                return Nothing.value;
+            };
+            throw new Error("Failed pattern match");
+        };
+    }, applyMaybe);
+};
+var applicativeMaybe = function (__unused) {
+    return new Prelude.Applicative(applyMaybe, Just.create);
+};
+var monadMaybe = function (__unused) {
+    return new Prelude.Monad(applicativeMaybe, bindMaybe);
+};
+var altMaybe = function (__unused) {
+    return new Control_Alt.Alt(function (_229) {
+        return function (_230) {
+            if (_229 instanceof Nothing) {
+                return _230;
+            };
+            return _229;
+        };
+    }, functorMaybe);
+};
+var plusMaybe = function (__unused) {
+    return new Control_Plus.Plus(altMaybe, Nothing.value);
+};
+var alternativeMaybe = function (__unused) {
+    return new Control_Alternative.Alternative(plusMaybe, applicativeMaybe);
+};
+var monadPlusMaybe = function (__unused) {
+    return new Control_MonadPlus.MonadPlus(alternativeMaybe, monadMaybe);
+};
+module.exports = {
+    Nothing: Nothing, 
+    Just: Just, 
+    isNothing: isNothing, 
+    isJust: isJust, 
+    fromMaybe: fromMaybe, 
+    maybe: maybe, 
+    functorMaybe: functorMaybe, 
+    applyMaybe: applyMaybe, 
+    applicativeMaybe: applicativeMaybe, 
+    altMaybe: altMaybe, 
+    plusMaybe: plusMaybe, 
+    alternativeMaybe: alternativeMaybe, 
+    bindMaybe: bindMaybe, 
+    monadMaybe: monadMaybe, 
+    monadPlusMaybe: monadPlusMaybe, 
+    showMaybe: showMaybe, 
+    eqMaybe: eqMaybe, 
+    ordMaybe: ordMaybe
+};
+},{"Control.Alt":24,"Control.Alternative":undefined,"Control.MonadPlus":54,"Control.Plus":55,"Prelude":undefined}],77:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Data_Monoid = require("Data.Monoid");
+var All = {
+    create: function (value) {
+        return value;
+    }
+};
+var showAll = function (__unused) {
+    return new Prelude.Show(function (_283) {
+        return "All (" + Prelude.show(Prelude.showBoolean({}))(_283) + ")";
+    });
+};
+var semigroupAll = function (__unused) {
+    return new Prelude.Semigroup(function (_284) {
+        return function (_285) {
+            return _284 && _285;
+        };
+    });
+};
+var runAll = function (_278) {
+    return _278;
+};
+var monoidAll = function (__unused) {
+    return new Data_Monoid.Monoid(semigroupAll, true);
+};
+var eqAll = function (__unused) {
+    return new Prelude.Eq(function (_281) {
+        return function (_282) {
+            return _281 !== _282;
+        };
+    }, function (_279) {
+        return function (_280) {
+            return _279 === _280;
+        };
+    });
+};
+module.exports = {
+    All: All, 
+    runAll: runAll, 
+    eqAll: eqAll, 
+    showAll: showAll, 
+    semigroupAll: semigroupAll, 
+    monoidAll: monoidAll
+};
+},{"Data.Monoid":82,"Prelude":undefined}],78:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Data_Monoid = require("Data.Monoid");
+var Any = {
+    create: function (value) {
+        return value;
+    }
+};
+var showAny = function (__unused) {
+    return new Prelude.Show(function (_291) {
+        return "Any (" + Prelude.show(Prelude.showBoolean({}))(_291) + ")";
+    });
+};
+var semigroupAny = function (__unused) {
+    return new Prelude.Semigroup(function (_292) {
+        return function (_293) {
+            return _292 || _293;
+        };
+    });
+};
+var runAny = function (_286) {
+    return _286;
+};
+var monoidAny = function (__unused) {
+    return new Data_Monoid.Monoid(semigroupAny, false);
+};
+var eqAny = function (__unused) {
+    return new Prelude.Eq(function (_289) {
+        return function (_290) {
+            return _289 !== _290;
+        };
+    }, function (_287) {
+        return function (_288) {
+            return _287 === _288;
+        };
+    });
+};
+module.exports = {
+    Any: Any, 
+    runAny: runAny, 
+    eqAny: eqAny, 
+    showAny: showAny, 
+    semigroupAny: semigroupAny, 
+    monoidAny: monoidAny
+};
+},{"Data.Monoid":82,"Prelude":undefined}],79:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Data_Monoid = require("Data.Monoid");
+var Dual = {
+    create: function (value) {
+        return value;
+    }
+};
+var showDual = function (__dict_Show_0) {
+    return new Prelude.Show(function (_301) {
+        return "Dual (" + Prelude.show(__dict_Show_0)(_301) + ")";
+    });
+};
+var semigroupDual = function (__dict_Semigroup_1) {
+    return new Prelude.Semigroup(function (_302) {
+        return function (_303) {
+            return Prelude["<>"](__dict_Semigroup_1)(_303)(_302);
+        };
+    });
+};
+var runDual = function (_294) {
+    return _294;
+};
+var monoidDual = function (__dict_Monoid_3) {
+    return new Data_Monoid.Monoid(function (__unused) {
+        return semigroupDual(__dict_Monoid_3["__superclass_Prelude.Semigroup_0"]({}));
+    }, Data_Monoid.mempty(__dict_Monoid_3));
+};
+var eqDual = function (__dict_Eq_4) {
+    return new Prelude.Eq(function (_297) {
+        return function (_298) {
+            return Prelude["/="](__dict_Eq_4)(_297)(_298);
+        };
+    }, function (_295) {
+        return function (_296) {
+            return Prelude["=="](__dict_Eq_4)(_295)(_296);
+        };
+    });
+};
+var ordDual = function (__dict_Ord_2) {
+    return new Prelude.Ord(function (__unused) {
+        return eqDual(__dict_Ord_2["__superclass_Prelude.Eq_0"]({}));
+    }, function (_299) {
+        return function (_300) {
+            return Prelude.compare(__dict_Ord_2)(_299)(_300);
+        };
+    });
+};
+module.exports = {
+    Dual: Dual, 
+    runDual: runDual, 
+    eqDual: eqDual, 
+    ordDual: ordDual, 
+    showDual: showDual, 
+    semigroupDual: semigroupDual, 
+    monoidDual: monoidDual
+};
+},{"Data.Monoid":82,"Prelude":undefined}],80:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Data_Monoid = require("Data.Monoid");
+var Endo = {
+    create: function (value) {
+        return value;
+    }
+};
+var semigroupEndo = function (__unused) {
+    return new Prelude.Semigroup(function (_305) {
+        return function (_306) {
+            return Prelude["<<<"](Prelude.semigroupoidArr({}))(_305)(_306);
+        };
+    });
+};
+var runEndo = function (_304) {
+    return _304;
+};
+var monoidEndo = function (__unused) {
+    return new Data_Monoid.Monoid(semigroupEndo, Prelude.id(Prelude.categoryArr({})));
+};
+module.exports = {
+    Endo: Endo, 
+    runEndo: runEndo, 
+    semigroupEndo: semigroupEndo, 
+    monoidEndo: monoidEndo
+};
+},{"Data.Monoid":82,"Prelude":undefined}],81:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Data_Maybe = require("Data.Maybe");
+var Data_Monoid = require("Data.Monoid");
+var First = {
+    create: function (value) {
+        return value;
+    }
+};
+var showFirst = function (__dict_Show_0) {
+    return new Prelude.Show(function (_444) {
+        return "First (" + Prelude.show(Data_Maybe.showMaybe(__dict_Show_0))(_444) + ")";
+    });
+};
+var semigroupFirst = function (__unused) {
+    return new Prelude.Semigroup(function (_445) {
+        return function (_446) {
+            if (_445 instanceof Data_Maybe.Just) {
+                return _445;
+            };
+            return _446;
+        };
+    });
+};
+var runFirst = function (_437) {
+    return _437;
+};
+var monoidFirst = function (__unused) {
+    return new Data_Monoid.Monoid(semigroupFirst, Data_Maybe.Nothing.value);
+};
+var eqFirst = function (__dict_Eq_2) {
+    return new Prelude.Eq(function (_440) {
+        return function (_441) {
+            return Prelude["/="](Data_Maybe.eqMaybe(__dict_Eq_2))(_440)(_441);
+        };
+    }, function (_438) {
+        return function (_439) {
+            return Prelude["=="](Data_Maybe.eqMaybe(__dict_Eq_2))(_438)(_439);
+        };
+    });
+};
+var ordFirst = function (__dict_Ord_1) {
+    return new Prelude.Ord(function (__unused) {
+        return eqFirst(__dict_Ord_1["__superclass_Prelude.Eq_0"]({}));
+    }, function (_442) {
+        return function (_443) {
+            return Prelude.compare(Data_Maybe.ordMaybe(__dict_Ord_1))(_442)(_443);
+        };
+    });
+};
+module.exports = {
+    First: First, 
+    runFirst: runFirst, 
+    eqFirst: eqFirst, 
+    ordFirst: ordFirst, 
+    showFirst: showFirst, 
+    semigroupFirst: semigroupFirst, 
+    monoidFirst: monoidFirst
+};
+},{"Data.Maybe":76,"Data.Monoid":82,"Prelude":undefined}],82:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Data_Array = require("Data.Array");
+function Monoid(__superclass_Prelude$dotSemigroup_0, mempty) {
+    this["__superclass_Prelude.Semigroup_0"] = __superclass_Prelude$dotSemigroup_0;
+    this.mempty = mempty;
+};
+var monoidUnit = function (__unused) {
+    return new Monoid(function (__unused) {
+        return Prelude.semigroupUnit({});
+    }, Prelude.unit);
+};
+var monoidString = function (__unused) {
+    return new Monoid(function (__unused) {
+        return Prelude.semigroupString({});
+    }, "");
+};
+var monoidArray = function (__unused) {
+    return new Monoid(function (__unused) {
+        return Data_Array.semigroupArray({});
+    }, [  ]);
+};
+var mempty = function (dict) {
+    return dict.mempty;
+};
+module.exports = {
+    Monoid: Monoid, 
+    mempty: mempty, 
+    monoidString: monoidString, 
+    monoidArray: monoidArray, 
+    monoidUnit: monoidUnit
+};
+},{"Data.Array":62,"Prelude":undefined}],83:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Data_Either = require("Data.Either");
+var Data_Profunctor = require("Data.Profunctor");
+function Choice(__superclass_Data$dotProfunctor$dotProfunctor_0, left$prime, right$prime) {
+    this["__superclass_Data.Profunctor.Profunctor_0"] = __superclass_Data$dotProfunctor$dotProfunctor_0;
+    this["left'"] = left$prime;
+    this["right'"] = right$prime;
+};
+var right$prime = function (dict) {
+    return dict["right'"];
+};
+var left$prime = function (dict) {
+    return dict["left'"];
+};
+var choiceArr = function (__unused) {
+    return new Choice(function (__unused) {
+        return Data_Profunctor.profunctorArr({});
+    }, function (_169) {
+        return function (_170) {
+            if (_170 instanceof Data_Either.Left) {
+                return Data_Either.Left.create(_169(_170.value0));
+            };
+            if (_170 instanceof Data_Either.Right) {
+                return new Data_Either.Right(_170.value0);
+            };
+            throw new Error("Failed pattern match");
+        };
+    }, Prelude["<$>"](Data_Either.functorEither({})));
+};
+module.exports = {
+    Choice: Choice, 
+    "right'": right$prime, 
+    "left'": left$prime, 
+    choiceArr: choiceArr
+};
+},{"Data.Either":undefined,"Data.Profunctor":84,"Prelude":undefined}],84:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+function Profunctor(dimap) {
+    this.dimap = dimap;
+};
+var profunctorArr = function (__unused) {
+    return new Profunctor(function (a2b) {
+        return function (c2d) {
+            return function (b2c) {
+                return Prelude[">>>"](Prelude.semigroupoidArr({}))(a2b)(Prelude[">>>"](Prelude.semigroupoidArr({}))(b2c)(c2d));
+            };
+        };
+    });
+};
+var dimap = function (dict) {
+    return dict.dimap;
+};
+var lmap = function (__dict_Profunctor_0) {
+    return function (a2b) {
+        return dimap(__dict_Profunctor_0)(a2b)(Prelude.id(Prelude.categoryArr({})));
+    };
+};
+var rmap = function (__dict_Profunctor_1) {
+    return function (b2c) {
+        return dimap(__dict_Profunctor_1)(Prelude.id(Prelude.categoryArr({})))(b2c);
+    };
+};
+module.exports = {
+    Profunctor: Profunctor, 
+    rmap: rmap, 
+    lmap: lmap, 
+    dimap: dimap, 
+    profunctorArr: profunctorArr
+};
+},{"Prelude":undefined}],85:[function(require,module,exports){
+"use strict";
+var Data_Map = require("Data.Map");
+var Data_Array = require("Data.Array");
+var Data_Tuple = require("Data.Tuple");
+var Prelude = require("Prelude");
+var Data_Foldable = require("Data.Foldable");
+function Set(value0) {
+    this.value0 = value0;
+};
+Set.create = function (value0) {
+    return new Set(value0);
+};
+var union = function (__dict_Ord_0) {
+    return function (_527) {
+        return function (_528) {
+            return new Set(Data_Map.union(__dict_Ord_0)(_527.value0)(_528.value0));
+        };
+    };
+};
+var toList = function (_526) {
+    return Data_Array.map(Data_Tuple.fst)(Data_Map.toList(_526.value0));
+};
+var singleton = function (a) {
+    return new Set(Data_Map.singleton(a)(Prelude.unit));
+};
+var showSet = function (__dict_Show_1) {
+    return new Prelude.Show(function (s) {
+        return "fromList " + Prelude.show(Prelude.showArray(__dict_Show_1))(toList(s));
+    });
+};
+var member = function (__dict_Ord_2) {
+    return function (_520) {
+        return function (_521) {
+            return Data_Map.member(__dict_Ord_2)(_520)(_521.value0);
+        };
+    };
+};
+var isEmpty = function (_518) {
+    return Data_Map.isEmpty(_518.value0);
+};
+var insert = function (__dict_Ord_3) {
+    return function (_522) {
+        return function (_523) {
+            return new Set(Data_Map.insert(__dict_Ord_3)(_522)(Prelude.unit)(_523.value0));
+        };
+    };
+};
+var eqSet = function (__dict_Eq_4) {
+    return new Prelude.Eq(function (_531) {
+        return function (_532) {
+            return Prelude["/="](Data_Map.eqMap(__dict_Eq_4)(Prelude.eqUnit({})))(_531.value0)(_532.value0);
+        };
+    }, function (_529) {
+        return function (_530) {
+            return Prelude["=="](Data_Map.eqMap(__dict_Eq_4)(Prelude.eqUnit({})))(_529.value0)(_530.value0);
+        };
+    });
+};
+var empty = new Set(Data_Map.empty);
+var fromList = function (__dict_Ord_5) {
+    return Data_Foldable.foldl(Data_Foldable.foldableArray({}))(function (m) {
+        return function (a) {
+            return insert(__dict_Ord_5)(a)(m);
+        };
+    })(empty);
+};
+var unions = function (__dict_Ord_6) {
+    return Data_Foldable.foldl(Data_Foldable.foldableArray({}))(union(__dict_Ord_6))(empty);
+};
+var $$delete = function (__dict_Ord_7) {
+    return function (_524) {
+        return function (_525) {
+            return new Set(Data_Map["delete"](__dict_Ord_7)(_524)(_525.value0));
+        };
+    };
+};
+var checkValid = function (_519) {
+    return Data_Map.checkValid(_519.value0);
+};
+module.exports = {
+    unions: unions, 
+    union: union, 
+    fromList: fromList, 
+    toList: toList, 
+    "delete": $$delete, 
+    member: member, 
+    insert: insert, 
+    checkValid: checkValid, 
+    singleton: singleton, 
+    isEmpty: isEmpty, 
+    empty: empty, 
+    eqSet: eqSet, 
+    showSet: showSet
+};
+},{"Data.Array":62,"Data.Foldable":71,"Data.Map":74,"Data.Tuple":88,"Prelude":undefined}],86:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+function charAt(i) {  return function(s) {    return s.charAt(i);   };};
+function charCodeAt(i) {  return function(s) {    return s.charCodeAt(i);   };};
+function fromCharCode(n) {  return String.fromCharCode(n);};
+function indexOf(x) {  return function(s) {    return s.indexOf(x);  }; };
+function indexOf$prime(x) {  return function(startAt) {    return function(s) {      return s.indexOf(x, startAt);    };   }; };
+function lastIndexOf(x) {  return function(s) {    return s.lastIndexOf(x);  };};
+function lastIndexOf$prime(x) {  return function(startAt) {    return function(s) {      return s.lastIndexOf(x, startAt);    };   }; };
+function length(s) {  return s.length;};
+function localeCompare(s1) {  return function(s2) {    return s1.localeCompare(s2);  };};
+function replace(s1) {  return function(s2) {    return function(s3) {      return s3.replace(s1, s2);    };  };};
+function take(n) {  return function(s) {    return s.substr(0, n);  };};
+function drop(n) {  return function(s) {    return s.substr(n);  };};
+function split(sep) {  return function(s) {    return s.split(sep);  };};
+function toLower(s) {  return s.toLowerCase();};
+function toUpper(s) {  return s.toUpperCase();};
+function trim(s) {  return s.trim();};
+function joinWith (s) {  return function (xs) {    return xs.join(s);  };};
+module.exports = {
+    joinWith: joinWith, 
+    trim: trim, 
+    toUpper: toUpper, 
+    toLower: toLower, 
+    split: split, 
+    drop: drop, 
+    take: take, 
+    replace: replace, 
+    localeCompare: localeCompare, 
+    length: length, 
+    "lastIndexOf'": lastIndexOf$prime, 
+    lastIndexOf: lastIndexOf, 
+    "indexOf'": indexOf$prime, 
+    indexOf: indexOf, 
+    fromCharCode: fromCharCode, 
+    charCodeAt: charCodeAt, 
+    charAt: charAt
+};
+},{"Prelude":undefined}],87:[function(require,module,exports){
+"use strict";
+var Data_Tuple = require("Data.Tuple");
+var Prelude = require("Prelude");
+var Data_Foldable = require("Data.Foldable");
+var Data_Eq = require("Data.Eq");
+var Data_Maybe = require("Data.Maybe");
+var Data_Either = require("Data.Either");
+var Data_Array = require("Data.Array");
+function Traversable(__superclass_Data$dotFoldable$dotFoldable_1, __superclass_Prelude$dotFunctor_0, sequence, traverse) {
+    this["__superclass_Data.Foldable.Foldable_1"] = __superclass_Data$dotFoldable$dotFoldable_1;
+    this["__superclass_Prelude.Functor_0"] = __superclass_Prelude$dotFunctor_0;
+    this.sequence = sequence;
+    this.traverse = traverse;
+};
+var traverse = function (dict) {
+    return dict.traverse;
+};
+var traversableTuple = function (__unused) {
+    return new Traversable(function (__unused) {
+        return Data_Foldable.foldableTuple({});
+    }, function (__unused) {
+        return Data_Tuple.functorTuple({});
+    }, function (__dict_Applicative_1) {
+        return function (_547) {
+            return Prelude["<$>"]((__dict_Applicative_1["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(Data_Tuple.Tuple.create(_547.value0))(_547.value1);
+        };
+    }, function (__dict_Applicative_0) {
+        return function (_545) {
+            return function (_546) {
+                return Prelude["<$>"]((__dict_Applicative_0["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(Data_Tuple.Tuple.create(_546.value0))(_545(_546.value1));
+            };
+        };
+    });
+};
+var traversableRef = function (__unused) {
+    return new Traversable(function (__unused) {
+        return Data_Foldable.foldableRef({});
+    }, function (__unused) {
+        return Data_Eq.functorRef({});
+    }, function (__dict_Applicative_3) {
+        return function (_541) {
+            return Prelude["<$>"]((__dict_Applicative_3["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(Data_Eq.Ref.create)(_541);
+        };
+    }, function (__dict_Applicative_2) {
+        return function (_539) {
+            return function (_540) {
+                return Prelude["<$>"]((__dict_Applicative_2["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(Data_Eq.Ref.create)(_539(_540));
+            };
+        };
+    });
+};
+var traversableMaybe = function (__unused) {
+    return new Traversable(function (__unused) {
+        return Data_Foldable.foldableMaybe({});
+    }, function (__unused) {
+        return Data_Maybe.functorMaybe({});
+    }, function (__dict_Applicative_5) {
+        return function (_544) {
+            if (_544 instanceof Data_Maybe.Nothing) {
+                return Prelude.pure(__dict_Applicative_5)(Data_Maybe.Nothing.value);
+            };
+            if (_544 instanceof Data_Maybe.Just) {
+                return Prelude["<$>"]((__dict_Applicative_5["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(Data_Maybe.Just.create)(_544.value0);
+            };
+            throw new Error("Failed pattern match");
+        };
+    }, function (__dict_Applicative_4) {
+        return function (_542) {
+            return function (_543) {
+                if (_543 instanceof Data_Maybe.Nothing) {
+                    return Prelude.pure(__dict_Applicative_4)(Data_Maybe.Nothing.value);
+                };
+                if (_543 instanceof Data_Maybe.Just) {
+                    return Prelude["<$>"]((__dict_Applicative_4["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(Data_Maybe.Just.create)(_542(_543.value0));
+                };
+                throw new Error("Failed pattern match");
+            };
+        };
+    });
+};
+var traversableEither = function (__unused) {
+    return new Traversable(function (__unused) {
+        return Data_Foldable.foldableEither({});
+    }, function (__unused) {
+        return Data_Either.functorEither({});
+    }, function (__dict_Applicative_7) {
+        return function (_538) {
+            if (_538 instanceof Data_Either.Left) {
+                return Prelude.pure(__dict_Applicative_7)(new Data_Either.Left(_538.value0));
+            };
+            if (_538 instanceof Data_Either.Right) {
+                return Prelude["<$>"]((__dict_Applicative_7["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(Data_Either.Right.create)(_538.value0);
+            };
+            throw new Error("Failed pattern match");
+        };
+    }, function (__dict_Applicative_6) {
+        return function (_536) {
+            return function (_537) {
+                if (_537 instanceof Data_Either.Left) {
+                    return Prelude.pure(__dict_Applicative_6)(new Data_Either.Left(_537.value0));
+                };
+                if (_537 instanceof Data_Either.Right) {
+                    return Prelude["<$>"]((__dict_Applicative_6["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(Data_Either.Right.create)(_536(_537.value0));
+                };
+                throw new Error("Failed pattern match");
+            };
+        };
+    });
+};
+var sequence = function (dict) {
+    return dict.sequence;
+};
+var traversableArray = function (__unused) {
+    return new Traversable(function (__unused) {
+        return Data_Foldable.foldableArray({});
+    }, function (__unused) {
+        return Data_Array.functorArray({});
+    }, function (__dict_Applicative_9) {
+        return function (_535) {
+            if (_535.length === 0) {
+                return Prelude.pure(__dict_Applicative_9)([  ]);
+            };
+            if (_535.length > 0) {
+                var _2189 = _535.slice(1);
+                return Prelude["<*>"](__dict_Applicative_9["__superclass_Prelude.Apply_0"]({}))(Prelude["<$>"]((__dict_Applicative_9["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(Prelude[":"])(_535[0]))(sequence(traversableArray({}))(__dict_Applicative_9)(_2189));
+            };
+            throw new Error("Failed pattern match");
+        };
+    }, function (__dict_Applicative_8) {
+        return function (_533) {
+            return function (_534) {
+                if (_534.length === 0) {
+                    return Prelude.pure(__dict_Applicative_8)([  ]);
+                };
+                if (_534.length > 0) {
+                    var _2193 = _534.slice(1);
+                    return Prelude["<*>"](__dict_Applicative_8["__superclass_Prelude.Apply_0"]({}))(Prelude["<$>"]((__dict_Applicative_8["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(Prelude[":"])(_533(_534[0])))(traverse(traversableArray({}))(__dict_Applicative_8)(_533)(_2193));
+                };
+                throw new Error("Failed pattern match");
+            };
+        };
+    });
+};
+var zipWithA = function (__dict_Applicative_10) {
+    return function (f) {
+        return function (xs) {
+            return function (ys) {
+                return sequence(traversableArray({}))(__dict_Applicative_10)(Data_Array.zipWith(f)(xs)(ys));
+            };
+        };
+    };
+};
+var $$for = function (__dict_Applicative_11) {
+    return function (__dict_Traversable_12) {
+        return function (x) {
+            return function (f) {
+                return traverse(__dict_Traversable_12)(__dict_Applicative_11)(f)(x);
+            };
+        };
+    };
+};
+module.exports = {
+    Traversable: Traversable, 
+    zipWithA: zipWithA, 
+    "for": $$for, 
+    sequence: sequence, 
+    traverse: traverse, 
+    traversableArray: traversableArray, 
+    traversableEither: traversableEither, 
+    traversableRef: traversableRef, 
+    traversableMaybe: traversableMaybe, 
+    traversableTuple: traversableTuple
+};
+},{"Data.Array":62,"Data.Either":undefined,"Data.Eq":70,"Data.Foldable":71,"Data.Maybe":76,"Data.Tuple":88,"Prelude":undefined}],88:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Data_Array = require("Data.Array");
+var Control_Lazy = require("Control.Lazy");
+var Data_Monoid = require("Data.Monoid");
+function Tuple(value0, value1) {
+    this.value0 = value0;
+    this.value1 = value1;
+};
+Tuple.create = function (value0) {
+    return function (value1) {
+        return new Tuple(value0, value1);
+    };
+};
+var zip = Data_Array.zipWith(Tuple.create);
+var unzip = function (_331) {
+    if (_331.length > 0) {
+        var _1169 = _331.slice(1);
+        var _1165 = unzip(_1169);
+        return new Tuple(Prelude[":"]((_331[0]).value0)(_1165.value0), Prelude[":"]((_331[0]).value1)(_1165.value1));
+    };
+    if (_331.length === 0) {
+        return new Tuple([  ], [  ]);
+    };
+    throw new Error("Failed pattern match");
+};
+var uncurry = function (_329) {
+    return function (_330) {
+        return _329(_330.value0)(_330.value1);
+    };
+};
+var swap = function (_332) {
+    return new Tuple(_332.value1, _332.value0);
+};
+var snd = function (_328) {
+    return _328.value1;
+};
+var showTuple = function (__dict_Show_0) {
+    return function (__dict_Show_1) {
+        return new Prelude.Show(function (_333) {
+            return "Tuple (" + Prelude.show(__dict_Show_0)(_333.value0) + ") (" + Prelude.show(__dict_Show_1)(_333.value1) + ")";
+        });
+    };
+};
+var functorTuple = function (__unused) {
+    return new Prelude.Functor(function (_338) {
+        return function (_339) {
+            return new Tuple(_339.value0, _338(_339.value1));
+        };
+    });
+};
+var fst = function (_327) {
+    return _327.value0;
+};
+var lazyLazy1Tuple = function (__dict_Lazy1_5) {
+    return function (__dict_Lazy1_6) {
+        return new Control_Lazy.Lazy(function (f) {
+            return new Tuple(Control_Lazy.defer1(__dict_Lazy1_5)(function (_) {
+                return fst(f(Prelude.unit));
+            }), Control_Lazy.defer1(__dict_Lazy1_6)(function (_) {
+                return snd(f(Prelude.unit));
+            }));
+        });
+    };
+};
+var lazyLazy2Tuple = function (__dict_Lazy2_7) {
+    return function (__dict_Lazy2_8) {
+        return new Control_Lazy.Lazy(function (f) {
+            return new Tuple(Control_Lazy.defer2(__dict_Lazy2_7)(function (_) {
+                return fst(f(Prelude.unit));
+            }), Control_Lazy.defer2(__dict_Lazy2_8)(function (_) {
+                return snd(f(Prelude.unit));
+            }));
+        });
+    };
+};
+var lazyTuple = function (__dict_Lazy_9) {
+    return function (__dict_Lazy_10) {
+        return new Control_Lazy.Lazy(function (f) {
+            return new Tuple(Control_Lazy.defer(__dict_Lazy_9)(function (_) {
+                return fst(f(Prelude.unit));
+            }), Control_Lazy.defer(__dict_Lazy_10)(function (_) {
+                return snd(f(Prelude.unit));
+            }));
+        });
+    };
+};
+var eqTuple = function (__dict_Eq_11) {
+    return function (__dict_Eq_12) {
+        return new Prelude.Eq(function (t1) {
+            return function (t2) {
+                return !Prelude["=="](eqTuple(__dict_Eq_11)(__dict_Eq_12))(t1)(t2);
+            };
+        }, function (_334) {
+            return function (_335) {
+                return Prelude["=="](__dict_Eq_11)(_334.value0)(_335.value0) && Prelude["=="](__dict_Eq_12)(_334.value1)(_335.value1);
+            };
+        });
+    };
+};
+var ordTuple = function (__dict_Ord_2) {
+    return function (__dict_Ord_3) {
+        return new Prelude.Ord(function (__unused) {
+            return eqTuple(__dict_Ord_2["__superclass_Prelude.Eq_0"]({}))(__dict_Ord_3["__superclass_Prelude.Eq_0"]({}));
+        }, function (_336) {
+            return function (_337) {
+                var _1200 = Prelude.compare(__dict_Ord_2)(_336.value0)(_337.value0);
+                if (_1200 instanceof Prelude.EQ) {
+                    return Prelude.compare(__dict_Ord_3)(_336.value1)(_337.value1);
+                };
+                return _1200;
+            };
+        });
+    };
+};
+var curry = function (f) {
+    return function (a) {
+        return function (b) {
+            return f(new Tuple(a, b));
+        };
+    };
+};
+var applyTuple = function (__dict_Semigroup_14) {
+    return new Prelude.Apply(function (_340) {
+        return function (_341) {
+            return new Tuple(Prelude["<>"](__dict_Semigroup_14)(_340.value0)(_341.value0), _340.value1(_341.value1));
+        };
+    }, functorTuple);
+};
+var bindTuple = function (__dict_Semigroup_13) {
+    return new Prelude.Bind(function (_342) {
+        return function (_343) {
+            var _1213 = _343(_342.value1);
+            return new Tuple(Prelude["<>"](__dict_Semigroup_13)(_342.value0)(_1213.value0), _1213.value1);
+        };
+    }, function (__unused) {
+        return applyTuple(__dict_Semigroup_13);
+    });
+};
+var applicativeTuple = function (__dict_Monoid_15) {
+    return new Prelude.Applicative(function (__unused) {
+        return applyTuple(__dict_Monoid_15["__superclass_Prelude.Semigroup_0"]({}));
+    }, Tuple.create(Data_Monoid.mempty(__dict_Monoid_15)));
+};
+var monadTuple = function (__dict_Monoid_4) {
+    return new Prelude.Monad(function (__unused) {
+        return applicativeTuple(__dict_Monoid_4);
+    }, function (__unused) {
+        return bindTuple(__dict_Monoid_4["__superclass_Prelude.Semigroup_0"]({}));
+    });
+};
+module.exports = {
+    Tuple: Tuple, 
+    swap: swap, 
+    unzip: unzip, 
+    zip: zip, 
+    uncurry: uncurry, 
+    curry: curry, 
+    snd: snd, 
+    fst: fst, 
+    showTuple: showTuple, 
+    eqTuple: eqTuple, 
+    ordTuple: ordTuple, 
+    functorTuple: functorTuple, 
+    applyTuple: applyTuple, 
+    applicativeTuple: applicativeTuple, 
+    bindTuple: bindTuple, 
+    monadTuple: monadTuple, 
+    lazyTuple: lazyTuple, 
+    lazyLazy1Tuple: lazyLazy1Tuple, 
+    lazyLazy2Tuple: lazyLazy2Tuple
+};
+},{"Control.Lazy":26,"Data.Array":62,"Data.Monoid":82,"Prelude":undefined}],89:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var nan = NaN;;
+var infinity = Infinity;;
+function readInt(radix) {  return function(n) {    return parseInt(n, radix);  };};
+var readFloat = parseFloat;;
+module.exports = {
+    readFloat: readFloat, 
+    readInt: readInt, 
+    isFinite: isFinite, 
+    infinity: infinity, 
+    isNaN: isNaN, 
+    nan: nan
+};
+},{"Prelude":undefined}],90:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Event = {
+    create: function (value) {
+        return value;
+    }
+};
+function EventEmitter() {
+
+};
+function Variadic() {
+
+};
+function emitter () {  var EE = require('events').EventEmitter;  return new EE()};
+function emitterHelper1(__dict) {  return function(method) {    return function(event) {      return function(emitter) {        return function() {          return emitter[method](event);        }      }    }  }};
+function emitterHelper2(__emitter) {  return function(__variadic) {    return function(method) {      return function(event) {        return function(cb) {          return function(emitter) {            return function() {              return emitter[method](event, function() {                return cb.apply(this, arguments)();              }.bind(this));            }          }        }      }    }  }};
+function emit(__dict) {  return function(event) {    return function(arg) {      return function(emitter) {        return function() {          return emitter.emit(event, arg);        }      }    }  }};
+var variadicFn9 = function (__unused) {
+    return new Variadic();
+};
+var variadicFn8 = function (__unused) {
+    return new Variadic();
+};
+var variadicFn7 = function (__unused) {
+    return new Variadic();
+};
+var variadicFn6 = function (__unused) {
+    return new Variadic();
+};
+var variadicFn5 = function (__unused) {
+    return new Variadic();
+};
+var variadicFn4 = function (__unused) {
+    return new Variadic();
+};
+var variadicFn3 = function (__unused) {
+    return new Variadic();
+};
+var variadicFn2 = function (__unused) {
+    return new Variadic();
+};
+var variadicFn10 = function (__unused) {
+    return new Variadic();
+};
+var variadicFn1 = function (__unused) {
+    return new Variadic();
+};
+var variadicFn0 = function (__unused) {
+    return new Variadic();
+};
+var variadicArr = function (__unused) {
+    return new Variadic();
+};
+var setMaxListeners = function (__dict_EventEmitter_0) {
+    return emitterHelper1(__dict_EventEmitter_0)("setMaxListeners");
+};
+var removeListenerEvent = "removeListener";
+var removeListener = function (__dict_EventEmitter_1) {
+    return function (__dict_Variadic_2) {
+        return emitterHelper2(__dict_EventEmitter_1)(__dict_Variadic_2)("removeListener");
+    };
+};
+var removeAllListeners = function (__dict_EventEmitter_3) {
+    return emitterHelper1(__dict_EventEmitter_3)("removeAllListeners");
+};
+var once = function (__dict_EventEmitter_4) {
+    return function (__dict_Variadic_5) {
+        return emitterHelper2(__dict_EventEmitter_4)(__dict_Variadic_5)("once");
+    };
+};
+var on = function (__dict_EventEmitter_6) {
+    return function (__dict_Variadic_7) {
+        return emitterHelper2(__dict_EventEmitter_6)(__dict_Variadic_7)("on");
+    };
+};
+var newListenerEvent = "newListener";
+var listeners = function (__dict_EventEmitter_8) {
+    return emitterHelper1(__dict_EventEmitter_8)("listeners");
+};
+var eventEmitterEmitter = function (__unused) {
+    return new EventEmitter();
+};
+var addListener = function (__dict_EventEmitter_9) {
+    return function (__dict_Variadic_10) {
+        return emitterHelper2(__dict_EventEmitter_9)(__dict_Variadic_10)("addListener");
+    };
+};
+module.exports = {
+    Event: Event, 
+    Variadic: Variadic, 
+    EventEmitter: EventEmitter, 
+    removeListenerEvent: removeListenerEvent, 
+    newListenerEvent: newListenerEvent, 
+    emit: emit, 
+    setMaxListeners: setMaxListeners, 
+    removeListener: removeListener, 
+    removeAllListeners: removeAllListeners, 
+    once: once, 
+    on: on, 
+    listeners: listeners, 
+    addListener: addListener, 
+    emitter: emitter, 
+    eventEmitterEmitter: eventEmitterEmitter, 
+    variadicArr: variadicArr, 
+    variadicFn0: variadicFn0, 
+    variadicFn1: variadicFn1, 
+    variadicFn2: variadicFn2, 
+    variadicFn3: variadicFn3, 
+    variadicFn4: variadicFn4, 
+    variadicFn5: variadicFn5, 
+    variadicFn6: variadicFn6, 
+    variadicFn7: variadicFn7, 
+    variadicFn8: variadicFn8, 
+    variadicFn9: variadicFn9, 
+    variadicFn10: variadicFn10
+};
+},{"Prelude":undefined,"events":18}],91:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Data_Foreign = require("Data.Foreign");
+var Data_Either = require("Data.Either");
+var Data_Argonaut_Encode = require("Data.Argonaut.Encode");
+var Data_Argonaut = require("Data.Argonaut");
+var Data_Argonaut_Decode = require("Data.Argonaut.Decode");
+var uuid;try {  require;  uuid = require('node-uuid');} catch (e) {  uuid = window.uuid;};
+function showuuid(ident) {  return ident.toString();};
+function v1() {  return uuid.v1();};
+function v4() {  return uuid.v4();};
+function runUUID(UUID) {  return UUID();};
+function parse(str) {  return uuid.parse(str);};
+function unparse(buffer) {  return uuid.unparse(buffer);};
+var showUUID = function (__unused) {
+    return new Prelude.Show(function (ident) {
+        return showuuid(ident);
+    });
+};
+var readUUID = function (__unused) {
+    return new Data_Foreign.ReadForeign(new Data_Foreign.ForeignParser(function (x) {
+        return Data_Either.Right.create(unparse(parse(Prelude.show(Data_Foreign.showForeign({}))(x))));
+    }));
+};
+var eqUUID = function (__unused) {
+    return new Prelude.Eq(function (ident) {
+        return function (ident$prime) {
+            return !Prelude["=="](eqUUID({}))(ident)(ident$prime);
+        };
+    }, function (ident) {
+        return function (ident$prime) {
+            return showuuid(ident) === showuuid(ident$prime);
+        };
+    });
+};
+var encodeJsonUUID = function (__unused) {
+    return new Data_Argonaut_Encode.EncodeJson(function (uuid_1) {
+        return Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJString({}))(Prelude.show(showUUID({}))(uuid_1));
+    });
+};
+var decodeJsonUUID = function (__unused) {
+    return new Data_Argonaut_Decode.DecodeJson(function (json) {
+        return Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Argonaut.toString(json))("UUID"))(Prelude[">>>"](Prelude.semigroupoidArr({}))(parse)(Prelude[">>>"](Prelude.semigroupoidArr({}))(unparse)(Data_Either.Right.create)));
+    });
+};
+module.exports = {
+    unparse: unparse, 
+    parse: parse, 
+    runUUID: runUUID, 
+    v4: v4, 
+    v1: v1, 
+    showuuid: showuuid, 
+    uuid: uuid, 
+    eqUUID: eqUUID, 
+    showUUID: showUUID, 
+    readUUID: readUUID, 
+    decodeJsonUUID: decodeJsonUUID, 
+    encodeJsonUUID: encodeJsonUUID
+};
+},{"Data.Argonaut":undefined,"Data.Argonaut.Decode":58,"Data.Argonaut.Encode":59,"Data.Either":undefined,"Data.Foreign":72,"Prelude":undefined,"node-uuid":23}],92:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+function unsafeIndex(xs) {  return function(n) {    return xs[n];  };};
+module.exports = {
+    unsafeIndex: unsafeIndex
+};
+},{"Prelude":undefined}],93:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+function dom(el) {  return function(props) {    return function(children) {      return React.DOM[el].apply(this, [props].concat(children));    }  }};
+function rawText(text) {  return text;};
+var wbr = dom("wbr");
+var video = dom("video");
+var $$var = dom("var");
+var ul = dom("ul");
+var u = dom("u");
+var tspan = dom("tspan");
+var track = dom("track");
+var tr = dom("tr");
+var title = dom("title");
+var time = dom("time");
+var thead = dom("thead");
+var th = dom("th");
+var tfoot = dom("tfoot");
+var textarea = dom("textarea");
+var text = dom("text");
+var td = dom("td");
+var tbody = dom("tbody");
+var table = dom("table");
+var svg = dom("svg");
+var sup = dom("sup");
+var summary = dom("summary");
+var sub = dom("sub");
+var style = dom("style");
+var strong = dom("strong");
+var stop = dom("stop");
+var span = dom("span");
+var source = dom("source");
+var small = dom("small");
+var select = dom("select");
+var section = dom("section");
+var script = dom("script");
+var samp = dom("samp");
+var s = dom("s");
+var ruby = dom("ruby");
+var rt = dom("rt");
+var rp = dom("rp");
+var rect = dom("rect");
+var radialGradient = dom("radialGradient");
+var q = dom("q");
+var progress = dom("progress");
+var pre = dom("pre");
+var polyline = dom("polyline");
+var polygon = dom("polygon");
+var pattern = dom("pattern");
+var path = dom("path");
+var param = dom("param");
+var p = dom("p");
+var output = dom("output");
+var option = dom("option");
+var optgroup = dom("optgroup");
+var ol = dom("ol");
+var object = dom("object");
+var noscript = dom("noscript");
+var nav = dom("nav");
+var meter = dom("meter");
+var meta = dom("meta");
+var menuitem = dom("menuitem");
+var menu = dom("menu");
+var mask = dom("mask");
+var mark = dom("mark");
+var map = dom("map");
+var main = dom("main");
+var link = dom("link");
+var linearGradient = dom("linearGradient");
+var line = dom("line");
+var li = dom("li");
+var legend = dom("legend");
+var label = dom("label");
+var keygen = dom("keygen");
+var kbd = dom("kbd");
+var ins = dom("ins");
+var input = dom("input");
+var img = dom("img");
+var iframe = dom("iframe");
+var i = dom("i");
+var html = dom("html");
+var hr = dom("hr");
+var header = dom("header");
+var head = dom("head");
+var h6 = dom("h6");
+var h5 = dom("h5");
+var h4 = dom("h4");
+var h3 = dom("h3");
+var h2 = dom("h2");
+var h1 = dom("h1");
+var g = dom("g");
+var form = dom("form");
+var footer = dom("footer");
+var figure = dom("figure");
+var figcaption = dom("figcaption");
+var fieldset = dom("fieldset");
+var embed = dom("embed");
+var em = dom("em");
+var ellipse = dom("ellipse");
+var dt = dom("dt");
+var dl = dom("dl");
+var div = dom("div");
+var dfn = dom("dfn");
+var details = dom("details");
+var del = dom("del");
+var defs = dom("defs");
+var dd = dom("dd");
+var datalist = dom("datalist");
+var dataDom = dom("data");
+var colgroup = dom("colgroup");
+var col = dom("col");
+var code = dom("code");
+var cite = dom("cite");
+var circle = dom("circle");
+var caption = dom("caption");
+var canvas = dom("canvas");
+var button = dom("button");
+var br = dom("br");
+var body = dom("body");
+var blockquote = dom("blockquote");
+var big = dom("big");
+var bdo = dom("bdo");
+var bdi = dom("bdi");
+var base = dom("base");
+var b = dom("b");
+var audio = dom("audio");
+var aside = dom("aside");
+var article = dom("article");
+var area = dom("area");
+var address = dom("address");
+var abbr = dom("abbr");
+var a = dom("a");
+module.exports = {
+    wbr: wbr, 
+    video: video, 
+    "var": $$var, 
+    ul: ul, 
+    u: u, 
+    tspan: tspan, 
+    track: track, 
+    tr: tr, 
+    title: title, 
+    time: time, 
+    thead: thead, 
+    th: th, 
+    tfoot: tfoot, 
+    textarea: textarea, 
+    text: text, 
+    td: td, 
+    tbody: tbody, 
+    table: table, 
+    svg: svg, 
+    sup: sup, 
+    summary: summary, 
+    sub: sub, 
+    style: style, 
+    strong: strong, 
+    stop: stop, 
+    span: span, 
+    source: source, 
+    small: small, 
+    select: select, 
+    section: section, 
+    script: script, 
+    samp: samp, 
+    s: s, 
+    ruby: ruby, 
+    rt: rt, 
+    rp: rp, 
+    rect: rect, 
+    radialGradient: radialGradient, 
+    q: q, 
+    progress: progress, 
+    pre: pre, 
+    polyline: polyline, 
+    polygon: polygon, 
+    pattern: pattern, 
+    path: path, 
+    param: param, 
+    p: p, 
+    output: output, 
+    option: option, 
+    optgroup: optgroup, 
+    ol: ol, 
+    object: object, 
+    noscript: noscript, 
+    nav: nav, 
+    meter: meter, 
+    meta: meta, 
+    menuitem: menuitem, 
+    menu: menu, 
+    mask: mask, 
+    mark: mark, 
+    map: map, 
+    main: main, 
+    link: link, 
+    linearGradient: linearGradient, 
+    line: line, 
+    li: li, 
+    legend: legend, 
+    label: label, 
+    keygen: keygen, 
+    kbd: kbd, 
+    ins: ins, 
+    input: input, 
+    img: img, 
+    iframe: iframe, 
+    i: i, 
+    html: html, 
+    hr: hr, 
+    header: header, 
+    head: head, 
+    h6: h6, 
+    h5: h5, 
+    h4: h4, 
+    h3: h3, 
+    h2: h2, 
+    h1: h1, 
+    g: g, 
+    form: form, 
+    footer: footer, 
+    figure: figure, 
+    figcaption: figcaption, 
+    fieldset: fieldset, 
+    embed: embed, 
+    em: em, 
+    ellipse: ellipse, 
+    dt: dt, 
+    dl: dl, 
+    div: div, 
+    dfn: dfn, 
+    details: details, 
+    del: del, 
+    defs: defs, 
+    dd: dd, 
+    datalist: datalist, 
+    dataDom: dataDom, 
+    colgroup: colgroup, 
+    col: col, 
+    code: code, 
+    cite: cite, 
+    circle: circle, 
+    caption: caption, 
+    canvas: canvas, 
+    button: button, 
+    br: br, 
+    body: body, 
+    blockquote: blockquote, 
+    big: big, 
+    bdo: bdo, 
+    bdi: bdi, 
+    base: base, 
+    b: b, 
+    audio: audio, 
+    aside: aside, 
+    article: article, 
+    area: area, 
+    address: address, 
+    abbr: abbr, 
+    a: a, 
+    rawText: rawText, 
+    dom: dom
+};
+},{"Prelude":undefined}],94:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+function treeView(props) {  return function(children) {    return TreeView(props, children);  }};
+module.exports = {
+    treeView: treeView
+};
+},{"Prelude":undefined}],95:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var spec = {};;
+function coerceThis(t) {  return t;};
+function createClass(psSpec) {  var spec = {};  for (var fun in psSpec) {    if (psSpec.hasOwnProperty(fun)) {      (function(f) {        if (typeof psSpec[f] === 'function') {          spec[f] = function() {            return psSpec[f].apply(this, [this].concat([].slice.call(arguments)))() ;          }        } else {          spec[f] = psSpec[f];        }      })(fun);    }  }  var Class = React.createClass(spec);  return function(props) {    return function(children) {      return Class(props, children);    }  }};
+function renderComponent(component) {  return function(element) {    return function() {      return React.renderComponent(component, element);    }  }};
+function eventHandler(that) {  return function(f) {    return function(e) {      return f(that)(e)();    }  }};
+var renderComponentById = function (component) {
+    return function (id) {
+        return renderComponent(component)(document.getElementById(id));
+    };
+};
+module.exports = {
+    renderComponentById: renderComponentById, 
+    eventHandler: eventHandler, 
+    renderComponent: renderComponent, 
+    createClass: createClass, 
+    coerceThis: coerceThis, 
+    spec: spec, 
+    document: document
+};
+},{"Prelude":undefined}],96:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var React_DOM = require("React.DOM");
+var React = require("React");
+var Control_Monad_Eff = require("Control.Monad.Eff");
+var Data_Array = require("Data.Array");
+var Data_Maybe = require("Data.Maybe");
+var SlamData_Types = require("SlamData.Types");
+var logo = React_DOM.li({})([ React_DOM.a({
+    href: "http://slamdata.com/", 
+    id: "slamdata-logo", 
+    target: "_blank"
+})([ React_DOM.img({
+    alt: "SlamData home page", 
+    src: "imgs/slamdata-logo.png"
+})([  ]) ]) ]);
+var intersperse = function (_20) {
+    return function (_21) {
+        if (_21.length === 0) {
+            return [  ];
+        };
+        if (_21.length === 1) {
+            return [ _21[0] ];
+        };
+        if (_21.length > 0) {
+            var _140 = _21.slice(1);
+            return Prelude[":"](_21[0])(Prelude[":"](_20)(intersperse(_20)(_140)));
+        };
+        throw new Error("Failed pattern match");
+    };
+};
+var divider = React_DOM.li({
+    className: "divider"
+})([  ]);
+var menuSide = function (name) {
+    return React.createClass((function () {
+        var _141 = {};
+        for (var _142 in React.spec) {
+            if (React.spec.hasOwnProperty(_142)) {
+                _141[_142] = React.spec[_142];
+            };
+        };
+        _141.displayName = "MenuSide";
+        _141.render = function ($$this) {
+            return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.ul({
+                className: name
+            })(Prelude["++"](Data_Array.semigroupArray({}))(intersperse(divider)($$this.props.children))($$this.props.extra)));
+        };
+        return _141;
     })());
-    var editMenu = function (showSettings) {
-        return menuButton({
-            name: "Edit", 
-            commands: [ {
-                name: "Settings", 
-                action: Data_Maybe.Just.create(function (_) {
-                    return showSettings(true);
+};
+var leftSide = menuSide("left");
+var rightSide = menuSide("right");
+var command = function (_19) {
+    if (_19.action instanceof Data_Maybe.Nothing) {
+        return React_DOM.li({})([ React_DOM.a({
+            id: "menu-command-" + _19.name
+        })([ React_DOM.rawText(_19.name) ]) ]);
+    };
+    if (_19.action instanceof Data_Maybe.Just) {
+        return React_DOM.li({})([ React_DOM.a({
+            id: "menu-command-" + _19.name, 
+            onClick: _19.action.value0
+        })([ React_DOM.rawText(_19.name) ]) ]);
+    };
+    throw new Error("Failed pattern match");
+};
+var menuButton = React.createClass((function () {
+    var _149 = {};
+    for (var _150 in React.spec) {
+        if (React.spec.hasOwnProperty(_150)) {
+            _149[_150] = React.spec[_150];
+        };
+    };
+    _149.displayName = "MenuButton";
+    _149.render = function ($$this) {
+        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.li({
+            className: "has-dropdown"
+        })([ React_DOM.a({
+            id: "menu-button-" + $$this.props.name
+        })([ React_DOM.rawText($$this.props.name) ]), React_DOM.ul({
+            className: "dropdown"
+        })(Prelude["<$>"](Data_Array.functorArray({}))(command)($$this.props.commands)) ]));
+    };
+    return _149;
+})());
+var editMenu = function (request) {
+    return menuButton({
+        name: "Edit", 
+        commands: [ {
+            name: "Settings", 
+            action: Data_Maybe.Just.create(request(SlamData_Types.ShowSettings.value))
+        } ]
+    })([  ]);
+};
+var menuBar = function (request) {
+    return React_DOM.section({
+        className: "top-bar-section"
+    })([ leftSide({
+        extra: [ divider ]
+    })([ editMenu(request) ]), rightSide({
+        extra: [  ]
+    })([ logo ]) ]);
+};
+var menu = function (request) {
+    return React_DOM.nav({
+        className: "top-bar", 
+        "data-options": "is_hover: false", 
+        "data-topbar": true
+    })([ menuBar(request) ]);
+};
+module.exports = {
+    menu: menu
+};
+},{"Control.Monad.Eff":41,"Data.Array":62,"Data.Maybe":76,"Prelude":undefined,"React":95,"React.DOM":93,"SlamData.Types":undefined}],97:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Control_Lens = require("Control.Lens");
+var SlamData_Lens = require("SlamData.Lens");
+var Data_Const = require("Data.Const");
+var Data_Array = require("Data.Array");
+var Control_Monad_Eff = require("Control.Monad.Eff");
+var SlamData_Types = require("SlamData.Types");
+var React = require("React");
+var SlamData_Types_Workspace_FileSystem = require("SlamData.Types.Workspace.FileSystem");
+var React_DOM = require("React.DOM");
+var Data_String = require("Data.String");
+var React_TreeView = require("React.TreeView");
+var Data_Function = require("Data.Function");
+var toggleTree = function (_65) {
+    return function (_66) {
+        var name = Control_Lens["^."](_65.props.files)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._fileTypeRec(Data_Const.functorConst({})))(SlamData_Lens._name(Data_Const.functorConst({}))));
+        var path = Data_Array.snoc(_65.props.path)(name + "/");
+        return _65.state.collapsed ? function __do() {
+    _65.props.request(new SlamData_Types.ReadFileSystem(path))();
+    return _65.setState({
+        collapsed: !_65.state.collapsed
+    });
+} : Prelude.pure(Control_Monad_Eff.applicativeEff({}))(_65.setState({
+    collapsed: !_65.state.collapsed
+}));
+    };
+};
+var reify = React.createClass((function () {
+    var _254 = {};
+    for (var _255 in React.spec) {
+        if (React.spec.hasOwnProperty(_255)) {
+            _254[_255] = React.spec[_255];
+        };
+    };
+    _254.displayName = "FileSystemTree";
+    _254.getInitialState = function (_) {
+        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
+            collapsed: true
+        });
+    };
+    _254.render = function ($$this) {
+        if ($$this.props.files.type === "file" && $$this.props.files.name === "index.nb") {
+            return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div({})([ React_DOM.span({
+                onClick: React.eventHandler($$this)(function (this_1) {
+                    return function (_) {
+                        return this_1.props.request(new SlamData_Types.OpenNotebook(Data_String.joinWith("/")(this_1.props.path)));
+                    };
                 })
-            } ]
-        })([  ]);
-    };
-    var menuBar = function (showSettings) {
-        return React_DOM.section({
-            className: "top-bar-section"
-        })([ leftSide({
-            extra: [ divider ]
-        })([ editMenu(showSettings) ]), rightSide({
-            extra: [  ]
-        })([ logo ]) ]);
-    };
-    var menu = function (showSettings) {
-        return React_DOM.nav({
-            className: "top-bar", 
-            "data-options": "is_hover: false", 
-            "data-topbar": true
-        })([ menuBar(showSettings) ]);
-    };
-    return {
-        menu: menu
-    };
-})();
-var PS = PS || {};
-PS.SlamData_App_Workspace_FileSystem = (function () {
-    "use strict";
-    var Prelude = PS.Prelude;
-    var React_DOM = PS.React_DOM;
-    var SlamData_Components = PS.SlamData_Components;
-    var Data_Array = PS.Data_Array;
-    var SlamData_Types = PS.SlamData_Types;
-    var reify = function (_617) {
-        if (_617.type === "directory") {
-            return React_DOM.ul({})([ SlamData_Components.dirOpenIcon, React_DOM.rawText(_617.name) ]);
+            })([ React_DOM.rawText("index.nb") ]) ]));
         };
-        if (_617.type === "file") {
-            return React_DOM.ul({})([ SlamData_Components.fileIcon, React_DOM.rawText(_617.name) ]);
+        if ($$this.props.files.type === "file") {
+            return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div({})([ React_DOM.span({})([ React_DOM.rawText($$this.props.files.name) ]) ]));
         };
-        return React_DOM.ul({})([  ]);
+        if ($$this.props.files.type === "directory") {
+            var name = Control_Lens["^."]($$this.props.files)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._fileTypeRec(Data_Const.functorConst({})))(SlamData_Lens._name(Data_Const.functorConst({}))));
+            var path = Data_Array.snoc($$this.props.path)(name);
+            var children = Data_Array.sort(SlamData_Types_Workspace_FileSystem.ordFileType({}))(Control_Lens["^."]($$this.props.files)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._fileTypeRec(Data_Const.functorConst({})))(SlamData_Lens._children(Data_Const.functorConst({})))));
+            return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_TreeView.treeView({
+                collapsed: $$this.state.collapsed, 
+                defaultCollapsed: true, 
+                nodeLabel: React_DOM.span({
+                    onClick: React.eventHandler(React.coerceThis($$this))(toggleTree)
+                })([ React_DOM.rawText(name) ]), 
+                onClick: React.eventHandler(React.coerceThis($$this))(toggleTree)
+            })(Prelude["<$>"](Data_Array.functorArray({}))(function (f) {
+                return reify({
+                    files: f, 
+                    request: $$this.props.request, 
+                    path: path
+                })([  ]);
+            })(children)));
+        };
+        throw new Error("Failed pattern match");
     };
-    var fsTab = React_DOM.dl({
-        className: "tabs", 
-        "data-tab": "true"
-    })([ React_DOM.dd({
-        className: "tab active"
-    })([ React_DOM.a({})([ React_DOM.rawText("FileSystem") ]) ]) ]);
-    var fsContent = function (files) {
+    return _254;
+})());
+var fsTab = React_DOM.dl({
+    className: "tabs", 
+    "data-tab": "true"
+})([ React_DOM.dd({
+    className: "tab active"
+})([ React_DOM.a({})([ React_DOM.rawText("FileSystem") ]) ]) ]);
+var fsContent = function (files) {
+    return function (request) {
         return React_DOM.div({
             className: "tabs-content"
         })([ React_DOM.div({
             className: "content active"
         })([ React_DOM.div({
-            className: "toolbar button-bar"
-        })([ React_DOM.ul({
-            className: "button-group"
-        })([  ]), React_DOM.ul({
-            className: "button-group"
-        })([  ]) ]), React_DOM.hr({})([  ]), React_DOM.div({
             className: "actual-content"
-        })(Prelude["<$>"](Data_Array.functorArray({}))(function (_616) {
-            return reify(_616);
-        })(files)) ]) ]);
+        })([ reify({
+            files: files, 
+            request: request, 
+            path: [  ]
+        })([  ]) ]) ]) ]);
     };
-    var filesystem = function (files) {
-        return React_DOM.div({
+};
+var filesystem = React.createClass((function () {
+    var _256 = {};
+    for (var _257 in React.spec) {
+        if (React.spec.hasOwnProperty(_257)) {
+            _256[_257] = React.spec[_257];
+        };
+    };
+    _256.displayName = "FileSystem";
+    _256.shouldComponentUpdate = function ($$this, props, _) {
+        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(Prelude["/="](SlamData_Types_Workspace_FileSystem.eqFileType({}))($$this.props.files)(props.files));
+    };
+    _256.render = function ($$this) {
+        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div({
             className: "slamdata-panel"
-        })([ fsTab, fsContent(files) ]);
+        })([ fsTab, fsContent($$this.props.files)($$this.props.request) ]));
     };
-    return {
-        filesystem: filesystem
-    };
-})();
-var PS = PS || {};
-PS.SlamData_App_Workspace_Notebook = (function () {
-    "use strict";
-    var Prelude = PS.Prelude;
-    var React_DOM = PS.React_DOM;
-    var SlamData_Types = PS.SlamData_Types;
-    var SlamData_Components = PS.SlamData_Components;
-    var React = PS.React;
-    var Control_Monad_Eff = PS.Control_Monad_Eff;
-    var createNotebookButton = function (request) {
-        return React_DOM.dd({
-            className: "tab"
-        })([ React_DOM.div({})([ React_DOM.a({
-            id: "add-notebook", 
-            onClick: request(SlamData_Types.CreateNotebook.value)
-        })([ SlamData_Components.newNotebookIcon ]) ]) ]);
-    };
-    var notebooks = React.createClass((function () {
-        var _709 = {};
-        for (var _710 in React.spec) {
-            if (React.spec.hasOwnProperty(_710)) {
-                _709[_710] = React.spec[_710];
-            };
-        };
-        _709.displayName = "Notebooks";
-        _709.render = function ($$this) {
-            return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div({
-                className: "slamdata-panel"
-            })([ React_DOM.dl({
-                className: "tabs"
-            })([ createNotebookButton($$this.props.request) ]) ]));
-        };
-        return _709;
-    })());
-    return {
-        notebooks: notebooks
-    };
-})();
-var PS = PS || {};
-PS.SlamData_Helpers = (function () {
-    "use strict";
-    var Prelude = PS.Prelude;
-    var SlamData_Types = PS.SlamData_Types;
-    var Data_Maybe = PS.Data_Maybe;
-    var Data_Map = PS.Data_Map;
-    var serverURI = function (_618) {
-        return _618.server.location + ":" + Prelude.show(Prelude.showNumber({}))(_618.server.port);
-    };
-    var getOrElse = Prelude.flip(Data_Maybe.fromMaybe);
-    var defaultServerPort = 8080;
-    var defaultServerLocation = "http://localhost";
-    var defaultServerURI = defaultServerLocation + ":" + Prelude.show(Prelude.showNumber({}))(defaultServerPort);
-    var defaultSDConfig = {
-        server: {
-            location: defaultServerLocation, 
-            port: defaultServerPort
-        }, 
-        nodeWebkit: {
-            java: "java"
-        }
-    };
-    var defaultMountPath = "/";
-    var defaultMongoURI = "mongodb://localhost:27017";
-    var defaultMongoDatabase = "test";
-    var defaultSEConfig = {
-        server: {
-            port: defaultServerPort
-        }, 
-        mountings: Data_Map.singleton(defaultMountPath)(new SlamData_Types.MountMongo({
-            connectionUri: defaultMongoURI, 
-            database: defaultMongoDatabase
-        }))
-    };
-    return {
-        serverURI: serverURI, 
-        defaultSEConfig: defaultSEConfig, 
-        defaultSDConfig: defaultSDConfig, 
-        defaultServerURI: defaultServerURI, 
-        defaultMongoDatabase: defaultMongoDatabase, 
-        defaultMongoURI: defaultMongoURI, 
-        defaultMountPath: defaultMountPath, 
-        defaultServerPort: defaultServerPort, 
-        defaultServerLocation: defaultServerLocation, 
-        getOrElse: getOrElse
-    };
-})();
-var PS = PS || {};
-PS.SlamData_Lens = (function () {
-    "use strict";
-    var Prelude = PS.Prelude;
-    var Control_Lens = PS.Control_Lens;
-    var SlamData_Types = PS.SlamData_Types;
-    var _seConfigRec = function (__dict_Functor_546) {
-        return Control_Lens.lens(function (_620) {
-            return _620;
-        })(function (_) {
-            return function (rec) {
-                return rec;
-            };
-        })(__dict_Functor_546);
-    };
-    var _mountings = function (__dict_Functor_552) {
-        return Control_Lens.lens(function (o) {
-            return o.mountings;
-        })(function (o) {
-            return function (x) {
-                var _716 = {};
-                for (var _717 in o) {
-                    if (o.hasOwnProperty(_717)) {
-                        _716[_717] = o[_717];
-                    };
-                };
-                _716.mountings = x;
-                return _716;
-            };
-        })(__dict_Functor_552);
-    };
-    return {
-        _mountings: _mountings, 
-        _seConfigRec: _seConfigRec
-    };
-})();
-var PS = PS || {};
-PS.Network_HTTP = (function () {
-    "use strict";
-    var Prelude = PS.Prelude;
-    function DELETE() {
-
-    };
-    DELETE.value = new DELETE();
-    function GET() {
-
-    };
-    GET.value = new GET();
-    function HEAD() {
-
-    };
-    HEAD.value = new HEAD();
-    function OPTIONS() {
-
-    };
-    OPTIONS.value = new OPTIONS();
-    function PATCH() {
-
-    };
-    PATCH.value = new PATCH();
-    function POST() {
-
-    };
-    POST.value = new POST();
-    function PUT() {
-
-    };
-    PUT.value = new PUT();
-    var showHeaderHead = function (_) {
-        return new Prelude.Show(function (_645) {
-            if (_645 instanceof Accept) {
-                return "Accept";
-            };
-            if (_645 instanceof AcceptCharset) {
-                return "Accept-Charset";
-            };
-            if (_645 instanceof AcceptEncoding) {
-                return "Accept-Encoding";
-            };
-            if (_645 instanceof AcceptLanguage) {
-                return "Accept-Language";
-            };
-            if (_645 instanceof Allow) {
-                return "Allow";
-            };
-            if (_645 instanceof Authorization) {
-                return "Authorization";
-            };
-            if (_645 instanceof CacheControl) {
-                return "Cache-Control";
-            };
-            if (_645 instanceof Connection) {
-                return "Connection";
-            };
-            if (_645 instanceof ContentEncoding) {
-                return "Content-Encoding";
-            };
-            if (_645 instanceof ContentLanguage) {
-                return "Content-Language";
-            };
-            if (_645 instanceof ContentLength) {
-                return "Content-Length";
-            };
-            if (_645 instanceof ContentLocation) {
-                return "Content-Location";
-            };
-            if (_645 instanceof ContentMD5) {
-                return "Content-MD5";
-            };
-            if (_645 instanceof ContentRange) {
-                return "Content-Range";
-            };
-            if (_645 instanceof ContentType) {
-                return "Content-Type";
-            };
-            if (_645 instanceof Date) {
-                return "Date";
-            };
-            if (_645 instanceof Expect) {
-                return "Expect";
-            };
-            if (_645 instanceof Expires) {
-                return "Expires";
-            };
-            if (_645 instanceof From) {
-                return "From";
-            };
-            if (_645 instanceof Host) {
-                return "Host";
-            };
-            if (_645 instanceof IfMatch) {
-                return "If-Match";
-            };
-            if (_645 instanceof IfModifiedSince) {
-                return "If-Modified-Since";
-            };
-            if (_645 instanceof IfNoneMatch) {
-                return "If-None-Match";
-            };
-            if (_645 instanceof IfRange) {
-                return "If-Range";
-            };
-            if (_645 instanceof IfUnmodifiedSince) {
-                return "If-Unmodified-Since";
-            };
-            if (_645 instanceof LastModified) {
-                return "Last-Modified";
-            };
-            if (_645 instanceof MaxForwards) {
-                return "Max-Forwards";
-            };
-            if (_645 instanceof Pragma) {
-                return "Pragma";
-            };
-            if (_645 instanceof ProxyAuthorization) {
-                return "Proxy-Authorization";
-            };
-            if (_645 instanceof Range) {
-                return "Range";
-            };
-            if (_645 instanceof Referer) {
-                return "Referer";
-            };
-            if (_645 instanceof TE) {
-                return "Te";
-            };
-            if (_645 instanceof Trailer) {
-                return "Trailer";
-            };
-            if (_645 instanceof TransferEncoding) {
-                return "Transfer-Encoding";
-            };
-            if (_645 instanceof Upgrade) {
-                return "Upgrade";
-            };
-            if (_645 instanceof UserAgent) {
-                return "User-Agent";
-            };
-            if (_645 instanceof Via) {
-                return "Via";
-            };
-            if (_645 instanceof Warning) {
-                return "Warning";
-            };
-            if (_645 instanceof Custom) {
-                return _645.value0;
-            };
-            throw new Error("Failed pattern match");
-        });
-    };
-    var showHTTPVerb = function (_) {
-        return new Prelude.Show(function (_643) {
-            if (_643 instanceof DELETE) {
-                return "DELETE";
-            };
-            if (_643 instanceof GET) {
-                return "GET";
-            };
-            if (_643 instanceof HEAD) {
-                return "HEAD";
-            };
-            if (_643 instanceof OPTIONS) {
-                return "OPTIONS";
-            };
-            if (_643 instanceof PATCH) {
-                return "PATCH";
-            };
-            if (_643 instanceof POST) {
-                return "POST";
-            };
-            if (_643 instanceof PUT) {
-                return "PUT";
-            };
-            throw new Error("Failed pattern match");
-        });
-    };
-    return {
-        DELETE: DELETE, 
-        GET: GET, 
-        HEAD: HEAD, 
-        OPTIONS: OPTIONS, 
-        PATCH: PATCH, 
-        POST: POST, 
-        PUT: PUT, 
-        showHTTPVerb: showHTTPVerb, 
-        showHeaderHead: showHeaderHead
-    };
-})();
-var PS = PS || {};
-PS.Network_Oboe = (function () {
-    "use strict";
-    var Prelude = PS.Prelude;
-    var Network_HTTP = PS.Network_HTTP;
-    var Data_Function = PS.Data_Function;
-    function done(o) {  return function(f) {    return function() {      return o.done(function(x){return f(x)();});    }  }};
-    function oboe_(header2Obj, showVerb, obj) {  return function() {    var oboe__;    try {      oboe__ = require('oboe');    } catch (e) {      oboe__ = window.oboe;    }    var headers = {};    obj.headers.map(header2Obj).forEach(function(header) {      headers[header.head] = header.value;    });    return oboe__({      url: obj.url,      method: showVerb(obj.method),      headers: headers,      body: obj.body,      cached: obj.cached,      withCredentials: obj.withCredentials    });  }};
-    var showVerb = Prelude.show(Network_HTTP.showHTTPVerb({}));
-    var oboeOptions = {
-        url: "", 
-        method: Network_HTTP.GET.value, 
-        headers: [  ], 
-        body: "", 
-        cached: true, 
-        withCredentials: false
-    };
-    var header2Obj = function (_646) {
-        return {
-            head: Prelude.show(Network_HTTP.showHeaderHead({}))(_646.value0), 
-            value: _646.value1
+    return _256;
+})());
+module.exports = {
+    filesystem: filesystem
+};
+},{"Control.Lens":40,"Control.Monad.Eff":41,"Data.Array":62,"Data.Const":66,"Data.Function":73,"Data.String":86,"Prelude":undefined,"React":95,"React.DOM":93,"React.TreeView":94,"SlamData.Lens":108,"SlamData.Types":undefined,"SlamData.Types.Workspace.FileSystem":109}],98:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var React = require("React");
+var Control_Monad_Eff = require("Control.Monad.Eff");
+var React_DOM = require("React.DOM");
+var blockRow = React.createClass((function () {
+    var _979 = {};
+    for (var _980 in React.spec) {
+        if (React.spec.hasOwnProperty(_980)) {
+            _979[_980] = React.spec[_980];
         };
     };
-    var oboe = Data_Function.runFn3(oboe_)(header2Obj)(showVerb);
-    var oboeGet = function (url) {
-        return oboe((function () {
-            var _724 = {};
-            for (var _725 in oboeOptions) {
-                if (oboeOptions.hasOwnProperty(_725)) {
-                    _724[_725] = oboeOptions[_725];
+    _979.displayName = "BlockRow";
+    _979.render = function ($$this) {
+        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div({
+            className: $$this.props.styles + " row"
+        })((function () {
+            if ($$this.props.children.length > 0) {
+                var _975 = $$this.props.children.slice(1);
+                if (_975.length > 0) {
+                    var _977 = _975.slice(1);
+                    return [ React_DOM.div({
+                        className: "large-1  columns"
+                    })([ $$this.props.children[0] ]), React_DOM.div({
+                        className: "large-11 columns right-side"
+                    })([ _975[0] ]) ];
                 };
             };
-            _724.url = url;
-            return _724;
-        })());
+            if ($$this.props.children.length === 1) {
+                return [ React_DOM.div({
+                    className: "large-1  columns"
+                })([  ]), React_DOM.div({
+                    className: "large-11 columns right-side"
+                })([ $$this.props.children[0] ]) ];
+            };
+            if ($$this.props.children.length === 0) {
+                return [  ];
+            };
+            throw new Error("Failed pattern match");
+        })()));
     };
-    return {
-        done: done, 
-        oboeGet: oboeGet, 
-        oboe: oboe, 
-        oboeOptions: oboeOptions
+    return _979;
+})());
+module.exports = {
+    blockRow: blockRow
+};
+},{"Control.Monad.Eff":41,"Prelude":undefined,"React":95,"React.DOM":93}],99:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Graphics_C3 = require("Graphics.C3");
+var SlamData_Components = require("SlamData.Components");
+var React_DOM = require("React.DOM");
+var React = require("React");
+var Control_Monad_Eff = require("Control.Monad.Eff");
+var SlamData_Helpers = require("SlamData.Helpers");
+var Control_Lens = require("Control.Lens");
+var SlamData_Lens = require("SlamData.Lens");
+var Data_Const = require("Data.Const");
+var Data_Array = require("Data.Array");
+var SlamData_Types_Workspace_FileSystem = require("SlamData.Types.Workspace.FileSystem");
+var Data_Array_Unsafe = require("Data.Array.Unsafe");
+var Data_String = require("Data.String");
+var Data_Map = require("Data.Map");
+var Data_Maybe = require("Data.Maybe");
+var Data_Set = require("Data.Set");
+var React_TreeView = require("React.TreeView");
+var SlamData_Types = require("SlamData.Types");
+var Data_Tuple = require("Data.Tuple");
+var SlamData_Types_Workspace_Notebook_Block_Visual = require("SlamData.Types.Workspace.Notebook.Block.Visual");
+var SlamData_App_Workspace_Notebook_Block_Common = require("SlamData.App.Workspace.Notebook.Block.Common");
+function VisualBar() {
+
+};
+VisualBar.value = new VisualBar();
+function VisualLine() {
+
+};
+VisualLine.value = new VisualLine();
+function VisualPie() {
+
+};
+VisualPie.value = new VisualPie();
+function FieldsTab() {
+
+};
+FieldsTab.value = new FieldsTab();
+function VisualTypeTab() {
+
+};
+VisualTypeTab.value = new VisualTypeTab();
+var visualIcon = function (_75) {
+    if (_75 instanceof Graphics_C3.Bar) {
+        return SlamData_Components.barChartIcon;
     };
-})();
-var PS = PS || {};
-PS.SlamData_App_Workspace = (function () {
-    "use strict";
-    var Prelude = PS.Prelude;
-    var React_DOM = PS.React_DOM;
-    var SlamData_App_Workspace_FileSystem = PS.SlamData_App_Workspace_FileSystem;
-    var SlamData_App_Workspace_Notebook = PS.SlamData_App_Workspace_Notebook;
-    var Control_Monad_Eff = PS.Control_Monad_Eff;
-    var Network_Oboe = PS.Network_Oboe;
-    var React = PS.React;
-    var Data_Map = PS.Data_Map;
-    var Control_Lens = PS.Control_Lens;
-    var SlamData_Lens = PS.SlamData_Lens;
-    var Data_Const = PS.Data_Const;
-    var SlamData_Helpers = PS.SlamData_Helpers;
-    var Data_Array = PS.Data_Array;
-    var Control_Reactive_Timer = PS.Control_Reactive_Timer;
-    function unsafeCoerce(x) { return x; };
-    var workspace$prime = function (files) {
-        return function (request) {
+    if (_75 instanceof Graphics_C3.Line) {
+        return SlamData_Components.lineChartIcon;
+    };
+    if (_75 instanceof Graphics_C3.Pie) {
+        return SlamData_Components.pieChartIcon;
+    };
+    throw new Error("Failed pattern match");
+};
+var visual = function ($$this) {
+    return function (ty) {
+        return React_DOM.li({
+            onClick: React.eventHandler($$this)(function (this_1) {
+                return function (_) {
+                    return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState((function () {
+                        var _259 = {};
+                        for (var _260 in this_1.state) {
+                            if (this_1.state.hasOwnProperty(_260)) {
+                                _259[_260] = this_1.state[_260];
+                            };
+                        };
+                        _259.visual = ty;
+                        return _259;
+                    })()));
+                };
+            }), 
+            className: SlamData_Helpers.activate(Graphics_C3.eqC3Type({}))(ty)($$this.state.visual)
+        })([ React_DOM.a({})([ visualIcon(ty) ]), React_DOM.span({})([ React_DOM.rawText(Prelude.show(Graphics_C3.showC3Type({}))(ty)) ]) ]);
+    };
+};
+var toggleTree = function (_69) {
+    return function (_70) {
+        return function (_71) {
+            var name = Control_Lens["^."](_70.props.files)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._fileTypeRec(Data_Const.functorConst({})))(SlamData_Lens._name(Data_Const.functorConst({}))));
+            var path = Data_Array.snoc(_70.props.path)(name + "/");
+            return _70.state.collapsed ? function __do() {
+    _70.props.request(_69)();
+    return _70.setState({
+        collapsed: !_70.state.collapsed
+    });
+} : Prelude.pure(Control_Monad_Eff.applicativeEff({}))(_70.setState({
+    collapsed: !_70.state.collapsed
+}));
+        };
+    };
+};
+var showVisualTab = function (__unused) {
+    return new Prelude.Show(function (_79) {
+        if (_79 instanceof FieldsTab) {
+            return "Fields";
+        };
+        if (_79 instanceof VisualTypeTab) {
+            return "Type";
+        };
+        throw new Error("Failed pattern match");
+    });
+};
+var reifyField = function (_72) {
+    return function (_73) {
+        return function (_74) {
             return React_DOM.div({
-                className: "row", 
-                id: "main-row"
-            })([ React_DOM.div({
-                className: "small-5 medium-3 large-2 columns", 
-                id: "filesystem"
-            })([ SlamData_App_Workspace_FileSystem.filesystem(files) ]), React_DOM.div({
-                className: "small-7 medium-9 large-10 columns", 
-                id: "notebook"
-            })([ SlamData_App_Workspace_Notebook.notebooks({
-                files: files, 
-                request: request
+                className: "visual-field"
+            })([ React_DOM.input({
+                onClick: React.eventHandler(_72)(function (this_1) {
+                    return function (e) {
+                        var path$prime = Data_Array_Unsafe.tail(_73);
+                        var root = Data_Array_Unsafe.head(_73);
+                        var field = root + Data_String.joinWith("/")(path$prime);
+                        var fields = SlamData_Helpers.checked(e.target) ? Data_Map.alter(Prelude.ordString({}))(Data_Maybe.maybe(Data_Maybe.Just.create(Data_Set.singleton(_74.name)))(Prelude[">>>"](Prelude.semigroupoidArr({}))(Data_Set.insert(Prelude.ordString({}))(_74.name))(Data_Maybe.Just.create)))(field)(this_1.state.fields) : Data_Map.alter(Prelude.ordString({}))(Prelude["<$>"](Data_Maybe.functorMaybe({}))(Data_Set["delete"](Prelude.ordString({}))(_74.name)))(field)(this_1.state.fields);
+                        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState((function () {
+                            var _268 = {};
+                            for (var _269 in this_1.state) {
+                                if (this_1.state.hasOwnProperty(_269)) {
+                                    _268[_269] = this_1.state[_269];
+                                };
+                            };
+                            _268.fields = fields;
+                            return _268;
+                        })()));
+                    };
+                }), 
+                type: "checkbox"
+            })([  ]), React_DOM.rawText(_74.name) ]);
+        };
+    };
+};
+var reify = React.createClass((function () {
+    var _277 = {};
+    for (var _278 in React.spec) {
+        if (React.spec.hasOwnProperty(_278)) {
+            _277[_278] = React.spec[_278];
+        };
+    };
+    _277.displayName = "FieldsTree";
+    _277.getInitialState = function (_) {
+        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
+            collapsed: true
+        });
+    };
+    _277.render = function ($$this) {
+        var name = Control_Lens["^."]($$this.props.files)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._fileTypeRec(Data_Const.functorConst({})))(SlamData_Lens._name(Data_Const.functorConst({}))));
+        var path = Data_Array.snoc($$this.props.path)(name);
+        var path$prime = Data_Array.snoc($$this.props.path)(name + "/");
+        var children = Data_Array.sort(SlamData_Types_Workspace_FileSystem.ordFileType({}))(Control_Lens["^."]($$this.props.files)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._fileTypeRec(Data_Const.functorConst({})))(SlamData_Lens._children(Data_Const.functorConst({})))));
+        if ($$this.props.files.type === "file") {
+            return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_TreeView.treeView({
+                collapsed: $$this.state.collapsed, 
+                defaultCollapsed: true, 
+                nodeLabel: React_DOM.span({
+                    onClick: React.eventHandler(React.coerceThis($$this))(toggleTree(new SlamData_Types.ReadFields(path)))
+                })([ React_DOM.rawText(name) ]), 
+                onClick: React.eventHandler(React.coerceThis($$this))(toggleTree(new SlamData_Types.ReadFields(path)))
+            })(Prelude["<$>"](Data_Array.functorArray({}))(reifyField($$this.props.visualThis)(path))(children)));
+        };
+        if ($$this.props.files.type === "directory") {
+            return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_TreeView.treeView({
+                collapsed: $$this.state.collapsed, 
+                defaultCollapsed: true, 
+                nodeLabel: React_DOM.span({
+                    onClick: React.eventHandler(React.coerceThis($$this))(toggleTree(new SlamData_Types.ReadFileSystem(path$prime)))
+                })([ React_DOM.rawText(name) ]), 
+                onClick: React.eventHandler(React.coerceThis($$this))(toggleTree(new SlamData_Types.ReadFileSystem(path$prime)))
+            })(Prelude["<$>"](Data_Array.functorArray({}))(function (f) {
+                return reify({
+                    files: f, 
+                    request: $$this.props.request, 
+                    path: path, 
+                    visualThis: $$this.props.visualThis
+                })([  ]);
+            })(children)));
+        };
+        throw new Error("Failed pattern match");
+    };
+    return _277;
+})());
+var placeholder = React_DOM.option({
+    disabled: true, 
+    selected: true, 
+    value: ""
+})([ React_DOM.rawText("Select a field") ]);
+var optionify = function (_76) {
+    return React_DOM.optgroup({
+        label: _76.value0
+    })(Prelude["<$>"](Data_Array.functorArray({}))(function (f) {
+        return React_DOM.option({
+            value: f
+        })([ React_DOM.rawText(f) ]);
+    })(Data_Set.toList(_76.value1)));
+};
+var selectFields = function ($$this) {
+    return React_DOM.select({
+        onChange: React.eventHandler($$this)(function (this_1) {
+            return function (e) {
+                var path = SlamData_Helpers.selectedOptgroup(e.target);
+                var field = SlamData_Helpers.value(e.target);
+                var selected = Data_Map.alter(Prelude.ordString({}))(Data_Maybe.maybe(Data_Maybe.Just.create(Data_Set.singleton(field)))(Prelude[">>>"](Prelude.semigroupoidArr({}))(Data_Set.insert(Prelude.ordString({}))(field))(Data_Maybe.Just.create)))(path)(this_1.state.selectedFields);
+                return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState((function () {
+                    var _282 = {};
+                    for (var _283 in this_1.state) {
+                        if (this_1.state.hasOwnProperty(_283)) {
+                            _282[_283] = this_1.state[_283];
+                        };
+                    };
+                    _282.selectedFields = selected;
+                    return _282;
+                })()));
+            };
+        })
+    })(Prelude[":"](placeholder)(Prelude["<$>"](Data_Array.functorArray({}))(optionify)(Data_Map.toList($$this.state.fields))));
+};
+var eqVisualTab = function (__unused) {
+    return new Prelude.Eq(function (vt) {
+        return function (vt$prime) {
+            return !Prelude["=="](eqVisualTab({}))(vt)(vt$prime);
+        };
+    }, function (_77) {
+        return function (_78) {
+            if (_77 instanceof FieldsTab && _78 instanceof FieldsTab) {
+                return true;
+            };
+            if (_77 instanceof VisualTypeTab && _78 instanceof VisualTypeTab) {
+                return true;
+            };
+            return false;
+        };
+    });
+};
+var visualTab = function ($$this) {
+    return function (tab) {
+        return React_DOM.dd({
+            className: "tab" + SlamData_Helpers.activate(eqVisualTab({}))(tab)($$this.state.active), 
+            onClick: React.eventHandler($$this)(function (this_1) {
+                return function (_) {
+                    return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState((function () {
+                        var _286 = {};
+                        for (var _287 in this_1.state) {
+                            if (this_1.state.hasOwnProperty(_287)) {
+                                _286[_287] = this_1.state[_287];
+                            };
+                        };
+                        _286.active = tab;
+                        return _286;
+                    })()));
+                };
+            })
+        })([ React_DOM.a({})([ React_DOM.rawText(Prelude.show(showVisualTab({}))(tab)) ]) ]);
+    };
+};
+var visualTabs = function ($$this) {
+    return React_DOM.dl({
+        className: "tabs vertical"
+    })(Prelude["<$>"](Data_Array.functorArray({}))(visualTab($$this))([ FieldsTab.value, VisualTypeTab.value ]));
+};
+var createData = function (_68) {
+    return Prelude["<$>"](Data_Array.functorArray({}))(function (_67) {
+        return {
+            fields: Data_Set.toList(_67.value1), 
+            path: _67.value0, 
+            type: _68.visual
+        };
+    })(Data_Map.toList(_68.selectedFields));
+};
+var visualEditorContent = function ($$this) {
+    return React_DOM.div({
+        className: "tabs-content vertical"
+    })([ React_DOM.ul({
+        className: "content" + SlamData_Helpers.activate(eqVisualTab({}))(FieldsTab.value)($$this.state.active)
+    })([ reify({
+        files: $$this.props.files, 
+        request: $$this.props.request, 
+        path: [  ], 
+        visualThis: $$this
+    })([  ]) ]), React_DOM.div({
+        className: "content" + SlamData_Helpers.activate(eqVisualTab({}))(VisualTypeTab.value)($$this.state.active)
+    })([ React_DOM.ul({
+        className: "chart-type small-block-grid-5"
+    })(Prelude["<$>"](Data_Array.functorArray({}))(visual($$this))([ Graphics_C3.Bar.value, Graphics_C3.Line.value, Graphics_C3.Pie.value ])), selectFields($$this), selectFields($$this), selectFields($$this), React_DOM.div({
+        className: "actions"
+    })([ React_DOM.a({
+        className: "tiny button", 
+        onClick: React.eventHandler($$this)(function (this_1) {
+            return function (_) {
+                return this_1.props.request(new SlamData_Types.EvalVisual(this_1.props.notebook, this_1.props.block, createData(this_1.state)));
+            };
+        })
+    })([ React_DOM.rawText("Create") ]) ]) ]) ]);
+};
+var visualEditor = React.createClass((function () {
+    var _294 = {};
+    for (var _295 in React.spec) {
+        if (React.spec.hasOwnProperty(_295)) {
+            _294[_295] = React.spec[_295];
+        };
+    };
+    _294.displayName = "VisualEditor";
+    _294.getInitialState = function (_) {
+        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
+            active: FieldsTab.value, 
+            fields: Data_Map.empty, 
+            selectedFields: Data_Map.empty, 
+            visual: Graphics_C3.Line.value
+        });
+    };
+    _294.render = function ($$this) {
+        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_App_Workspace_Notebook_Block_Common.blockRow({
+            styles: "block-content edit-visual"
+        })([ visualTabs(React.coerceThis($$this)), visualEditorContent(React.coerceThis($$this)) ]));
+    };
+    return _294;
+})());
+module.exports = {
+    FieldsTab: FieldsTab, 
+    VisualTypeTab: VisualTypeTab, 
+    visualEditor: visualEditor, 
+    eqVisualTab: eqVisualTab, 
+    showVisualTab: showVisualTab
+};
+},{"Control.Lens":40,"Control.Monad.Eff":41,"Data.Array":62,"Data.Array.Unsafe":61,"Data.Const":66,"Data.Map":74,"Data.Maybe":76,"Data.Set":85,"Data.String":86,"Data.Tuple":88,"Graphics.C3":undefined,"Prelude":undefined,"React":95,"React.DOM":93,"React.TreeView":94,"SlamData.App.Workspace.Notebook.Block.Common":98,"SlamData.Components":107,"SlamData.Helpers":undefined,"SlamData.Lens":108,"SlamData.Types":undefined,"SlamData.Types.Workspace.FileSystem":109,"SlamData.Types.Workspace.Notebook.Block.Visual":110}],100:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var SlamData_Types_Workspace_Notebook_Block = require("SlamData.Types.Workspace.Notebook.Block");
+var React_DOM = require("React.DOM");
+var SlamData_Components = require("SlamData.Components");
+var SlamData_Types = require("SlamData.Types");
+var Control_Lens = require("Control.Lens");
+var SlamData_Lens = require("SlamData.Lens");
+var Data_Const = require("Data.Const");
+var SlamData_App_Workspace_Notebook_Block_Common = require("SlamData.App.Workspace.Notebook.Block.Common");
+var React = require("React");
+var Control_Monad_Identity = require("Control.Monad.Identity");
+var Control_Monad_Eff = require("Control.Monad.Eff");
+var SlamData_Helpers = require("SlamData.Helpers");
+var SlamData_App_Workspace_Notebook_Block_Visual = require("SlamData.App.Workspace.Notebook.Block.Visual");
+var typeName = function (_80) {
+    return React_DOM.div({
+        className: "block-type text-center"
+    })([ React_DOM.span({})([ React_DOM.rawText(Prelude.show(SlamData_Types_Workspace_Notebook_Block.showBlockType({}))(_80.blockType)) ]) ]);
+};
+var toolbar = function ($$this) {
+    return React_DOM.div({
+        className: "button-bar"
+    })([ React_DOM.ul({
+        className: "left button-group"
+    })([  ]), React_DOM.ul({
+        className: "right button-group"
+    })([ SlamData_Components.actionButton($$this)(new SlamData_Types.DeleteBlock(Control_Lens["^."]($$this.props.notebook)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._notebookRec(Data_Const.functorConst({})))(SlamData_Lens._ident(Data_Const.functorConst({})))), Control_Lens["^."]($$this.props.block)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._blockRec(Data_Const.functorConst({})))(SlamData_Lens._ident(Data_Const.functorConst({}))))))("Close")(SlamData_Components.closeIcon) ]) ]);
+};
+var evaluatedVisualBlock = function ($$this) {
+    var blockRec = Control_Lens["^."]($$this.props.block)(SlamData_Lens._blockRec(Data_Const.functorConst({})));
+    return SlamData_App_Workspace_Notebook_Block_Common.blockRow({
+        styles: "block-content block-" + Prelude.show(SlamData_Types_Workspace_Notebook_Block.showBlockType({}))(blockRec.blockType)
+    })([ React_DOM.div({
+        className: "block-label"
+    })([ React_DOM.rawText(blockRec.label) ]), React_DOM.div({
+        className: "evaled-block", 
+        onClick: React.eventHandler($$this)(function (this_1) {
+            return function (_) {
+                return this_1.props.request(new SlamData_Types.EditBlock(this_1.props.notebook, this_1.props.block));
+            };
+        })
+    })([ React_DOM.div({
+        id: Control_Lens["^."]($$this.props.block)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._blockRec(Data_Const.functorConst({})))(SlamData_Lens._evalContent(Data_Const.functorConst({}))))
+    })([  ]) ]) ]);
+};
+var evaluatedBlock = function ($$this) {
+    var blockRec = Control_Lens["^."]($$this.props.block)(SlamData_Lens._blockRec(Data_Const.functorConst({})));
+    return SlamData_App_Workspace_Notebook_Block_Common.blockRow({
+        styles: "block-content block-" + Prelude.show(SlamData_Types_Workspace_Notebook_Block.showBlockType({}))(blockRec.blockType)
+    })([ React_DOM.div({
+        className: "block-label"
+    })([ React_DOM.rawText(blockRec.label) ]), React_DOM.div({
+        className: "evaled-block", 
+        onClick: React.eventHandler($$this)(function (this_1) {
+            return function (_) {
+                return this_1.props.request(new SlamData_Types.EditBlock(this_1.props.notebook, this_1.props.block));
+            };
+        })
+    })([ React_DOM.span({
+        dangerouslySetInnerHTML: {
+            __html: blockRec.evalContent
+        }
+    })([  ]) ]) ]);
+};
+var blockEditor = function ($$this) {
+    return SlamData_App_Workspace_Notebook_Block_Common.blockRow({
+        styles: "block-content"
+    })([ React_DOM.div({})([ React_DOM.textarea({
+        autoFocus: "true", 
+        className: "block-editor", 
+        onBlur: React.eventHandler($$this)(function (this_1) {
+            return function (_) {
+                var block$prime = Control_Lens[".~"](Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._blockRec(Control_Monad_Identity.functorIdentity({})))(SlamData_Lens._editContent(Control_Monad_Identity.functorIdentity({}))))(this_1.state.editContent)(this_1.props.block);
+                return this_1.props.request(new SlamData_Types.EvalBlock(this_1.props.notebook, block$prime));
+            };
+        }), 
+        onChange: React.eventHandler($$this)(function (this_1) {
+            return function (e) {
+                return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState((function () {
+                    var _297 = {};
+                    for (var _298 in this_1.state) {
+                        if (this_1.state.hasOwnProperty(_298)) {
+                            _297[_298] = this_1.state[_298];
+                        };
+                    };
+                    _297.editContent = SlamData_Helpers.value(e.target);
+                    return _297;
+                })()));
+            };
+        }), 
+        onKeyUp: React.eventHandler($$this)(function (this_1) {
+            return function (k) {
+                return k.ctrlKey && k.key === "Enter" ? (function () {
+    var block$prime = Control_Lens[".~"](Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._blockRec(Control_Monad_Identity.functorIdentity({})))(SlamData_Lens._editContent(Control_Monad_Identity.functorIdentity({}))))(this_1.state.editContent)(this_1.props.block);
+    return this_1.props.request(new SlamData_Types.EvalBlock(this_1.props.notebook, block$prime));
+})() : Prelude.pure(Control_Monad_Eff.applicativeEff({}))(Prelude.unit);
+            };
+        }), 
+        value: $$this.state.editContent
+    })([  ]) ]) ]);
+};
+var blockContent = function ($$this) {
+    var _299 = Control_Lens["^."]($$this.props.block)(SlamData_Lens._blockRec(Data_Const.functorConst({})));
+    if (_299.blockMode === "Edit" && _299.blockType === "Visual") {
+        return SlamData_App_Workspace_Notebook_Block_Visual.visualEditor({
+            block: $$this.props.block, 
+            files: $$this.props.files, 
+            notebook: $$this.props.notebook, 
+            request: $$this.props.request
+        })([  ]);
+    };
+    if (_299.blockMode === "Edit") {
+        return blockEditor($$this);
+    };
+    if (_299.blockMode === "Eval" && _299.blockType === "Visual") {
+        return evaluatedVisualBlock($$this);
+    };
+    if (_299.blockMode === "Eval") {
+        return evaluatedBlock($$this);
+    };
+    throw new Error("Failed pattern match");
+};
+var block = React.createClass((function () {
+    var _306 = {};
+    for (var _307 in React.spec) {
+        if (React.spec.hasOwnProperty(_307)) {
+            _306[_307] = React.spec[_307];
+        };
+    };
+    _306.displayName = "Block";
+    _306.getInitialState = function ($$this) {
+        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
+            editContent: Control_Lens["^."]($$this.props.block)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._blockRec(Data_Const.functorConst({})))(SlamData_Lens._editContent(Data_Const.functorConst({})))), 
+            evalContent: Control_Lens["^."]($$this.props.block)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._blockRec(Data_Const.functorConst({})))(SlamData_Lens._evalContent(Data_Const.functorConst({}))))
+        });
+    };
+    _306.render = function ($$this) {
+        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div({
+            className: "block"
+        })([ SlamData_App_Workspace_Notebook_Block_Common.blockRow({
+            styles: "block-toolbar toolbar"
+        })([ typeName($$this.props.block), toolbar(React.coerceThis($$this)) ]), blockContent(React.coerceThis($$this)) ]));
+    };
+    return _306;
+})());
+module.exports = {
+    block: block
+};
+},{"Control.Lens":40,"Control.Monad.Eff":41,"Control.Monad.Identity":undefined,"Data.Const":66,"Prelude":undefined,"React":95,"React.DOM":93,"SlamData.App.Workspace.Notebook.Block.Common":98,"SlamData.App.Workspace.Notebook.Block.Visual":99,"SlamData.Components":107,"SlamData.Helpers":undefined,"SlamData.Lens":108,"SlamData.Types":undefined,"SlamData.Types.Workspace.Notebook.Block":undefined}],101:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Control_Lens = require("Control.Lens");
+var SlamData_Lens = require("SlamData.Lens");
+var React_DOM = require("React.DOM");
+var React = require("React");
+var Control_Monad_Eff = require("Control.Monad.Eff");
+var Control_Monad_Identity = require("Control.Monad.Identity");
+var SlamData_Helpers = require("SlamData.Helpers");
+var Data_Const = require("Data.Const");
+var Global = require("Global");
+var _sdServer = function (__dict_Functor_0) {
+    return Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._sdConfig(__dict_Functor_0))(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._sdConfigRec(__dict_Functor_0))(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._server(__dict_Functor_0))(SlamData_Lens._sdConfigServer(__dict_Functor_0))));
+};
+var _sdServerLocation = function (__dict_Functor_1) {
+    return Control_Lens[".."](Prelude.semigroupoidArr({}))(_sdServer(__dict_Functor_1))(SlamData_Lens._location(__dict_Functor_1));
+};
+var slamDataServerLocation = function ($$this) {
+    return React_DOM.div({})([ React_DOM.label({
+        htmlFor: "server-location"
+    })([ React_DOM.rawText("Location") ]), React_DOM.input({
+        name: "server-location", 
+        onChange: React.eventHandler($$this)(function (this_1) {
+            return function (e) {
+                return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState(Control_Lens[".~"](_sdServerLocation(Control_Monad_Identity.functorIdentity({})))(SlamData_Helpers.value(e.target))(this_1.state)));
+            };
+        }), 
+        placeholder: "http://localhost", 
+        value: Control_Lens["^."]($$this.state)(_sdServerLocation(Data_Const.functorConst({})))
+    })([  ]) ]);
+};
+var _sdServerPort = function (__dict_Functor_2) {
+    return Control_Lens[".."](Prelude.semigroupoidArr({}))(_sdServer(__dict_Functor_2))(SlamData_Lens._port(__dict_Functor_2));
+};
+var slamDataServerPort = function ($$this) {
+    return React_DOM.div({})([ React_DOM.label({
+        htmlFor: "server-port"
+    })([ React_DOM.rawText("Port") ]), React_DOM.input({
+        name: "server-port", 
+        onChange: React.eventHandler($$this)(function (this_1) {
+            return function (e) {
+                return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState(Control_Lens[".~"](_sdServerPort(Control_Monad_Identity.functorIdentity({})))(Global.readInt(10)(SlamData_Helpers.value(e.target)))(this_1.state)));
+            };
+        }), 
+        placeholder: "8080", 
+        value: Control_Lens["^."]($$this.state)(_sdServerPort(Data_Const.functorConst({})))
+    })([  ]) ]);
+};
+var slamDataServerSettings = function ($$this) {
+    return React_DOM.fieldset({})([ React_DOM.legend({})([ React_DOM.rawText("SlamEngine server") ]), slamDataServerLocation($$this), slamDataServerPort($$this) ]);
+};
+module.exports = {
+    slamDataServerSettings: slamDataServerSettings
+};
+},{"Control.Lens":40,"Control.Monad.Eff":41,"Control.Monad.Identity":undefined,"Data.Const":66,"Global":89,"Prelude":undefined,"React":95,"React.DOM":93,"SlamData.Helpers":undefined,"SlamData.Lens":108}],102:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Control_Lens = require("Control.Lens");
+var SlamData_Lens = require("SlamData.Lens");
+var React_DOM = require("React.DOM");
+var React = require("React");
+var Control_Monad_Eff = require("Control.Monad.Eff");
+var Control_Monad_Identity = require("Control.Monad.Identity");
+var Global = require("Global");
+var SlamData_Helpers = require("SlamData.Helpers");
+var Data_Const = require("Data.Const");
+var Data_Tuple = require("Data.Tuple");
+var Data_Profunctor = require("Data.Profunctor");
+var Control_Lens_At = require("Control.Lens.At");
+var Data_Maybe = require("Data.Maybe");
+var Data_Array = require("Data.Array");
+var Data_Map = require("Data.Map");
+var _seServerPort = function (__dict_Functor_0) {
+    return Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._seConfig(__dict_Functor_0))(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._seConfigRec(__dict_Functor_0))(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._server(__dict_Functor_0))(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._seConfigServer(__dict_Functor_0))(SlamData_Lens._port(__dict_Functor_0)))));
+};
+var slamEngineServerPort = function ($$this) {
+    return React_DOM.div({})([ React_DOM.label({
+        htmlFor: "slamengine-port"
+    })([ React_DOM.rawText("Port") ]), React_DOM.input({
+        name: "slamengine-port", 
+        onChange: React.eventHandler($$this)(function (this_1) {
+            return function (e) {
+                return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState(Control_Lens[".~"](_seServerPort(Control_Monad_Identity.functorIdentity({})))(Global.readInt(10)(SlamData_Helpers.value(e.target)))(this_1.state)));
+            };
+        }), 
+        placeholder: "8080", 
+        value: Control_Lens["^."]($$this.state)(_seServerPort(Data_Const.functorConst({})))
+    })([  ]) ]);
+};
+var slamEngineServerSettings = function ($$this) {
+    return React_DOM.fieldset({})([ React_DOM.legend({})([ React_DOM.rawText("Server") ]), slamEngineServerPort($$this) ]);
+};
+var _seMountings = function (__dict_Functor_1) {
+    return Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._seConfig(__dict_Functor_1))(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._seConfigRec(__dict_Functor_1))(SlamData_Lens._mountings(__dict_Functor_1)));
+};
+var slamEngineMountingPath = function (_99) {
+    return function (_100) {
+        return React_DOM.div({})([ React_DOM.label({
+            htmlFor: "mongodb-path"
+        })([ React_DOM.rawText("Path") ]), React_DOM.input({
+            name: "mongodb-path", 
+            onChange: React.eventHandler(_99)(function (this_1) {
+                return function (e) {
+                    var path$prime = SlamData_Helpers.value(e.target);
+                    var state$prime = Control_Lens["%~"](Data_Profunctor.profunctorArr({}))(_seMountings(Control_Monad_Identity.functorIdentity({})))(Control_Lens[".."](Prelude.semigroupoidArr({}))(Control_Lens[".~"](Control_Lens.at(Control_Lens_At.atMapKVKV(Prelude.ordString({})))(_100.value0)(Control_Monad_Identity.functorIdentity({})))(Data_Maybe.Nothing.value))(Control_Lens["?~"](Control_Lens.at(Control_Lens_At.atMapKVKV(Prelude.ordString({})))(path$prime)(Control_Monad_Identity.functorIdentity({})))(_100.value1)))(this_1.state);
+                    return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState(state$prime));
+                };
+            }), 
+            placeholder: "/", 
+            value: _100.value0
+        })([  ]) ]);
+    };
+};
+var _sdJava = function (__dict_Functor_2) {
+    return Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._sdConfig(__dict_Functor_2))(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._sdConfigRec(__dict_Functor_2))(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._nodeWebkit(__dict_Functor_2))(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._sdConfigNodeWebkit(__dict_Functor_2))(SlamData_Lens._java(__dict_Functor_2)))));
+};
+var slamEngineJavaBinary = function ($$this) {
+    return React_DOM.div({})([ React_DOM.label({
+        htmlFor: "java-binary"
+    })([ React_DOM.rawText("Binary") ]), React_DOM.input({
+        name: "java-binary", 
+        onChange: React.eventHandler($$this)(function (this_1) {
+            return function (e) {
+                return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState(Control_Lens[".~"](_sdJava(Control_Monad_Identity.functorIdentity({})))(SlamData_Helpers.value(e.target))(this_1.state)));
+            };
+        }), 
+        placeholder: "/usr/bin/java", 
+        value: Control_Lens["^."]($$this.state)(_sdJava(Data_Const.functorConst({})))
+    })([  ]) ]);
+};
+var slamEngineJavaSettings = function ($$this) {
+    return React_DOM.fieldset({})([ React_DOM.legend({})([ React_DOM.rawText("Java") ]), slamEngineJavaBinary($$this) ]);
+};
+var _mountingMongoURI = function (__dict_Functor_3) {
+    return Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._mountingWrapper(__dict_Functor_3))(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._mountingRec(__dict_Functor_3))(SlamData_Lens._connectionUri(__dict_Functor_3)));
+};
+var slamEngineMountingMongoDBMongoUri = function (_101) {
+    return function (_102) {
+        return React_DOM.div({})([ React_DOM.label({
+            htmlFor: "mongodb-mongouri"
+        })([ React_DOM.rawText("MongoUri") ]), React_DOM.input({
+            name: "mongodb-mongouri", 
+            onChange: React.eventHandler(_101)(function (this_1) {
+                return function (e) {
+                    var state$prime = Control_Lens["%~"](Data_Profunctor.profunctorArr({}))(_seMountings(Control_Monad_Identity.functorIdentity({})))(Control_Lens["%~"](Data_Profunctor.profunctorArr({}))(Control_Lens.ix(Control_Lens_At.ixedMapKVKV(Prelude.ordString({})))(_102.value0)(Control_Monad_Identity.applicativeIdentity({})))(Control_Lens[".~"](_mountingMongoURI(Control_Monad_Identity.functorIdentity({})))(SlamData_Helpers.value(e.target))))(this_1.state);
+                    return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState(state$prime));
+                };
+            }), 
+            placeholder: "mongodb://localhost:27017", 
+            value: Control_Lens["^."](_102.value1)(_mountingMongoURI(Data_Const.functorConst({})))
+        })([  ]) ]);
+    };
+};
+var _mountingDatabase = function (__dict_Functor_4) {
+    return Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._mountingWrapper(__dict_Functor_4))(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._mountingRec(__dict_Functor_4))(SlamData_Lens._database(__dict_Functor_4)));
+};
+var slamEngineMountingMongoDBDatabse = function (_103) {
+    return function (_104) {
+        return React_DOM.div({})([ React_DOM.label({
+            htmlFor: "mongodb-database"
+        })([ React_DOM.rawText("Database") ]), React_DOM.input({
+            name: "mongodb-database", 
+            onChange: React.eventHandler(_103)(function (this_1) {
+                return function (e) {
+                    var state$prime = Control_Lens["%~"](Data_Profunctor.profunctorArr({}))(_seMountings(Control_Monad_Identity.functorIdentity({})))(Control_Lens["%~"](Data_Profunctor.profunctorArr({}))(Control_Lens.ix(Control_Lens_At.ixedMapKVKV(Prelude.ordString({})))(_104.value0)(Control_Monad_Identity.applicativeIdentity({})))(Control_Lens[".~"](_mountingDatabase(Control_Monad_Identity.functorIdentity({})))(SlamData_Helpers.value(e.target))))(this_1.state);
+                    return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState(state$prime));
+                };
+            }), 
+            placeholder: "test", 
+            value: Control_Lens["^."](_104.value1)(_mountingDatabase(Data_Const.functorConst({})))
+        })([  ]) ]);
+    };
+};
+var slamEngineMounting = function ($$this) {
+    return function (mounting) {
+        return Prelude["<$>"](Data_Array.functorArray({}))(function (m) {
+            return m($$this)(mounting);
+        })([ slamEngineMountingPath, slamEngineMountingMongoDBMongoUri, slamEngineMountingMongoDBDatabse ]);
+    };
+};
+var slamEngineMountings = function ($$this) {
+    return Prelude[">>="](Data_Array.bindArray({}))(Data_Map.toList(Control_Lens["^."]($$this.state.seConfig)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._seConfigRec(Data_Const.functorConst({})))(SlamData_Lens._mountings(Data_Const.functorConst({}))))))(slamEngineMounting($$this));
+};
+var slamEngineMountingsSettings = function ($$this) {
+    return React_DOM.fieldset({})(Prelude[":"](React_DOM.legend({})([ React_DOM.rawText("MongoDB mountings") ]))(slamEngineMountings($$this)));
+};
+module.exports = {
+    slamEngineServerSettings: slamEngineServerSettings, 
+    slamEngineMountingsSettings: slamEngineMountingsSettings, 
+    slamEngineJavaSettings: slamEngineJavaSettings
+};
+},{"Control.Lens":40,"Control.Lens.At":27,"Control.Monad.Eff":41,"Control.Monad.Identity":undefined,"Data.Array":62,"Data.Const":66,"Data.Map":74,"Data.Maybe":76,"Data.Profunctor":84,"Data.Tuple":88,"Global":89,"Prelude":undefined,"React":95,"React.DOM":93,"SlamData.Helpers":undefined,"SlamData.Lens":108}],103:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var React_DOM = require("React.DOM");
+var React = require("React");
+var SlamData_Types_Workspace_Notebook_Settings = require("SlamData.Types.Workspace.Notebook.Settings");
+var SlamData_Types = require("SlamData.Types");
+var SlamData_Helpers = require("SlamData.Helpers");
+var SlamData_App_Workspace_Notebook_Settings_SlamEngine = require("SlamData.App.Workspace.Notebook.Settings.SlamEngine");
+var SlamData_App_Workspace_Notebook_Settings_SlamData = require("SlamData.App.Workspace.Notebook.Settings.SlamData");
+var Control_Monad_Eff = require("Control.Monad.Eff");
+var saveConfig = function ($$this) {
+    return function (tab) {
+        return React_DOM.a({
+            className: "tiny button", 
+            onClick: React.eventHandler($$this)(function (this_1) {
+                return function (_) {
+                    if (tab instanceof SlamData_Types_Workspace_Notebook_Settings.SlamEngineTab) {
+                        return this_1.props.request(new SlamData_Types.SaveSEConfig(this_1.state.seConfig));
+                    };
+                    if (tab instanceof SlamData_Types_Workspace_Notebook_Settings.SlamDataTab) {
+                        return this_1.props.request(new SlamData_Types.SaveSDConfig(this_1.state.sdConfig));
+                    };
+                    throw new Error("Failed pattern match");
+                };
+            })
+        })([ React_DOM.rawText("Save") ]);
+    };
+};
+var reifyTab = function (name) {
+    return function ($$this) {
+        return React_DOM.dd({
+            className: "tab" + SlamData_Helpers.activate(SlamData_Types_Workspace_Notebook_Settings.eqSettingsTab({}))(name)($$this.state.active)
+        })([ React_DOM.a({
+            id: "settings-" + Prelude.show(SlamData_Types_Workspace_Notebook_Settings.showSettingsTab({}))(name), 
+            onClick: function (_) {
+                return $$this.setState((function () {
+                    var _357 = {};
+                    for (var _358 in $$this.state) {
+                        if ($$this.state.hasOwnProperty(_358)) {
+                            _357[_358] = $$this.state[_358];
+                        };
+                    };
+                    _357.active = name;
+                    return _357;
+                })());
+            }
+        })([ React_DOM.rawText(Prelude.show(SlamData_Types_Workspace_Notebook_Settings.showSettingsTab({}))(name)) ]) ]);
+    };
+};
+var slamDataTab = reifyTab(SlamData_Types_Workspace_Notebook_Settings.SlamDataTab.value);
+var slamEngineTab = reifyTab(SlamData_Types_Workspace_Notebook_Settings.SlamEngineTab.value);
+var tabs = function ($$this) {
+    return React_DOM.div({
+        className: "small-1 columns", 
+        id: "settings-category"
+    })([ React_DOM.dl({
+        className: "tabs vertical"
+    })([ slamEngineTab($$this), slamDataTab($$this) ]) ]);
+};
+var reifyContent = function (_105) {
+    return function (_106) {
+        if (_105 instanceof SlamData_Types_Workspace_Notebook_Settings.SlamEngineTab) {
+            return React_DOM.div({
+                className: "content" + SlamData_Helpers.activate(SlamData_Types_Workspace_Notebook_Settings.eqSettingsTab({}))(SlamData_Types_Workspace_Notebook_Settings.SlamEngineTab.value)(_106.state.active)
+            })([ React_DOM.h6({})([ React_DOM.rawText("Settings for the local instance of SlamEngine") ]), React_DOM.form({})([ SlamData_App_Workspace_Notebook_Settings_SlamEngine.slamEngineServerSettings(_106), SlamData_App_Workspace_Notebook_Settings_SlamEngine.slamEngineMountingsSettings(_106), SlamData_App_Workspace_Notebook_Settings_SlamEngine.slamEngineJavaSettings(_106), saveConfig(_106)(SlamData_Types_Workspace_Notebook_Settings.SlamEngineTab.value) ]) ]);
+        };
+        if (_105 instanceof SlamData_Types_Workspace_Notebook_Settings.SlamDataTab) {
+            return React_DOM.div({
+                className: "content" + SlamData_Helpers.activate(SlamData_Types_Workspace_Notebook_Settings.eqSettingsTab({}))(SlamData_Types_Workspace_Notebook_Settings.SlamDataTab.value)(_106.state.active)
+            })([ React_DOM.h6({})([ React_DOM.rawText("SlamEngine server to connect to") ]), React_DOM.form({})([ SlamData_App_Workspace_Notebook_Settings_SlamData.slamDataServerSettings(_106), saveConfig(_106)(SlamData_Types_Workspace_Notebook_Settings.SlamDataTab.value) ]) ]);
+        };
+        throw new Error("Failed pattern match");
+    };
+};
+var slamDataContent = reifyContent(SlamData_Types_Workspace_Notebook_Settings.SlamDataTab.value);
+var slamEngineContent = reifyContent(SlamData_Types_Workspace_Notebook_Settings.SlamEngineTab.value);
+var contents = function ($$this) {
+    return React_DOM.div({
+        className: "small-11 columns", 
+        id: "settings-content"
+    })([ React_DOM.div({
+        className: "tabs-content vertical"
+    })([ slamEngineContent($$this), slamDataContent($$this) ]) ]);
+};
+var settings = React.createClass((function () {
+    var _361 = {};
+    for (var _362 in React.spec) {
+        if (React.spec.hasOwnProperty(_362)) {
+            _361[_362] = React.spec[_362];
+        };
+    };
+    _361.displayName = "Settings";
+    _361.getInitialState = function ($$this) {
+        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
+            active: SlamData_Types_Workspace_Notebook_Settings.SlamEngineTab.value, 
+            sdConfig: $$this.props.state.settings.sdConfig, 
+            seConfig: $$this.props.state.settings.seConfig
+        });
+    };
+    _361.render = function ($$this) {
+        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div({
+            className: "vertical"
+        })([ tabs(React.coerceThis($$this)), contents(React.coerceThis($$this)) ]));
+    };
+    return _361;
+})());
+module.exports = {
+    settings: settings
+};
+},{"Control.Monad.Eff":41,"Prelude":undefined,"React":95,"React.DOM":93,"SlamData.App.Workspace.Notebook.Settings.SlamData":101,"SlamData.App.Workspace.Notebook.Settings.SlamEngine":102,"SlamData.Helpers":undefined,"SlamData.Types":undefined,"SlamData.Types.Workspace.Notebook.Settings":111}],104:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var SlamData_Types_Workspace_Notebook = require("SlamData.Types.Workspace.Notebook");
+var React_DOM = require("React.DOM");
+var React = require("React");
+var Control_Monad_Eff = require("Control.Monad.Eff");
+var Data_Maybe = require("Data.Maybe");
+var SlamData_Components = require("SlamData.Components");
+var SlamData_Types_Workspace_Notebook_Block = require("SlamData.Types.Workspace.Notebook.Block");
+var SlamData_App_Workspace_Notebook_Block = require("SlamData.App.Workspace.Notebook.Block");
+var SlamData_Types = require("SlamData.Types");
+var SlamData_Helpers = require("SlamData.Helpers");
+var Data_Array = require("Data.Array");
+var SlamData_App_Workspace_Notebook_Settings = require("SlamData.App.Workspace.Notebook.Settings");
+var Data_Function = require("Data.Function");
+var Control_Lens = require("Control.Lens");
+var SlamData_Lens = require("SlamData.Lens");
+var Data_Const = require("Data.Const");
+var Node_UUID = require("Node.UUID");
+var settingsTab = function ($$this) {
+    return {
+        ident: $$this.state.settingsId, 
+        blocks: [  ], 
+        name: "Settings", 
+        path: ""
+    };
+};
+var renameAction = function (_8) {
+    return function (_9) {
+        return React_DOM.li({})([ React_DOM.a({
+            className: "tiny secondary button has-tooltip", 
+            onClick: React.eventHandler(_8)(function (this_1) {
+                return function (_) {
+                    return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState((function () {
+                        var _15 = {};
+                        for (var _16 in this_1.state) {
+                            if (this_1.state.hasOwnProperty(_16)) {
+                                _15[_16] = this_1.state[_16];
+                            };
+                        };
+                        _15.renaming = new Data_Maybe.Just(_9.name);
+                        return _15;
+                    })()));
+                };
+            }), 
+            title: "Rename"
+        })([ SlamData_Components.renameIcon ]) ]);
+    };
+};
+var reifyBlock = function (_4) {
+    return function (_5) {
+        return function (_6) {
+            return SlamData_App_Workspace_Notebook_Block.block({
+                block: _6, 
+                key: _6.ident, 
+                notebook: _5, 
+                request: _4.props.request, 
+                files: _4.props.state.files
+            })([  ]);
+        };
+    };
+};
+var noteBookName = function (_10) {
+    return function (_11) {
+        if (_10.state.renaming instanceof Data_Maybe.Just) {
+            return React_DOM.input({
+                onBlur: React.eventHandler(_10)(function (this_1) {
+                    return function (e) {
+                        return function __do() {
+                            this_1.props.request(new SlamData_Types.RenameNotebook(_11, SlamData_Helpers.value(e.target)))();
+                            return this_1.setState((function () {
+                                var _23 = {};
+                                for (var _24 in this_1.state) {
+                                    if (this_1.state.hasOwnProperty(_24)) {
+                                        _23[_24] = this_1.state[_24];
+                                    };
+                                };
+                                _23.renaming = Data_Maybe.Nothing.value;
+                                return _23;
+                            })());
+                        };
+                    };
+                }), 
+                onChange: React.eventHandler(_10)(function (this_1) {
+                    return function (e) {
+                        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState((function () {
+                            var _25 = {};
+                            for (var _26 in this_1.state) {
+                                if (this_1.state.hasOwnProperty(_26)) {
+                                    _25[_26] = this_1.state[_26];
+                                };
+                            };
+                            _25.renaming = Data_Maybe.Just.create(SlamData_Helpers.value(e.target));
+                            return _25;
+                        })()));
+                    };
+                }), 
+                value: _10.state.renaming.value0
+            })([  ]);
+        };
+        if (_10.state.renaming instanceof Data_Maybe.Nothing) {
+            return React_DOM.rawText(_11.name);
+        };
+        throw new Error("Failed pattern match");
+    };
+};
+var reifyTabs = function (_0) {
+    return function (_1) {
+        if (Prelude["=="](SlamData_Types_Workspace_Notebook.eqNotebookID({}))(_1.ident)(_0.state.settingsId)) {
+            return React_DOM.dd({
+                className: "tab" + SlamData_Helpers.activate(Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(new Data_Maybe.Just(_1.ident))(_0.state.active)
+            })([ React_DOM.a({
+                id: "notebook-Settings", 
+                onClick: React.eventHandler(_0)(function (this_1) {
+                    return function (_) {
+                        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState((function () {
+                            var _30 = {};
+                            for (var _31 in this_1.state) {
+                                if (this_1.state.hasOwnProperty(_31)) {
+                                    _30[_31] = this_1.state[_31];
+                                };
+                            };
+                            _30.active = new Data_Maybe.Just(_1.ident);
+                            return _30;
+                        })()));
+                    };
+                })
+            })([ React_DOM.rawText(_1.name), React_DOM.i({
+                className: "fa fa-times", 
+                onClick: React.eventHandler(_0)(function (this_1) {
+                    return function (_) {
+                        return function __do() {
+                            Prelude["=="](Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(this_1.state.active)(new Data_Maybe.Just(_1.ident)) ? this_1.setState((function () {
+    var _32 = {};
+    for (var _33 in this_1.state) {
+        if (this_1.state.hasOwnProperty(_33)) {
+            _32[_33] = this_1.state[_33];
+        };
+    };
+    _32.active = Data_Maybe.Nothing.value;
+    return _32;
+})()) : Prelude.unit;
+                            return this_1.props.request(SlamData_Types.HideSettings.value)();
+                        };
+                    };
+                })
             })([  ]) ]) ]);
         };
-    };
-    var readFS = function ($$this) {
-        return function (url) {
-            return function __do() {
-                var _128 = Network_Oboe.oboeGet(url)();
-                Network_Oboe.done(_128)(function (json) {
-                    return Prelude.pure(Control_Monad_Eff.applicativeEff({}))($$this.setState({
-                        files: (unsafeCoerce(json)).children
-                    }));
-                })();
-                return Prelude.unit;
-            };
+        return React_DOM.dd({
+            className: "tab" + SlamData_Helpers.activate(Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(new Data_Maybe.Just(_1.ident))(_0.state.active)
+        })([ React_DOM.a({
+            onClick: React.eventHandler(_0)(function (this_2) {
+                return function (_) {
+                    return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_2.setState((function () {
+                        var _34 = {};
+                        for (var _35 in this_2.state) {
+                            if (this_2.state.hasOwnProperty(_35)) {
+                                _34[_35] = this_2.state[_35];
+                            };
+                        };
+                        _34.active = new Data_Maybe.Just(_1.ident);
+                        return _34;
+                    })()));
+                };
+            })
+        })([ noteBookName(React.coerceThis(_0))(_1), React_DOM.i({
+            className: "fa fa-times", 
+            onClick: React.eventHandler(_0)(function (this_2) {
+                return function (_) {
+                    return function __do() {
+                        Prelude["=="](Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(this_2.state.active)(new Data_Maybe.Just(_1.ident)) ? this_2.setState((function () {
+    var _36 = {};
+    for (var _37 in this_2.state) {
+        if (this_2.state.hasOwnProperty(_37)) {
+            _36[_37] = this_2.state[_37];
         };
     };
-    var workspace = React.createClass((function () {
-        var _727 = {};
-        for (var _728 in React.spec) {
-            if (React.spec.hasOwnProperty(_728)) {
-                _727[_728] = React.spec[_728];
+    _36.active = Data_Maybe.Nothing.value;
+    return _36;
+})()) : Prelude.unit;
+                        return this_2.props.request(new SlamData_Types.CloseNotebook(_1.ident))();
+                    };
+                };
+            })
+        })([  ]) ]) ]);
+    };
+};
+var externalActions = function ($$this) {
+    return function (nb) {
+        return React_DOM.ul({
+            className: "button-group"
+        })([ SlamData_Components.actionButton($$this)(new SlamData_Types.SaveNotebook(nb))("Save")(SlamData_Components.saveIcon), renameAction($$this)(nb) ]);
+    };
+};
+var createNotebookButton = function ($$this) {
+    return React_DOM.dd({
+        className: "tab"
+    })([ React_DOM.div({})([ React_DOM.a({
+        id: "add-notebook", 
+        onClick: React.eventHandler($$this)(function (this_1) {
+            return Prelude.pure(Prelude.applicativeArr({}))(this_1.props.request(SlamData_Types.CreateNotebook.value));
+        })
+    })([ SlamData_Components.newNotebookIcon ]) ]) ]);
+};
+var blockIcon = function (_7) {
+    if (_7 === "Markdown") {
+        return SlamData_Components.markdownIcon;
+    };
+    if (_7 === "SQL") {
+        return SlamData_Components.sqlIcon;
+    };
+    if (_7 === "Visual") {
+        return SlamData_Components.visualIcon;
+    };
+    throw new Error("Failed pattern match");
+};
+var actions = function (f) {
+    return function (ident) {
+        return function (ty) {
+            return f(new SlamData_Types.CreateBlock(ident, ty))(Prelude.show(SlamData_Types_Workspace_Notebook_Block.showBlockType({}))(ty))(blockIcon(ty));
+        };
+    };
+};
+var internalActions = function ($$this) {
+    return function (ident) {
+        return React_DOM.ul({
+            className: "button-group"
+        })(Prelude["<$>"](Data_Array.functorArray({}))(actions(SlamData_Components.actionButton($$this))(ident))(Prelude["<$>"](Data_Array.functorArray({}))(SlamData_Types_Workspace_Notebook_Block.BlockType.create)([ "Markdown", "SQL", "Visual" ])));
+    };
+};
+var reifyContent = function (_2) {
+    return function (_3) {
+        if (Prelude["=="](SlamData_Types_Workspace_Notebook.eqNotebookID({}))(_3.ident)(_2.state.settingsId)) {
+            return React_DOM.div({
+                className: "content" + SlamData_Helpers.activate(Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(new Data_Maybe.Just(_3.ident))(_2.state.active)
+            })([ SlamData_App_Workspace_Notebook_Settings.settings({
+                request: _2.props.request, 
+                state: _2.props.state
+            })([  ]) ]);
+        };
+        return React_DOM.div({
+            className: "content" + SlamData_Helpers.activate(Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(new Data_Maybe.Just(_3.ident))(_2.state.active)
+        })([ React_DOM.div({
+            className: "toolbar button-bar"
+        })([ externalActions(_2)(_3), internalActions(_2)(_3.ident) ]), React_DOM.hr({})([  ]), React_DOM.div({
+            className: "actual-content"
+        })(Prelude["<$>"](Data_Array.functorArray({}))(reifyBlock(_2)(_3))(_3.blocks)) ]);
+    };
+};
+var notebooks = React.createClass((function () {
+    var _47 = {};
+    for (var _48 in React.spec) {
+        if (React.spec.hasOwnProperty(_48)) {
+            _47[_48] = React.spec[_48];
+        };
+    };
+    _47.displayName = "Notebooks";
+    _47.componentWillReceiveProps = function ($$this, props) {
+        return props.state.showSettings && !$$this.props.state.showSettings ? Prelude.pure(Control_Monad_Eff.applicativeEff({}))($$this.setState((function () {
+    var _41 = {};
+    for (var _42 in $$this.state) {
+        if ($$this.state.hasOwnProperty(_42)) {
+            _41[_42] = $$this.state[_42];
+        };
+    };
+    _41.active = new Data_Maybe.Just($$this.state.settingsId);
+    return _41;
+})())) : Data_Array.length(props.state.notebooks) > Data_Array.length($$this.props.state.notebooks) ? (function () {
+    var active = Prelude["<$>"](Data_Maybe.functorMaybe({}))(Prelude.flip(Control_Lens["^."])(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._notebookRec(Data_Const.functorConst({})))(SlamData_Lens._ident(Data_Const.functorConst({})))))(Data_Array.head(Data_Array["\\\\"](SlamData_Types_Workspace_Notebook.eqNotebook({}))(props.state.notebooks)($$this.props.state.notebooks)));
+    return Prelude.pure(Control_Monad_Eff.applicativeEff({}))($$this.setState((function () {
+        var _43 = {};
+        for (var _44 in $$this.state) {
+            if ($$this.state.hasOwnProperty(_44)) {
+                _43[_44] = $$this.state[_44];
             };
         };
-        _727.displayName = "Workspace";
-        _727.componentDidMount = function ($$this) {
-            var mountings = Data_Map.keys(Control_Lens["^."]($$this.props.settings.seConfig)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._seConfigRec(Data_Const.functorConst({})))(SlamData_Lens._mountings(Data_Const.functorConst({})))));
-            var root = SlamData_Helpers.getOrElse(Data_Array.head(mountings))("/");
-            var url = SlamData_Helpers.serverURI($$this.props.settings.sdConfig) + "/metadata/fs" + root;
-            return function __do() {
-                readFS($$this)(url)();
-                var __1 = Control_Reactive_Timer.interval(5000)(readFS($$this)(url))();
-                return Prelude.unit;
+        _43.active = active;
+        return _43;
+    })()));
+})() : Data_Array.length(props.state.notebooks) < Data_Array.length($$this.props.state.notebooks) ? (function () {
+    var active = Prelude["<$>"](Data_Maybe.functorMaybe({}))(Prelude.flip(Control_Lens["^."])(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._notebookRec(Data_Const.functorConst({})))(SlamData_Lens._ident(Data_Const.functorConst({})))))(Data_Array.head(props.state.notebooks));
+    return Prelude.pure(Control_Monad_Eff.applicativeEff({}))($$this.setState((function () {
+        var _45 = {};
+        for (var _46 in $$this.state) {
+            if ($$this.state.hasOwnProperty(_46)) {
+                _45[_46] = $$this.state[_46];
             };
         };
-        _727.getInitialState = function (_) {
-            return Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
-                files: [  ]
+        _45.active = active;
+        return _45;
+    })()));
+})() : Prelude.pure(Control_Monad_Eff.applicativeEff({}))(Prelude.unit);
+    };
+    _47.getInitialState = function ($$this) {
+        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
+            settingsId: SlamData_Types_Workspace_Notebook.NotebookID.create(Node_UUID.runUUID(Node_UUID.v4)), 
+            active: Data_Maybe.Nothing.value, 
+            renaming: Data_Maybe.Nothing.value
+        });
+    };
+    _47.render = function ($$this) {
+        var settings = $$this.props.state.showSettings ? [ settingsTab($$this) ] : [  ];
+        var tabs = Prelude["<$>"](Data_Array.functorArray({}))(reifyTabs(React.coerceThis($$this)))(Prelude["++"](Data_Array.semigroupArray({}))($$this.props.state.notebooks)(settings));
+        var tabs$prime = Data_Array.snoc(tabs)(createNotebookButton(React.coerceThis($$this)));
+        var content = Prelude["<$>"](Data_Array.functorArray({}))(reifyContent(React.coerceThis($$this)))(Prelude["++"](Data_Array.semigroupArray({}))($$this.props.state.notebooks)(settings));
+        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div({
+            className: "slamdata-panel"
+        })([ React_DOM.dl({
+            className: "tabs"
+        })(tabs$prime), React_DOM.div({
+            className: "tabs-content"
+        })(content) ]));
+    };
+    return _47;
+})());
+module.exports = {
+    notebooks: notebooks
+};
+},{"Control.Lens":40,"Control.Monad.Eff":41,"Data.Array":62,"Data.Const":66,"Data.Function":73,"Data.Maybe":76,"Node.UUID":91,"Prelude":undefined,"React":95,"React.DOM":93,"SlamData.App.Workspace.Notebook.Block":100,"SlamData.App.Workspace.Notebook.Settings":103,"SlamData.Components":107,"SlamData.Helpers":undefined,"SlamData.Lens":108,"SlamData.Types":undefined,"SlamData.Types.Workspace.Notebook":112,"SlamData.Types.Workspace.Notebook.Block":undefined}],105:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var React_DOM = require("React.DOM");
+var SlamData_App_Workspace_FileSystem = require("SlamData.App.Workspace.FileSystem");
+var SlamData_App_Workspace_Notebook = require("SlamData.App.Workspace.Notebook");
+var SlamData_Types = require("SlamData.Types");
+var SlamData_Helpers = require("SlamData.Helpers");
+var Data_Array = require("Data.Array");
+var Data_Tuple = require("Data.Tuple");
+var Data_Map = require("Data.Map");
+var React = require("React");
+var Control_Monad_Eff = require("Control.Monad.Eff");
+var Control_Reactive_Timer = require("Control.Reactive.Timer");
+var workspace$prime = function (props) {
+    return React_DOM.div({
+        className: "row", 
+        id: "main-row"
+    })([ React_DOM.div({
+        className: "small-5 medium-3 large-2 columns", 
+        id: "filesystem"
+    })([ SlamData_App_Workspace_FileSystem.filesystem({
+        files: props.state.files, 
+        request: props.request
+    })([  ]) ]), React_DOM.div({
+        className: "small-7 medium-9 large-10 columns", 
+        id: "notebook"
+    })([ SlamData_App_Workspace_Notebook.notebooks(props)([  ]) ]) ]);
+};
+var path = function (_12) {
+    return SlamData_Helpers.getOrElse(Data_Array.head(Prelude["<$>"](Data_Array.functorArray({}))(Data_Tuple.fst)(Data_Map.toList(_12.settings.seConfig.mountings))))(SlamData_Helpers.defaultMountPath);
+};
+var workspace = React.createClass((function () {
+    var _53 = {};
+    for (var _54 in React.spec) {
+        if (React.spec.hasOwnProperty(_54)) {
+            _53[_54] = React.spec[_54];
+        };
+    };
+    _53.displayName = "Workspace";
+    _53.requestFS = function ($$this) {
+        return $$this.props.request(new SlamData_Types.ReadFileSystem([ path($$this.props.state) ]));
+    };
+    _53.componentDidMount = function ($$this) {
+        return function __do() {
+            $$this.requestFS();
+            Control_Reactive_Timer.interval(5000)($$this.requestFS)();
+            return Prelude.unit;
+        };
+    };
+    _53.render = function ($$this) {
+        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div({
+            id: "workspace"
+        })([ workspace$prime({
+            request: $$this.props.request, 
+            state: $$this.props.state
+        }) ]));
+    };
+    return _53;
+})());
+module.exports = {
+    workspace: workspace
+};
+},{"Control.Monad.Eff":41,"Control.Reactive.Timer":56,"Data.Array":62,"Data.Map":74,"Data.Tuple":88,"Prelude":undefined,"React":95,"React.DOM":93,"SlamData.App.Workspace.FileSystem":97,"SlamData.App.Workspace.Notebook":104,"SlamData.Helpers":undefined,"SlamData.Types":undefined}],106:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var React = require("React");
+var Control_Monad_Eff = require("Control.Monad.Eff");
+var React_DOM = require("React.DOM");
+var SlamData_App_Menu = require("SlamData.App.Menu");
+var SlamData_App_Workspace = require("SlamData.App.Workspace");
+var app = React.createClass((function () {
+    var _55 = {};
+    for (var _56 in React.spec) {
+        if (React.spec.hasOwnProperty(_56)) {
+            _55[_56] = React.spec[_56];
+        };
+    };
+    _55.displayName = "App";
+    _55.getInitialState = function (_) {
+        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
+            showSettings: false
+        });
+    };
+    _55.render = function ($$this) {
+        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div({})([ SlamData_App_Menu.menu($$this.props.request), SlamData_App_Workspace.workspace({
+            request: $$this.props.request, 
+            state: $$this.props.state
+        })([  ]) ]));
+    };
+    return _55;
+})());
+module.exports = {
+    app: app
+};
+},{"Control.Monad.Eff":41,"Prelude":undefined,"React":95,"React.DOM":93,"SlamData.App.Menu":96,"SlamData.App.Workspace":105}],107:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var React_DOM = require("React.DOM");
+var React = require("React");
+var icon = function (name) {
+    return React_DOM.i({
+        className: name
+    })([  ]);
+};
+var lineChartIcon = icon("icon-chart-line");
+var loadingIcon = icon("fa fa-circle-o-notch fa-spin");
+var markdownIcon = icon("fa fa-file-text");
+var newIcon = icon("fa fa-file");
+var newNotebookIcon = icon("fa fa-plus");
+var openIcon = icon("fa fa-folder-open");
+var pieChartIcon = icon("icon-chart-pie");
+var publishIcon = icon("fa fa-book");
+var renameIcon = icon("fa fa-language");
+var saveIcon = icon("fa fa-save");
+var sqlIcon = icon("fa fa-database");
+var visualIcon = icon("fa fa-bar-chart-o");
+var fileIcon = icon("fa fa-file-o");
+var dirOpenIcon = icon("fa fa-folder-open-o");
+var dirClosedIcon = icon("fa fa-folder-o");
+var closeIcon = icon("fa fa-times");
+var barChartIcon = icon("icon-chart-bar");
+var areaChartIcon = icon("icon-chart-area");
+var actionButton = function ($$this) {
+    return function (event) {
+        return function (title) {
+            return function (icon_1) {
+                return React_DOM.li({})([ React_DOM.a({
+                    className: "tiny secondary button has-tooltip", 
+                    onClick: React.eventHandler($$this)(function (this_1) {
+                        return Prelude.pure(Prelude.applicativeArr({}))(this_1.props.request(event));
+                    }), 
+                    title: title
+                })([ icon_1 ]) ]);
+            };
+        };
+    };
+};
+module.exports = {
+    actionButton: actionButton, 
+    pieChartIcon: pieChartIcon, 
+    lineChartIcon: lineChartIcon, 
+    barChartIcon: barChartIcon, 
+    areaChartIcon: areaChartIcon, 
+    loadingIcon: loadingIcon, 
+    newNotebookIcon: newNotebookIcon, 
+    fileIcon: fileIcon, 
+    dirClosedIcon: dirClosedIcon, 
+    dirOpenIcon: dirOpenIcon, 
+    visualIcon: visualIcon, 
+    sqlIcon: sqlIcon, 
+    markdownIcon: markdownIcon, 
+    publishIcon: publishIcon, 
+    renameIcon: renameIcon, 
+    saveIcon: saveIcon, 
+    openIcon: openIcon, 
+    newIcon: newIcon, 
+    closeIcon: closeIcon, 
+    icon: icon
+};
+},{"Prelude":undefined,"React":95,"React.DOM":93}],108:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Control_Lens = require("Control.Lens");
+var SlamData_Types = require("SlamData.Types");
+var SlamData_Types_Workspace_Notebook = require("SlamData.Types.Workspace.Notebook");
+var SlamData_Types_Workspace_FileSystem = require("SlamData.Types.Workspace.FileSystem");
+var SlamData_Types_Workspace_Notebook_Block = require("SlamData.Types.Workspace.Notebook.Block");
+var _settings = function (__dict_Functor_0) {
+    return Control_Lens.lens(function (o) {
+        return o.settings;
+    })(function (o) {
+        return function (x) {
+            var _155 = {};
+            for (var _156 in o) {
+                if (o.hasOwnProperty(_156)) {
+                    _155[_156] = o[_156];
+                };
+            };
+            _155.settings = x;
+            return _155;
+        };
+    })(__dict_Functor_0);
+};
+var _server = function (__dict_Functor_1) {
+    return Control_Lens.lens(function (o) {
+        return o.server;
+    })(function (o) {
+        return function (x) {
+            var _157 = {};
+            for (var _158 in o) {
+                if (o.hasOwnProperty(_158)) {
+                    _157[_158] = o[_158];
+                };
+            };
+            _157.server = x;
+            return _157;
+        };
+    })(__dict_Functor_1);
+};
+var _seConfigServer = function (__dict_Functor_2) {
+    return function (_33) {
+        return function (_34) {
+            return Prelude["<$>"](__dict_Functor_2)(SlamData_Types.SEConfigServer.create)(_33(_34));
+        };
+    };
+};
+var _seConfigRec = function (__dict_Functor_3) {
+    return function (_27) {
+        return function (_28) {
+            return Prelude["<$>"](__dict_Functor_3)(SlamData_Types.SEConfig.create)(_27(_28));
+        };
+    };
+};
+var _seConfig = function (__dict_Functor_4) {
+    return function (_47) {
+        return function (_48) {
+            return Prelude["<$>"](__dict_Functor_4)(function (sec$prime) {
+                var _165 = {};
+                for (var _166 in _48) {
+                    if (_48.hasOwnProperty(_166)) {
+                        _165[_166] = _48[_166];
+                    };
+                };
+                _165.seConfig = sec$prime;
+                return _165;
+            })(_47(_48.seConfig));
+        };
+    };
+};
+var _sdConfigServer = function (__dict_Functor_5) {
+    return function (_29) {
+        return function (_30) {
+            return Prelude["<$>"](__dict_Functor_5)(SlamData_Types.SDConfigServer.create)(_29(_30));
+        };
+    };
+};
+var _sdConfigRec = function (__dict_Functor_6) {
+    return function (_25) {
+        return function (_26) {
+            return Prelude["<$>"](__dict_Functor_6)(SlamData_Types.SDConfig.create)(_25(_26));
+        };
+    };
+};
+var _sdConfigNodeWebkit = function (__dict_Functor_7) {
+    return function (_31) {
+        return function (_32) {
+            return Prelude["<$>"](__dict_Functor_7)(SlamData_Types.SDConfigNodeWebkit.create)(_31(_32));
+        };
+    };
+};
+var _sdConfig = function (__dict_Functor_8) {
+    return function (_45) {
+        return function (_46) {
+            return Prelude["<$>"](__dict_Functor_8)(function (sdc$prime) {
+                var _176 = {};
+                for (var _177 in _46) {
+                    if (_46.hasOwnProperty(_177)) {
+                        _176[_177] = _46[_177];
+                    };
+                };
+                _176.sdConfig = sdc$prime;
+                return _176;
+            })(_45(_46.sdConfig));
+        };
+    };
+};
+var _port = function (__dict_Functor_9) {
+    return Control_Lens.lens(function (o) {
+        return o.port;
+    })(function (o) {
+        return function (x) {
+            var _179 = {};
+            for (var _180 in o) {
+                if (o.hasOwnProperty(_180)) {
+                    _179[_180] = o[_180];
+                };
+            };
+            _179.port = x;
+            return _179;
+        };
+    })(__dict_Functor_9);
+};
+var _notebookRec = function (__dict_Functor_10) {
+    return function (_41) {
+        return function (_42) {
+            return Prelude["<$>"](__dict_Functor_10)(SlamData_Types_Workspace_Notebook.Notebook.create)(_41(_42));
+        };
+    };
+};
+var _nodeWebkit = function (__dict_Functor_11) {
+    return Control_Lens.lens(function (o) {
+        return o.nodeWebkit;
+    })(function (o) {
+        return function (x) {
+            var _183 = {};
+            for (var _184 in o) {
+                if (o.hasOwnProperty(_184)) {
+                    _183[_184] = o[_184];
+                };
+            };
+            _183.nodeWebkit = x;
+            return _183;
+        };
+    })(__dict_Functor_11);
+};
+var _name = function (__dict_Functor_12) {
+    return function (_63) {
+        return function (_64) {
+            return Prelude["<$>"](__dict_Functor_12)(function (i$prime) {
+                var _187 = {};
+                for (var _188 in _64) {
+                    if (_64.hasOwnProperty(_188)) {
+                        _187[_188] = _64[_188];
+                    };
+                };
+                _187.name = i$prime;
+                return _187;
+            })(_63(_64.name));
+        };
+    };
+};
+var _mountings = function (__dict_Functor_13) {
+    return Control_Lens.lens(function (o) {
+        return o.mountings;
+    })(function (o) {
+        return function (x) {
+            var _190 = {};
+            for (var _191 in o) {
+                if (o.hasOwnProperty(_191)) {
+                    _190[_191] = o[_191];
+                };
+            };
+            _190.mountings = x;
+            return _190;
+        };
+    })(__dict_Functor_13);
+};
+var _mountingWrapper = function (__dict_Functor_14) {
+    return function (_35) {
+        return function (_36) {
+            return Prelude["<$>"](__dict_Functor_14)(SlamData_Types.MountMongo.create)(_35(_36.value0));
+        };
+    };
+};
+var _mountingRec = function (__dict_Functor_15) {
+    return function (_37) {
+        return function (_38) {
+            return Prelude["<$>"](__dict_Functor_15)(SlamData_Types.MountingWrapper.create)(_37(_38));
+        };
+    };
+};
+var _location = function (__dict_Functor_16) {
+    return Control_Lens.lens(function (o) {
+        return o.location;
+    })(function (o) {
+        return function (x) {
+            var _197 = {};
+            for (var _198 in o) {
+                if (o.hasOwnProperty(_198)) {
+                    _197[_198] = o[_198];
+                };
+            };
+            _197.location = x;
+            return _197;
+        };
+    })(__dict_Functor_16);
+};
+var _java = function (__dict_Functor_17) {
+    return Control_Lens.lens(function (o) {
+        return o.java;
+    })(function (o) {
+        return function (x) {
+            var _199 = {};
+            for (var _200 in o) {
+                if (o.hasOwnProperty(_200)) {
+                    _199[_200] = o[_200];
+                };
+            };
+            _199.java = x;
+            return _199;
+        };
+    })(__dict_Functor_17);
+};
+var _ident = function (__dict_Functor_18) {
+    return function (_49) {
+        return function (_50) {
+            return Prelude["<$>"](__dict_Functor_18)(function (i$prime) {
+                var _203 = {};
+                for (var _204 in _50) {
+                    if (_50.hasOwnProperty(_204)) {
+                        _203[_204] = _50[_204];
+                    };
+                };
+                _203.ident = i$prime;
+                return _203;
+            })(_49(_50.ident));
+        };
+    };
+};
+var _fileTypeRec = function (__dict_Functor_19) {
+    return function (_39) {
+        return function (_40) {
+            return Prelude["<$>"](__dict_Functor_19)(SlamData_Types_Workspace_FileSystem.FileType.create)(_39(_40));
+        };
+    };
+};
+var _evalContent = function (__dict_Functor_20) {
+    return function (_59) {
+        return function (_60) {
+            return Prelude["<$>"](__dict_Functor_20)(function (i$prime) {
+                var _210 = {};
+                for (var _211 in _60) {
+                    if (_60.hasOwnProperty(_211)) {
+                        _210[_211] = _60[_211];
+                    };
+                };
+                _210.evalContent = i$prime;
+                return _210;
+            })(_59(_60.evalContent));
+        };
+    };
+};
+var _editContent = function (__dict_Functor_21) {
+    return function (_57) {
+        return function (_58) {
+            return Prelude["<$>"](__dict_Functor_21)(function (i$prime) {
+                var _215 = {};
+                for (var _216 in _58) {
+                    if (_58.hasOwnProperty(_216)) {
+                        _215[_216] = _58[_216];
+                    };
+                };
+                _215.editContent = i$prime;
+                return _215;
+            })(_57(_58.editContent));
+        };
+    };
+};
+var _database = function (__dict_Functor_22) {
+    return Control_Lens.lens(function (o) {
+        return o.database;
+    })(function (o) {
+        return function (x) {
+            var _218 = {};
+            for (var _219 in o) {
+                if (o.hasOwnProperty(_219)) {
+                    _218[_219] = o[_219];
+                };
+            };
+            _218.database = x;
+            return _218;
+        };
+    })(__dict_Functor_22);
+};
+var _content = function (__dict_Functor_23) {
+    return function (_51) {
+        return function (_52) {
+            return Prelude["<$>"](__dict_Functor_23)(function (i$prime) {
+                var _222 = {};
+                for (var _223 in _52) {
+                    if (_52.hasOwnProperty(_223)) {
+                        _222[_223] = _52[_223];
+                    };
+                };
+                _222.content = i$prime;
+                return _222;
+            })(_51(_52.content));
+        };
+    };
+};
+var _connectionUri = function (__dict_Functor_24) {
+    return Control_Lens.lens(function (o) {
+        return o.connectionUri;
+    })(function (o) {
+        return function (x) {
+            var _225 = {};
+            for (var _226 in o) {
+                if (o.hasOwnProperty(_226)) {
+                    _225[_226] = o[_226];
+                };
+            };
+            _225.connectionUri = x;
+            return _225;
+        };
+    })(__dict_Functor_24);
+};
+var _children = function (__dict_Functor_25) {
+    return function (_61) {
+        return function (_62) {
+            return Prelude["<$>"](__dict_Functor_25)(function (i$prime) {
+                var _229 = {};
+                for (var _230 in _62) {
+                    if (_62.hasOwnProperty(_230)) {
+                        _229[_230] = _62[_230];
+                    };
+                };
+                _229.children = i$prime;
+                return _229;
+            })(_61(_62.children));
+        };
+    };
+};
+var _blockType = function (__dict_Functor_26) {
+    return function (_55) {
+        return function (_56) {
+            return Prelude["<$>"](__dict_Functor_26)(function (i$prime) {
+                var _234 = {};
+                for (var _235 in _56) {
+                    if (_56.hasOwnProperty(_235)) {
+                        _234[_235] = _56[_235];
+                    };
+                };
+                _234.blockType = i$prime;
+                return _234;
+            })(_55(_56.blockType));
+        };
+    };
+};
+var _blockRec = function (__dict_Functor_27) {
+    return function (_43) {
+        return function (_44) {
+            return Prelude["<$>"](__dict_Functor_27)(SlamData_Types_Workspace_Notebook_Block.Block.create)(_43(_44));
+        };
+    };
+};
+var _blockMode = function (__dict_Functor_28) {
+    return function (_53) {
+        return function (_54) {
+            return Prelude["<$>"](__dict_Functor_28)(function (i$prime) {
+                var _241 = {};
+                for (var _242 in _54) {
+                    if (_54.hasOwnProperty(_242)) {
+                        _241[_242] = _54[_242];
+                    };
+                };
+                _241.blockMode = i$prime;
+                return _241;
+            })(_53(_54.blockMode));
+        };
+    };
+};
+module.exports = {
+    _name: _name, 
+    _children: _children, 
+    _evalContent: _evalContent, 
+    _editContent: _editContent, 
+    _blockType: _blockType, 
+    _blockMode: _blockMode, 
+    _content: _content, 
+    _ident: _ident, 
+    _settings: _settings, 
+    _database: _database, 
+    _connectionUri: _connectionUri, 
+    _mountings: _mountings, 
+    _java: _java, 
+    _nodeWebkit: _nodeWebkit, 
+    _port: _port, 
+    _location: _location, 
+    _server: _server, 
+    _seConfig: _seConfig, 
+    _sdConfig: _sdConfig, 
+    _blockRec: _blockRec, 
+    _notebookRec: _notebookRec, 
+    _fileTypeRec: _fileTypeRec, 
+    _mountingRec: _mountingRec, 
+    _mountingWrapper: _mountingWrapper, 
+    _seConfigServer: _seConfigServer, 
+    _sdConfigNodeWebkit: _sdConfigNodeWebkit, 
+    _sdConfigServer: _sdConfigServer, 
+    _seConfigRec: _seConfigRec, 
+    _sdConfigRec: _sdConfigRec
+};
+},{"Control.Lens":40,"Prelude":undefined,"SlamData.Types":undefined,"SlamData.Types.Workspace.FileSystem":109,"SlamData.Types.Workspace.Notebook":112,"SlamData.Types.Workspace.Notebook.Block":undefined}],109:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Data_Argonaut_Decode = require("Data.Argonaut.Decode");
+var Data_Either = require("Data.Either");
+var Data_Argonaut = require("Data.Argonaut");
+var Data_Map = require("Data.Map");
+var FileType = {
+    create: function (value) {
+        return value;
+    }
+};
+var FileTypes = {
+    create: function (value) {
+        return value;
+    }
+};
+var eqFileType = function (__unused) {
+    return new Prelude.Eq(function (ft) {
+        return function (ft$prime) {
+            return !Prelude["=="](eqFileType({}))(ft)(ft$prime);
+        };
+    }, function (_117) {
+        return function (_118) {
+            return _117.name === _118.name && _117.type === _118.type && Prelude["=="](Prelude.eqArray(eqFileType({})))(_117.children)(_118.children);
+        };
+    });
+};
+var ordFileType = function (__unused) {
+    return new Prelude.Ord(eqFileType, function (_119) {
+        return function (_120) {
+            return _119.type === _120.type ? Prelude.compare(Prelude.ordString({}))(_119.name)(_120.name) : _119.type === "directory" ? Prelude.LT.value : Prelude.GT.value;
+        };
+    });
+};
+var decodeFileType = function (__unused) {
+    return new Data_Argonaut_Decode.DecodeJson(function (json) {
+        return Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Argonaut.toObject(json))("FileType"))(function (obj) {
+            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("name")(obj))("name"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonString({}))))(function (_33) {
+                return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("type")(obj))("type"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonString({}))))(function (_32) {
+                    return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("children")(obj))("children"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeArray(decodeFileType({})))))(function (_31) {
+                        return Prelude.pure(Data_Either.applicativeEither({}))({
+                            name: _33, 
+                            type: _32, 
+                            children: _31
+                        });
+                    });
+                });
             });
+        });
+    });
+};
+var decodeFileTypes = function (__unused) {
+    return new Data_Argonaut_Decode.DecodeJson(function (json) {
+        return Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Argonaut.toObject(json))("FileTypes"))(function (obj) {
+            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("children")(obj))("children"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeArray(decodeFileType({})))))(function (_34) {
+                return Prelude.pure(Data_Either.applicativeEither({}))({
+                    children: _34
+                });
+            });
+        });
+    });
+};
+module.exports = {
+    FileTypes: FileTypes, 
+    FileType: FileType, 
+    eqFileType: eqFileType, 
+    ordFileType: ordFileType, 
+    decodeFileType: decodeFileType, 
+    decodeFileTypes: decodeFileTypes
+};
+},{"Data.Argonaut":undefined,"Data.Argonaut.Decode":58,"Data.Either":undefined,"Data.Map":74,"Prelude":undefined}],110:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var VisualData = {
+    create: function (value) {
+        return value;
+    }
+};
+module.exports = {
+    VisualData: VisualData
+};
+},{"Prelude":undefined}],111:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+function SlamDataTab() {
+
+};
+SlamDataTab.value = new SlamDataTab();
+function SlamEngineTab() {
+
+};
+SlamEngineTab.value = new SlamEngineTab();
+var showSettingsTab = function (__unused) {
+    return new Prelude.Show(function (_98) {
+        if (_98 instanceof SlamDataTab) {
+            return "SlamData";
         };
-        _727.render = function ($$this) {
-            return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div({
-                id: "workspace"
-            })([ workspace$prime($$this.state.files)($$this.props.request) ]));
+        if (_98 instanceof SlamEngineTab) {
+            return "SlamEngine";
         };
-        return _727;
-    })());
-    return {
-        workspace: workspace
+        throw new Error("Failed pattern match");
+    });
+};
+var eqSettingsTab = function (__unused) {
+    return new Prelude.Eq(function (st) {
+        return function (st$prime) {
+            return !Prelude["=="](eqSettingsTab({}))(st)(st$prime);
+        };
+    }, function (_96) {
+        return function (_97) {
+            if (_96 instanceof SlamDataTab && _97 instanceof SlamDataTab) {
+                return true;
+            };
+            if (_96 instanceof SlamEngineTab && _97 instanceof SlamEngineTab) {
+                return true;
+            };
+            return false;
+        };
+    });
+};
+module.exports = {
+    SlamDataTab: SlamDataTab, 
+    SlamEngineTab: SlamEngineTab, 
+    eqSettingsTab: eqSettingsTab, 
+    showSettingsTab: showSettingsTab
+};
+},{"Prelude":undefined}],112:[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Node_UUID = require("Node.UUID");
+var SlamData_Types_Workspace_Notebook_Block = require("SlamData.Types.Workspace.Notebook.Block");
+var Data_Argonaut_Encode = require("Data.Argonaut.Encode");
+var Data_Argonaut = require("Data.Argonaut");
+var Data_Argonaut_Decode = require("Data.Argonaut.Decode");
+var Data_Either = require("Data.Either");
+var Data_Map = require("Data.Map");
+var NotebookID = {
+    create: function (value) {
+        return value;
+    }
+};
+var Notebook = {
+    create: function (value) {
+        return value;
+    }
+};
+var eqNotebookID = function (__unused) {
+    return new Prelude.Eq(function (i) {
+        return function (i$prime) {
+            return !Prelude["=="](eqNotebookID({}))(i)(i$prime);
+        };
+    }, function (_34) {
+        return function (_35) {
+            return Prelude["=="](Node_UUID.eqUUID({}))(_34)(_35);
+        };
+    });
+};
+var eqNotebook = function (__unused) {
+    return new Prelude.Eq(function (nb) {
+        return function (nb$prime) {
+            return !Prelude["=="](eqNotebook({}))(nb)(nb$prime);
+        };
+    }, function (_36) {
+        return function (_37) {
+            return Prelude["=="](eqNotebookID({}))(_36.ident)(_37.ident) && Prelude["=="](Prelude.eqArray(SlamData_Types_Workspace_Notebook_Block.eqBlock({})))(_36.blocks)(_37.blocks);
+        };
+    });
+};
+var encodeJsonNotebookID = function (__unused) {
+    return new Data_Argonaut_Encode.EncodeJson(function (_39) {
+        return Data_Argonaut.encodeJson(Node_UUID.encodeJsonUUID({}))(_39);
+    });
+};
+var encodeJsonNotebook = function (__unused) {
+    return new Data_Argonaut_Encode.EncodeJson(function (_38) {
+        return Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("ident")(Data_Argonaut.encodeJson(encodeJsonNotebookID({}))(_38.ident)))(Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("blocks")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonArray(SlamData_Types_Workspace_Notebook_Block.encodeJsonBlock({})))(_38.blocks)))(Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("name")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJString({}))(_38.name)))(Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("path")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJString({}))(_38.path)))(Data_Argonaut.jsonEmptyObject))));
+    });
+};
+var decodeNotebookID = function (__unused) {
+    return new Data_Argonaut_Decode.DecodeJson(function (json) {
+        return Prelude["<$>"](Data_Either.functorEither({}))(NotebookID.create)(Data_Argonaut.decodeJson(Node_UUID.decodeJsonUUID({}))(json));
+    });
+};
+var decodeNotebook = function (__unused) {
+    return new Data_Argonaut_Decode.DecodeJson(function (json) {
+        return Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Argonaut.toObject(json))("Notebook"))(function (obj) {
+            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("ident")(obj))("ident"))(Data_Argonaut.decodeJson(decodeNotebookID({}))))(function (_9) {
+                return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("blocks")(obj))("blocks"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeArray(SlamData_Types_Workspace_Notebook_Block.decodeJsonBlock({})))))(function (_8) {
+                    return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("name")(obj))("name"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonString({}))))(function (_7) {
+                        return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("path")(obj))("path"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonString({}))))(function (_6) {
+                            return Prelude.pure(Data_Either.applicativeEither({}))({
+                                ident: _9, 
+                                blocks: _8, 
+                                name: _7, 
+                                path: _6
+                            });
+                        });
+                    });
+                });
+            });
+        });
+    });
+};
+module.exports = {
+    Notebook: Notebook, 
+    NotebookID: NotebookID, 
+    eqNotebookID: eqNotebookID, 
+    eqNotebook: eqNotebook, 
+    decodeNotebook: decodeNotebook, 
+    decodeNotebookID: decodeNotebookID, 
+    encodeJsonNotebook: encodeJsonNotebook, 
+    encodeJsonNotebookID: encodeJsonNotebookID
+};
+},{"Data.Argonaut":undefined,"Data.Argonaut.Decode":58,"Data.Argonaut.Encode":59,"Data.Either":undefined,"Data.Map":74,"Node.UUID":91,"Prelude":undefined,"SlamData.Types.Workspace.Notebook.Block":undefined}],"Control.Alternative":[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Control_Alt = require("Control.Alt");
+var Control_Lazy = require("Control.Lazy");
+function Alternative(__superclass_Control$dotPlus$dotPlus_1, __superclass_Prelude$dotApplicative_0) {
+    this["__superclass_Control.Plus.Plus_1"] = __superclass_Control$dotPlus$dotPlus_1;
+    this["__superclass_Prelude.Applicative_0"] = __superclass_Prelude$dotApplicative_0;
+};
+var many = function (__dict_Alternative_0) {
+    return function (__dict_Lazy1_1) {
+        return function (v) {
+            return Control_Alt["<|>"]((__dict_Alternative_0["__superclass_Control.Plus.Plus_1"]({}))["__superclass_Control.Alt.Alt_0"]({}))(some(__dict_Alternative_0)(__dict_Lazy1_1)(v))(Prelude.pure(__dict_Alternative_0["__superclass_Prelude.Applicative_0"]({}))([  ]));
+        };
     };
-})();
-var PS = PS || {};
-PS.SlamData_App = (function () {
-    "use strict";
-    var Prelude = PS.Prelude;
-    var Control_Monad_Eff = PS.Control_Monad_Eff;
-    var React = PS.React;
-    var Debug_Trace = PS.Debug_Trace;
-    var React_DOM = PS.React_DOM;
-    var SlamData_App_Menu = PS.SlamData_App_Menu;
-    var SlamData_App_Workspace = PS.SlamData_App_Workspace;
-    var showSettings = function ($$this) {
-        return function (bool) {
-            return Prelude.pure(Control_Monad_Eff.applicativeEff({}))($$this.setState({
-                showSettings: bool
+};
+var some = function (__dict_Alternative_2) {
+    return function (__dict_Lazy1_3) {
+        return function (v) {
+            return Prelude["<*>"]((__dict_Alternative_2["__superclass_Prelude.Applicative_0"]({}))["__superclass_Prelude.Apply_0"]({}))(Prelude["<$>"](((__dict_Alternative_2["__superclass_Control.Plus.Plus_1"]({}))["__superclass_Control.Alt.Alt_0"]({}))["__superclass_Prelude.Functor_0"]({}))(Prelude[":"])(v))(Control_Lazy.defer1(__dict_Lazy1_3)(function (_) {
+                return many(__dict_Alternative_2)(__dict_Lazy1_3)(v);
             }));
         };
     };
-    var app = React.createClass((function () {
-        var _729 = {};
-        for (var _730 in React.spec) {
-            if (React.spec.hasOwnProperty(_730)) {
-                _729[_730] = React.spec[_730];
-            };
+};
+module.exports = {
+    Alternative: Alternative, 
+    many: many, 
+    some: some
+};
+},{"Control.Alt":24,"Control.Lazy":26,"Prelude":undefined}],"Control.Monad.Identity":[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Identity = {
+    create: function (value) {
+        return value;
+    }
+};
+var runIdentity = function (_171) {
+    return _171;
+};
+var functorIdentity = function (__unused) {
+    return new Prelude.Functor(function (f) {
+        return function (m) {
+            return Identity.create(f(runIdentity(m)));
         };
-        _729.displayName = "App";
-        _729.componentWillUnmount = function (_) {
-            return Debug_Trace.trace("Unmounting app");
+    });
+};
+var applyIdentity = function (__unused) {
+    return new Prelude.Apply(function (_172) {
+        return function (_173) {
+            return Identity.create(_172(_173));
         };
-        _729.getInitialState = function (_) {
-            return Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
-                showSettings: false
-            });
+    }, functorIdentity);
+};
+var bindIdentity = function (__unused) {
+    return new Prelude.Bind(function (m) {
+        return function (f) {
+            return f(runIdentity(m));
         };
-        _729.render = function ($$this) {
-            return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div({})([ SlamData_App_Menu.menu(showSettings(React.coerceThis($$this))), SlamData_App_Workspace.workspace({
-                files: $$this.props.files, 
-                request: $$this.props.request, 
-                settings: $$this.props.settings
-            })([  ]) ]));
+    }, applyIdentity);
+};
+var applicativeIdentity = function (__unused) {
+    return new Prelude.Applicative(applyIdentity, Identity.create);
+};
+var monadIdentity = function (__unused) {
+    return new Prelude.Monad(applicativeIdentity, bindIdentity);
+};
+module.exports = {
+    Identity: Identity, 
+    runIdentity: runIdentity, 
+    functorIdentity: functorIdentity, 
+    applyIdentity: applyIdentity, 
+    applicativeIdentity: applicativeIdentity, 
+    bindIdentity: bindIdentity, 
+    monadIdentity: monadIdentity
+};
+},{"Prelude":undefined}],"Data.Argonaut.Core":[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Data_Maybe = require("Data.Maybe");
+var Data_Map = require("Data.Map");
+var Control_Lens = require("Control.Lens");
+var Data_Profunctor_Choice = require("Data.Profunctor.Choice");
+function JsonNull(value0) {
+    this.value0 = value0;
+};
+JsonNull.create = function (value0) {
+    return new JsonNull(value0);
+};
+function JsonBoolean(value0) {
+    this.value0 = value0;
+};
+JsonBoolean.create = function (value0) {
+    return new JsonBoolean(value0);
+};
+function JsonNumber(value0) {
+    this.value0 = value0;
+};
+JsonNumber.create = function (value0) {
+    return new JsonNumber(value0);
+};
+function JsonString(value0) {
+    this.value0 = value0;
+};
+JsonString.create = function (value0) {
+    return new JsonString(value0);
+};
+function JsonArray(value0) {
+    this.value0 = value0;
+};
+JsonArray.create = function (value0) {
+    return new JsonArray(value0);
+};
+function JsonObject(value0) {
+    this.value0 = value0;
+};
+JsonObject.create = function (value0) {
+    return new JsonObject(value0);
+};
+var verbJsonType = function (def) {
+    return function (f) {
+        return function (fold) {
+            return fold(def)(f);
         };
-        return _729;
-    })());
-    return {
-        app: app
     };
-})();
-var PS = PS || {};
-PS.SlamData = (function () {
-    "use strict";
-    var Prelude = PS.Prelude;
-    var Control_Monad_Eff = PS.Control_Monad_Eff;
-    var Node_Events = PS.Node_Events;
-    var SlamData_Types = PS.SlamData_Types;
-    var SlamData_App = PS.SlamData_App;
-    var React = PS.React;
-    function setProps(props) {  return function(component) {    return function() {      component.setProps(props);    }  }};
-    var slamData = function (emitter) {
-        return function (settings) {
-            var request = function (event) {
-                return function __do() {
-                    Node_Events.emit(Node_Events.eventEmitterEmitter({}))(SlamData_Types.requestEvent)(event)(emitter)();
-                    return Prelude.unit;
+};
+var toJsonType = verbJsonType(Data_Maybe.Nothing.value)(Data_Maybe.Just.create);
+var isJsonType = verbJsonType(false)(Prelude["const"](true));
+var fromString = JsonString.create;
+var jsonEmptyString = fromString("");
+var fromObject = JsonObject.create;
+var jsonEmptyObject = fromObject(Data_Map.empty);
+var jsonSingletonObject = function (key) {
+    return function (val) {
+        return fromObject(Data_Map.singleton(key)(val));
+    };
+};
+var fromNumber = JsonNumber.create;
+var jsonZero = fromNumber(0);
+var fromNull = JsonNull.create;
+var jsonNull = fromNull(Prelude.unit);
+var fromBoolean = JsonBoolean.create;
+var jsonFalse = fromBoolean(false);
+var jsonTrue = fromBoolean(true);
+var fromArray = JsonArray.create;
+var jsonEmptyArray = fromArray([  ]);
+var jsonSingletonArray = function (j) {
+    return fromArray([ j ]);
+};
+var foldJsonString = function (_86) {
+    return function (_87) {
+        return function (_88) {
+            if (_88 instanceof JsonString) {
+                return _87(_88.value0);
+            };
+            return _86;
+        };
+    };
+};
+var isString = isJsonType(foldJsonString);
+var jsonStringL = function (__dict_Applicative_0) {
+    return Prelude["<<<"](Prelude.semigroupoidArr({}))(Prelude.id(Prelude.categoryArr({})))(Control_Lens.filtered(__dict_Applicative_0)(Data_Profunctor_Choice.choiceArr({}))(isString));
+};
+var toString = toJsonType(foldJsonString);
+var stringL = function (__dict_Applicative_1) {
+    return function (__dict_Choice_2) {
+        return Control_Lens["prism'"](fromString)(toString)(__dict_Applicative_1)(__dict_Choice_2);
+    };
+};
+var foldJsonObject = function (_92) {
+    return function (_93) {
+        return function (_94) {
+            if (_94 instanceof JsonObject) {
+                return _93(_94.value0);
+            };
+            return _92;
+        };
+    };
+};
+var isObject = isJsonType(foldJsonObject);
+var jsonObjectL = function (__dict_Applicative_3) {
+    return Prelude["<<<"](Prelude.semigroupoidArr({}))(Prelude.id(Prelude.categoryArr({})))(Control_Lens.filtered(__dict_Applicative_3)(Data_Profunctor_Choice.choiceArr({}))(isObject));
+};
+var toObject = toJsonType(foldJsonObject);
+var objectL = function (__dict_Applicative_4) {
+    return function (__dict_Choice_5) {
+        return Control_Lens["prism'"](fromObject)(toObject)(__dict_Applicative_4)(__dict_Choice_5);
+    };
+};
+var foldJsonNumber = function (_83) {
+    return function (_84) {
+        return function (_85) {
+            if (_85 instanceof JsonNumber) {
+                return _84(_85.value0);
+            };
+            return _83;
+        };
+    };
+};
+var isNumber = isJsonType(foldJsonNumber);
+var jsonNumberL = function (__dict_Applicative_6) {
+    return Prelude["<<<"](Prelude.semigroupoidArr({}))(Prelude.id(Prelude.categoryArr({})))(Control_Lens.filtered(__dict_Applicative_6)(Data_Profunctor_Choice.choiceArr({}))(isNumber));
+};
+var toNumber = toJsonType(foldJsonNumber);
+var numberL = function (__dict_Applicative_7) {
+    return function (__dict_Choice_8) {
+        return Control_Lens["prism'"](fromNumber)(toNumber)(__dict_Applicative_7)(__dict_Choice_8);
+    };
+};
+var foldJsonNull = function (_77) {
+    return function (_78) {
+        return function (_79) {
+            if (_79 instanceof JsonNull) {
+                return _78(Prelude.unit);
+            };
+            return _77;
+        };
+    };
+};
+var isNull = isJsonType(foldJsonNull);
+var jsonNullL = function (__dict_Applicative_9) {
+    return Prelude["<<<"](Prelude.semigroupoidArr({}))(Prelude.id(Prelude.categoryArr({})))(Control_Lens.filtered(__dict_Applicative_9)(Data_Profunctor_Choice.choiceArr({}))(isNull));
+};
+var toNull = toJsonType(foldJsonNull);
+var nullL = function (__dict_Applicative_10) {
+    return function (__dict_Choice_11) {
+        return Control_Lens["prism'"](fromNull)(toNull)(__dict_Applicative_10)(__dict_Choice_11);
+    };
+};
+var foldJsonBoolean = function (_80) {
+    return function (_81) {
+        return function (_82) {
+            if (_82 instanceof JsonBoolean) {
+                return _81(_82.value0);
+            };
+            return _80;
+        };
+    };
+};
+var isBoolean = isJsonType(foldJsonBoolean);
+var jsonBooleanL = function (__dict_Applicative_12) {
+    return Prelude["<<<"](Prelude.semigroupoidArr({}))(Prelude.id(Prelude.categoryArr({})))(Control_Lens.filtered(__dict_Applicative_12)(Data_Profunctor_Choice.choiceArr({}))(isBoolean));
+};
+var toBoolean = toJsonType(foldJsonBoolean);
+var foldJsonArray = function (_89) {
+    return function (_90) {
+        return function (_91) {
+            if (_91 instanceof JsonArray) {
+                return _90(_91.value0);
+            };
+            return _89;
+        };
+    };
+};
+var isArray = isJsonType(foldJsonArray);
+var jsonArrayL = function (__dict_Applicative_13) {
+    return Prelude["<<<"](Prelude.semigroupoidArr({}))(Prelude.id(Prelude.categoryArr({})))(Control_Lens.filtered(__dict_Applicative_13)(Data_Profunctor_Choice.choiceArr({}))(isArray));
+};
+var toArray = toJsonType(foldJsonArray);
+var foldJson = function (_70) {
+    return function (_71) {
+        return function (_72) {
+            return function (_73) {
+                return function (_74) {
+                    return function (_75) {
+                        return function (_76) {
+                            if (_76 instanceof JsonNull) {
+                                return _70(Prelude.unit);
+                            };
+                            if (_76 instanceof JsonBoolean) {
+                                return _71(_76.value0);
+                            };
+                            if (_76 instanceof JsonNumber) {
+                                return _72(_76.value0);
+                            };
+                            if (_76 instanceof JsonString) {
+                                return _73(_76.value0);
+                            };
+                            if (_76 instanceof JsonArray) {
+                                return _74(_76.value0);
+                            };
+                            if (_76 instanceof JsonObject) {
+                                return _75(_76.value0);
+                            };
+                            throw new Error("Failed pattern match");
+                        };
+                    };
                 };
             };
-            var component = SlamData_App.app({
-                files: [  ], 
-                request: request, 
-                settings: settings
-            })([  ]);
+        };
+    };
+};
+var eqJson = function (__unused) {
+    return new Prelude.Eq(function (j) {
+        return function (j$prime) {
+            return !Prelude["=="](eqJson({}))(j)(j$prime);
+        };
+    }, function (_95) {
+        return function (_96) {
+            if (_95 instanceof JsonNull && _96 instanceof JsonNull) {
+                return true;
+            };
+            if (_95 instanceof JsonBoolean && _96 instanceof JsonBoolean) {
+                return _95.value0 === _96.value0;
+            };
+            if (_95 instanceof JsonNumber && _96 instanceof JsonNumber) {
+                return _95.value0 === _96.value0;
+            };
+            if (_95 instanceof JsonString && _96 instanceof JsonString) {
+                return _95.value0 === _96.value0;
+            };
+            if (_95 instanceof JsonArray && _96 instanceof JsonArray) {
+                return Prelude["=="](Prelude.eqArray(eqJson({})))(_95.value0)(_96.value0);
+            };
+            if (_95 instanceof JsonObject && _96 instanceof JsonObject) {
+                return Prelude["=="](Data_Map.eqMap(Prelude.eqString({}))(eqJson({})))(_95.value0)(_96.value0);
+            };
+            return false;
+        };
+    });
+};
+var booleanL = function (__dict_Applicative_14) {
+    return function (__dict_Choice_15) {
+        return Control_Lens["prism'"](fromBoolean)(toBoolean)(__dict_Applicative_14)(__dict_Choice_15);
+    };
+};
+var arrayL = function (__dict_Applicative_16) {
+    return function (__dict_Choice_17) {
+        return Control_Lens["prism'"](fromArray)(toArray)(__dict_Applicative_16)(__dict_Choice_17);
+    };
+};
+module.exports = {
+    JsonNull: JsonNull, 
+    JsonBoolean: JsonBoolean, 
+    JsonNumber: JsonNumber, 
+    JsonString: JsonString, 
+    JsonArray: JsonArray, 
+    JsonObject: JsonObject, 
+    jsonObjectL: jsonObjectL, 
+    jsonArrayL: jsonArrayL, 
+    jsonStringL: jsonStringL, 
+    jsonNumberL: jsonNumberL, 
+    jsonBooleanL: jsonBooleanL, 
+    jsonNullL: jsonNullL, 
+    objectL: objectL, 
+    arrayL: arrayL, 
+    stringL: stringL, 
+    numberL: numberL, 
+    booleanL: booleanL, 
+    nullL: nullL, 
+    jsonSingletonObject: jsonSingletonObject, 
+    jsonSingletonArray: jsonSingletonArray, 
+    jsonEmptyObject: jsonEmptyObject, 
+    jsonEmptyArray: jsonEmptyArray, 
+    jsonEmptyString: jsonEmptyString, 
+    jsonNull: jsonNull, 
+    jsonZero: jsonZero, 
+    jsonFalse: jsonFalse, 
+    jsonTrue: jsonTrue, 
+    fromObject: fromObject, 
+    fromArray: fromArray, 
+    fromString: fromString, 
+    fromNumber: fromNumber, 
+    fromBoolean: fromBoolean, 
+    fromNull: fromNull, 
+    toObject: toObject, 
+    toArray: toArray, 
+    toString: toString, 
+    toNumber: toNumber, 
+    toBoolean: toBoolean, 
+    toNull: toNull, 
+    toJsonType: toJsonType, 
+    isObject: isObject, 
+    isArray: isArray, 
+    isString: isString, 
+    isNumber: isNumber, 
+    isBoolean: isBoolean, 
+    isNull: isNull, 
+    isJsonType: isJsonType, 
+    verbJsonType: verbJsonType, 
+    foldJsonObject: foldJsonObject, 
+    foldJsonArray: foldJsonArray, 
+    foldJsonString: foldJsonString, 
+    foldJsonNumber: foldJsonNumber, 
+    foldJsonBoolean: foldJsonBoolean, 
+    foldJsonNull: foldJsonNull, 
+    foldJson: foldJson, 
+    eqJson: eqJson
+};
+},{"Control.Lens":40,"Data.Map":74,"Data.Maybe":76,"Data.Profunctor.Choice":83,"Prelude":undefined}],"Data.Argonaut.Printer":[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Data_Argonaut_Core = require("Data.Argonaut.Core");
+var Data_Foldable = require("Data.Foldable");
+var Data_Tuple = require("Data.Tuple");
+var Data_Map = require("Data.Map");
+function Printer(printJson) {
+    this.printJson = printJson;
+};
+var stringifyString = Prelude.show(Prelude.showString({}));
+var stringifyNumber = Prelude.show(Prelude.showNumber({}));
+var stringifyNull = function (_102) {
+    return "null";
+};
+var stringifyField = Prelude.show(Prelude.showString({}));
+var stringifyBoolean = function (_103) {
+    if (_103) {
+        return "true";
+    };
+    if (!_103) {
+        return "false";
+    };
+    throw new Error("Failed pattern match");
+};
+var stringify = function (json) {
+    return Data_Argonaut_Core.foldJson(stringifyNull)(stringifyBoolean)(stringifyNumber)(stringifyString)(stringifyArray)(stringifyObject)(json);
+};
+var stringifyArray = function (_104) {
+    if (_104.length === 0) {
+        return "[]";
+    };
+    if (_104.length > 0) {
+        var _335 = _104.slice(1);
+        var withComma = function (x_1) {
+            return function (acc) {
+                return ", " + stringify(x_1) + acc;
+            };
+        };
+        return "[" + stringify(_104[0]) + Data_Foldable.foldr(Data_Foldable.foldableArray({}))(withComma)("]")(_335);
+    };
+    throw new Error("Failed pattern match");
+};
+var stringifyObject = function (objMap) {
+    var one = function (_105) {
+        return Prelude.show(Prelude.showString({}))(_105.value0) + ": " + stringify(_105.value1);
+    };
+    var withComma = function (x) {
+        return function (acc) {
+            return ", " + one(x) + acc;
+        };
+    };
+    var _339 = Data_Map.toList(objMap);
+    if (_339.length > 0) {
+        var _341 = _339.slice(1);
+        return "{" + one(_339[0]) + Data_Foldable.foldr(Data_Foldable.foldableArray({}))(withComma)("}")(_341);
+    };
+    return "{}";
+};
+var printerString = function (__unused) {
+    return new Printer(stringify);
+};
+var printJson = function (dict) {
+    return dict.printJson;
+};
+var showJson = function (__unused) {
+    return new Prelude.Show(printJson(printerString({})));
+};
+module.exports = {
+    Printer: Printer, 
+    printJson: printJson, 
+    printerString: printerString, 
+    showJson: showJson
+};
+},{"Data.Argonaut.Core":undefined,"Data.Foldable":71,"Data.Map":74,"Data.Tuple":88,"Prelude":undefined}],"Data.Argonaut":[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Data_Argonaut_Combinators = require("Data.Argonaut.Combinators");
+var Data_Argonaut_Core = require("Data.Argonaut.Core");
+var Data_Argonaut_Printer = require("Data.Argonaut.Printer");
+var Data_Argonaut_Decode = require("Data.Argonaut.Decode");
+var Data_Argonaut_Parser = require("Data.Argonaut.Parser");
+var Data_Argonaut_Encode = require("Data.Argonaut.Encode");
+var $tilde$greater = Data_Argonaut_Combinators["~>"];
+var $qmark$greater$greater$eq = Data_Argonaut_Combinators["?>>="];
+var $colon$eq = Data_Argonaut_Combinators[":="];
+var toString = Data_Argonaut_Core.toString;
+var toObject = Data_Argonaut_Core.toObject;
+var toNumber = Data_Argonaut_Core.toNumber;
+var toNull = Data_Argonaut_Core.toNull;
+var toBoolean = Data_Argonaut_Core.toBoolean;
+var toArray = Data_Argonaut_Core.toArray;
+var stringL = Data_Argonaut_Core.stringL;
+var printJson = Data_Argonaut_Printer.printJson;
+var objectL = Data_Argonaut_Core.objectL;
+var objectFieldL = Data_Argonaut_Decode.objectFieldL;
+var numberL = Data_Argonaut_Core.numberL;
+var nullL = Data_Argonaut_Core.nullL;
+var jsonZero = Data_Argonaut_Core.jsonZero;
+var jsonTrue = Data_Argonaut_Core.jsonTrue;
+var jsonStringL = Data_Argonaut_Core.jsonStringL;
+var jsonSingletonObject = Data_Argonaut_Core.jsonSingletonObject;
+var jsonSingletonArray = Data_Argonaut_Core.jsonSingletonArray;
+var jsonParser = Data_Argonaut_Parser.jsonParser;
+var jsonObjectL = Data_Argonaut_Core.jsonObjectL;
+var jsonNumberL = Data_Argonaut_Core.jsonNumberL;
+var jsonNullL = Data_Argonaut_Core.jsonNullL;
+var jsonNull = Data_Argonaut_Core.jsonNull;
+var jsonFalse = Data_Argonaut_Core.jsonFalse;
+var jsonEmptyString = Data_Argonaut_Core.jsonEmptyString;
+var jsonEmptyObject = Data_Argonaut_Core.jsonEmptyObject;
+var jsonEmptyArray = Data_Argonaut_Core.jsonEmptyArray;
+var jsonBooleanL = Data_Argonaut_Core.jsonBooleanL;
+var jsonArrayL = Data_Argonaut_Core.jsonArrayL;
+var isString = Data_Argonaut_Core.isString;
+var isObject = Data_Argonaut_Core.isObject;
+var isNumber = Data_Argonaut_Core.isNumber;
+var isNull = Data_Argonaut_Core.isNull;
+var isBoolean = Data_Argonaut_Core.isBoolean;
+var isArray = Data_Argonaut_Core.isArray;
+var fromString = Data_Argonaut_Core.fromString;
+var fromObject = Data_Argonaut_Core.fromObject;
+var fromNumber = Data_Argonaut_Core.fromNumber;
+var fromNull = Data_Argonaut_Core.fromNull;
+var fromBoolean = Data_Argonaut_Core.fromBoolean;
+var fromArray = Data_Argonaut_Core.fromArray;
+var foldJsonString = Data_Argonaut_Core.foldJsonString;
+var foldJsonObject = Data_Argonaut_Core.foldJsonObject;
+var foldJsonNumber = Data_Argonaut_Core.foldJsonNumber;
+var foldJsonNull = Data_Argonaut_Core.foldJsonNull;
+var foldJsonBoolean = Data_Argonaut_Core.foldJsonBoolean;
+var foldJsonArray = Data_Argonaut_Core.foldJsonArray;
+var foldJson = Data_Argonaut_Core.foldJson;
+var encodeJson = Data_Argonaut_Encode.encodeJson;
+var decodeMaybe = Data_Argonaut_Decode.decodeMaybe;
+var decodeL = Data_Argonaut_Decode.decodeL;
+var decodeJson = Data_Argonaut_Decode.decodeJson;
+var booleanL = Data_Argonaut_Core.booleanL;
+var arrayL = Data_Argonaut_Core.arrayL;
+var arrayIndexL = Data_Argonaut_Decode.arrayIndexL;
+module.exports = {
+    printJson: printJson, 
+    jsonParser: jsonParser, 
+    encodeJson: encodeJson, 
+    objectFieldL: objectFieldL, 
+    arrayIndexL: arrayIndexL, 
+    decodeL: decodeL, 
+    decodeMaybe: decodeMaybe, 
+    decodeJson: decodeJson, 
+    jsonObjectL: jsonObjectL, 
+    jsonArrayL: jsonArrayL, 
+    jsonStringL: jsonStringL, 
+    jsonNumberL: jsonNumberL, 
+    jsonBooleanL: jsonBooleanL, 
+    jsonNullL: jsonNullL, 
+    objectL: objectL, 
+    arrayL: arrayL, 
+    stringL: stringL, 
+    numberL: numberL, 
+    booleanL: booleanL, 
+    nullL: nullL, 
+    jsonSingletonObject: jsonSingletonObject, 
+    jsonSingletonArray: jsonSingletonArray, 
+    jsonEmptyObject: jsonEmptyObject, 
+    jsonEmptyArray: jsonEmptyArray, 
+    jsonEmptyString: jsonEmptyString, 
+    jsonNull: jsonNull, 
+    jsonZero: jsonZero, 
+    jsonFalse: jsonFalse, 
+    jsonTrue: jsonTrue, 
+    fromObject: fromObject, 
+    fromArray: fromArray, 
+    fromString: fromString, 
+    fromNumber: fromNumber, 
+    fromBoolean: fromBoolean, 
+    fromNull: fromNull, 
+    toObject: toObject, 
+    toArray: toArray, 
+    toString: toString, 
+    toNumber: toNumber, 
+    toBoolean: toBoolean, 
+    toNull: toNull, 
+    isObject: isObject, 
+    isArray: isArray, 
+    isString: isString, 
+    isNumber: isNumber, 
+    isBoolean: isBoolean, 
+    isNull: isNull, 
+    foldJsonObject: foldJsonObject, 
+    foldJsonArray: foldJsonArray, 
+    foldJsonString: foldJsonString, 
+    foldJsonNumber: foldJsonNumber, 
+    foldJsonBoolean: foldJsonBoolean, 
+    foldJsonNull: foldJsonNull, 
+    foldJson: foldJson, 
+    "?>>=": $qmark$greater$greater$eq, 
+    "~>": $tilde$greater, 
+    ":=": $colon$eq
+};
+},{"Data.Argonaut.Combinators":57,"Data.Argonaut.Core":undefined,"Data.Argonaut.Decode":58,"Data.Argonaut.Encode":59,"Data.Argonaut.Parser":60,"Data.Argonaut.Printer":undefined,"Prelude":undefined}],"Data.Either":[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+function Left(value0) {
+    this.value0 = value0;
+};
+Left.create = function (value0) {
+    return new Left(value0);
+};
+function Right(value0) {
+    this.value0 = value0;
+};
+Right.create = function (value0) {
+    return new Right(value0);
+};
+var showEither = function (__dict_Show_0) {
+    return function (__dict_Show_1) {
+        return new Prelude.Show(function (_164) {
+            if (_164 instanceof Left) {
+                return "Left (" + Prelude.show(__dict_Show_0)(_164.value0) + ")";
+            };
+            if (_164 instanceof Right) {
+                return "Right (" + Prelude.show(__dict_Show_1)(_164.value0) + ")";
+            };
+            throw new Error("Failed pattern match");
+        });
+    };
+};
+var functorEither = function (__unused) {
+    return new Prelude.Functor(function (_160) {
+        return function (_161) {
+            if (_161 instanceof Left) {
+                return new Left(_161.value0);
+            };
+            if (_161 instanceof Right) {
+                return new Right(_160(_161.value0));
+            };
+            throw new Error("Failed pattern match");
+        };
+    });
+};
+var eqEither = function (__dict_Eq_4) {
+    return function (__dict_Eq_5) {
+        return new Prelude.Eq(function (a) {
+            return function (b) {
+                return !Prelude["=="](eqEither(__dict_Eq_4)(__dict_Eq_5))(a)(b);
+            };
+        }, function (_165) {
+            return function (_166) {
+                if (_165 instanceof Left && _166 instanceof Left) {
+                    return Prelude["=="](__dict_Eq_4)(_165.value0)(_166.value0);
+                };
+                if (_165 instanceof Right && _166 instanceof Right) {
+                    return Prelude["=="](__dict_Eq_5)(_165.value0)(_166.value0);
+                };
+                return false;
+            };
+        });
+    };
+};
+var ordEither = function (__dict_Ord_2) {
+    return function (__dict_Ord_3) {
+        return new Prelude.Ord(function (__unused) {
+            return eqEither(__dict_Ord_2["__superclass_Prelude.Eq_0"]({}))(__dict_Ord_3["__superclass_Prelude.Eq_0"]({}));
+        }, function (_167) {
+            return function (_168) {
+                if (_167 instanceof Left && _168 instanceof Left) {
+                    return Prelude.compare(__dict_Ord_2)(_167.value0)(_168.value0);
+                };
+                if (_167 instanceof Right && _168 instanceof Right) {
+                    return Prelude.compare(__dict_Ord_3)(_167.value0)(_168.value0);
+                };
+                if (_167 instanceof Left) {
+                    return Prelude.LT.value;
+                };
+                if (_168 instanceof Left) {
+                    return Prelude.GT.value;
+                };
+                throw new Error("Failed pattern match");
+            };
+        });
+    };
+};
+var either = function (_157) {
+    return function (_158) {
+        return function (_159) {
+            if (_159 instanceof Left) {
+                return _157(_159.value0);
+            };
+            if (_159 instanceof Right) {
+                return _158(_159.value0);
+            };
+            throw new Error("Failed pattern match");
+        };
+    };
+};
+var isLeft = either(Prelude["const"](true))(Prelude["const"](false));
+var isRight = either(Prelude["const"](false))(Prelude["const"](true));
+var applyEither = function (__unused) {
+    return new Prelude.Apply(function (_162) {
+        return function (_163) {
+            if (_162 instanceof Left) {
+                return new Left(_162.value0);
+            };
+            if (_162 instanceof Right) {
+                return Prelude["<$>"](functorEither({}))(_162.value0)(_163);
+            };
+            throw new Error("Failed pattern match");
+        };
+    }, functorEither);
+};
+var bindEither = function (__unused) {
+    return new Prelude.Bind(either(function (e) {
+        return function (_) {
+            return new Left(e);
+        };
+    })(function (a) {
+        return function (f) {
+            return f(a);
+        };
+    }), applyEither);
+};
+var applicativeEither = function (__unused) {
+    return new Prelude.Applicative(applyEither, Right.create);
+};
+var monadEither = function (__unused) {
+    return new Prelude.Monad(applicativeEither, bindEither);
+};
+module.exports = {
+    Left: Left, 
+    Right: Right, 
+    isRight: isRight, 
+    isLeft: isLeft, 
+    either: either, 
+    functorEither: functorEither, 
+    applyEither: applyEither, 
+    applicativeEither: applicativeEither, 
+    bindEither: bindEither, 
+    monadEither: monadEither, 
+    showEither: showEither, 
+    eqEither: eqEither, 
+    ordEither: ordEither
+};
+},{"Prelude":undefined}],"Graphics.C3":[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+function YDim() {
+
+};
+YDim.value = new YDim();
+function XDim() {
+
+};
+XDim.value = new XDim();
+function Bar() {
+
+};
+Bar.value = new Bar();
+function Line() {
+
+};
+Line.value = new Line();
+function Pie() {
+
+};
+Pie.value = new Pie();
+function Axis(value0, value1, value2) {
+    this.value0 = value0;
+    this.value1 = value1;
+    this.value2 = value2;
+};
+Axis.create = function (value0) {
+    return function (value1) {
+        return function (value2) {
+            return new Axis(value0, value1, value2);
+        };
+    };
+};
+function generate(opts) {  return function() {    return c3.generate(actualOptions(opts));  }};
+function actualOptions(opts) {  var obj = {};  obj.bindto = opts.bindto;  obj.data = {    columns: opts.c3Data.map(function(d) {      return [d.name].concat(d.values);    }),    types: c3Types(opts)  };  if (axisName(opts.xAxis) !== '') {    obj = insertAxis(obj)(opts.xAxis);  }  if (axisName(opts.yAxis) !== '') {    obj = insertAxis(obj)(opts.yAxis);  }  return obj;};
+function insertAxis(opts) {  return function(axis) {    var xData = axisData(axis);    opts.data.x = axisName(axis);    opts.data.columns.unshift([opts.data.x].concat(xData));    opts.axis = opts.axis || {};    opts.axis.x = {      type: 'category',      tick: {        format: function(i) {          return xData[i];        }      }    };    return opts;  }};
+function c3Types(opts) {  var obj = {};  opts.c3Data.forEach(function(d) {    obj[d.name] = showC3Type_(d.c3Type);  });  return obj;};
+var yAxis = Axis.create("y");
+var xAxis = Axis.create("x");
+var showC3Type = function (__unused) {
+    return new Prelude.Show(function (_192) {
+        if (_192 instanceof Bar) {
+            return "bar";
+        };
+        if (_192 instanceof Line) {
+            return "line";
+        };
+        if (_192 instanceof Pie) {
+            return "pie";
+        };
+        throw new Error("Failed pattern match");
+    });
+};
+var showC3Type_ = Prelude.show(showC3Type({}));
+var options = {
+    bindto: "", 
+    c3Data: [  ], 
+    xAxis: xAxis("")([  ]), 
+    yAxis: yAxis("")([  ])
+};
+var eqC3Type = function (__unused) {
+    return new Prelude.Eq(function (t) {
+        return function (t$prime) {
+            return !Prelude["=="](eqC3Type({}))(t)(t$prime);
+        };
+    }, function (_193) {
+        return function (_194) {
+            if (_193 instanceof Bar && _194 instanceof Bar) {
+                return true;
+            };
+            if (_193 instanceof Line && _194 instanceof Line) {
+                return true;
+            };
+            if (_193 instanceof Pie && _194 instanceof Pie) {
+                return true;
+            };
+            return false;
+        };
+    });
+};
+var c3Data = {
+    c3Type: Bar.value, 
+    name: "", 
+    values: [  ]
+};
+var axisName = function (_190) {
+    return _190.value1;
+};
+var axisData = function (_191) {
+    return _191.value2;
+};
+module.exports = {
+    Bar: Bar, 
+    Line: Line, 
+    Pie: Pie, 
+    yAxis: yAxis, 
+    xAxis: xAxis, 
+    options: options, 
+    c3Data: c3Data, 
+    generate: generate, 
+    showC3Type: showC3Type, 
+    eqC3Type: eqC3Type
+};
+},{"Prelude":undefined}],"Prelude":[function(require,module,exports){
+"use strict";
+var Unit = {
+    create: function (value) {
+        return value;
+    }
+};
+function LT() {
+
+};
+LT.value = new LT();
+function GT() {
+
+};
+GT.value = new GT();
+function EQ() {
+
+};
+EQ.value = new EQ();
+function Semigroupoid($less$less$less) {
+    this["<<<"] = $less$less$less;
+};
+function Category(__superclass_Prelude$dotSemigroupoid_0, id) {
+    this["__superclass_Prelude.Semigroupoid_0"] = __superclass_Prelude$dotSemigroupoid_0;
+    this.id = id;
+};
+function Show(show) {
+    this.show = show;
+};
+function Functor($less$dollar$greater) {
+    this["<$>"] = $less$dollar$greater;
+};
+function Apply($less$times$greater, __superclass_Prelude$dotFunctor_0) {
+    this["<*>"] = $less$times$greater;
+    this["__superclass_Prelude.Functor_0"] = __superclass_Prelude$dotFunctor_0;
+};
+function Applicative(__superclass_Prelude$dotApply_0, pure) {
+    this["__superclass_Prelude.Apply_0"] = __superclass_Prelude$dotApply_0;
+    this.pure = pure;
+};
+function Bind($greater$greater$eq, __superclass_Prelude$dotApply_0) {
+    this[">>="] = $greater$greater$eq;
+    this["__superclass_Prelude.Apply_0"] = __superclass_Prelude$dotApply_0;
+};
+function Monad(__superclass_Prelude$dotApplicative_0, __superclass_Prelude$dotBind_1) {
+    this["__superclass_Prelude.Applicative_0"] = __superclass_Prelude$dotApplicative_0;
+    this["__superclass_Prelude.Bind_1"] = __superclass_Prelude$dotBind_1;
+};
+function Num($percent, $times, $plus, $minus, $div, negate) {
+    this["%"] = $percent;
+    this["*"] = $times;
+    this["+"] = $plus;
+    this["-"] = $minus;
+    this["/"] = $div;
+    this.negate = negate;
+};
+function Eq($div$eq, $eq$eq) {
+    this["/="] = $div$eq;
+    this["=="] = $eq$eq;
+};
+function Ord(__superclass_Prelude$dotEq_0, compare) {
+    this["__superclass_Prelude.Eq_0"] = __superclass_Prelude$dotEq_0;
+    this.compare = compare;
+};
+function Bits($amp, $up, complement, shl, shr, zshr, $bar) {
+    this["&"] = $amp;
+    this["^"] = $up;
+    this.complement = complement;
+    this.shl = shl;
+    this.shr = shr;
+    this.zshr = zshr;
+    this["|"] = $bar;
+};
+function BoolLike($amp$amp, not, $bar$bar) {
+    this["&&"] = $amp$amp;
+    this.not = not;
+    this["||"] = $bar$bar;
+};
+function Semigroup($less$greater) {
+    this["<>"] = $less$greater;
+};
+function cons(e) {  return function (l) {    return [e].concat(l);  };};
+function showStringImpl(s) {  return JSON.stringify(s);};
+function showNumberImpl(n) {  return n.toString();};
+function showArrayImpl (f) {  return function (xs) {    var ss = [];    for (var i = 0, l = xs.length; i < l; i++) {      ss[i] = f(xs[i]);    }    return '[' + ss.join(',') + ']';  };};
+function numAdd(n1) {  return function(n2) {    return n1 + n2;  };};
+function numSub(n1) {  return function(n2) {    return n1 - n2;  };};
+function numMul(n1) {  return function(n2) {    return n1 * n2;  };};
+function numDiv(n1) {  return function(n2) {    return n1 / n2;  };};
+function numMod(n1) {  return function(n2) {    return n1 % n2;  };};
+function numNegate(n) {  return -n;};
+function refEq(r1) {  return function(r2) {    return r1 === r2;  };};
+function refIneq(r1) {  return function(r2) {    return r1 !== r2;  };};
+function eqArrayImpl(f) {  return function(xs) {    return function(ys) {      if (xs.length !== ys.length) return false;      for (var i = 0; i < xs.length; i++) {        if (!f(xs[i])(ys[i])) return false;      }      return true;    };  };};
+function unsafeCompareImpl(lt) {  return function (eq) {    return function (gt) {      return function (x) {        return function (y) {          return x < y ? lt : x > y ? gt : eq;        };      };    };  };};
+function numShl(n1) {  return function(n2) {    return n1 << n2;  };};
+function numShr(n1) {  return function(n2) {    return n1 >> n2;  };};
+function numZshr(n1) {  return function(n2) {    return n1 >>> n2;  };};
+function numAnd(n1) {  return function(n2) {    return n1 & n2;  };};
+function numOr(n1) {  return function(n2) {    return n1 | n2;  };};
+function numXor(n1) {  return function(n2) {    return n1 ^ n2;  };};
+function numComplement(n) {  return ~n;};
+function boolAnd(b1) {  return function(b2) {    return b1 && b2;  };};
+function boolOr(b1) {  return function(b2) {    return b1 || b2;  };};
+function boolNot(b) {  return !b;};
+function concatString(s1) {  return function(s2) {    return s1 + s2;  };};
+var $bar$bar = function (dict) {
+    return dict["||"];
+};
+var $bar = function (dict) {
+    return dict["|"];
+};
+var $up = function (dict) {
+    return dict["^"];
+};
+var $greater$greater$eq = function (dict) {
+    return dict[">>="];
+};
+var $eq$eq = function (dict) {
+    return dict["=="];
+};
+var $less$greater = function (dict) {
+    return dict["<>"];
+};
+var $less$less$less = function (dict) {
+    return dict["<<<"];
+};
+var $greater$greater$greater = function (__dict_Semigroupoid_0) {
+    return function (f) {
+        return function (g) {
+            return $less$less$less(__dict_Semigroupoid_0)(g)(f);
+        };
+    };
+};
+var $less$times$greater = function (dict) {
+    return dict["<*>"];
+};
+var $less$dollar$greater = function (dict) {
+    return dict["<$>"];
+};
+var $colon = cons;
+var $div$eq = function (dict) {
+    return dict["/="];
+};
+var $div = function (dict) {
+    return dict["/"];
+};
+var $minus = function (dict) {
+    return dict["-"];
+};
+var $plus$plus = function (__dict_Semigroup_1) {
+    return $less$greater(__dict_Semigroup_1);
+};
+var $plus = function (dict) {
+    return dict["+"];
+};
+var $times = function (dict) {
+    return dict["*"];
+};
+var $amp$amp = function (dict) {
+    return dict["&&"];
+};
+var $amp = function (dict) {
+    return dict["&"];
+};
+var $percent = function (dict) {
+    return dict["%"];
+};
+var $dollar = function (f) {
+    return function (x) {
+        return f(x);
+    };
+};
+var $hash = function (x) {
+    return function (f) {
+        return f(x);
+    };
+};
+var zshr = function (dict) {
+    return dict.zshr;
+};
+var unsafeCompare = unsafeCompareImpl(LT.value)(EQ.value)(GT.value);
+var unit = {};
+var shr = function (dict) {
+    return dict.shr;
+};
+var showUnit = function (__unused) {
+    return new Show(function (_131) {
+        return "Unit {}";
+    });
+};
+var showString = function (__unused) {
+    return new Show(showStringImpl);
+};
+var showOrdering = function (__unused) {
+    return new Show(function (_139) {
+        if (_139 instanceof LT) {
+            return "LT";
+        };
+        if (_139 instanceof GT) {
+            return "GT";
+        };
+        if (_139 instanceof EQ) {
+            return "EQ";
+        };
+        throw new Error("Failed pattern match");
+    });
+};
+var showNumber = function (__unused) {
+    return new Show(showNumberImpl);
+};
+var showBoolean = function (__unused) {
+    return new Show(function (_132) {
+        if (_132) {
+            return "true";
+        };
+        if (!_132) {
+            return "false";
+        };
+        throw new Error("Failed pattern match");
+    });
+};
+var show = function (dict) {
+    return dict.show;
+};
+var showArray = function (__dict_Show_2) {
+    return new Show(showArrayImpl(show(__dict_Show_2)));
+};
+var shl = function (dict) {
+    return dict.shl;
+};
+var semigroupoidArr = function (__unused) {
+    return new Semigroupoid(function (f) {
+        return function (g) {
+            return function (x) {
+                return f(g(x));
+            };
+        };
+    });
+};
+var semigroupUnit = function (__unused) {
+    return new Semigroup(function (_146) {
+        return function (_147) {
+            return {};
+        };
+    });
+};
+var semigroupString = function (__unused) {
+    return new Semigroup(concatString);
+};
+var semigroupArr = function (__dict_Semigroup_3) {
+    return new Semigroup(function (f) {
+        return function (g) {
+            return function (x) {
+                return $less$greater(__dict_Semigroup_3)(f(x))(g(x));
+            };
+        };
+    });
+};
+var pure = function (dict) {
+    return dict.pure;
+};
+var $$return = function (__dict_Monad_4) {
+    return pure(__dict_Monad_4["__superclass_Prelude.Applicative_0"]({}));
+};
+var numNumber = function (__unused) {
+    return new Num(numMod, numMul, numAdd, numSub, numDiv, numNegate);
+};
+var not = function (dict) {
+    return dict.not;
+};
+var negate = function (dict) {
+    return dict.negate;
+};
+var liftM1 = function (__dict_Monad_5) {
+    return function (f) {
+        return function (a) {
+            return $greater$greater$eq(__dict_Monad_5["__superclass_Prelude.Bind_1"]({}))(a)(function (_0) {
+                return $$return(__dict_Monad_5)(f(_0));
+            });
+        };
+    };
+};
+var liftA1 = function (__dict_Applicative_6) {
+    return function (f) {
+        return function (a) {
+            return $less$times$greater(__dict_Applicative_6["__superclass_Prelude.Apply_0"]({}))(pure(__dict_Applicative_6)(f))(a);
+        };
+    };
+};
+var id = function (dict) {
+    return dict.id;
+};
+var functorArr = function (__unused) {
+    return new Functor($less$less$less(semigroupoidArr({})));
+};
+var flip = function (f) {
+    return function (b) {
+        return function (a) {
+            return f(a)(b);
+        };
+    };
+};
+var eqUnit = function (__unused) {
+    return new Eq(function (_135) {
+        return function (_136) {
+            return false;
+        };
+    }, function (_133) {
+        return function (_134) {
+            return true;
+        };
+    });
+};
+var ordUnit = function (__unused) {
+    return new Ord(eqUnit, function (_140) {
+        return function (_141) {
+            return EQ.value;
+        };
+    });
+};
+var eqString = function (__unused) {
+    return new Eq(refIneq, refEq);
+};
+var ordString = function (__unused) {
+    return new Ord(eqString, unsafeCompare);
+};
+var eqNumber = function (__unused) {
+    return new Eq(refIneq, refEq);
+};
+var ordNumber = function (__unused) {
+    return new Ord(eqNumber, unsafeCompare);
+};
+var eqBoolean = function (__unused) {
+    return new Eq(refIneq, refEq);
+};
+var ordBoolean = function (__unused) {
+    return new Ord(eqBoolean, function (_142) {
+        return function (_143) {
+            if (!_142 && !_143) {
+                return EQ.value;
+            };
+            if (!_142 && _143) {
+                return LT.value;
+            };
+            if (_142 && _143) {
+                return EQ.value;
+            };
+            if (_142 && !_143) {
+                return GT.value;
+            };
+            throw new Error("Failed pattern match");
+        };
+    });
+};
+var $$const = function (_127) {
+    return function (_128) {
+        return _127;
+    };
+};
+var $$void = function (__dict_Functor_8) {
+    return function (fa) {
+        return $less$dollar$greater(__dict_Functor_8)($$const(unit))(fa);
+    };
+};
+var complement = function (dict) {
+    return dict.complement;
+};
+var compare = function (dict) {
+    return dict.compare;
+};
+var $less = function (__dict_Ord_10) {
+    return function (a1) {
+        return function (a2) {
+            var _864 = compare(__dict_Ord_10)(a1)(a2);
+            if (_864 instanceof LT) {
+                return true;
+            };
+            return false;
+        };
+    };
+};
+var $less$eq = function (__dict_Ord_11) {
+    return function (a1) {
+        return function (a2) {
+            var _865 = compare(__dict_Ord_11)(a1)(a2);
+            if (_865 instanceof GT) {
+                return false;
+            };
+            return true;
+        };
+    };
+};
+var $greater = function (__dict_Ord_12) {
+    return function (a1) {
+        return function (a2) {
+            var _866 = compare(__dict_Ord_12)(a1)(a2);
+            if (_866 instanceof GT) {
+                return true;
+            };
+            return false;
+        };
+    };
+};
+var $greater$eq = function (__dict_Ord_13) {
+    return function (a1) {
+        return function (a2) {
+            var _867 = compare(__dict_Ord_13)(a1)(a2);
+            if (_867 instanceof LT) {
+                return false;
+            };
+            return true;
+        };
+    };
+};
+var categoryArr = function (__unused) {
+    return new Category(semigroupoidArr, function (x) {
+        return x;
+    });
+};
+var boolLikeBoolean = function (__unused) {
+    return new BoolLike(boolAnd, boolNot, boolOr);
+};
+var eqArray = function (__dict_Eq_7) {
+    return new Eq(function (xs) {
+        return function (ys) {
+            return not(boolLikeBoolean({}))($eq$eq(eqArray(__dict_Eq_7))(xs)(ys));
+        };
+    }, function (xs) {
+        return function (ys) {
+            return eqArrayImpl($eq$eq(__dict_Eq_7))(xs)(ys);
+        };
+    });
+};
+var ordArray = function (__dict_Ord_9) {
+    return new Ord(function (__unused) {
+        return eqArray(__dict_Ord_9["__superclass_Prelude.Eq_0"]({}));
+    }, function (_144) {
+        return function (_145) {
+            if (_144.length === 0 && _145.length === 0) {
+                return EQ.value;
+            };
+            if (_144.length === 0) {
+                return LT.value;
+            };
+            if (_145.length === 0) {
+                return GT.value;
+            };
+            if (_144.length > 0) {
+                var _874 = _144.slice(1);
+                if (_145.length > 0) {
+                    var _872 = _145.slice(1);
+                    var _870 = compare(__dict_Ord_9)(_144[0])(_145[0]);
+                    if (_870 instanceof EQ) {
+                        return compare(ordArray(__dict_Ord_9))(_874)(_872);
+                    };
+                    return _870;
+                };
+            };
+            throw new Error("Failed pattern match");
+        };
+    });
+};
+var eqOrdering = function (__unused) {
+    return new Eq(function (x) {
+        return function (y) {
+            return not(boolLikeBoolean({}))($eq$eq(eqOrdering({}))(x)(y));
+        };
+    }, function (_137) {
+        return function (_138) {
+            if (_137 instanceof LT && _138 instanceof LT) {
+                return true;
+            };
+            if (_137 instanceof GT && _138 instanceof GT) {
+                return true;
+            };
+            if (_137 instanceof EQ && _138 instanceof EQ) {
+                return true;
+            };
+            return false;
+        };
+    });
+};
+var bitsNumber = function (__unused) {
+    return new Bits(numAnd, numXor, numComplement, numShl, numShr, numZshr, numOr);
+};
+var asTypeOf = function (_129) {
+    return function (_130) {
+        return _129;
+    };
+};
+var applyArr = function (__unused) {
+    return new Apply(function (f) {
+        return function (g) {
+            return function (x) {
+                return f(x)(g(x));
+            };
+        };
+    }, functorArr);
+};
+var bindArr = function (__unused) {
+    return new Bind(function (m) {
+        return function (f) {
+            return function (x) {
+                return f(m(x))(x);
+            };
+        };
+    }, applyArr);
+};
+var applicativeArr = function (__unused) {
+    return new Applicative(applyArr, $$const);
+};
+var monadArr = function (__unused) {
+    return new Monad(applicativeArr, bindArr);
+};
+var ap = function (__dict_Monad_14) {
+    return function (f) {
+        return function (a) {
+            return $greater$greater$eq(__dict_Monad_14["__superclass_Prelude.Bind_1"]({}))(f)(function (_2) {
+                return $greater$greater$eq(__dict_Monad_14["__superclass_Prelude.Bind_1"]({}))(a)(function (_1) {
+                    return $$return(__dict_Monad_14)(_2(_1));
+                });
+            });
+        };
+    };
+};
+module.exports = {
+    Unit: Unit, 
+    LT: LT, 
+    GT: GT, 
+    EQ: EQ, 
+    Semigroup: Semigroup, 
+    BoolLike: BoolLike, 
+    Bits: Bits, 
+    Ord: Ord, 
+    Eq: Eq, 
+    Num: Num, 
+    Monad: Monad, 
+    Bind: Bind, 
+    Applicative: Applicative, 
+    Apply: Apply, 
+    Functor: Functor, 
+    Show: Show, 
+    Category: Category, 
+    Semigroupoid: Semigroupoid, 
+    unit: unit, 
+    "++": $plus$plus, 
+    "<>": $less$greater, 
+    not: not, 
+    "||": $bar$bar, 
+    "&&": $amp$amp, 
+    complement: complement, 
+    zshr: zshr, 
+    shr: shr, 
+    shl: shl, 
+    "^": $up, 
+    "|": $bar, 
+    "&": $amp, 
+    ">=": $greater$eq, 
+    "<=": $less$eq, 
+    ">": $greater, 
+    "<": $less, 
+    compare: compare, 
+    refIneq: refIneq, 
+    refEq: refEq, 
+    "/=": $div$eq, 
+    "==": $eq$eq, 
+    negate: negate, 
+    "%": $percent, 
+    "/": $div, 
+    "*": $times, 
+    "-": $minus, 
+    "+": $plus, 
+    ap: ap, 
+    liftM1: liftM1, 
+    "return": $$return, 
+    ">>=": $greater$greater$eq, 
+    liftA1: liftA1, 
+    pure: pure, 
+    "<*>": $less$times$greater, 
+    "void": $$void, 
+    "<$>": $less$dollar$greater, 
+    show: show, 
+    cons: cons, 
+    ":": $colon, 
+    "#": $hash, 
+    "$": $dollar, 
+    id: id, 
+    ">>>": $greater$greater$greater, 
+    "<<<": $less$less$less, 
+    asTypeOf: asTypeOf, 
+    "const": $$const, 
+    flip: flip, 
+    semigroupoidArr: semigroupoidArr, 
+    categoryArr: categoryArr, 
+    showUnit: showUnit, 
+    showString: showString, 
+    showBoolean: showBoolean, 
+    showNumber: showNumber, 
+    showArray: showArray, 
+    functorArr: functorArr, 
+    applyArr: applyArr, 
+    applicativeArr: applicativeArr, 
+    bindArr: bindArr, 
+    monadArr: monadArr, 
+    numNumber: numNumber, 
+    eqUnit: eqUnit, 
+    eqString: eqString, 
+    eqNumber: eqNumber, 
+    eqBoolean: eqBoolean, 
+    eqArray: eqArray, 
+    eqOrdering: eqOrdering, 
+    showOrdering: showOrdering, 
+    ordUnit: ordUnit, 
+    ordBoolean: ordBoolean, 
+    ordNumber: ordNumber, 
+    ordString: ordString, 
+    ordArray: ordArray, 
+    bitsNumber: bitsNumber, 
+    boolLikeBoolean: boolLikeBoolean, 
+    semigroupUnit: semigroupUnit, 
+    semigroupString: semigroupString, 
+    semigroupArr: semigroupArr
+};
+},{}],"SlamData.Helpers":[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var SlamData_Types = require("SlamData.Types");
+var Data_Maybe = require("Data.Maybe");
+var Data_String = require("Data.String");
+var Data_Map = require("Data.Map");
+function checked(el) {  return el.checked;};
+function selectedOptgroup(el) {  return el.selectedOptions[0].parentNode.label;};
+function value(el) {  return el.value;};
+var serverURI = function (_24) {
+    return _24.server.location + ":" + Prelude.show(Prelude.showNumber({}))(_24.server.port);
+};
+var getOrElse = Prelude.flip(Data_Maybe.fromMaybe);
+var endsWith = function (str) {
+    return function (suffix) {
+        return Data_String["indexOf'"](suffix)(Data_String.length(str) - Data_String.length(suffix))(str) !== -1;
+    };
+};
+var defaultServerPort = 8080;
+var defaultServerLocation = "http://localhost";
+var defaultServerURI = defaultServerLocation + ":" + Prelude.show(Prelude.showNumber({}))(defaultServerPort);
+var defaultSDConfig = {
+    server: {
+        location: defaultServerLocation, 
+        port: defaultServerPort
+    }, 
+    nodeWebkit: {
+        java: "java"
+    }
+};
+var defaultMountPath = "/";
+var defaultMongoURI = "mongodb://localhost:27017";
+var defaultMongoDatabase = "test";
+var defaultSEConfig = {
+    server: {
+        port: defaultServerPort
+    }, 
+    mountings: Data_Map.singleton(defaultMountPath)(SlamData_Types.MountMongo.create({
+        connectionUri: defaultMongoURI, 
+        database: defaultMongoDatabase
+    }))
+};
+var activate = function (__dict_Eq_0) {
+    return function (_22) {
+        return function (_23) {
+            if (Prelude["=="](__dict_Eq_0)(_22)(_23)) {
+                return " active";
+            };
+            return "";
+        };
+    };
+};
+module.exports = {
+    value: value, 
+    selectedOptgroup: selectedOptgroup, 
+    checked: checked, 
+    serverURI: serverURI, 
+    defaultSEConfig: defaultSEConfig, 
+    defaultSDConfig: defaultSDConfig, 
+    defaultServerURI: defaultServerURI, 
+    defaultMongoDatabase: defaultMongoDatabase, 
+    defaultMongoURI: defaultMongoURI, 
+    defaultMountPath: defaultMountPath, 
+    defaultServerPort: defaultServerPort, 
+    defaultServerLocation: defaultServerLocation, 
+    activate: activate, 
+    endsWith: endsWith, 
+    getOrElse: getOrElse
+};
+},{"Data.Map":74,"Data.Maybe":76,"Data.String":86,"Prelude":undefined,"SlamData.Types":undefined}],"SlamData.Types.JS":[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var SlamData_Types = require("SlamData.Types");
+var isShowSettings = function (_9) {
+    if (_9 instanceof SlamData_Types.ShowSettings) {
+        return true;
+    };
+    return false;
+};
+var isSaveSEConfig = function (_1) {
+    if (_1 instanceof SlamData_Types.SaveSEConfig) {
+        return true;
+    };
+    return false;
+};
+var isSaveSDConfig = function (_0) {
+    if (_0 instanceof SlamData_Types.SaveSDConfig) {
+        return true;
+    };
+    return false;
+};
+var isSaveNotebook = function (_6) {
+    if (_6 instanceof SlamData_Types.SaveNotebook) {
+        return true;
+    };
+    return false;
+};
+var isRenameNotebook = function (_8) {
+    if (_8 instanceof SlamData_Types.RenameNotebook) {
+        return true;
+    };
+    return false;
+};
+var isReadFileSystem = function (_2) {
+    if (_2 instanceof SlamData_Types.ReadFileSystem) {
+        return true;
+    };
+    return false;
+};
+var isReadFields = function (_3) {
+    if (_3 instanceof SlamData_Types.ReadFields) {
+        return true;
+    };
+    return false;
+};
+var isOpenNotebook = function (_7) {
+    if (_7 instanceof SlamData_Types.OpenNotebook) {
+        return true;
+    };
+    return false;
+};
+var isHideSettings = function (_10) {
+    if (_10 instanceof SlamData_Types.HideSettings) {
+        return true;
+    };
+    return false;
+};
+var isEvalVisual = function (_15) {
+    if (_15 instanceof SlamData_Types.EvalVisual) {
+        return true;
+    };
+    return false;
+};
+var isEvalBlock = function (_14) {
+    if (_14 instanceof SlamData_Types.EvalBlock) {
+        return true;
+    };
+    return false;
+};
+var isEditBlock = function (_13) {
+    if (_13 instanceof SlamData_Types.EditBlock) {
+        return true;
+    };
+    return false;
+};
+var isDeleteBlock = function (_12) {
+    if (_12 instanceof SlamData_Types.DeleteBlock) {
+        return true;
+    };
+    return false;
+};
+var isCreateNotebook = function (_4) {
+    if (_4 instanceof SlamData_Types.CreateNotebook) {
+        return true;
+    };
+    return false;
+};
+var isCreateBlock = function (_11) {
+    if (_11 instanceof SlamData_Types.CreateBlock) {
+        return true;
+    };
+    return false;
+};
+var isCloseNotebook = function (_5) {
+    if (_5 instanceof SlamData_Types.CloseNotebook) {
+        return true;
+    };
+    return false;
+};
+module.exports = {
+    isEvalVisual: isEvalVisual, 
+    isEvalBlock: isEvalBlock, 
+    isEditBlock: isEditBlock, 
+    isDeleteBlock: isDeleteBlock, 
+    isCreateBlock: isCreateBlock, 
+    isHideSettings: isHideSettings, 
+    isShowSettings: isShowSettings, 
+    isRenameNotebook: isRenameNotebook, 
+    isOpenNotebook: isOpenNotebook, 
+    isSaveNotebook: isSaveNotebook, 
+    isCloseNotebook: isCloseNotebook, 
+    isCreateNotebook: isCreateNotebook, 
+    isReadFields: isReadFields, 
+    isReadFileSystem: isReadFileSystem, 
+    isSaveSEConfig: isSaveSEConfig, 
+    isSaveSDConfig: isSaveSDConfig
+};
+},{"Prelude":undefined,"SlamData.Types":undefined}],"SlamData.Types.Workspace.Notebook.Block":[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Node_UUID = require("Node.UUID");
+var Data_Argonaut_Encode = require("Data.Argonaut.Encode");
+var Data_Argonaut = require("Data.Argonaut");
+var Data_Argonaut_Printer = require("Data.Argonaut.Printer");
+var Data_Argonaut_Decode = require("Data.Argonaut.Decode");
+var Data_Either = require("Data.Either");
+var Data_Map = require("Data.Map");
+var BlockType = {
+    create: function (value) {
+        return value;
+    }
+};
+var BlockMode = {
+    create: function (value) {
+        return value;
+    }
+};
+var BlockID = {
+    create: function (value) {
+        return value;
+    }
+};
+var Block = {
+    create: function (value) {
+        return value;
+    }
+};
+var showBlockType = function (__unused) {
+    return new Prelude.Show(function (_28) {
+        return _28;
+    });
+};
+var showBlockMode = function (__unused) {
+    return new Prelude.Show(function (_31) {
+        return _31;
+    });
+};
+var eqBlockType = function (__unused) {
+    return new Prelude.Eq(function (bt) {
+        return function (bt$prime) {
+            return !Prelude["=="](eqBlockType({}))(bt)(bt$prime);
+        };
+    }, function (_26) {
+        return function (_27) {
+            return _26 === _27;
+        };
+    });
+};
+var eqBlockMode = function (__unused) {
+    return new Prelude.Eq(function (bm) {
+        return function (bm$prime) {
+            return !Prelude["=="](eqBlockMode({}))(bm)(bm$prime);
+        };
+    }, function (_29) {
+        return function (_30) {
+            return _29 === _30;
+        };
+    });
+};
+var eqBlockID = function (__unused) {
+    return new Prelude.Eq(function (i) {
+        return function (i$prime) {
+            return !Prelude["=="](eqBlockID({}))(i)(i$prime);
+        };
+    }, function (_24) {
+        return function (_25) {
+            return Prelude["=="](Node_UUID.eqUUID({}))(_24)(_25);
+        };
+    });
+};
+var eqBlock = function (__unused) {
+    return new Prelude.Eq(function (b) {
+        return function (b$prime) {
+            return !Prelude["=="](eqBlock({}))(b)(b$prime);
+        };
+    }, function (_22) {
+        return function (_23) {
+            return Prelude["=="](eqBlockID({}))(_22.ident)(_23.ident) && Prelude["=="](eqBlockType({}))(_22.blockType)(_23.blockType) && Prelude["=="](eqBlockMode({}))(_22.blockMode)(_23.blockMode) && _22.editContent === _23.editContent && _22.evalContent === _23.evalContent;
+        };
+    });
+};
+var encodeJsonBlockType = function (__unused) {
+    return new Data_Argonaut_Encode.EncodeJson(function (ty) {
+        return Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJString({}))(Prelude.show(showBlockType({}))(ty));
+    });
+};
+var encodeJsonBlockMode = function (__unused) {
+    return new Data_Argonaut_Encode.EncodeJson(function (ty) {
+        return Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJString({}))(Prelude.show(showBlockMode({}))(ty));
+    });
+};
+var encodeJsonBlockID = function (__unused) {
+    return new Data_Argonaut_Encode.EncodeJson(function (_33) {
+        return Data_Argonaut.encodeJson(Node_UUID.encodeJsonUUID({}))(_33);
+    });
+};
+var encodeJsonBlock = function (__unused) {
+    return new Data_Argonaut_Encode.EncodeJson(function (_32) {
+        return Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("ident")(Data_Argonaut.encodeJson(encodeJsonBlockID({}))(_32.ident)))(Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("blockType")(Data_Argonaut.encodeJson(encodeJsonBlockType({}))(_32.blockType)))(Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("blockMode")(Data_Argonaut.encodeJson(encodeJsonBlockMode({}))(_32.blockMode)))(Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("editContent")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJString({}))(_32.editContent)))(Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("evalContent")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJString({}))(_32.evalContent)))(Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("label")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJString({}))(_32.label)))(Data_Argonaut.jsonEmptyObject))))));
+    });
+};
+var showBlock = function (__unused) {
+    return new Prelude.Show(function (block) {
+        return Prelude.show(Data_Argonaut_Printer.showJson({}))(Data_Argonaut.encodeJson(encodeJsonBlock({}))(block));
+    });
+};
+var decodeJsonBlockType = function (__unused) {
+    return new Data_Argonaut_Decode.DecodeJson(function (json) {
+        return Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Argonaut.toString(json))("BlockType"))(function (ty) {
+            if (ty === "Markdown") {
+                return new Data_Either.Right("Markdown");
+            };
+            if (ty === "SQL") {
+                return new Data_Either.Right("SQL");
+            };
+            if (ty === "Visual") {
+                return new Data_Either.Right("Visual");
+            };
+            return new Data_Either.Left("Couldn't decode BlockType");
+        });
+    });
+};
+var decodeJsonBlockMode = function (__unused) {
+    return new Data_Argonaut_Decode.DecodeJson(function (json) {
+        return Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Argonaut.toString(json))("BlockMode"))(function (ty) {
+            if (ty === "Edit") {
+                return new Data_Either.Right("Edit");
+            };
+            if (ty === "Eval") {
+                return new Data_Either.Right("Eval");
+            };
+            if (ty === "Locked") {
+                return new Data_Either.Right("Locked");
+            };
+            return new Data_Either.Left("Couldn't decode BlockMode");
+        });
+    });
+};
+var decodeJsonBlockID = function (__unused) {
+    return new Data_Argonaut_Decode.DecodeJson(function (json) {
+        return Prelude["<$>"](Data_Either.functorEither({}))(BlockID.create)(Data_Argonaut.decodeJson(Node_UUID.decodeJsonUUID({}))(json));
+    });
+};
+var decodeJsonBlock = function (__unused) {
+    return new Data_Argonaut_Decode.DecodeJson(function (json) {
+        return Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Argonaut.toObject(json))("Block"))(function (obj) {
+            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("ident")(obj))("ident"))(Data_Argonaut.decodeJson(decodeJsonBlockID({}))))(function (_5) {
+                return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("blockMode")(obj))("blockMode"))(Data_Argonaut.decodeJson(decodeJsonBlockMode({}))))(function (_4) {
+                    return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("blockType")(obj))("blockType"))(Data_Argonaut.decodeJson(decodeJsonBlockType({}))))(function (_3) {
+                        return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("editContent")(obj))("editContent"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonString({}))))(function (_2) {
+                            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("evalContent")(obj))("evalContent"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonString({}))))(function (_1) {
+                                return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("label")(obj))("label"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonString({}))))(function (_0) {
+                                    return Prelude.pure(Data_Either.applicativeEither({}))({
+                                        ident: _5, 
+                                        blockMode: _4, 
+                                        blockType: _3, 
+                                        editContent: _2, 
+                                        evalContent: _1, 
+                                        label: _0
+                                    });
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+        });
+    });
+};
+module.exports = {
+    BlockMode: BlockMode, 
+    BlockType: BlockType, 
+    Block: Block, 
+    BlockID: BlockID, 
+    eqBlock: eqBlock, 
+    eqBlockID: eqBlockID, 
+    eqBlockType: eqBlockType, 
+    showBlockType: showBlockType, 
+    eqBlockMode: eqBlockMode, 
+    showBlockMode: showBlockMode, 
+    showBlock: showBlock, 
+    decodeJsonBlock: decodeJsonBlock, 
+    decodeJsonBlockID: decodeJsonBlockID, 
+    decodeJsonBlockType: decodeJsonBlockType, 
+    decodeJsonBlockMode: decodeJsonBlockMode, 
+    encodeJsonBlock: encodeJsonBlock, 
+    encodeJsonBlockID: encodeJsonBlockID, 
+    encodeJsonBlockType: encodeJsonBlockType, 
+    encodeJsonBlockMode: encodeJsonBlockMode
+};
+},{"Data.Argonaut":undefined,"Data.Argonaut.Decode":58,"Data.Argonaut.Encode":59,"Data.Argonaut.Printer":undefined,"Data.Either":undefined,"Data.Map":74,"Node.UUID":91,"Prelude":undefined}],"SlamData.Types":[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Node_Events = require("Node.Events");
+var Data_Argonaut_Encode = require("Data.Argonaut.Encode");
+var Data_Argonaut = require("Data.Argonaut");
+var Data_Argonaut_Decode = require("Data.Argonaut.Decode");
+var Data_Either = require("Data.Either");
+var Data_Map = require("Data.Map");
+var Data_Traversable = require("Data.Traversable");
+var SEConfigServer = {
+    create: function (value) {
+        return value;
+    }
+};
+var SDConfigServer = {
+    create: function (value) {
+        return value;
+    }
+};
+var SDConfigNodeWebkit = {
+    create: function (value) {
+        return value;
+    }
+};
+var SDConfig = {
+    create: function (value) {
+        return value;
+    }
+};
+var MountingWrapper = {
+    create: function (value) {
+        return value;
+    }
+};
+function MountMongo(value0) {
+    this.value0 = value0;
+};
+MountMongo.create = function (value0) {
+    return new MountMongo(value0);
+};
+var SEConfig = {
+    create: function (value) {
+        return value;
+    }
+};
+function SaveSDConfig(value0) {
+    this.value0 = value0;
+};
+SaveSDConfig.create = function (value0) {
+    return new SaveSDConfig(value0);
+};
+function SaveSEConfig(value0) {
+    this.value0 = value0;
+};
+SaveSEConfig.create = function (value0) {
+    return new SaveSEConfig(value0);
+};
+function ReadFileSystem(value0) {
+    this.value0 = value0;
+};
+ReadFileSystem.create = function (value0) {
+    return new ReadFileSystem(value0);
+};
+function ReadFields(value0) {
+    this.value0 = value0;
+};
+ReadFields.create = function (value0) {
+    return new ReadFields(value0);
+};
+function CreateNotebook() {
+
+};
+CreateNotebook.value = new CreateNotebook();
+function CloseNotebook(value0) {
+    this.value0 = value0;
+};
+CloseNotebook.create = function (value0) {
+    return new CloseNotebook(value0);
+};
+function OpenNotebook(value0) {
+    this.value0 = value0;
+};
+OpenNotebook.create = function (value0) {
+    return new OpenNotebook(value0);
+};
+function RenameNotebook(value0, value1) {
+    this.value0 = value0;
+    this.value1 = value1;
+};
+RenameNotebook.create = function (value0) {
+    return function (value1) {
+        return new RenameNotebook(value0, value1);
+    };
+};
+function SaveNotebook(value0) {
+    this.value0 = value0;
+};
+SaveNotebook.create = function (value0) {
+    return new SaveNotebook(value0);
+};
+function ShowSettings() {
+
+};
+ShowSettings.value = new ShowSettings();
+function HideSettings() {
+
+};
+HideSettings.value = new HideSettings();
+function CreateBlock(value0, value1) {
+    this.value0 = value0;
+    this.value1 = value1;
+};
+CreateBlock.create = function (value0) {
+    return function (value1) {
+        return new CreateBlock(value0, value1);
+    };
+};
+function DeleteBlock(value0, value1) {
+    this.value0 = value0;
+    this.value1 = value1;
+};
+DeleteBlock.create = function (value0) {
+    return function (value1) {
+        return new DeleteBlock(value0, value1);
+    };
+};
+function EditBlock(value0, value1) {
+    this.value0 = value0;
+    this.value1 = value1;
+};
+EditBlock.create = function (value0) {
+    return function (value1) {
+        return new EditBlock(value0, value1);
+    };
+};
+function EvalBlock(value0, value1) {
+    this.value0 = value0;
+    this.value1 = value1;
+};
+EvalBlock.create = function (value0) {
+    return function (value1) {
+        return new EvalBlock(value0, value1);
+    };
+};
+function EvalVisual(value0, value1, value2) {
+    this.value0 = value0;
+    this.value1 = value1;
+    this.value2 = value2;
+};
+EvalVisual.create = function (value0) {
+    return function (value1) {
+        return function (value2) {
+            return new EvalVisual(value0, value1, value2);
+        };
+    };
+};
+var SlamDataEvent = {
+    create: function (value) {
+        return value;
+    }
+};
+var responseEvent = "response";
+var requestEvent = "request";
+var encodeSEConfigServer = function (__unused) {
+    return new Data_Argonaut_Encode.EncodeJson(function (_16) {
+        return Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("port")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJNumber({}))(_16.port)))(Data_Argonaut.jsonEmptyObject);
+    });
+};
+var encodeSDConfigServer = function (__unused) {
+    return new Data_Argonaut_Encode.EncodeJson(function (_13) {
+        return Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("location")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJString({}))(_13.location)))(Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("port")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJNumber({}))(_13.port)))(Data_Argonaut.jsonEmptyObject));
+    });
+};
+var encodeSDConfigNodeWebkit = function (__unused) {
+    return new Data_Argonaut_Encode.EncodeJson(function (_14) {
+        return Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("java")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJString({}))(_14.java)))(Data_Argonaut.jsonEmptyObject);
+    });
+};
+var encodeSDConfig = function (__unused) {
+    return new Data_Argonaut_Encode.EncodeJson(function (_12) {
+        return Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("server")(Data_Argonaut.encodeJson(encodeSDConfigServer({}))(_12.server)))(Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("nodeWebkit")(Data_Argonaut.encodeJson(encodeSDConfigNodeWebkit({}))(_12.nodeWebkit)))(Data_Argonaut.jsonEmptyObject));
+    });
+};
+var encodeMountingRec = function (__unused) {
+    return new Data_Argonaut_Encode.EncodeJson(function (_18) {
+        return Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("connectionUri")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJString({}))(_18.connectionUri)))(Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("database")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJString({}))(_18.database)))(Data_Argonaut.jsonEmptyObject));
+    });
+};
+var encodeMounting = function (__unused) {
+    return new Data_Argonaut_Encode.EncodeJson(function (_17) {
+        return Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("mongodb")(Data_Argonaut.encodeJson(encodeMountingRec({}))(_17.value0)))(Data_Argonaut.jsonEmptyObject);
+    });
+};
+var encodeSEConfig = function (__unused) {
+    return new Data_Argonaut_Encode.EncodeJson(function (_15) {
+        return Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("server")(Data_Argonaut.encodeJson(encodeSEConfigServer({}))(_15.server)))(Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("mountings")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeMap(encodeMounting({})))(_15.mountings)))(Data_Argonaut.jsonEmptyObject));
+    });
+};
+var decodeSEConfigServer = function (__unused) {
+    return new Data_Argonaut_Decode.DecodeJson(function (json) {
+        return Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Argonaut.toObject(json))("SEConfigServer"))(function (obj) {
+            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("port")(obj))("port"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonNumber({}))))(function (_8) {
+                return Prelude.pure(Data_Either.applicativeEither({}))({
+                    port: _8
+                });
+            });
+        });
+    });
+};
+var decodeSDConfigServer = function (__unused) {
+    return new Data_Argonaut_Decode.DecodeJson(function (json) {
+        return Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Argonaut.toObject(json))("SDConfigServer"))(function (obj) {
+            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("location")(obj))("location"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonString({}))))(function (_3) {
+                return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("port")(obj))("port"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonNumber({}))))(function (_2) {
+                    return Prelude.pure(Data_Either.applicativeEither({}))({
+                        location: _3, 
+                        port: _2
+                    });
+                });
+            });
+        });
+    });
+};
+var decodeSDConfigNodeWebkit = function (__unused) {
+    return new Data_Argonaut_Decode.DecodeJson(function (json) {
+        return Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Argonaut.toObject(json))("SDConfigNodeWebkit"))(function (obj) {
+            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("java")(obj))("java"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonString({}))))(function (_4) {
+                return Prelude.pure(Data_Either.applicativeEither({}))({
+                    java: _4
+                });
+            });
+        });
+    });
+};
+var decodeSDConfig = function (__unused) {
+    return new Data_Argonaut_Decode.DecodeJson(function (json) {
+        return Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Argonaut.toObject(json))("SDConfig"))(function (obj) {
+            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("server")(obj))("server"))(Data_Argonaut.decodeJson(decodeSDConfigServer({}))))(function (_1) {
+                return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("nodeWebkit")(obj))("nodeWebkit"))(Data_Argonaut.decodeJson(decodeSDConfigNodeWebkit({}))))(function (_0) {
+                    return Prelude.pure(Data_Either.applicativeEither({}))({
+                        server: _1, 
+                        nodeWebkit: _0
+                    });
+                });
+            });
+        });
+    });
+};
+var decodeMountingRec = function (__unused) {
+    return new Data_Argonaut_Decode.DecodeJson(function (json) {
+        return Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Argonaut.toObject(json))("MountingWrapper"))(function (obj) {
+            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("connectionUri")(obj))("connectionUri"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonString({}))))(function (_11) {
+                return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("database")(obj))("database"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonString({}))))(function (_10) {
+                    return Prelude.pure(Data_Either.applicativeEither({}))({
+                        connectionUri: _11, 
+                        database: _10
+                    });
+                });
+            });
+        });
+    });
+};
+var decodeMounting = function (__unused) {
+    return new Data_Argonaut_Decode.DecodeJson(function (json) {
+        return Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Argonaut.toObject(json))("MountMongo"))(function (obj) {
+            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("mongodb")(obj))("mongodb"))(Data_Argonaut.decodeJson(decodeMountingRec({}))))(function (_9) {
+                return Prelude.pure(Data_Either.applicativeEither({}))(new MountMongo(_9));
+            });
+        });
+    });
+};
+var decodeSEConfig = function (__unused) {
+    return new Data_Argonaut_Decode.DecodeJson(function (json) {
+        return Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Argonaut.toObject(json))("SEConfig"))(function (obj) {
+            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("server")(obj))("server"))(Data_Argonaut.decodeJson(decodeSEConfigServer({}))))(function (_7) {
+                return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("mountings")(obj))("mountings"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeMap(Data_Argonaut_Decode.decodeJsonJson({})))))(function (_6) {
+                    return Prelude[">>="](Data_Either.bindEither({}))(Data_Traversable.traverse(Data_Argonaut_Decode.traversableMap(Prelude.ordString({})))(Data_Either.applicativeEither({}))(Data_Argonaut.decodeJson(decodeMounting({})))(_6))(function (_5) {
+                        return Prelude.pure(Data_Either.applicativeEither({}))({
+                            server: _7, 
+                            mountings: _5
+                        });
+                    });
+                });
+            });
+        });
+    });
+};
+module.exports = {
+    SaveSDConfig: SaveSDConfig, 
+    SaveSEConfig: SaveSEConfig, 
+    ReadFileSystem: ReadFileSystem, 
+    ReadFields: ReadFields, 
+    CreateNotebook: CreateNotebook, 
+    CloseNotebook: CloseNotebook, 
+    OpenNotebook: OpenNotebook, 
+    RenameNotebook: RenameNotebook, 
+    SaveNotebook: SaveNotebook, 
+    ShowSettings: ShowSettings, 
+    HideSettings: HideSettings, 
+    CreateBlock: CreateBlock, 
+    DeleteBlock: DeleteBlock, 
+    EditBlock: EditBlock, 
+    EvalBlock: EvalBlock, 
+    EvalVisual: EvalVisual, 
+    SlamDataEvent: SlamDataEvent, 
+    MountingWrapper: MountingWrapper, 
+    MountMongo: MountMongo, 
+    SEConfigServer: SEConfigServer, 
+    SEConfig: SEConfig, 
+    SDConfigNodeWebkit: SDConfigNodeWebkit, 
+    SDConfigServer: SDConfigServer, 
+    SDConfig: SDConfig, 
+    responseEvent: responseEvent, 
+    requestEvent: requestEvent, 
+    encodeSDConfig: encodeSDConfig, 
+    encodeSDConfigServer: encodeSDConfigServer, 
+    encodeSDConfigNodeWebkit: encodeSDConfigNodeWebkit, 
+    decodeSDConfig: decodeSDConfig, 
+    decodeSDConfigServer: decodeSDConfigServer, 
+    decodeSDConfigNodeWebkit: decodeSDConfigNodeWebkit, 
+    encodeSEConfig: encodeSEConfig, 
+    encodeSEConfigServer: encodeSEConfigServer, 
+    encodeMounting: encodeMounting, 
+    encodeMountingRec: encodeMountingRec, 
+    decodeSEConfig: decodeSEConfig, 
+    decodeSEConfigServer: decodeSEConfigServer, 
+    decodeMounting: decodeMounting, 
+    decodeMountingRec: decodeMountingRec
+};
+},{"Data.Argonaut":undefined,"Data.Argonaut.Decode":58,"Data.Argonaut.Encode":59,"Data.Either":undefined,"Data.Map":74,"Data.Traversable":87,"Node.Events":90,"Prelude":undefined}],"SlamData":[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Control_Monad_Eff = require("Control.Monad.Eff");
+var Node_Events = require("Node.Events");
+var SlamData_Types = require("SlamData.Types");
+var React = require("React");
+var SlamData_App = require("SlamData.App");
+var request = function (emitter) {
+    return function (state) {
+        return function (ty) {
             return function __do() {
-                var _129 = React.renderComponentById(component)("content")();
-                Node_Events.on(Node_Events.eventEmitterEmitter({}))(Node_Events.variadicArr({}))(SlamData_Types.responseEvent)(function (settings_1) {
-                    return setProps({
-                        settings: settings_1
-                    })(_129);
+                Node_Events.emit(Node_Events.eventEmitterEmitter({}))(SlamData_Types.requestEvent)({
+                    state: state, 
+                    event: ty
                 })(emitter)();
                 return Prelude.unit;
             };
         };
     };
-    return {
-        setProps: setProps, 
-        slamData: slamData
+};
+var slamData = function (emitter) {
+    return function (state) {
+        return function __do() {
+            React.renderComponentById(SlamData_App.app({
+                request: request(emitter)(state), 
+                state: state
+            })([  ]))("content")();
+            Node_Events.on(Node_Events.eventEmitterEmitter({}))(Node_Events.variadicArr({}))(SlamData_Types.responseEvent)(function (state_1) {
+                return React.renderComponentById(SlamData_App.app({
+                    request: request(emitter)(state_1), 
+                    state: state_1
+                })([  ]))("content");
+            })(emitter)();
+            return Prelude.unit;
+        };
     };
-})();
+};
+module.exports = {
+    slamData: slamData
+};
+},{"Control.Monad.Eff":41,"Node.Events":90,"Prelude":undefined,"React":95,"SlamData.App":106,"SlamData.Types":undefined}],"Text.Parsing.Parser.Combinators":[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Control_Alt = require("Control.Alt");
+var Text_Parsing_Parser = require("Text.Parsing.Parser");
+var Data_Either = require("Data.Either");
+var Control_Alternative = require("Control.Alternative");
+var Data_Maybe = require("Data.Maybe");
+var $less$qmark$greater = function (__dict_Monad_0) {
+    return function (p) {
+        return function (msg) {
+            return Control_Alt["<|>"](Text_Parsing_Parser.altParserT(__dict_Monad_0))(p)(Text_Parsing_Parser.fail(__dict_Monad_0)("Expected " + msg));
+        };
+    };
+};
+var $$try = function (__dict_Functor_1) {
+    return function (p) {
+        var try$prime = function (_699) {
+            return function (_700) {
+                if (_700.result instanceof Data_Either.Left) {
+                    return {
+                        input: _699, 
+                        result: _700.result, 
+                        consumed: false
+                    };
+                };
+                return _700;
+            };
+        };
+        return Text_Parsing_Parser.ParserT.create(function (s) {
+            return Prelude["<$>"](__dict_Functor_1)(try$prime(s))(Text_Parsing_Parser.unParserT(p)(s));
+        });
+    };
+};
+var sepEndBy = function (__dict_Monad_2) {
+    return function (p) {
+        return function (sep) {
+            return Control_Alt["<|>"](Text_Parsing_Parser.altParserT(__dict_Monad_2))(sepEndBy1(__dict_Monad_2)(p)(sep))(Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_2))([  ]));
+        };
+    };
+};
+var sepEndBy1 = function (__dict_Monad_3) {
+    return function (p) {
+        return function (sep) {
+            return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_3))(p)(function (_51) {
+                return Control_Alt["<|>"](Text_Parsing_Parser.altParserT(__dict_Monad_3))(Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_3))(sep)(function (__unused) {
+                    return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_3))(sepEndBy(__dict_Monad_3)(p)(sep))(function (_50) {
+                        return Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_3))(Prelude[":"](_51)(_50));
+                    });
+                }))(Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_3))([ _51 ]));
+            });
+        };
+    };
+};
+var sepBy1 = function (__dict_Monad_4) {
+    return function (p) {
+        return function (sep) {
+            return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_4))(p)(function (_49) {
+                return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_4))(Control_Alternative.many(Text_Parsing_Parser.alternativeParserT(__dict_Monad_4))(Text_Parsing_Parser.lazy1ParserT({}))(Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_4))(sep)(function (__unused) {
+                    return p;
+                })))(function (_48) {
+                    return Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_4))(Prelude[":"](_49)(_48));
+                });
+            });
+        };
+    };
+};
+var sepBy = function (__dict_Monad_5) {
+    return function (p) {
+        return function (sep) {
+            return Control_Alt["<|>"](Text_Parsing_Parser.altParserT(__dict_Monad_5))(sepBy1(__dict_Monad_5)(p)(sep))(Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_5))([  ]));
+        };
+    };
+};
+var optional = function (__dict_Monad_6) {
+    return function (p) {
+        return Control_Alt["<|>"](Text_Parsing_Parser.altParserT(__dict_Monad_6))(Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_6))(p)(function (__unused) {
+            return Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_6))({});
+        }))(Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_6))({}));
+    };
+};
+var option = function (__dict_Monad_7) {
+    return function (a) {
+        return function (p) {
+            return Control_Alt["<|>"](Text_Parsing_Parser.altParserT(__dict_Monad_7))(p)(Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_7))(a));
+        };
+    };
+};
+var optionMaybe = function (__dict_Functor_8) {
+    return function (__dict_Monad_9) {
+        return function (p) {
+            return option(__dict_Monad_9)(Data_Maybe.Nothing.value)(Prelude["<$>"](Text_Parsing_Parser.functorParserT(__dict_Functor_8))(Data_Maybe.Just.create)(p));
+        };
+    };
+};
+var endBy1 = function (__dict_Monad_10) {
+    return function (p) {
+        return function (sep) {
+            return Control_Alternative.some(Text_Parsing_Parser.alternativeParserT(__dict_Monad_10))(Text_Parsing_Parser.lazy1ParserT({}))(Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_10))(p)(function (_52) {
+                return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_10))(sep)(function (__unused) {
+                    return Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_10))(_52);
+                });
+            }));
+        };
+    };
+};
+var endBy = function (__dict_Monad_11) {
+    return function (p) {
+        return function (sep) {
+            return Control_Alternative.many(Text_Parsing_Parser.alternativeParserT(__dict_Monad_11))(Text_Parsing_Parser.lazy1ParserT({}))(Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_11))(p)(function (_53) {
+                return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_11))(sep)(function (__unused) {
+                    return Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_11))(_53);
+                });
+            }));
+        };
+    };
+};
+var choice = function (__dict_Monad_12) {
+    return function (_698) {
+        if (_698.length === 0) {
+            return Text_Parsing_Parser.fail(__dict_Monad_12)("Nothing to parse");
+        };
+        if (_698.length === 1) {
+            return _698[0];
+        };
+        if (_698.length > 0) {
+            var _2526 = _698.slice(1);
+            return Control_Alt["<|>"](Text_Parsing_Parser.altParserT(__dict_Monad_12))(_698[0])(choice(__dict_Monad_12)(_2526));
+        };
+        throw new Error("Failed pattern match");
+    };
+};
+var chainr1 = function (__dict_Monad_13) {
+    return function (p) {
+        return function (f) {
+            return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_13))(p)(function (_57) {
+                return chainr1$prime(__dict_Monad_13)(p)(f)(_57);
+            });
+        };
+    };
+};
+var chainr1$prime = function (__dict_Monad_14) {
+    return function (p) {
+        return function (f) {
+            return function (a) {
+                return Control_Alt["<|>"](Text_Parsing_Parser.altParserT(__dict_Monad_14))(Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_14))(f)(function (_59) {
+                    return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_14))(chainr1(__dict_Monad_14)(p)(f))(function (_58) {
+                        return Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_14))(_59(a)(_58));
+                    });
+                }))(Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_14))(a));
+            };
+        };
+    };
+};
+var chainr = function (__dict_Monad_15) {
+    return function (p) {
+        return function (f) {
+            return function (a) {
+                return Control_Alt["<|>"](Text_Parsing_Parser.altParserT(__dict_Monad_15))(chainr1(__dict_Monad_15)(p)(f))(Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_15))(a));
+            };
+        };
+    };
+};
+var chainl1$prime = function (__dict_Monad_16) {
+    return function (p) {
+        return function (f) {
+            return function (a) {
+                return Control_Alt["<|>"](Text_Parsing_Parser.altParserT(__dict_Monad_16))(Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_16))(f)(function (_56) {
+                    return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_16))(p)(function (_55) {
+                        return chainl1$prime(__dict_Monad_16)(p)(f)(_56(a)(_55));
+                    });
+                }))(Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_16))(a));
+            };
+        };
+    };
+};
+var chainl1 = function (__dict_Monad_17) {
+    return function (p) {
+        return function (f) {
+            return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_17))(p)(function (_54) {
+                return chainl1$prime(__dict_Monad_17)(p)(f)(_54);
+            });
+        };
+    };
+};
+var chainl = function (__dict_Monad_18) {
+    return function (p) {
+        return function (f) {
+            return function (a) {
+                return Control_Alt["<|>"](Text_Parsing_Parser.altParserT(__dict_Monad_18))(chainl1(__dict_Monad_18)(p)(f))(Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_18))(a));
+            };
+        };
+    };
+};
+var between = function (__dict_Monad_19) {
+    return function (open) {
+        return function (close) {
+            return function (p) {
+                return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_19))(open)(function (__unused) {
+                    return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_19))(p)(function (_47) {
+                        return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_19))(close)(function (__unused) {
+                            return Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_19))(_47);
+                        });
+                    });
+                });
+            };
+        };
+    };
+};
+module.exports = {
+    choice: choice, 
+    "chainr1'": chainr1$prime, 
+    chainr1: chainr1, 
+    "chainl1'": chainl1$prime, 
+    chainl1: chainl1, 
+    chainl: chainl, 
+    chainr: chainr, 
+    endBy: endBy, 
+    endBy1: endBy1, 
+    sepEndBy1: sepEndBy1, 
+    sepEndBy: sepEndBy, 
+    sepBy1: sepBy1, 
+    sepBy: sepBy, 
+    "try": $$try, 
+    optionMaybe: optionMaybe, 
+    optional: optional, 
+    option: option, 
+    between: between, 
+    "<?>": $less$qmark$greater
+};
+},{"Control.Alt":24,"Control.Alternative":undefined,"Data.Either":undefined,"Data.Maybe":76,"Prelude":undefined,"Text.Parsing.Parser":undefined}],"Text.Parsing.Parser.String":[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Text_Parsing_Parser = require("Text.Parsing.Parser");
+var Data_String = require("Data.String");
+var Data_Either = require("Data.Either");
+var Control_Monad_Error = require("Control.Monad.Error");
+var Control_Alternative = require("Control.Alternative");
+var Control_Alt = require("Control.Alt");
+var Data_Foldable = require("Data.Foldable");
+var Data_Monoid = require("Data.Monoid");
+var Text_Parsing_Parser_Combinators = require("Text.Parsing.Parser.Combinators");
+var string = function (__dict_Monad_0) {
+    return function (s) {
+        return Text_Parsing_Parser.ParserT.create(function (s$prime) {
+            return Prelude["return"](__dict_Monad_0)((function () {
+                var _2565 = Data_String.indexOf(s)(s$prime);
+                if (_2565 === 0) {
+                    return {
+                        consumed: true, 
+                        input: Data_String.drop(Data_String.length(s))(s$prime), 
+                        result: new Data_Either.Right(s)
+                    };
+                };
+                return {
+                    consumed: false, 
+                    input: s$prime, 
+                    result: new Data_Either.Left(Control_Monad_Error.strMsg(Text_Parsing_Parser.errorParseError({}))("Expected " + Prelude.show(Prelude.showString({}))(s)))
+                };
+            })());
+        });
+    };
+};
+var whiteSpace = function (__dict_Monad_1) {
+    return Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_1))(Control_Alternative.many(Text_Parsing_Parser.alternativeParserT(__dict_Monad_1))(Text_Parsing_Parser.lazy1ParserT({}))(Control_Alt["<|>"](Text_Parsing_Parser.altParserT(__dict_Monad_1))(Control_Alt["<|>"](Text_Parsing_Parser.altParserT(__dict_Monad_1))(Control_Alt["<|>"](Text_Parsing_Parser.altParserT(__dict_Monad_1))(string(__dict_Monad_1)("\n"))(string(__dict_Monad_1)("\r")))(string(__dict_Monad_1)(" ")))(string(__dict_Monad_1)("\t"))))(function (_72) {
+        return Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_1))(Data_Foldable.foldMap(Data_Foldable.foldableArray({}))(Data_Monoid.monoidString({}))(Prelude.id(Prelude.categoryArr({})))(_72));
+    });
+};
+var eof = function (__dict_Monad_2) {
+    return Text_Parsing_Parser.ParserT.create(function (s) {
+        return Prelude["return"](__dict_Monad_2)((function () {
+            if (s === "") {
+                return {
+                    consumed: false, 
+                    input: s, 
+                    result: new Data_Either.Right({})
+                };
+            };
+            return {
+                consumed: false, 
+                input: s, 
+                result: new Data_Either.Left(Control_Monad_Error.strMsg(Text_Parsing_Parser.errorParseError({}))("Expected EOF"))
+            };
+        })());
+    });
+};
+var $$char = function (__dict_Monad_3) {
+    return Text_Parsing_Parser.ParserT.create(function (s$prime) {
+        return Prelude["return"](__dict_Monad_3)((function () {
+            if (s$prime === "") {
+                return {
+                    consumed: false, 
+                    input: s$prime, 
+                    result: new Data_Either.Left(Control_Monad_Error.strMsg(Text_Parsing_Parser.errorParseError({}))("Unexpected EOF"))
+                };
+            };
+            return {
+                consumed: true, 
+                input: Data_String.drop(1)(s$prime), 
+                result: new Data_Either.Right(Data_String.charAt(0)(s$prime))
+            };
+        })());
+    });
+};
+var satisfy = function (__dict_Monad_4) {
+    return function (f) {
+        return Text_Parsing_Parser_Combinators["try"](((__dict_Monad_4["__superclass_Prelude.Applicative_0"]({}))["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(Prelude[">>="](Text_Parsing_Parser.bindParserT(__dict_Monad_4))($$char(__dict_Monad_4))(function (_71) {
+            return f(_71) ? Prelude["return"](Text_Parsing_Parser.monadParserT(__dict_Monad_4))(_71) : Text_Parsing_Parser.fail(__dict_Monad_4)("Character did not satisfy predicate");
+        }));
+    };
+};
+module.exports = {
+    whiteSpace: whiteSpace, 
+    satisfy: satisfy, 
+    "char": $$char, 
+    string: string, 
+    eof: eof
+};
+},{"Control.Alt":24,"Control.Alternative":undefined,"Control.Monad.Error":43,"Data.Either":undefined,"Data.Foldable":71,"Data.Monoid":82,"Data.String":86,"Prelude":undefined,"Text.Parsing.Parser":undefined,"Text.Parsing.Parser.Combinators":undefined}],"Text.Parsing.Parser":[function(require,module,exports){
+"use strict";
+var Prelude = require("Prelude");
+var Control_Monad_Identity = require("Control.Monad.Identity");
+var Control_Monad_Trans = require("Control.Monad.Trans");
+var Data_Either = require("Data.Either");
+var Control_Monad_State_Class = require("Control.Monad.State.Class");
+var Data_Tuple = require("Data.Tuple");
+var Control_Lazy = require("Control.Lazy");
+var Control_Monad_Error = require("Control.Monad.Error");
+var Control_Alt = require("Control.Alt");
+var Control_Plus = require("Control.Plus");
+var Control_Alternative = require("Control.Alternative");
+var Control_MonadPlus = require("Control.MonadPlus");
+function ParseError(value0) {
+    this.value0 = value0;
+};
+ParseError.create = function (value0) {
+    return new ParseError(value0);
+};
+var ParserT = {
+    create: function (value) {
+        return value;
+    }
+};
+var unParserT = function (_697) {
+    return _697;
+};
+var runParserT = function (__dict_Monad_0) {
+    return function (s) {
+        return function (p) {
+            return Prelude[">>="](__dict_Monad_0["__superclass_Prelude.Bind_1"]({}))(unParserT(p)(s))(function (_46) {
+                return Prelude["return"](__dict_Monad_0)(_46.result);
+            });
+        };
+    };
+};
+var runParser = function (s) {
+    return Prelude["<<<"](Prelude.semigroupoidArr({}))(Control_Monad_Identity.runIdentity)(runParserT(Control_Monad_Identity.monadIdentity({}))(s));
+};
+var monadTransParserT = function (__unused) {
+    return new Control_Monad_Trans.MonadTrans(function (__dict_Monad_1) {
+        return function (m) {
+            return ParserT.create(function (s) {
+                return Prelude["<$>"](((__dict_Monad_1["__superclass_Prelude.Applicative_0"]({}))["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(function (a) {
+                    return {
+                        input: s, 
+                        consumed: false, 
+                        result: new Data_Either.Right(a)
+                    };
+                })(m);
+            });
+        };
+    });
+};
+var monadStateParserT = function (__dict_Monad_2) {
+    return new Control_Monad_State_Class.MonadState(function (f) {
+        return ParserT.create(function (s) {
+            return Prelude["return"](__dict_Monad_2)((function () {
+                var _2505 = f(s);
+                return {
+                    input: _2505.value1, 
+                    consumed: false, 
+                    result: new Data_Either.Right(_2505.value0)
+                };
+            })());
+        });
+    });
+};
+var lazy1ParserT = function (__unused) {
+    return new Control_Lazy.Lazy1(function (f) {
+        return ParserT.create(function (s) {
+            return unParserT(f(Prelude.unit))(s);
+        });
+    });
+};
+var functorParserT = function (__dict_Functor_5) {
+    return new Prelude.Functor(function (f) {
+        return function (p) {
+            var f$prime = function (o) {
+                return {
+                    input: o.input, 
+                    result: Prelude["<$>"](Data_Either.functorEither({}))(f)(o.result), 
+                    consumed: o.consumed
+                };
+            };
+            return ParserT.create(function (s) {
+                return Prelude["<$>"](__dict_Functor_5)(f$prime)(unParserT(p)(s));
+            });
+        };
+    });
+};
+var fail = function (__dict_Monad_6) {
+    return function (message) {
+        return ParserT.create(function (s) {
+            return Prelude["return"](__dict_Monad_6)({
+                input: s, 
+                consumed: false, 
+                result: new Data_Either.Left(new ParseError({
+                    message: message
+                }))
+            });
+        });
+    };
+};
+var errorParseError = function (__unused) {
+    return new Control_Monad_Error.Error(new ParseError({
+        message: ""
+    }), function (msg) {
+        return new ParseError({
+            message: msg
+        });
+    });
+};
+var consume = function (__dict_Monad_8) {
+    return ParserT.create(function (s) {
+        return Prelude["return"](__dict_Monad_8)({
+            consumed: true, 
+            input: s, 
+            result: new Data_Either.Right(Prelude.unit)
+        });
+    });
+};
+var applicativeParserT = function (__dict_Monad_11) {
+    return new Prelude.Applicative(function (__unused) {
+        return applyParserT(__dict_Monad_11);
+    }, function (a) {
+        return ParserT.create(function (s) {
+            return Prelude.pure(__dict_Monad_11["__superclass_Prelude.Applicative_0"]({}))({
+                input: s, 
+                result: new Data_Either.Right(a), 
+                consumed: false
+            });
+        });
+    });
+};
+var applyParserT = function (__dict_Monad_10) {
+    return new Prelude.Apply(Prelude.ap(monadParserT(__dict_Monad_10)), function (__unused) {
+        return functorParserT(((__dict_Monad_10["__superclass_Prelude.Applicative_0"]({}))["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}));
+    });
+};
+var monadParserT = function (__dict_Monad_4) {
+    return new Prelude.Monad(function (__unused) {
+        return applicativeParserT(__dict_Monad_4);
+    }, function (__unused) {
+        return bindParserT(__dict_Monad_4);
+    });
+};
+var bindParserT = function (__dict_Monad_9) {
+    return new Prelude.Bind(function (p) {
+        return function (f) {
+            var updateConsumedFlag = function (c) {
+                return function (o) {
+                    return {
+                        input: o.input, 
+                        consumed: c || o.consumed, 
+                        result: o.result
+                    };
+                };
+            };
+            return ParserT.create(function (s) {
+                return Prelude[">>="](__dict_Monad_9["__superclass_Prelude.Bind_1"]({}))(unParserT(p)(s))(function (o) {
+                    if (o.result instanceof Data_Either.Left) {
+                        return Prelude["return"](__dict_Monad_9)({
+                            input: o.input, 
+                            result: new Data_Either.Left(o.result.value0), 
+                            consumed: o.consumed
+                        });
+                    };
+                    if (o.result instanceof Data_Either.Right) {
+                        return Prelude["<$>"](((__dict_Monad_9["__superclass_Prelude.Applicative_0"]({}))["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(updateConsumedFlag(o.consumed))(unParserT(f(o.result.value0))(o.input));
+                    };
+                    throw new Error("Failed pattern match");
+                });
+            });
+        };
+    }, function (__unused) {
+        return applyParserT(__dict_Monad_9);
+    });
+};
+var altParserT = function (__dict_Monad_13) {
+    return new Control_Alt.Alt(function (p1) {
+        return function (p2) {
+            return ParserT.create(function (s) {
+                return Prelude[">>="](__dict_Monad_13["__superclass_Prelude.Bind_1"]({}))(unParserT(p1)(s))(function (o) {
+                    if (o.result instanceof Data_Either.Left && !o.consumed) {
+                        return unParserT(p2)(s);
+                    };
+                    return Prelude["return"](__dict_Monad_13)(o);
+                });
+            });
+        };
+    }, function (__unused) {
+        return functorParserT(((__dict_Monad_13["__superclass_Prelude.Applicative_0"]({}))["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}));
+    });
+};
+var plusParserT = function (__dict_Monad_7) {
+    return new Control_Plus.Plus(function (__unused) {
+        return altParserT(__dict_Monad_7);
+    }, fail(__dict_Monad_7)("No alternative"));
+};
+var alternativeParserT = function (__dict_Monad_12) {
+    return new Control_Alternative.Alternative(function (__unused) {
+        return plusParserT(__dict_Monad_12);
+    }, function (__unused) {
+        return applicativeParserT(__dict_Monad_12);
+    });
+};
+var monadPlusParserT = function (__dict_Monad_3) {
+    return new Control_MonadPlus.MonadPlus(function (__unused) {
+        return alternativeParserT(__dict_Monad_3);
+    }, function (__unused) {
+        return monadParserT(__dict_Monad_3);
+    });
+};
+module.exports = {
+    ParserT: ParserT, 
+    ParseError: ParseError, 
+    fail: fail, 
+    consume: consume, 
+    runParser: runParser, 
+    runParserT: runParserT, 
+    unParserT: unParserT, 
+    errorParseError: errorParseError, 
+    functorParserT: functorParserT, 
+    applyParserT: applyParserT, 
+    applicativeParserT: applicativeParserT, 
+    altParserT: altParserT, 
+    plusParserT: plusParserT, 
+    alternativeParserT: alternativeParserT, 
+    bindParserT: bindParserT, 
+    monadParserT: monadParserT, 
+    monadPlusParserT: monadPlusParserT, 
+    monadTransParserT: monadTransParserT, 
+    monadStateParserT: monadStateParserT, 
+    lazy1ParserT: lazy1ParserT
+};
+},{"Control.Alt":24,"Control.Alternative":undefined,"Control.Lazy":26,"Control.Monad.Error":43,"Control.Monad.Identity":undefined,"Control.Monad.State.Class":49,"Control.Monad.Trans":52,"Control.MonadPlus":54,"Control.Plus":55,"Data.Either":undefined,"Data.Tuple":88,"Prelude":undefined}]},{},[1]);
