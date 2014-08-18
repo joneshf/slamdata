@@ -6,6 +6,8 @@ module SlamData.App.Workspace.Notebook.Block
 
   import Control.Lens ((^.), (..), (.~))
 
+  import Data.Function (mkFn3)
+
   import React (coerceThis, createClass, eventHandler, spec)
   import React.Types (Component(), ComponentClass(), ReactThis())
 
@@ -55,6 +57,10 @@ module SlamData.App.Workspace.Notebook.Block
   block :: forall eff. ComponentClass (BlockProps eff) BlockState
   block = createClass spec
     { displayName = "Block"
+    -- , shouldComponentUpdate = mkFn3 \this props state -> pure $
+    --   this.state.editContent /= state.editContent ||
+    --   this.state.evalContent /= state.evalContent ||
+    --   this.props.block /= props.block
     , getInitialState = \this -> pure
       { editContent: this.props.block^._blockRec.._editContent
       , evalContent: this.props.block^._blockRec.._evalContent
@@ -92,15 +98,15 @@ module SlamData.App.Workspace.Notebook.Block
                .  ReactThis fields (BlockProps eff) BlockState
                -> Component
   blockContent this = case this.props.block^._blockRec of
-    {blockMode = Edit, blockType = Visual} ->
+    {blockMode = BlockMode "Edit", blockType = BlockType "Visual"} ->
       visualEditor { block: this.props.block
                    , files: this.props.files
                    , notebook: this.props.notebook
                    , request: this.props.request
                    } []
-    {blockMode = Edit}                     -> blockEditor this
-    {blockMode = Eval, blockType = Visual} -> evaluatedVisualBlock this
-    {blockMode = Eval}                     -> evaluatedBlock this
+    {blockMode = BlockMode "Edit"}                     -> blockEditor this
+    {blockMode = BlockMode "Eval", blockType = BlockType "Visual"} -> evaluatedVisualBlock this
+    {blockMode = BlockMode "Eval"}                     -> evaluatedBlock this
 
   blockEditor :: forall eff fields
               .  ReactThis fields (BlockProps eff) BlockState

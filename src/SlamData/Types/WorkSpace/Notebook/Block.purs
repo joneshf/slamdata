@@ -33,13 +33,15 @@ module SlamData.Types.Workspace.Notebook.Block where
     , label       :: String
     }
 
-  data BlockType = Markdown
-                 | SQL
-                 | Visual
+  newtype BlockType = BlockType String
+  newtype BlockMode = BlockMode String
+  -- data BlockType = Markdown
+  --                | SQL
+  --                | Visual
 
-  data BlockMode = Edit
-                 | Eval
-                 | Locked
+  -- data BlockMode = Edit
+  --                | Eval
+  --                | Locked
 
   instance eqBlock :: Eq Block where
     (==) (Block b) (Block b') =
@@ -55,33 +57,47 @@ module SlamData.Types.Workspace.Notebook.Block where
     (/=) i i' = not (i == i')
 
   instance eqBlockType :: Eq BlockType where
-    (==) Markdown Markdown = true
-    (==) SQL      SQL      = true
-    (==) Visual   Visual   = true
-    (==) bt       bt'      = false
-
+    (==) (BlockType bt) (BlockType bt') = bt == bt'
     (/=) bt bt' = not (bt == bt')
 
-  instance eqBlockMode :: Eq BlockMode where
-    (==) Edit   Edit   = true
-    (==) Eval   Eval   = true
-    (==) Locked Locked = true
-    (==) bm     bm'    = false
+  instance showBlockType :: Show BlockType where
+    show (BlockType bt) = bt
 
+  instance eqBlockMode :: Eq BlockMode where
+    (==) (BlockMode bm) (BlockMode bm') = bm == bm'
     (/=) bm bm' = not (bm == bm')
+
+  instance showBlockMode :: Show BlockMode where
+    show (BlockMode bm) = bm
+
+  -- instance eqBlockType :: Eq BlockType where
+  --   (==) Markdown Markdown = true
+  --   (==) SQL      SQL      = true
+  --   (==) Visual   Visual   = true
+  --   (==) bt       bt'      = false
+
+  --   (/=) bt bt' = not (bt == bt')
+
+  -- instance eqBlockMode :: Eq BlockMode where
+  --   (==) Edit   Edit   = true
+  --   (==) Eval   Eval   = true
+  --   (==) Locked Locked = true
+  --   (==) bm     bm'    = false
+
+  --   (/=) bm bm' = not (bm == bm')
 
   instance showBlock :: Show Block where
     show block = show $ encodeJson block
 
-  instance showBlockType :: Show BlockType where
-    show Markdown = "Markdown"
-    show SQL      = "SQL"
-    show Visual   = "Visual"
+  -- instance showBlockType :: Show BlockType where
+  --   show Markdown = "Markdown"
+  --   show SQL      = "SQL"
+  --   show Visual   = "Visual"
 
-  instance showBlockMode :: Show BlockMode where
-    show Edit   = "Edit"
-    show Eval   = "Eval"
-    show Locked = "Locked"
+  -- instance showBlockMode :: Show BlockMode where
+  --   show Edit   = "Edit"
+  --   show Eval   = "Eval"
+  --   show Locked = "Locked"
 
   instance decodeJsonBlock :: DecodeJson Block where
     decodeJson json = toObject json ?>>= "Block" >>= \obj -> do
@@ -104,16 +120,16 @@ module SlamData.Types.Workspace.Notebook.Block where
 
   instance decodeJsonBlockType :: DecodeJson BlockType where
     decodeJson json = toString json ?>>= "BlockType" >>= \ty -> case ty of
-      "Markdown" -> Right Markdown
-      "SQL"      -> Right SQL
-      "Visual"   -> Right Visual
+      "Markdown" -> Right (BlockType "Markdown")
+      "SQL"      -> Right (BlockType "SQL")
+      "Visual"   -> Right (BlockType "Visual")
       _          -> Left "Couldn't decode BlockType"
 
   instance decodeJsonBlockMode :: DecodeJson BlockMode where
     decodeJson json = toString json ?>>= "BlockMode" >>= \ty -> case ty of
-      "Edit"   -> Right Edit
-      "Eval"   -> Right Eval
-      "Locked" -> Right Locked
+      "Edit"   -> Right (BlockMode "Edit")
+      "Eval"   -> Right (BlockMode "Eval")
+      "Locked" -> Right (BlockMode "Locked")
       _        -> Left "Couldn't decode BlockMode"
 
   instance encodeJsonBlock :: EncodeJson Block where

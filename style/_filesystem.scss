@@ -1,21 +1,5 @@
 #filesystem {
-    .actual-content > ul {
-        margin-left: 0;
-        i {
-            padding-left: 10px;
-        }
-        span {
-            padding: 5px;
-        }
-        .selected i, .selected span {
-            font-weight: bold;
-        }
-        &, ul {
-            list-style-type: none;
-            margin-bottom: 0;
-            li {
-                margin-left: 15px;
-            }
-        }
+    .tree-view span {
+        cursor: pointer;
     }
 }

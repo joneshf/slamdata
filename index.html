@@ -134,27 +134,65 @@
                     name: "Untitled" + (newState.notebooks.length + 1),
                     path: "/"
                 };
-                var url = helpers.serverURI(state.settings.sdConfig) +
-                    '/data/fs' + notebook.path + notebook.name + '/index.nb';
-                $.ajax({
-                    url: url,
-                    type: 'POST',
-                    data: JSON.stringify(notebook)
-                }).done(function() {
-                    newState.notebooks.push(notebook);
-                    respond(newState);
-                });
+                newState.notebooks.push(notebook);
+                respond(newState);
             } else if (jsTypes.isCloseNotebook(newEvent)) {
                 var ident = newEvent.value0;
                 newState.notebooks = newState.notebooks.filter(function(nb) {
                     return nb.ident !== ident;
                 });
                 respond(newState);
+            } else if (jsTypes.isOpenNotebook(newEvent)) {
+                var path = newEvent.value0.slice(1);
+                var url = helpers.serverURI(newState.settings.sdConfig) + '/data/fs' + path + '/index.nb';
+                var xhr = new XMLHttpRequest();
+                xhr.onload = function () {
+                    var notebook = xhr.response.trim().split('\n').slice(-1);
+                    newState.notebooks = newState.notebooks.concat(JSON.parse(notebook));
+                    respond(newState);
+                };
+                xhr.open('GET', url);
+                xhr.send(null);
+                // oboe(url).start(function(status, headers) {
+                //     console.log(JSON.stringify(headers, null, 4));
+                // }).done(function(data) {
+                //     newState.notebooks.push(data);
+                //     respond(newState);
+                // });
+            } else if (jsTypes.isSaveNotebook(newEvent)) {
+                var notebook = newEvent.value0;
+                var url = helpers.serverURI(newState.settings.sdConfig) + '/data/fs' + notebook.path + notebook.name + '/index.nb';
+                delete notebook._id;
+                oboe({
+                    url: url,
+                    method: 'POST',
+                    body: JSON.stringify(notebook)
+                }).done(function() {
+                    respond(newState);
+                });
+            } else if (jsTypes.isRenameNotebook(newEvent)) {
+                var notebook = newEvent.value0;
+                var dest = newEvent.value1;
+                var url = helpers.serverURI(newState.settings.sdConfig) + '/data/fs' + notebook.path + notebook.name + '/index.nb';
+                var xhr = new XMLHttpRequest();
+                xhr.onload = function() {
+                    newState.notebooks = newState.notebooks.map(function(nb) {
+                        if (nb.ident === notebook.ident) {
+                            nb.path = dest;
+                        }
+                        return nb;
+                    });
+                    respond(newState);
+                };
+                xhr.open('MOVE', url);
+                xhr.setRequestHeader('Accept', 'application/json');
+                xhr.setRequestHeader('Destination', dest);
+                xhr.send(null);
             } else if (jsTypes.isCreateBlock(newEvent)) {
                 var newBlock = {
                     ident: uuid.v4(),
                     blockType: newEvent.value1,
-                    blockMode: blockTypes.Edit.value,
+                    blockMode: 'Edit',
                     editContent: '',
                     evalContent: ''
                 };
@@ -182,7 +220,7 @@
                     if (nb.ident === notebook.ident) {
                         nb.blocks = nb.blocks.map(function(b) {
                             if (b.ident === block.ident) {
-                                b.blockMode = blockTypes.Edit.value;
+                                b.blockMode = 'Edit';
                             }
                             return b;
                         });
@@ -193,14 +231,15 @@
             } else if (jsTypes.isEvalBlock(newEvent)) {
                 var block = newEvent.value1;
                 var notebook = newEvent.value0;
-                if (jsTypes.isMarkdown(block.blockType)) {
+                if ('Markdown' === (block.blockType)) {
                     block.evalContent = converter.makeHtml(block.editContent);
                     newState.notebooks = newState.notebooks.map(function(nb) {
                         if (nb.ident === notebook.ident) {
                             nb.blocks = nb.blocks.map(function(b) {
                                 if (b.ident === block.ident) {
+                                    b.editContent = block.editContent;
                                     b.evalContent = block.evalContent;
-                                    b.blockMode = blockTypes.Eval.value;
+                                    b.blockMode = 'Eval';
                                 }
                                 return b;
                             });
@@ -208,10 +247,10 @@
                         return nb;
                     });
                     respond(newState);
-                } else if (jsTypes.isSQL(block.blockType)) {
+                } else if ('SQL' === (block.blockType)) {
                     var baseUrl = helpers.serverURI(state.settings.sdConfig);
                     var sqlBlocks = notebook.blocks.filter(function(b) {
-                        return jsTypes.isSQL(b.blockType);
+                        return 'SQL' === (b.blockType);
                     });
                     var blockname = 'out' + sqlBlocks.length;
                     var url = baseUrl + '/query/fs' + notebook.path + '?out=' +
@@ -228,8 +267,9 @@
                                 if (nb.ident === notebook.ident) {
                                     nb.blocks = nb.blocks.map(function(b) {
                                         if (b.ident === block.ident) {
+                                            b.editContent = block.editContent;
                                             b.evalContent = xhr.responseText;
-                                            b.blockMode = blockTypes.Eval.value;
+                                            b.blockMode = 'Eval';
                                             b.label = blockname;
                                         }
                                         return b;
@@ -246,16 +286,15 @@
             } else if (jsTypes.isEvalVisual(newEvent)) {
                 var notebook = newEvent.value0;
                 var block = newEvent.value1;
-                var data = newEvent.value2[0];
+                var data = newEvent.value2;
                 var selector = 'chart-' + block.ident;
-                var xhr = new XMLHttpRequest();
                 var baseUrl = helpers.serverURI(newState.settings.sdConfig);
                 newState.notebooks = newState.notebooks.map(function(nb) {
                     if (nb.ident === notebook.ident) {
                         nb.blocks = nb.blocks.map(function(b) {
                             if (b.ident === block.ident) {
                                 b.evalContent = selector;
-                                b.blockMode = blockTypes.Eval.value;
+                                b.blockMode = 'Eval';
                             }
                             return b;
                         });
@@ -267,18 +306,22 @@
                     var chart = c3.generate({
                         bindto: '#' + selector,
                         data: {
-                            json: [],
-                            keys: {
-                                value: data.fields
-                            },
-                            type: Prelude.show(C3.showC3Type())(data.type)
+                            json: {},
+                            type: Prelude.show(C3.showC3Type())(data[0].type)
                         }
                     });
-                    var jsons = []
-                    oboe(baseUrl + '/data/fs' + data.path).node('!', function(json) {
-                        jsons.push(json)
-                        chart.load({json: jsons, keys: {value: data.fields}});
-                    });
+                    var jsons = {}
+                    data.map(function(datum) {
+                        oboe(baseUrl + '/data/fs' + datum.path).node('!', function(json) {
+                            datum.fields.map(function(field) {
+                                if (jsons[field] == null) {
+                                    jsons[field] = [];
+                                }
+                                jsons[field].push(json[field]);
+                            });
+                            chart.load({json: jsons});
+                        });
+                    })
                 }, 1000);
             } else {
                 // We can't do anything else, just pass it on back.

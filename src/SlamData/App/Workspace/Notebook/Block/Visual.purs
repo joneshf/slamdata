@@ -136,6 +136,8 @@ module SlamData.App.Workspace.Notebook.Block.Visual
       [ D.ul {className: "chart-type small-block-grid-5"}
         (visual this <$> [Bar, Line, Pie])
       , selectFields this
+      , selectFields this
+      , selectFields this
       , D.div {className: "actions"}
         [ D.a { className: "tiny button"
               , onClick: eventHandler this \this _ -> this.props.request $
@@ -255,7 +257,8 @@ module SlamData.App.Workspace.Notebook.Block.Visual
     D.select {onChange: eventHandler this \this e -> do
                 let path = selectedOptgroup e.target
                 let field = value e.target
-                let selected = M.singleton path $ S.singleton field
+                -- let selected = M.insert path (S.singleton field) this.state.selectedFields
+                let selected = M.alter (maybe (Just $ S.singleton field) (S.insert field >>> Just)) path this.state.selectedFields
                 pure $ this.setState this.state{selectedFields = selected}
              }
       (placeholder:(optionify <$> M.toList this.state.fields))

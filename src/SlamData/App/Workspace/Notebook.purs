@@ -25,11 +25,13 @@ module SlamData.App.Workspace.Notebook
     , closeIcon
     , newNotebookIcon
     , markdownIcon
+    , renameIcon
+    , saveIcon
     , sqlIcon
     , visualIcon
     )
-  import SlamData.Helpers (activate)
-  import SlamData.Lens (_ident, _notebookRec)
+  import SlamData.Helpers (activate, value)
+  import SlamData.Lens (_ident, _name, _notebookRec)
   import SlamData.Types
     ( SlamDataRequest()
     , SlamDataState()
@@ -46,6 +48,7 @@ module SlamData.App.Workspace.Notebook
     }
   type NotebookState =
     { active     :: Maybe NotebookID
+    , renaming   :: Maybe String
     , settingsId :: NotebookID
     }
 
@@ -54,7 +57,7 @@ module SlamData.App.Workspace.Notebook
     { displayName = "Notebooks"
     -- , shouldComponentUpdate = mkFn3 \this props state -> pure $
     --   this.props.state.notebooks /= props.state.notebooks ||
-    --   -- this.props.state.settings /= props.state.settings ||
+    --   this.props.state.files /= props.state.files ||
     --   this.props.state.showSettings /= props.state.showSettings ||
     --   this.state.active /= state.active
     , componentWillReceiveProps = mkFn2 \this props ->
@@ -71,7 +74,10 @@ module SlamData.App.Workspace.Notebook
       else
         pure unit
     , getInitialState = \this -> pure
-      {settingsId: NotebookID $ runUUID v4, active: Nothing :: Maybe NotebookID}
+      { settingsId: NotebookID $ runUUID v4
+      , active: Nothing :: Maybe NotebookID
+      , renaming: Nothing :: Maybe String
+      }
     , render = \this -> do
       let settings = if this.props.state.showSettings then [settingsTab this] else []
       let tabs = reifyTabs (coerceThis this) <$> this.props.state.notebooks ++ settings
@@ -130,12 +136,12 @@ module SlamData.App.Workspace.Notebook
           []
         ]
       ]
-  reifyTabs this (Notebook nb) =
+  reifyTabs this nb'@(Notebook nb) =
     D.dd {className: "tab" ++ activate (Just nb.ident) this.state.active}
       [D.a {onClick: eventHandler this \this _ -> pure $
               this.setState this.state{active = Just nb.ident}
            }
-        [ D.rawText nb.name
+        [ noteBookName (coerceThis this) nb'
         , D.i { className: "fa fa-times"
               , onClick: eventHandler this \this _ -> do
                 pure $ if this.state.active == Just nb.ident then
@@ -159,7 +165,9 @@ module SlamData.App.Workspace.Notebook
   reifyContent this nb@(Notebook nb') =
     D.div {className: "content" ++ activate (Just nb'.ident) this.state.active}
       [ D.div {className: "toolbar button-bar"}
-        [internalActions this nb'.ident]
+        [ externalActions this nb
+        , internalActions this nb'.ident
+        ]
       , D.hr {} []
       , D.div {className: "actual-content"}
         (reifyBlock this nb <$> nb'.blocks)
@@ -179,12 +187,21 @@ module SlamData.App.Workspace.Notebook
           }
       []
 
+  externalActions :: forall eff fields
+                  .  ReactThis fields (NotebookProps eff) NotebookState
+                  -> Notebook
+                  -> Component
+  externalActions this nb = D.ul {className: "button-group"}
+    [ actionButton this (SaveNotebook nb) "Save" saveIcon
+    , renameAction this nb
+    ]
+
   internalActions :: forall eff fields
                   .  ReactThis fields (NotebookProps eff) NotebookState
                   -> NotebookID
                   -> Component
   internalActions this ident = D.ul {className: "button-group"}
-    (actions (actionButton this) ident <$> [Markdown, SQL, Visual])
+    (actions (actionButton this) ident <$> (BlockType <$> ["Markdown", "SQL", "Visual"]))
 
   actions :: (SlamDataEventTy -> String -> Component -> Component)
           -> NotebookID
@@ -193,6 +210,36 @@ module SlamData.App.Workspace.Notebook
   actions f ident ty = f (CreateBlock ident ty) (show ty) (blockIcon ty)
 
   blockIcon :: BlockType -> Component
-  blockIcon Markdown = markdownIcon
-  blockIcon SQL      = sqlIcon
-  blockIcon Visual   = visualIcon
+  blockIcon (BlockType "Markdown") = markdownIcon
+  blockIcon (BlockType "SQL")      = sqlIcon
+  blockIcon (BlockType "Visual")   = visualIcon
+
+  renameAction :: forall eff fields
+               .  ReactThis fields (NotebookProps eff) NotebookState
+               -> Notebook
+               -> Component
+  renameAction this (Notebook nb) = D.li {}
+    [D.a { className: "tiny secondary button has-tooltip"
+         , onClick: eventHandler this \this _ -> pure $
+            this.setState this.state{renaming = Just nb.name}
+         , title: "Rename"
+         }
+      [renameIcon]
+    ]
+
+  noteBookName :: forall eff fields
+               .  ReactThis fields (NotebookProps eff) NotebookState
+               -> Notebook
+               -> Component
+  noteBookName this nb@(Notebook nb') = case this.state.renaming of
+    Just name ->
+      D.input { onBlur: eventHandler this \this e -> do
+                this.props.request $ RenameNotebook nb (value e.target)
+                pure $ this.setState this.state{renaming = Nothing}
+              , onChange: eventHandler this \this e -> pure $
+                this.setState this.state{renaming = Just $ value e.target}
+              , value: name
+              }
+        []
+    Nothing ->
+      D.rawText $ nb'.name

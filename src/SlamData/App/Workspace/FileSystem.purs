@@ -9,7 +9,7 @@ module SlamData.App.Workspace.FileSystem
 
   import Data.Array (snoc, sort)
   import Data.Function (mkFn3)
-  import Data.String (charAt, length)
+  import Data.String (charAt, joinWith, length)
 
   import React (coerceThis, createClass, eventHandler, spec)
   import React.TreeView (treeView)
@@ -21,6 +21,7 @@ module SlamData.App.Workspace.FileSystem
     )
 
   import SlamData.Components (dirOpenIcon, fileIcon)
+  import SlamData.Helpers (endsWith)
   import SlamData.Lens (_children, _fileTypeRec, _name)
   import SlamData.Types (SlamDataEventTy(..), SlamDataRequest(), SlamDataRequestEff())
   import SlamData.Types.Workspace.FileSystem (FileType(..), FileTypeRec())
@@ -58,12 +59,7 @@ module SlamData.App.Workspace.FileSystem
   fsContent :: forall eff. FileType -> SlamDataRequest eff -> Component
   fsContent files request = D.div {className: "tabs-content"}
     [D.div {className: "content active"}
-      [ D.div {className: "toolbar button-bar"}
-        [ D.ul {className: "button-group"} []
-        , D.ul {className: "button-group"} []
-        ]
-      , D.hr {} []
-      , D.div {className: "actual-content"}
+      [ D.div {className: "actual-content"}
         [reify {files: files, request: request, path: []} []]
       ]
     ]
@@ -73,7 +69,14 @@ module SlamData.App.Workspace.FileSystem
     { displayName = "FileSystemTree"
     , getInitialState = \_ -> pure {collapsed: true}
     , render = \this -> case this.props.files of
-      (FileType {"type" = "file", name = n}) -> pure $ D.div {} [D.rawText n]
+      (FileType {"type" = "file", name = "index.nb"}) -> pure $ D.div {}
+        [D.span {onClick: eventHandler this \this _ ->
+                 this.props.request $ OpenNotebook (joinWith "/" this.props.path)
+               }
+          [D.rawText "index.nb"]
+        ]
+      (FileType {"type" = "file", name = n}) -> pure $ D.div {}
+        [D.span {} [D.rawText n]]
       (FileType {"type" = "directory", name = n, children = c}) -> do
         let name = this.props.files^._fileTypeRec.._name
         let path = this.props.path `snoc` name
@@ -97,8 +100,6 @@ module SlamData.App.Workspace.FileSystem
   toggleTree this _ =
     let name = this.props.files^._fileTypeRec.._name
         path = this.props.path `snoc` (name ++ "/")
-        -- joinedPath = if path == [] then "" else joinWith "/" path
-        -- joined = joinedPath ++ (this.props.files^._fileTypeRec.._name) ++ "/"
     in if this.state.collapsed then do
       this.props.request $ ReadFileSystem path
       pure $ this.setState {collapsed: not this.state.collapsed}

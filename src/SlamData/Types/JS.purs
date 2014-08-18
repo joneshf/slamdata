@@ -23,6 +23,15 @@ module SlamData.Types.JS where
   isCloseNotebook :: SlamDataEventTy -> Boolean
   isCloseNotebook (CloseNotebook _) = true
   isCloseNotebook _                 = false
+  isSaveNotebook :: SlamDataEventTy -> Boolean
+  isSaveNotebook (SaveNotebook _) = true
+  isSaveNotebook _                = false
+  isOpenNotebook :: SlamDataEventTy -> Boolean
+  isOpenNotebook (OpenNotebook _) = true
+  isOpenNotebook _                = false
+  isRenameNotebook :: SlamDataEventTy -> Boolean
+  isRenameNotebook (RenameNotebook _ _) = true
+  isRenameNotebook _                    = false
   isShowSettings :: SlamDataEventTy -> Boolean
   isShowSettings ShowSettings = true
   isShowSettings _            = false
@@ -45,12 +54,12 @@ module SlamData.Types.JS where
   isEvalVisual (EvalVisual _ _ _) = true
   isEvalVisual _                  = false
 
-  isMarkdown :: BlockType -> Boolean
-  isMarkdown Markdown = true
-  isMarkdown _        = false
-  isSQL :: BlockType -> Boolean
-  isSQL SQL = true
-  isSQL _   = false
-  isVisual :: BlockType -> Boolean
-  isVisual Visual = true
-  isVisual _      = false
+  -- isMarkdown :: BlockType -> Boolean
+  -- isMarkdown Markdown = true
+  -- isMarkdown _        = false
+  -- isSQL :: BlockType -> Boolean
+  -- isSQL SQL = true
+  -- isSQL _   = false
+  -- isVisual :: BlockType -> Boolean
+  -- isVisual Visual = true
+  -- isVisual _      = false

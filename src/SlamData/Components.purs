@@ -22,6 +22,8 @@ module SlamData.Components where
   openIcon        = icon "fa fa-folder-open"
   saveIcon        :: FontAwesome
   saveIcon        = icon "fa fa-save"
+  renameIcon      :: FontAwesome
+  renameIcon      = icon "fa fa-language"
   publishIcon     :: FontAwesome
   publishIcon     = icon "fa fa-book"
   -- Blocks

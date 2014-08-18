@@ -97,6 +97,9 @@ module SlamData.Types where
                        | ReadFields [FilePath]
                        | CreateNotebook
                        | CloseNotebook NotebookID
+                       | OpenNotebook FilePath
+                       | RenameNotebook Notebook FilePath
+                       | SaveNotebook Notebook
                        | ShowSettings
                        | HideSettings
                        | CreateBlock NotebookID BlockType

@@ -1,6 +1,7 @@
 module SlamData.Helpers where
 
   import Data.Maybe (fromMaybe, Maybe())
+  import Data.String (indexOf', length)
 
   import React.Types (Element())
 
@@ -18,11 +19,12 @@ module SlamData.Helpers where
 
 --   -- Random purescript stuff.
 
---   (..) :: Number -> Number -> [Number]
---   (..) = A.range
-
   getOrElse :: forall a. Maybe a -> a -> a
   getOrElse = flip fromMaybe
+
+  endsWith :: String -> String -> Boolean
+  endsWith str suffix =
+    indexOf' suffix (length str - length suffix) str /= -1
 
 --   partition :: forall a. (a -> Boolean) -> [a] -> {fst :: [a], snd :: [a]}
 --   partition p = foldr (select p) {fst: [], snd: []}
