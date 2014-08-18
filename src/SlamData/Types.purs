@@ -37,6 +37,7 @@ module SlamData.Types where
     , BlockID()
     , BlockType()
     )
+  import SlamData.Types.Workspace.Notebook.Block.Visual (VisualData())
 
   import qualified Data.Map as M
 
@@ -102,6 +103,7 @@ module SlamData.Types where
                        | DeleteBlock NotebookID BlockID
                        | EditBlock Notebook Block
                        | EvalBlock Notebook Block
+                       | EvalVisual Notebook Block [VisualData]
 
   type SlamDataRequest eff
     =  SlamDataEventTy

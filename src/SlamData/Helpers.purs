@@ -129,12 +129,17 @@ module SlamData.Helpers where
 
   -- FFI stuff
 
-  foreign import value
-    "function value(el) {\
-    \  return el.value;\
-    \}" :: Element -> String
-
   foreign import checked
     "function checked(el) {\
     \  return el.checked;\
     \}" :: Element -> Boolean
+
+  foreign import selectedOptgroup
+    "function selectedOptgroup(el) {\
+    \  return el.selectedOptions[0].parentNode.label;\
+    \}" :: forall r. Element -> String
+
+  foreign import value
+    "function value(el) {\
+    \  return el.value;\
+    \}" :: Element -> String

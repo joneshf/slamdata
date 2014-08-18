@@ -93,8 +93,13 @@ module SlamData.App.Workspace.Notebook.Block
                -> Component
   blockContent this = case this.props.block^._blockRec of
     {blockMode = Edit, blockType = Visual} ->
-      visualEditor {files: this.props.files, request: this.props.request} []
+      visualEditor { block: this.props.block
+                   , files: this.props.files
+                   , notebook: this.props.notebook
+                   , request: this.props.request
+                   } []
     {blockMode = Edit}                     -> blockEditor this
+    {blockMode = Eval, blockType = Visual} -> evaluatedVisualBlock this
     {blockMode = Eval}                     -> evaluatedBlock this
 
   blockEditor :: forall eff fields
@@ -134,6 +139,20 @@ module SlamData.App.Workspace.Notebook.Block
                 EditBlock this.props.notebook this.props.block
              }
         [D.span {dangerouslySetInnerHTML: {__html: blockRec.evalContent}}
+          []
+        ]
+      ]
+
+  evaluatedVisualBlock :: forall eff fields
+                       .  ReactThis fields (BlockProps eff) BlockState
+                       -> Component
+  evaluatedVisualBlock this = let blockRec = this.props.block^._blockRec in
+    blockRow {styles: "block-content block-" ++ show blockRec.blockType}
+      [D.div { className: "evaled-block"
+             , onClick: eventHandler this \this _ -> this.props.request $
+                EditBlock this.props.notebook this.props.block
+             }
+        [D.div {id: this.props.block^._blockRec.._evalContent}
           []
         ]
       ]

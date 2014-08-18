@@ -41,6 +41,9 @@ module SlamData.Types.JS where
   isEvalBlock :: SlamDataEventTy -> Boolean
   isEvalBlock (EvalBlock _ _) = true
   isEvalBlock _               = false
+  isEvalVisual :: SlamDataEventTy -> Boolean
+  isEvalVisual (EvalVisual _ _ _) = true
+  isEvalVisual _                  = false
 
   isMarkdown :: BlockType -> Boolean
   isMarkdown Markdown = true

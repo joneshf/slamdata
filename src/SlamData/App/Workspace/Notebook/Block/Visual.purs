@@ -6,11 +6,16 @@ module SlamData.App.Workspace.Notebook.Block.Visual
   ) where
 
   import Control.Lens ((^.), (..), (%~))
+  import Control.Bind ((=<<))
   import Control.Monad.Eff (Eff())
 
   import Data.Array (snoc, sort)
   import Data.Array.Unsafe (head, tail)
+  import Data.Maybe (maybe, Maybe(..))
   import Data.String (charAt, joinWith, length)
+  import Data.Tuple (Tuple(..))
+
+  import Graphics.C3 (C3Type(..))
 
   import React (coerceThis, createClass, eventHandler, spec)
   import React.TreeView (treeView)
@@ -22,7 +27,12 @@ module SlamData.App.Workspace.Notebook.Block.Visual
     )
 
   import SlamData.App.Workspace.Notebook.Block.Common (blockRow)
-  import SlamData.Helpers (activate, checked)
+  import SlamData.Components
+    ( barChartIcon
+    , lineChartIcon
+    , pieChartIcon
+    )
+  import SlamData.Helpers (activate, checked, selectedOptgroup, value)
   import SlamData.Lens (_children, _fileTypeRec, _name)
   import SlamData.Types
     ( SlamDataEventTy(..)
@@ -30,12 +40,20 @@ module SlamData.App.Workspace.Notebook.Block.Visual
     , SlamDataRequestEff()
     )
   import SlamData.Types.Workspace.FileSystem (FileType(..))
+  import SlamData.Types.Workspace.Notebook (Notebook())
+  import SlamData.Types.Workspace.Notebook.Block (Block())
+  import SlamData.Types.Workspace.Notebook.Block.Visual (VisualData(..))
 
   import qualified React.DOM as D
+  import qualified Data.Map as M
   import qualified Data.Set as S
 
   data VisualTab = FieldsTab
                  | VisualTypeTab
+
+  data VisualType = VisualBar
+                  | VisualLine
+                  | VisualPie
 
   instance eqVisualTab :: Eq VisualTab where
     (==) FieldsTab     FieldsTab     = true
@@ -48,12 +66,16 @@ module SlamData.App.Workspace.Notebook.Block.Visual
     show VisualTypeTab = "Type"
 
   type VisualProps eff =
-    { files   :: FileType
-    , request :: SlamDataRequest eff
+    { block    :: Block
+    , files    :: FileType
+    , notebook :: Notebook
+    , request  :: SlamDataRequest eff
     }
   type VisualState =
-    { active :: VisualTab
-    , fields :: S.Set String
+    { active         :: VisualTab
+    , fields         :: M.Map String (S.Set String)
+    , selectedFields :: M.Map String (S.Set String)
+    , visual         :: C3Type
     }
   type VisualTreeProps eff fields =
     { files      :: FileType
@@ -68,7 +90,12 @@ module SlamData.App.Workspace.Notebook.Block.Visual
   visualEditor :: forall eff. ComponentClass (VisualProps eff) VisualState
   visualEditor = createClass spec
     { displayName = "VisualEditor"
-    , getInitialState = \_ -> pure {active: FieldsTab, fields: S.empty}
+    , getInitialState = \_ -> pure
+      { active: FieldsTab
+      , fields: M.empty
+      , selectedFields: M.empty
+      , visual: Line
+      }
     , render = \this -> pure $
       blockRow {styles: "block-content edit-visual"}
         [ visualTabs $ coerceThis this
@@ -103,18 +130,27 @@ module SlamData.App.Workspace.Notebook.Block.Visual
              , path: []
              , visualThis: this
              }
-        []]
+        []
+      ]
     , D.div {className: "content" ++ activate VisualTypeTab this.state.active}
       [ D.ul {className: "chart-type small-block-grid-5"}
-        []
-      , D.select {}
-        []
+        (visual this <$> [Bar, Line, Pie])
+      , selectFields this
       , D.div {className: "actions"}
-        [ D.a {className: "tiny button"}
+        [ D.a { className: "tiny button"
+              , onClick: eventHandler this \this _ -> this.props.request $
+                EvalVisual this.props.notebook
+                           this.props.block
+                           (createData this.state)
+              }
           [D.rawText "Create"]
         ]
       ]
     ]
+
+  createData :: VisualState -> [VisualData]
+  createData {selectedFields = fs, visual = v} =
+    (\(Tuple p f) -> VisualData {fields: S.toList f, path: p, "type": v}) <$> M.toList fs
 
   reify :: forall eff fields
         . ComponentClass (VisualTreeProps eff fields) VisualTreeState
@@ -171,15 +207,55 @@ module SlamData.App.Workspace.Notebook.Block.Visual
              -> Component
   reifyField this path (FileType {name = n}) = D.div {className: "visual-field"}
     [ D.input { onClick: eventHandler this \this e -> do
-                let path' = (tail path) `snoc` n
+                let path' = tail path
                 let root = head path
+                let field = root ++ joinWith "/" path'
                 let fields = if checked e.target then
-                        S.insert (root ++ joinWith "/" path') this.state.fields
+                        -- Lack of inference is killer here.
+                        M.alter (maybe (Just $ S.singleton n) (S.insert n >>> Just)) field this.state.fields
                       else
-                        S.delete (root ++ joinWith "/" path') this.state.fields
+                        M.alter ((<$>) (S.delete n)) field this.state.fields
                 pure $ this.setState this.state{fields = fields}
               , "type": "checkbox"
               }
       []
     , D.rawText n
     ]
+
+  visual :: forall eff fields
+         .  ReactThis fields (VisualProps eff) VisualState
+         -> C3Type
+         -> Component
+  visual this ty =
+    D.li { onClick: eventHandler this \this _ -> pure $
+            this.setState this.state{visual = ty}
+         , className: activate ty this.state.visual
+         }
+      [ D.a {} [visualIcon ty]
+      , D.span {} [D.rawText $ show ty]
+      ]
+
+  visualIcon :: C3Type -> Component
+  visualIcon Bar  = barChartIcon
+  visualIcon Line = lineChartIcon
+  visualIcon Pie  = pieChartIcon
+
+  optionify :: Tuple String (S.Set String) -> Component
+  optionify (Tuple path fields) = D.optgroup {label: path}
+    ((\f -> D.option {value: f} [D.rawText f]) <$> S.toList fields)
+
+  placeholder :: Component
+  placeholder = D.option {disabled: true, selected: true, value: ""}
+    [D.rawText "Select a field"]
+
+  selectFields :: forall eff fields
+               .  ReactThis fields (VisualProps eff) VisualState
+               -> Component
+  selectFields this =
+    D.select {onChange: eventHandler this \this e -> do
+                let path = selectedOptgroup e.target
+                let field = value e.target
+                let selected = M.singleton path $ S.singleton field
+                pure $ this.setState this.state{selectedFields = selected}
+             }
+      (placeholder:(optionify <$> M.toList this.state.fields))

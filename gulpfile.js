@@ -240,6 +240,8 @@ gulp.task('browserify', ['compile', 'browserify-index'], function() {
         .require('./output/node_modules/Data.Argonaut.Core', {expose: 'Data.Argonaut.Core'})
         .require('./output/node_modules/Data.Argonaut.Printer', {expose: 'Data.Argonaut.Printer'})
         .require('./output/node_modules/Data.Either', {expose: 'Data.Either'})
+        .require('./output/node_modules/Graphics.C3', {expose: 'Graphics.C3'})
+        .require('./output/node_modules/Prelude', {expose: 'Prelude'})
         .require('./output/node_modules/SlamData', {expose: 'SlamData'})
         .require('./output/node_modules/SlamData.Helpers', {expose: 'SlamData.Helpers'})
         .require('./output/node_modules/SlamData.Types', {expose: 'SlamData.Types'})

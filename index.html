@@ -32,6 +32,8 @@
     <script src="bower_components/tiny-emitter/dist/tinyemitter.js"></script>
     <script src="js/slamdata.js"></script>
     <script type="text/javascript">
+        var C3 = require('Graphics.C3');
+        var Prelude = require('Prelude');
         var sd = require('SlamData');
         var helpers = require('SlamData.Helpers');
         var types = require('SlamData.Types');
@@ -211,8 +213,9 @@
                     var sqlBlocks = notebook.blocks.filter(function(b) {
                         return jsTypes.isSQL(b.blockType);
                     });
+                    var blockname = 'out' + sqlBlocks.length;
                     var url = baseUrl + '/query/fs' + notebook.path + '?out=' +
-                        notebook.name + '/out' + sqlBlocks.length + '.json';
+                        notebook.name + '/' + blockname + '.json';
                     oboe({
                         url: url,
                         method: 'POST',
@@ -239,6 +242,43 @@
                         xhr.send(null);
                     });
                 }
+            } else if (jsTypes.isEvalVisual(newEvent)) {
+                var notebook = newEvent.value0;
+                var block = newEvent.value1;
+                var data = newEvent.value2[0];
+                var selector = 'chart-' + block.ident;
+                var xhr = new XMLHttpRequest();
+                var baseUrl = helpers.serverURI(newState.settings.sdConfig);
+                newState.notebooks = newState.notebooks.map(function(nb) {
+                    if (nb.ident === notebook.ident) {
+                        nb.blocks = nb.blocks.map(function(b) {
+                            if (b.ident === block.ident) {
+                                b.evalContent = selector;
+                                b.blockMode = blockTypes.Eval.value;
+                            }
+                            return b;
+                        });
+                    }
+                    return nb;
+                });
+                respond(newState);
+                setTimeout(function() {
+                    var chart = c3.generate({
+                        bindto: '#' + selector,
+                        data: {
+                            json: [],
+                            keys: {
+                                value: data.fields
+                            },
+                            type: Prelude.show(C3.showC3Type())(data.type)
+                        }
+                    });
+                    var jsons = []
+                    oboe(baseUrl + '/data/fs' + data.path).node('!', function(json) {
+                        jsons.push(json)
+                        chart.load({json: jsons, keys: {value: data.fields}});
+                    });
+                }, 1000);
             } else {
                 // We can't do anything else, just pass it on back.
                 respond(newState);
