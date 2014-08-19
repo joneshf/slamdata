@@ -22,7 +22,7 @@ module SlamData.NodeWebkit where
   import Data.Argonaut (decodeMaybe, encodeJson, jsonParser, printJson)
   import Data.Argonaut.Decode (DecodeJson)
   import Data.Argonaut.Encode (EncodeJson)
-  import Data.Array (head)
+  import Data.Array (head, length, snoc)
   import Data.Either (either, Either(..))
   import Data.Function (mkFn0, mkFn1, mkFn3, runFn1, Fn1())
   import Data.Maybe (Maybe(..))
@@ -40,6 +40,7 @@ module SlamData.NodeWebkit where
   import Node.Events (emit, emitter, on, Event(..), EventEff(), EventEmitter)
   import Node.FS.Sync (writeTextFile)
   import Node.Path (join, FilePath())
+  import Node.UUID (v4)
   import Node.Webkit
     ( closeWindow
     , get
@@ -70,7 +71,12 @@ module SlamData.NodeWebkit where
     , getOrElse
     , serverURI
     )
-  import SlamData.Types (requestEvent, responseEvent, SlamDataEventTy(..))
+  import SlamData.Types
+    ( requestEvent
+    , responseEvent
+    , SlamDataEventTy(..)
+    , SEConfig(..)
+    )
   import SlamData.Types.Workspace.FileSystem (FileType(..), FileTypeRec())
   import Text.Parsing.Parser (runParser)
 
@@ -136,12 +142,14 @@ module SlamData.NodeWebkit where
   showError :: forall eff. Either Error Unit -> Eff (trace :: Trace | eff) Unit
   showError = either print pure
 
+  mount :: SEConfig -> String
+  mount (SEConfig {mountings = m}) =
+    (fst <$> head (M.toList m)) `getOrElse` defaultMountPath
+
   main = do
     let sdConfig = parseConfig sdConfigFile `getOrElse` defaultSDConfig
     let seConfig = parseConfig seConfigFile `getOrElse` defaultSEConfig
     let java = sdConfig^._sdConfigRec.._nodeWebkit.._sdConfigNodeWebkit.._java
-    let mounts = head $ M.toList $ seConfig^._seConfigRec.._mountings
-    let mount = (fst <$> mounts) `getOrElse` defaultMountPath
 
     -- Start up SlamEngine.
     ChildProcess se <- spawn java ["-jar", seJar, seConfigFile] defaultSpawnOptions
@@ -178,10 +186,29 @@ module SlamData.NodeWebkit where
               files' = insertChildren paths [state.files] children
           in e # emit responseEvent state{files = files'})
         pure unit
+      ReadFields paths -> do
+        let path = join paths
+        let fs = serverURI state.settings.sdConfig ++ "/data/fs" ++ path ++ "?limit=1"
+        o <- oboeGet fs
+        done o (\json ->
+          let fields = objectKeys $ unsafeCoerceJSON json
+              files' = insertFields paths [state.files] fields
+          in e # emit responseEvent state{files = files'})
+        pure unit
+      CreateNotebook -> do
+        ident <- v4
+        let name = "Untitled" ++ show (length state.notebooks + 1)
+        let path = mount state.settings.seConfig
+        let notebook = {ident: ident, blocks: [], name: name, path: path}
+        e # emit responseEvent state{notebooks = state.notebooks `snoc` notebook}
+        pure unit
       _ -> (e # emit responseEvent state) *> pure unit)
 
     -- Start up SlamData.
-    slamData e { files: FileType {name: mount, "type": "directory", children: []}
+    slamData e { files: FileType { name: mount seConfig
+                                 , "type": "directory"
+                                 , children: []
+                                 }
                , notebooks: []
                , settings: {sdConfig: sdConfig, seConfig: seConfig}
                , showSettings: false
@@ -196,8 +223,8 @@ module SlamData.NodeWebkit where
     | (d == f.name ++ "/" || d == f.name) && f."type" == "directory" =
       mergeKids (FileType f) children : fs
   insertChildren' (d:ds) (FileType f:fs) children
-    | d == f.name = FileType f{children =
-      insertChildren' ds f.children children} : fs
+    | d == f.name =
+      FileType f{children = insertChildren' ds f.children children} : fs
   insertChildren' ds     (f:fs)          children =
     f : insertChildren' ds fs children
 
@@ -205,13 +232,26 @@ module SlamData.NodeWebkit where
   mergeKids (FileType f) kids = let kids' = unsafeMerge FileType f.children <$> kids in
     FileType f{children = kids'}
 
-  -- insertChildren [d]    (f:fs) children
-  --   | d == f.name && f."type" == "file" = insertKids f children : fs
-  -- insertKids :: FileType -> [FileType] -> FileType
-  -- insertKids (FileType f) kids = FileType f{children = insertKid <$> f.children}
+  insertFields :: [String] -> [FileType] -> [String] -> FileType
+  insertFields ds fs fields = case insertFields' ds fs fields of
+    [f] -> f
 
-  -- insertKid :: String -> FileType
-  -- insertKid field = FileType {name: field, "type": "field", children: []}
+  insertFields' :: [String] -> [FileType] -> [String] -> [FileType]
+  insertFields' [d]    (FileType f:fs) fields
+    | d == f.name && f."type" == "file" =
+      insertFields'' (FileType f) fields : fs
+  insertFields' (d:ds) (FileType f:fs) fields
+    | d == f.name =
+      FileType f{children = insertFields' ds f.children fields} : fs
+  insertFields' ds     (f:fs)          fields =
+    f : insertFields' ds fs fields
+
+  insertFields'' :: FileType -> [String] -> FileType
+  insertFields'' (FileType f) fields =
+    FileType f{children = insertField <$> fields}
+
+  insertField :: String -> FileType
+  insertField field = FileType {name: field, "type": "field", children: []}
 
   foreign import unsafeMerge
     "function unsafeMerge(ft) {\
@@ -239,3 +279,8 @@ module SlamData.NodeWebkit where
     "function unsafeCoerceJSON(json) {\
     \  return json;\
     \}" :: forall r. JSON -> { | r}
+
+  foreign import objectKeys
+    "function objectKeys(obj) {\
+    \  return Object.keys(obj);\
+    \}" :: forall r. { | r} -> [String]
