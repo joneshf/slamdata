@@ -77,6 +77,7 @@ module SlamData.NodeWebkit where
     , SlamDataEventTy(..)
     , SEConfig(..)
     )
+  import SlamData.Types.Workspace.Notebook.Block (Block(..), BlockID(..), BlockMode(..))
   import SlamData.Types.Workspace.FileSystem (FileType(..), FileTypeRec())
   import SlamData.Types.Workspace.Notebook (Notebook(..), NotebookID(..))
   import Text.Parsing.Parser (runParser)
@@ -197,10 +198,10 @@ module SlamData.NodeWebkit where
           in e # emit responseEvent state{files = files'})
         pure unit
       CreateNotebook -> do
-        ident <- v4
+        ident <- NotebookID <$> v4
         let name = "Untitled" ++ show (length state.notebooks + 1)
         let path = mount state.settings.seConfig
-        let notebook = Notebook {ident: NotebookID ident, blocks: [], name: name, path: path}
+        let notebook = Notebook {ident: ident, blocks: [], name: name, path: path}
         e # emit responseEvent state{notebooks = state.notebooks `snoc` notebook}
         pure unit
       CloseNotebook ident -> do
@@ -213,6 +214,18 @@ module SlamData.NodeWebkit where
       HideSettings -> do
         e # emit responseEvent state{showSettings = false}
         pure unit
+      CreateBlock ident ty -> do
+        ident' <- BlockID <$> v4
+        let block = Block { ident: ident'
+                          , blockType: ty
+                          , blockMode: BlockMode "Edit"
+                          , editContent: ""
+                          , evalContent: ""
+                          , label: ""
+                          }
+        let notebooks' = insertBlock ident block <$> state.notebooks
+        e # emit responseEvent state{notebooks = notebooks'}
+        pure unit
       _ -> (e # emit responseEvent state) *> pure unit)
 
     -- Start up SlamData.
@@ -224,6 +237,11 @@ module SlamData.NodeWebkit where
                , settings: {sdConfig: sdConfig, seConfig: seConfig}
                , showSettings: false
                }
+
+  insertBlock :: NotebookID -> Block -> Notebook -> Notebook
+  insertBlock ident block (Notebook n@{ident = ident', blocks = blocks})
+    | ident == ident' = Notebook n{blocks = blocks `snoc` block}
+  insertBlock _ _ nb = nb
 
   insertChildren :: [String] -> [FileType] -> [FileType] -> FileType
   insertChildren ds fs kids = case insertChildren' ds fs kids of
