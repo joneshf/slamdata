@@ -43,7 +43,7 @@ module SlamData.NodeWebkit where
   import Node.Encoding (Encoding(UTF8))
   import Node.Events (emit, emitter, on, Event(..), EventEff(), EventEmitter)
   import Node.FS.Sync (writeTextFile)
-  import Node.Path (join, FilePath())
+  import Node.Path (basename, join, FilePath())
   import Node.UUID (runUUID, v4)
   import Node.Webkit
     ( closeWindow
@@ -306,6 +306,7 @@ module SlamData.NodeWebkit where
       OpenNotebook path -> do
         let dataUrl = serverURI state.settings.sdConfig ++ "/data/fs"
         let url = dataUrl ++ (path </> "index.nb")
+        let name = basename path
         X.get X.defaultAjaxOptions
           {onLoad = \res -> do
             revisions <- trim >>> split "\n" <$> X.getResponseText res
@@ -313,8 +314,9 @@ module SlamData.NodeWebkit where
               Nothing -> pure unit
               Just revision -> do
                 i <- NotebookID <$> v4
-                let default = {ident: i, blocks: [], name: "Untitled", path: path}
-                let notebook' = Notebook $ jsonParse default revision
+                let default = {ident: i, blocks: [], name: name, path: path}
+                let nb = jsonParse default revision
+                let notebook' = Notebook nb{name = name}
                 let notebooks' = state.notebooks `snoc` notebook'
                 e # emit responseEvent state{notebooks = notebooks'}
                 pure unit
@@ -323,13 +325,14 @@ module SlamData.NodeWebkit where
       RenameNotebook (Notebook n) path -> do
         let dataUrl = serverURI state.settings.sdConfig ++ "/data/fs"
         let url = dataUrl </> n.path </> n.name </> "index.nb"
+        let base = basename path
         let fs = mount state.settings.seConfig
         X.ajax X.defaultAjaxOptions
           { method = "MOVE"
           , url = url
           , headers = ["Destination" ~ (fs </> path </> "index.nb")]
           , onLoad = \_ -> do
-            let notebook' = Notebook n{name = path}
+            let notebook' = Notebook n{name = base}
             let notebooks' = replaceNotebook notebook' <$> state.notebooks
             e # emit responseEvent state{notebooks = notebooks'}
             pure unit

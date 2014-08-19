@@ -19255,15 +19255,16 @@ PS.SlamData_NodeWebkit = (function () {
                         if (_876.event instanceof SlamData_Types.OpenNotebook) {
                             var dataUrl = SlamData_Helpers.serverURI(_876.state.settings.sdConfig) + "/data/fs";
                             var url = dataUrl + $less$div$greater(_876.event.value0)("index.nb");
+                            var name = Node_Path.basename(_876.event.value0);
                             return function __do() {
                                 Network_XHR.get((function () {
-                                    var _3207 = {};
-                                    for (var _3208 in Network_XHR.defaultAjaxOptions) {
-                                        if (Network_XHR.defaultAjaxOptions.hasOwnProperty(_3208)) {
-                                            _3207[_3208] = Network_XHR.defaultAjaxOptions[_3208];
+                                    var _3209 = {};
+                                    for (var _3210 in Network_XHR.defaultAjaxOptions) {
+                                        if (Network_XHR.defaultAjaxOptions.hasOwnProperty(_3210)) {
+                                            _3209[_3210] = Network_XHR.defaultAjaxOptions[_3210];
                                         };
                                     };
-                                    _3207.onLoad = function (res) {
+                                    _3209.onLoad = function (res) {
                                         return function __do() {
                                             var _137 = Prelude["<$>"](Control_Monad_Eff.functorEff({}))(Prelude[">>>"](Prelude.semigroupoidArr({}))(Data_String.trim)(Data_String.split("\n")))(Network_XHR.getResponseText(res))();
                                             return (function () {
@@ -19278,21 +19279,31 @@ PS.SlamData_NodeWebkit = (function () {
                                                             var $$default = {
                                                                 ident: _136, 
                                                                 blocks: [  ], 
-                                                                name: "Untitled", 
+                                                                name: name, 
                                                                 path: _876.event.value0
                                                             };
-                                                            var notebook$prime = SlamData_Types_Workspace_Notebook.Notebook.create(jsonParse($$default)(_3202.value0));
+                                                            var nb = jsonParse($$default)(_3202.value0);
+                                                            var notebook$prime = (function () {
+                                                                var _3204 = {};
+                                                                for (var _3205 in nb) {
+                                                                    if (nb.hasOwnProperty(_3205)) {
+                                                                        _3204[_3205] = nb[_3205];
+                                                                    };
+                                                                };
+                                                                _3204.name = name;
+                                                                return _3204;
+                                                            })();
                                                             var notebooks$prime = Data_Array.snoc(_876.state.notebooks)(notebook$prime);
                                                             return function __do() {
                                                                 Node_Events.emit(Node_Events.eventEmitterEmitter({}))(SlamData_Types.responseEvent)((function () {
-                                                                    var _3204 = {};
-                                                                    for (var _3205 in _876.state) {
-                                                                        if (_876.state.hasOwnProperty(_3205)) {
-                                                                            _3204[_3205] = _876.state[_3205];
+                                                                    var _3206 = {};
+                                                                    for (var _3207 in _876.state) {
+                                                                        if (_876.state.hasOwnProperty(_3207)) {
+                                                                            _3206[_3207] = _876.state[_3207];
                                                                         };
                                                                     };
-                                                                    _3204.notebooks = notebooks$prime;
-                                                                    return _3204;
+                                                                    _3206.notebooks = notebooks$prime;
+                                                                    return _3206;
                                                                 })())(_138)();
                                                                 return Prelude.unit;
                                                             };
@@ -19303,7 +19314,7 @@ PS.SlamData_NodeWebkit = (function () {
                                             })()();
                                         };
                                     };
-                                    return _3207;
+                                    return _3209;
                                 })())(url)({})();
                                 return Prelude.unit;
                             };
@@ -19311,45 +19322,46 @@ PS.SlamData_NodeWebkit = (function () {
                         if (_876.event instanceof SlamData_Types.RenameNotebook) {
                             var dataUrl = SlamData_Helpers.serverURI(_876.state.settings.sdConfig) + "/data/fs";
                             var url = $less$div$greater($less$div$greater($less$div$greater(dataUrl)(_876.event.value0.path))(_876.event.value0.name))("index.nb");
+                            var base = Node_Path.basename(_876.event.value1);
                             var fs = mount(_876.state.settings.seConfig);
                             return function __do() {
                                 Network_XHR.ajax((function () {
-                                    var _3214 = {};
-                                    for (var _3215 in Network_XHR.defaultAjaxOptions) {
-                                        if (Network_XHR.defaultAjaxOptions.hasOwnProperty(_3215)) {
-                                            _3214[_3215] = Network_XHR.defaultAjaxOptions[_3215];
+                                    var _3216 = {};
+                                    for (var _3217 in Network_XHR.defaultAjaxOptions) {
+                                        if (Network_XHR.defaultAjaxOptions.hasOwnProperty(_3217)) {
+                                            _3216[_3217] = Network_XHR.defaultAjaxOptions[_3217];
                                         };
                                     };
-                                    _3214.method = "MOVE";
-                                    _3214.url = url;
-                                    _3214.headers = [ Control_Lens["~"]("Destination")($less$div$greater($less$div$greater(fs)(_876.event.value1))("index.nb")) ];
-                                    _3214.onLoad = function (_) {
+                                    _3216.method = "MOVE";
+                                    _3216.url = url;
+                                    _3216.headers = [ Control_Lens["~"]("Destination")($less$div$greater($less$div$greater(fs)(_876.event.value1))("index.nb")) ];
+                                    _3216.onLoad = function (_) {
                                         var notebook$prime = (function () {
-                                            var _3210 = {};
-                                            for (var _3211 in _876.event.value0) {
-                                                if (_876.event.value0.hasOwnProperty(_3211)) {
-                                                    _3210[_3211] = _876.event.value0[_3211];
+                                            var _3212 = {};
+                                            for (var _3213 in _876.event.value0) {
+                                                if (_876.event.value0.hasOwnProperty(_3213)) {
+                                                    _3212[_3213] = _876.event.value0[_3213];
                                                 };
                                             };
-                                            _3210.name = _876.event.value1;
-                                            return _3210;
+                                            _3212.name = base;
+                                            return _3212;
                                         })();
                                         var notebooks$prime = Prelude["<$>"](Data_Array.functorArray({}))(replaceNotebook(notebook$prime))(_876.state.notebooks);
                                         return function __do() {
                                             Node_Events.emit(Node_Events.eventEmitterEmitter({}))(SlamData_Types.responseEvent)((function () {
-                                                var _3212 = {};
-                                                for (var _3213 in _876.state) {
-                                                    if (_876.state.hasOwnProperty(_3213)) {
-                                                        _3212[_3213] = _876.state[_3213];
+                                                var _3214 = {};
+                                                for (var _3215 in _876.state) {
+                                                    if (_876.state.hasOwnProperty(_3215)) {
+                                                        _3214[_3215] = _876.state[_3215];
                                                     };
                                                 };
-                                                _3212.notebooks = notebooks$prime;
-                                                return _3212;
+                                                _3214.notebooks = notebooks$prime;
+                                                return _3214;
                                             })())(_138)();
                                             return Prelude.unit;
                                         };
                                     };
-                                    return _3214;
+                                    return _3216;
                                 })())({})(Network_XHR_Types.NoBody.value)();
                                 return Prelude.unit;
                             };
