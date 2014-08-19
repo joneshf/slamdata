@@ -12,7 +12,8 @@ module SlamData.NodeWebkit where
   --    then starts SlamData.
 
   import Control.Alt ((<|>))
-  import Control.Lens ((^.), (..))
+  import Control.Apply ((*>))
+  import Control.Lens ((^.), (..), (.~))
   import Control.Monad.Eff (Eff(..))
   import Control.Monad.Identity (Identity())
   import Control.Monad.Cont.Trans (runContT)
@@ -26,9 +27,12 @@ module SlamData.NodeWebkit where
   import Data.Function (mkFn0, mkFn1, mkFn3, runFn1, Fn1())
   import Data.Maybe (Maybe(..))
   import Data.Maybe.Unsafe (fromJust)
+  import Data.String (joinWith)
   import Data.Tuple (fst)
 
   import Debug.Trace (trace, print, Trace())
+
+  import Network.Oboe (done, oboeGet, JSON())
 
   import Node.ChildProcess (defaultSpawnOptions, spawn, ChildProcess(..), Stream())
   import Node.ChildProcess.Signal (sigterm)
@@ -48,8 +52,23 @@ module SlamData.NodeWebkit where
     )
 
   import SlamData (slamData)
-  import SlamData.Lens (_java, _nodeWebkit, _sdConfigRec, _sdConfigNodeWebkit, _seConfigRec, _mountings)
-  import SlamData.Helpers (defaultMountPath, defaultSDConfig, defaultSEConfig, getOrElse)
+  import SlamData.Lens
+    ( _children
+    , _files
+    , _java
+    , _mountings
+    , _nodeWebkit
+    , _sdConfigNodeWebkit
+    , _sdConfigRec
+    , _seConfigRec
+    )
+  import SlamData.Helpers
+    ( defaultMountPath
+    , defaultSDConfig
+    , defaultSEConfig
+    , getOrElse
+    , serverURI
+    )
   import SlamData.Types (requestEvent, responseEvent, SlamDataEventTy(..))
   import SlamData.Types.Workspace.FileSystem (FileType(..))
   import Text.Parsing.Parser (runParser)
@@ -143,12 +162,22 @@ module SlamData.NodeWebkit where
 
     -- Make an emitter.
     e <- emitter
-    e # on requestEvent (\event -> case event of
+    let respond d = e # emit responseEvent d
+    e # on requestEvent (\{event = event, state = state} -> case event of
       SaveSDConfig sdC ->
         writeTextFile UTF8 sdConfigFile (showConfig sdC)
       SaveSEConfig seC ->
         writeTextFile UTF8 seConfigFile (showConfig seC)
-      _ -> (e # emit responseEvent "butts") >>= \_ -> trace "butts")
+      ReadFileSystem paths -> do
+        let path = joinWith "/" paths
+        let fs = serverURI state.settings.sdConfig ++ "/metadata/fs" ++ path
+        o <- oboeGet fs
+        done o (\json ->
+          let children = (unsafeCoerceJSON json).children
+              state' = state^._files.._children .~ children
+          in respond state')
+        pure unit
+      _ -> respond state *> pure unit)
 
     -- Start up SlamData.
     slamData e { files: FileType {name: mount, "type": "directory", children: []}
@@ -156,3 +185,8 @@ module SlamData.NodeWebkit where
                , settings: {sdConfig: sdConfig, seConfig: seConfig}
                , showSettings: false
                }
+
+  foreign import unsafeCoerceJSON
+    "function unsafeCoerceJSON(json) {\
+    \  return json;\
+    \}" :: forall r. JSON -> { | r}

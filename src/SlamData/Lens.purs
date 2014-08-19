@@ -95,3 +95,6 @@ module SlamData.Lens where
 
   _name :: forall a r. LensP {name :: a | r} a
   _name f o@{name = i} = (\i' -> o{name = i'}) <$> f i
+
+  _files :: forall a r. LensP {files :: a | r} a
+  _files f o@{files = i} = (\i' -> o{files = i'}) <$> f i
