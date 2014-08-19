@@ -13,7 +13,7 @@ module SlamData.NodeWebkit where
 
   import Control.Alt ((<|>))
   import Control.Apply ((*>))
-  import Control.Lens ((^.), (..), (.~))
+  import Control.Lens ((^.), (..), (.~), (~))
   import Control.Monad.Eff (Eff(..))
   import Control.Monad.Identity (Identity())
   import Control.Monad.Cont.Trans (runContT)
@@ -320,6 +320,21 @@ module SlamData.NodeWebkit where
                 pure unit
           } url {}
         pure unit
+      RenameNotebook (Notebook n) path -> do
+        let dataUrl = serverURI state.settings.sdConfig ++ "/data/fs"
+        let url = dataUrl </> n.path </> n.name </> "index.nb"
+        let fs = mount state.settings.seConfig
+        X.ajax X.defaultAjaxOptions
+          { method = "MOVE"
+          , url = url
+          , headers = ["Destination" ~ (fs </> path </> "index.nb")]
+          , onLoad = \_ -> do
+            let notebook' = Notebook n{name = path}
+            let notebooks' = replaceNotebook notebook' <$> state.notebooks
+            e # emit responseEvent state{notebooks = notebooks'}
+            pure unit
+          } {} XT.NoBody
+        pure unit
       _ -> (e # emit responseEvent state) *> pure unit)
 
     -- Start up SlamData.
@@ -331,6 +346,11 @@ module SlamData.NodeWebkit where
                , settings: {sdConfig: sdConfig, seConfig: seConfig}
                , showSettings: false
                }
+
+  replaceNotebook :: Notebook -> Notebook -> Notebook
+  replaceNotebook n@(Notebook nb) (Notebook nb')
+    | nb.ident == nb'.ident = n
+  replaceNotebook _ n = n
 
   countOut :: NotebookRec -> Number
   countOut {blocks = bs} = length $ filter go bs
