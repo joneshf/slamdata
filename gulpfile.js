@@ -326,8 +326,8 @@ gulp.task('build-browser', sequence( 'bower-browser'
                                      , 'imgs-browser'
                                      ]
                                    ));
-gulp.task('build-node-webkit', sequence(/* 'bower-node-webkit'
-                                       ,*/ 'compile-node-webkit'
+gulp.task('build-node-webkit', sequence( 'bower-node-webkit'
+                                       , 'compile-node-webkit'
                                        , [ 'concat-css-node-webkit'
                                          , 'concat-js-node-webkit'
                                          , 'copy-node-webkit'

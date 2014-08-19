@@ -202,6 +202,82 @@
   font-size: 28px;
 }
 
+#filesystem {
+    .tree-view span {
+        cursor: pointer;
+    }
+}
+
+.block {
+    border: 1px solid $slamdata-border-color;
+    .right-side {
+        border-left: 1px solid $slamdata-border-color;
+    }
+}
+
+.block-toolbar {
+    div {
+        height: 100%;
+    }
+    &.row {
+        border-bottom: 1px solid $slamdata-border-color;
+    }
+    .button-bar .button {
+        margin-bottom: 0;
+    }
+}
+
+.block-type {
+    span {
+        font-size: 14pt;
+        line-height: 1;
+    }
+}
+
+.block-content {
+    textarea {
+        margin-bottom: 0;
+    }
+    &.row > div {
+        bottom: 0;
+    }
+}
+
+.block-editor, .block-content div {
+    min-height: 150px;
+}
+
+.block-metadata {
+    padding: rem-calc(20);
+}
+
+.evaled-block {
+    border: 1px solid transparent;
+    padding: rem-calc(20);
+    &:hover {
+        @include panel($bg: #e6e6e6);
+        margin: 0;
+        h1, h2, h3, h4, h5, h6 {
+            line-height: $header-line-height;
+            margin-bottom: $header-bottom-margin;
+        }
+    }
+}
+
+.block-label {
+    padding: 10px;
+    text-align: center;
+}
+
+.block-SQL .evaled-block {
+    span {
+        font-family: monospace;
+        font-size: 10pt;
+    }
+    max-height: 150px;
+    overflow-y: auto;
+}
+
 @charset "UTF-8";
 
 @font-face {
@@ -517,6 +593,137 @@
 .icon-db-shape:before { content: "\f600"; } /* '\f600' */
 .icon-logo-db:before { content: "\f603"; } /* '\f603' */
 
+
+// Add borders to Foundation 5's tabs.
+.tabs {
+    .tab a {
+        border: 1px solid $slamdata-border-color;
+    }
+    &:not(.vertical) .tab a {
+        border-bottom: 1px solid white;
+        margin-right: -1px;
+        span + i {
+            margin: {
+                left: $tabs-navigation-padding;
+                right: 0;
+                top: 0;
+                bottom: 0;
+            }
+            text-align: center;
+            width: 18px;
+            &:hover {
+                @extend .label.alert;
+                @extend .label.round;
+                background-color: $slamdata-orange;
+            }
+        }
+    }
+    &.vertical {
+        height: 100%;
+        margin-right: 0;
+        border-right: 1px solid $slamdata-border-color;
+        .tab {
+            margin-right: -1px;
+        }
+    }
+    &.vertical .tab a {
+        border-right: 1px solid white;
+        margin-bottom: -1px;
+    }
+    &:not(.vertical) .tab:not(.active) a {
+        border-bottom: 1px solid $slamdata-border-color;
+    }
+    &.vertical .tab:not(.active) a {
+        border-right: 1px solid $slamdata-border-color;
+    }
+    #add-notebook {
+      display: block;
+      background: $tabs-navigation-bg-color;
+      color: $tabs-navigation-font-color;
+      padding: $tabs-navigation-padding $tabs-navigation-padding * 2;
+      font-family: $tabs-navigation-font-family;
+      font-size: $tabs-navigation-font-size;
+      &:hover { background: $tabs-navigation-hover-bg-color; }
+    }
+}
+
+.tabs-content {
+    border-top: 1px solid $slamdata-border-color;
+    margin-top: -1px;
+    padding: 10px 0;
+    .content {
+        padding: 0;
+        hr {
+            border-color: $slamdata-border-color;
+            margin: 10px 0;
+        }
+        .toolbar.button-bar, .actual-content {
+            margin-left: 10px;
+        }
+    }
+    &.vertical {
+        border: 1px solid $slamdata-border-color;
+        border-left: none;
+        margin-top: 0;
+        margin-left: -1px;
+    }
+}
+
+.toolbar {
+    .button {
+        margin-bottom: 0;
+    }
+    ul, ol, dl {
+        line-height: 1;
+    }
+}
+
+.button-group:last-of-type {
+    margin-right: 0;
+}
+
+.tabs.vertical {
+    text-align: center;
+    width: 100%;
+    .tab a {
+        border: none;
+        border-bottom: 1px solid $slamdata-border-color;
+        font-size: 10pt;
+        margin-bottom: 0;
+        padding: 10px;
+    }
+    .tab:not(.active) a {
+        border-right: none;
+    }
+}
+
+@import "compass/layout/stretching";
+
+#settings-category {
+    border-top: 1px solid $slamdata-border-color;
+}
+#settings-content {
+    border: 1px solid $slamdata-border-color;
+    border-right: none;
+}
+
+.tabs-content.vertical {
+    border: none;
+    height: 100%;
+    margin: 0;
+    overflow-x: hidden;
+    padding: 0;
+    width: 100%;
+    div {
+        min-height: 0;
+    }
+    .content {
+        padding: 10px;
+    }
+    .column, .columns {
+        @include stretch-y;
+    }
+}
 
 /*!
  *  Font Awesome 4.1.0 by @davegandy - http://fontawesome.io - @fontawesome
@@ -6992,7 +7199,7 @@ ul.pagination li {
 }
 
 /* line 164, ../bower_components/foundation/scss/foundation/components/_reveal.scss */
-dialog, .reveal-modal, #visual-modal #visual-modal-content {
+dialog, .reveal-modal {
   visibility: hidden;
   display: none;
   position: absolute;
@@ -7007,46 +7214,45 @@ dialog, .reveal-modal, #visual-modal #visual-modal-content {
 }
 @media only screen and (max-width: 40em) {
   /* line 164, ../bower_components/foundation/scss/foundation/components/_reveal.scss */
-  dialog, .reveal-modal, #visual-modal #visual-modal-content {
+  dialog, .reveal-modal {
     min-height: 100vh;
   }
 }
 @media only screen and (min-width: 40.063em) {
   /* line 164, ../bower_components/foundation/scss/foundation/components/_reveal.scss */
-  dialog, .reveal-modal, #visual-modal #visual-modal-content {
+  dialog, .reveal-modal {
     left: 50%;
   }
 }
 /* line 86, ../bower_components/foundation/scss/foundation/components/_reveal.scss */
 dialog .column,
-dialog .columns, .reveal-modal .column, #visual-modal #visual-modal-content .column,
-.reveal-modal .columns,
-#visual-modal #visual-modal-content .columns {
+dialog .columns, .reveal-modal .column,
+.reveal-modal .columns {
   min-width: 0;
 }
 /* line 89, ../bower_components/foundation/scss/foundation/components/_reveal.scss */
-dialog > :first-child, .reveal-modal > :first-child, #visual-modal #visual-modal-content > :first-child {
+dialog > :first-child, .reveal-modal > :first-child {
   margin-top: 0;
 }
 /* line 90, ../bower_components/foundation/scss/foundation/components/_reveal.scss */
-dialog > :last-child, .reveal-modal > :last-child, #visual-modal #visual-modal-content > :last-child {
+dialog > :last-child, .reveal-modal > :last-child {
   margin-bottom: 0;
 }
 @media only screen and (min-width: 40.063em) {
   /* line 164, ../bower_components/foundation/scss/foundation/components/_reveal.scss */
-  dialog, .reveal-modal, #visual-modal #visual-modal-content {
+  dialog, .reveal-modal {
     margin-left: -40%;
     width: 80%;
   }
 }
 @media only screen and (min-width: 40.063em) {
   /* line 164, ../bower_components/foundation/scss/foundation/components/_reveal.scss */
-  dialog, .reveal-modal, #visual-modal #visual-modal-content {
+  dialog, .reveal-modal {
     top: 6.25rem;
   }
 }
 /* line 174, ../bower_components/foundation/scss/foundation/components/_reveal.scss */
-dialog .close-reveal-modal, .reveal-modal .close-reveal-modal, #visual-modal #visual-modal-content .close-reveal-modal {
+dialog .close-reveal-modal, .reveal-modal .close-reveal-modal {
   font-size: 2.5rem;
   line-height: 1;
   position: absolute;
@@ -7065,23 +7271,23 @@ dialog[open] {
 
 @media only screen and (min-width: 40.063em) {
   /* line 184, ../bower_components/foundation/scss/foundation/components/_reveal.scss */
-  dialog, .reveal-modal, #visual-modal #visual-modal-content {
+  dialog, .reveal-modal {
     padding: 1.875rem;
   }
   /* line 187, ../bower_components/foundation/scss/foundation/components/_reveal.scss */
-  dialog.radius, .reveal-modal.radius, #visual-modal .radius#visual-modal-content {
+  dialog.radius, .reveal-modal.radius {
     border-radius: 3px;
   }
   /* line 188, ../bower_components/foundation/scss/foundation/components/_reveal.scss */
-  dialog.round, .reveal-modal.round, #visual-modal .round#visual-modal-content {
+  dialog.round, .reveal-modal.round {
     border-radius: 1000px;
   }
   /* line 190, ../bower_components/foundation/scss/foundation/components/_reveal.scss */
-  dialog.collapse, .reveal-modal.collapse, #visual-modal .collapse#visual-modal-content {
+  dialog.collapse, .reveal-modal.collapse {
     padding: 0;
   }
   /* line 200, ../bower_components/foundation/scss/foundation/components/_reveal.scss */
-  dialog.full, .reveal-modal.full, #visual-modal .full#visual-modal-content {
+  dialog.full, .reveal-modal.full {
     top: 0;
     left: 0;
     height: 100vh;
@@ -7091,35 +7297,35 @@ dialog[open] {
 }
 @media only screen and (min-width: 40.063em) and (min-width: 40.063em) {
   /* line 192, ../bower_components/foundation/scss/foundation/components/_reveal.scss */
-  dialog.tiny, .reveal-modal.tiny, #visual-modal .tiny#visual-modal-content {
+  dialog.tiny, .reveal-modal.tiny {
     margin-left: -15%;
     width: 30%;
   }
 }
 @media only screen and (min-width: 40.063em) and (min-width: 40.063em) {
   /* line 193, ../bower_components/foundation/scss/foundation/components/_reveal.scss */
-  dialog.small, .reveal-modal.small, #visual-modal .small#visual-modal-content {
+  dialog.small, .reveal-modal.small {
     margin-left: -20%;
     width: 40%;
   }
 }
 @media only screen and (min-width: 40.063em) and (min-width: 40.063em) {
   /* line 194, ../bower_components/foundation/scss/foundation/components/_reveal.scss */
-  dialog.medium, .reveal-modal.medium, #visual-modal .medium#visual-modal-content {
+  dialog.medium, .reveal-modal.medium {
     margin-left: -30%;
     width: 60%;
   }
 }
 @media only screen and (min-width: 40.063em) and (min-width: 40.063em) {
   /* line 195, ../bower_components/foundation/scss/foundation/components/_reveal.scss */
-  dialog.large, .reveal-modal.large, #visual-modal .large#visual-modal-content {
+  dialog.large, .reveal-modal.large {
     margin-left: -35%;
     width: 70%;
   }
 }
 @media only screen and (min-width: 40.063em) and (min-width: 40.063em) {
   /* line 196, ../bower_components/foundation/scss/foundation/components/_reveal.scss */
-  dialog.xlarge, .reveal-modal.xlarge, #visual-modal .xlarge#visual-modal-content {
+  dialog.xlarge, .reveal-modal.xlarge {
     margin-left: -47.5%;
     width: 95%;
   }
@@ -7127,7 +7333,7 @@ dialog[open] {
 
 @media only screen and (min-width: 40.063em) and (min-width: 40.063em) {
   /* line 200, ../bower_components/foundation/scss/foundation/components/_reveal.scss */
-  dialog.full, .reveal-modal.full, #visual-modal .full#visual-modal-content {
+  dialog.full, .reveal-modal.full {
     margin-left: -50vw;
     width: 100vw;
   }
@@ -7135,7 +7341,7 @@ dialog[open] {
 
 @media print {
   /* line 213, ../bower_components/foundation/scss/foundation/components/_reveal.scss */
-  dialog, .reveal-modal, #visual-modal #visual-modal-content {
+  dialog, .reveal-modal {
     background: #fff !important;
   }
 }
@@ -10187,84 +10393,6 @@ th.hide-for-touch {
 .block-SQL .evaled-block span {
   font-family: monospace;
   font-size: 10pt;
-}
-
-/* line 72, ../style/_notebook.scss */
-#visual-modal:before {
-  background: rgba(0, 0, 0, 0.6);
-  bottom: 0;
-  content: "";
-  left: 0;
-  position: fixed;
-  right: 0;
-  top: 0;
-  z-index: 100;
-}
-/* line 83, ../style/_notebook.scss */
-#visual-modal #visual-modal-content {
-  display: block;
-  height: 60%;
-  left: 50%;
-  margin-left: -40%;
-  opacity: 1;
-  padding: 1.875rem;
-  top: 6.25rem;
-  visibility: visible;
-  width: 60%;
-  position: fixed;
-  z-index: 200;
-}
-/* line 97, ../style/_notebook.scss */
-#visual-modal #visual-modal-content .tabs.vertical {
-  width: 15%;
-}
-/* line 101, ../style/_notebook.scss */
-#visual-modal #visual-modal-content .tabs-content {
-  height: 100%;
-  overflow-x: hidden;
-  width: 85%;
-}
-/* line 105, ../style/_notebook.scss */
-#visual-modal #visual-modal-content .tabs-content ul {
-  list-style-type: none;
-  width: auto;
-}
-/* line 110, ../style/_notebook.scss */
-#visual-modal #visual-modal-content .tabs-content .chart-type li {
-  border: 1px solid lightgrey;
-  color: #ff8000;
-  margin: 10px;
-  text-align: center;
-}
-/* line 115, ../style/_notebook.scss */
-#visual-modal #visual-modal-content .tabs-content .chart-type li.selected {
-  box-shadow: 0 0 5px #ff8000;
-}
-/* line 118, ../style/_notebook.scss */
-#visual-modal #visual-modal-content .tabs-content .chart-type li:hover {
-  color: #d66c00;
-  cursor: pointer;
-}
-/* line 122, ../style/_notebook.scss */
-#visual-modal #visual-modal-content .tabs-content .chart-type li span {
-  display: block;
-  color: #222;
-}
-/* line 126, ../style/_notebook.scss */
-#visual-modal #visual-modal-content .tabs-content .chart-type li a {
-  color: inherit;
-}
-/* line 129, ../style/_notebook.scss */
-#visual-modal #visual-modal-content .tabs-content .chart-type li i {
-  font-size: 72px;
-}
-/* line 134, ../style/_notebook.scss */
-#visual-modal #visual-modal-content .tabs-content .actions {
-  float: right;
-}
-/* line 136, ../style/_notebook.scss */
-#visual-modal #visual-modal-content .tabs-content .actions a {
-  margin: 10px;
 }
 
 /* line 3, ../style/_tabs.scss */
