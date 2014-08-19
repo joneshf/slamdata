@@ -32,7 +32,8 @@ module SlamData.NodeWebkit where
 
   import Debug.Trace (trace, print, Trace())
 
-  import Network.Oboe (done, oboeGet, JSON())
+  import Network.HTTP (Verb(..))
+  import Network.Oboe (done, oboe, oboeGet, oboeOptions, JSON())
 
   import Node.ChildProcess (defaultSpawnOptions, spawn, ChildProcess(..), Stream())
   import Node.ChildProcess.Signal (sigterm)
@@ -86,10 +87,16 @@ module SlamData.NodeWebkit where
     , BlockType(..)
     )
   import SlamData.Types.Workspace.FileSystem (FileType(..), FileTypeRec())
-  import SlamData.Types.Workspace.Notebook (Notebook(..), NotebookID(..))
+  import SlamData.Types.Workspace.Notebook
+    ( Notebook(..)
+    , NotebookID(..)
+    , NotebookRec(..)
+    )
   import Text.Parsing.Parser (runParser)
 
   import qualified Data.Map as M
+  import qualified Network.XHR as X
+  import qualified Network.XHR.Types as XT
 
   foreign import platform "var platform = process.platform;" :: String
 
@@ -242,13 +249,37 @@ module SlamData.NodeWebkit where
         let notebooks' = updateBlock n.ident block' <$> state.notebooks
         e # emit responseEvent state{notebooks = notebooks'}
         pure unit
+      EvalBlock (Notebook n) (Block b@{blockType = BlockType "Markdown"}) -> do
+        let block' = Block b{ evalContent = makeHtml b.editContent
+                            , blockMode = BlockMode "Eval"
+                            }
+        let notebooks' = updateBlock n.ident block' <$> state.notebooks
+        e # emit responseEvent state{notebooks = notebooks'}
+        pure unit
+      EvalBlock (Notebook n) (Block b@{blockType = BlockType "SQL"}) -> do
+        let blockName = "out" ++ show (countOut n)
+        let queryUrl = serverURI state.settings.sdConfig ++ "/query/fs" ++ n.path
+        let dataUrl = serverURI state.settings.sdConfig ++ "/data/fs"
+        let out = n.name ++ "/" ++ blockName ++ ".json"
+        X.post X.defaultAjaxOptions
+          { onReadyStateChange = X.onDone \res -> do
+            out' <- jsonParse {out: ""} <$> X.getResponseText res
+            X.get X.defaultAjaxOptions
+              {onLoad = \res -> do
+                content <- X.getResponseText res
+                let block'' = Block b{ blockMode = BlockMode "Eval"
+                                     , evalContent = content
+                                     , label = blockName
+                                     }
+                let notebooks' = updateBlock n.ident block'' <$> state.notebooks
+                e # emit responseEvent state{notebooks = notebooks'}
+                pure unit
+              } (dataUrl ++ out'.out) {limit: 20}
+            pure unit
+          } queryUrl {out: out} (XT.UrlEncoded b.editContent)
+        pure unit
       EvalBlock (Notebook n) (Block b) -> do
-        let block' = case b.blockType of
-              BlockType "Markdown" ->
-                Block b{ evalContent = makeHtml b.editContent
-                       , blockMode = BlockMode "Eval"
-                       }
-              _ -> Block b{blockMode = BlockMode "Eval"}
+        let block' = Block b{blockMode = BlockMode "Eval"}
         let notebooks' = updateBlock n.ident block' <$> state.notebooks
         e # emit responseEvent state{notebooks = notebooks'}
         pure unit
@@ -263,6 +294,12 @@ module SlamData.NodeWebkit where
                , settings: {sdConfig: sdConfig, seConfig: seConfig}
                , showSettings: false
                }
+
+  countOut :: NotebookRec -> Number
+  countOut {blocks = bs} = length $ filter go bs
+    where
+      go (Block b) =
+        b.blockType == BlockType "SQL" && b.blockMode == BlockMode "Eval"
 
   createBlock :: NotebookID -> Block -> Notebook -> Notebook
   createBlock ident block (Notebook n@{ident = ident', blocks = blocks})
@@ -344,6 +381,17 @@ module SlamData.NodeWebkit where
     \    }\
     \  }\
     \};" :: (FileTypeRec -> FileType) -> [FileType] -> FileType -> FileType
+
+  foreign import jsonParse
+    "function jsonParse(def) {\
+    \  return function(str) {\
+    \    try {\
+    \      return JSON.parse(str);\
+    \    } catch (e) {\
+    \      return def;\
+    \    }\
+    \  }\
+    \}" :: forall r. { | r} -> String -> { | r}
 
   foreign import unsafeCoerceJSON
     "function unsafeCoerceJSON(json) {\

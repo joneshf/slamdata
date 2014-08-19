@@ -18,6 +18,7 @@
     "slamdata": "joneshf/slamdata#new-react",
     "purescript-node-webkit": "~0.0.3",
     "purescript-node-events": "~0.0.6",
-    "purescript-node-child-process": "~0.0.1"
+    "purescript-node-child-process": "~0.0.1",
+    "purescript-xhr": "~0.2.0"
   }
 }
