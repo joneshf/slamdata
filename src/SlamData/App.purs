@@ -1,37 +1,36 @@
-module SlamData.App (app) where
+module SlamData.App (app, AppProps(), AppState()) where
 
-  import Control.Monad.Eff
+  import Control.Monad.Eff (Eff())
+  import Control.Reactive.Timer (Timer())
 
-  import React
+  import DOM (DOM())
 
-  import SlamData.App.Menu
-  import SlamData.App.Workspace
-  import SlamData.Types (SaveSettings(), Settings())
+  import React (coerceThis, createClass, spec)
+  import React.Types(ComponentClass(), React(), ReactThis())
+
+  import SlamData.App.Menu (menu)
+  import SlamData.App.Workspace (workspace)
+  import SlamData.Types (SlamDataState(), SlamDataRequest())
+  import SlamData.Types.Workspace.FileSystem (FileType())
 
   import qualified React.DOM as D
 
-  app :: forall eff
-      .  { settings :: Settings
-         , saveSettings :: SaveSettings eff
-         }
-      -> UI
-  app = mkUI spec {getInitialState = pure {settingsVisible: false}} $ do
-    state <- readState
-    props <- getProps
-    pure $ D.div'
-      [ menu {showSettings: deferred $ showSettings true}
-      , workspace { settings: props.settings
-                  , saveSettings: props.saveSettings
-                  , showSettings: state.settingsVisible
-                  , hideSettings: deferred $ showSettings false
-                  }
+  type AppProps eff =
+    { request :: SlamDataRequest eff
+    , state   :: SlamDataState
+    }
+  type AppState = {showSettings :: Boolean}
+
+  app :: forall eff. ComponentClass (AppProps eff) AppState
+  app = createClass spec
+    { displayName = "App"
+    , getInitialState = \_ -> pure {showSettings: false}
+    , render = \this -> pure $ D.div {}
+      [ menu this.props.request
+      , workspace
+        { request: this.props.request
+        , state: this.props.state
+        }
+        []
       ]
-
-  type AppState = {settingsVisible :: Boolean}
-
-  showSettings :: forall eff props state result
-               .  Boolean
-               -> Eff (r :: ReadStateEff AppState, w :: WriteStateEff AppState | eff) AppState
-  showSettings bool = do
-    state <- readState
-    writeState state{settingsVisible = bool}
+    }

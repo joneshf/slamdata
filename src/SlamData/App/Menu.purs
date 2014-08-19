@@ -1,104 +1,80 @@
 module SlamData.App.Menu (menu) where
 
-  import Data.Array
-  import Data.Maybe
+  import Control.Lens ((..), (.~), lens, LensP())
+  import Control.Monad.Eff (Eff())
 
-  import React
+  import Data.Array ()
+  import Data.Maybe (Maybe(..))
+
+  import React (createClass, eventHandler, spec)
+  import React.Types (Component(), ComponentClass())
+
+  import SlamData.Types (SlamDataEventTy(..), SlamDataRequest(), SlamDataState())
 
   import qualified React.DOM as D
 
-  type Command eff props state result =
-    { name :: String
-    , action :: Maybe (EventHandlerContext eff props state result)
+  type Command eff a = {name :: String, action :: Maybe (Eff eff a)}
+
+  menu :: forall eff. SlamDataRequest eff -> Component
+  menu request = D.nav
+    { className: "top-bar"
+    , "data-options": "is_hover: false"
+    , "data-topbar": true
+    }
+    [menuBar request]
+
+  menuBar :: forall eff. SlamDataRequest eff -> Component
+  menuBar request = D.section {className: "top-bar-section"}
+    [ leftSide {extra: [divider]} [editMenu request]
+    , rightSide {extra: []} [logo]
+    ]
+
+  leftSide :: ComponentClass {extra :: [Component]} {}
+  leftSide = menuSide "left"
+  rightSide :: ComponentClass {extra :: [Component]} {}
+  rightSide = menuSide "right"
+
+  menuSide :: String -> ComponentClass {extra :: [Component]} {}
+  menuSide name = createClass spec
+    { displayName = "MenuSide"
+    , render = \this -> pure $ D.ul {className: name}
+      (intersperse divider this.props.children ++ this.props.extra)
     }
 
-  menu :: forall eff props state result
-       .  {showSettings :: EventHandlerContext eff props state result}
-       -> UI
-  menu = mkUI spec do
-    props <- getProps
-    pure $ D.nav
-      [ D.className "top-bar"
-      , D.Data {options: "is_hover: false", topbar: true}
+  editMenu :: forall eff. SlamDataRequest eff -> Component
+  editMenu request = menuButton
+    { name: "Edit"
+    , commands: [{name: "Settings", action: Just $ request ShowSettings}]
+    }
+    []
+
+  menuButton :: forall eff a
+             .  ComponentClass {name :: String, commands :: [Command eff a]} {}
+  menuButton = createClass spec
+    { displayName = "MenuButton"
+    , render = \this -> pure $ D.li {className: "has-dropdown"}
+      [ D.a {id: "menu-button-" ++ this.props.name} [D.rawText this.props.name]
+      , D.ul {className: "dropdown"}
+        (command <$> this.props.commands)
       ]
-      [ D.ul [D.className "title-area"]
-              [ D.li' [] ]
-      , D.section [D.className "top-bar-section"]
-          [ D.ul [D.className "left"]
-              [ editMenu props.showSettings
-              , command2UI {name: "divider", action: Nothing}
-              ]
-          , D.ul
-              [D.className "right"]
-              [D.li'
-                [D.a
-                    [ D.href "http://slamdata.com/"
-                    , D.idProp "slamdata-logo"
-                    , D.target "_blank"
-                    ]
-                    [D.img
-                        [ D.alt "SlamData home page"
-                        , D.src "imgs/slamdata-logo.png"
-                        ]
-                        []
-                    ]
-                ]
-              ]
-          ]
-      ]
+    }
 
-  fileMenu :: UI
-  fileMenu = menuButton "File"
-    [ {name: "New",               action: Nothing}
-    , {name: "Open...",           action: Nothing}
-    , {name: "Open recent",       action: Nothing}
-    , {name: "Revert to...",      action: Nothing}
-    , {name: "Browse history...", action: Nothing}
-    , {name: "divider",           action: Nothing}
-    , {name: "Import...",         action: Nothing}
-    , {name: "Export...",         action: Nothing}
-    , {name: "divider",           action: Nothing}
-    , {name: "Close",             action: Nothing}
-    , {name: "Save as...",        action: Nothing}
-    , {name: "Save a copy as...", action: Nothing}
-    , {name: "divider",           action: Nothing}
-    , {name: "Print",             action: Nothing}
+  command :: forall eff a. Command eff a -> Component
+  command {name = name, action = Nothing} = D.li {}
+    [D.a {id: "menu-command-" ++ name} [D.rawText name]]
+  command {name = name, action = Just action} = D.li {}
+    [D.a {id: "menu-command-" ++ name, onClick: action} [D.rawText name]]
+
+  logo :: Component
+  logo = D.li {}
+    [D.a {href: "http://slamdata.com/", id: "slamdata-logo", target: "_blank"}
+      [D.img {alt: "SlamData home page", src: "imgs/slamdata-logo.png"} []]
     ]
 
-  editMenu :: forall eff props state result
-           .  EventHandlerContext eff props state result
-           -> UI
-  editMenu showSettings = menuButton "Edit"
-    [ {name: "Settings", action: Just showSettings}
-    ]
+  divider :: Component
+  divider = D.li {className: "divider"} []
 
-  helpMenu :: UI
-  helpMenu = menuButton "Help"
-    [ {name: "Lookup symbol...", action: Nothing}
-    , {name: "divider",          action: Nothing}
-    , {name: "Support forum",    action: Nothing}
-    , {name: "Support email",    action: Nothing}
-    ]
-
-  menuButton :: forall eff props state result. String -> [Command eff props state result] -> UI
-  menuButton name commands = D.li
-    [D.className "has-dropdown"]
-    [ D.a [D.idProp $ "menu-button-" ++ name] [D.text name]
-    , D.ul [D.className "dropdown"] (command2UI <$> commands)
-    ]
-
-  command2UI :: forall eff props state result. Command eff props state result -> UI
-  command2UI {name = "divider"}               = D.li [D.className "divider"] []
-  command2UI {name = name, action = Nothing}  = D.li'
-    [D.a
-        [D.idProp $ "menu-command-" ++ name]
-        [D.text name]
-    ]
-  command2UI {name = name, action = Just act} =
-    D.li'
-      [D.a
-          [ D.idProp $ "menu-command-" ++ name
-          , D.onClick \_ -> act
-          ]
-          [D.text name]
-      ]
+  intersperse :: forall a. a -> [a] -> [a]
+  intersperse _ []     = []
+  intersperse _ [x]    = [x]
+  intersperse y (x:xs) = x:y:intersperse y xs

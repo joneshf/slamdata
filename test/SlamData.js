@@ -2,14 +2,14 @@ var qs = require('querystring')
   , config =
     { serverLocation: 'http://localhost'
     , serverPort: 8080
-    , javaLocation: '/usr/bin/java'
+    , javaLocation: 'java'
     , sePort: 8080
     , seMountPath: '/'
     , seMongoURI: 'mongodb://localhost:27017'
     , seDatabase: 'test'
     }
   , search = qs.stringify(config)
-  , index = './bin/browser/index.html'
+  , index = './index.html'
   , defaultURL = index + '?' + search
   , screenshotDir = 'test/screenshots'
   ;
@@ -20,25 +20,6 @@ var contentSelector = '#notebook .tabs-content .content'
   , blockTypeSelector = blockButtonBarSelector + ' ' + '.block-type span'
   , tabSelector = '#notebook .tabs .tab'
   ;
-
-casper.test.setUp(function(done) {
-    casper.start(defaultURL, function() {
-        casper.viewport(1280, 720);
-        casper.evaluate(function() {
-            localStorage.clear();
-        });
-    }).run(done);
-});
-
-casper.test.begin('SlamData layout is proper', 1, function(test) {
-    // This suite should ensure that the basic layout
-    // stays proper throughout any changes.
-    casper.start(defaultURL, function() {
-        test.assertTitle('SlamData', 'Title set properly');
-    }).run(function() {
-        test.done();
-    });
-});
 
 function onlyAddButton(test) {
     // For a fresh notebook we should not have anything stored.
@@ -117,6 +98,25 @@ function selectNotebook(n, test) {
     var className = casper.getElementAttribute(nthTab, 'class');
     test.assertMatch(className, /active/, 'Selected notebook ' + n)
 }
+
+casper.test.setUp(function(done) {
+    casper.start(defaultURL, function() {
+        casper.viewport(1280, 720);
+        casper.evaluate(function() {
+            localStorage.clear();
+        });
+    }).run(done);
+});
+
+casper.test.begin('SlamData layout is proper', 1, function(test) {
+    // This suite should ensure that the basic layout
+    // stays proper throughout any changes.
+    casper.start(defaultURL, function() {
+        test.assertTitle('SlamData', 'Title set properly');
+    }).run(function() {
+        test.done();
+    });
+});
 
 casper.test.begin('Basic Notebook Functionality', 15, function(test) {
     casper.start(defaultURL).then(function() {

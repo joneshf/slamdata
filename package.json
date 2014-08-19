@@ -22,16 +22,22 @@
   },
   "homepage": "https://github.com/slamdata/slamdata",
   "devDependencies": {
+    "browserify": "^5.10.0",
     "casperjs": "^1.1.0-beta3",
     "event-stream": "^3.1.5",
     "gulp": "^3.8.5",
     "gulp-bower": "0.0.6",
     "gulp-compass": "^1.1.9",
     "gulp-concat": "^2.2.0",
+    "gulp-connect": "^2.0.6",
     "gulp-purescript": "0.0.9",
-    "node-webkit-builder": "0.0.3",
+    "gulp-task-listing": "^0.3.0",
+    "gulp-util": "^3.0.0",
+    "node-uuid": "^1.4.1",
+    "node-webkit-builder": "^0.1.1",
     "npm": "^1.4.20",
     "rimraf": "^2.2.8",
-    "run-sequence": "^0.3.6"
+    "run-sequence": "^0.3.6",
+    "vinyl-source-stream": "^0.1.1"
   }
 }

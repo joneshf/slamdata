@@ -11,115 +11,106 @@ module SlamData.NodeWebkit where
   --    The way it works is that it spins up the SlamEngine server and
   --    then starts SlamData.
 
+  import Control.Alt ((<|>))
   import Control.Apply ((*>))
-  import Control.Lens ((^.), (..), lens, LensP())
-  import Control.Monad (when)
+  import Control.Lens ((^.), (..), (.~))
   import Control.Monad.Eff (Eff(..))
-  import Control.Monad.Cont.Trans (runContT, ContT(..))
+  import Control.Monad.Identity (Identity())
+  import Control.Monad.Cont.Trans (runContT)
+  import Control.Monad.Eff.Exception (Error())
+  import Control.Reactive.Timer (timeout, Timer())
 
-  import Data.Argonaut.Encode
-  import Data.Argonaut.Decode
-  import Data.Argonaut.Parser
-  import Data.Argonaut.Printer (printToString)
-  import Data.Function (mkFn0, mkFn1, mkFn2, mkFn3, Fn0(), Fn1(), Fn2(), Fn3())
-  import Data.Maybe (isJust, maybe, Maybe(..))
+  import Data.Argonaut (decodeMaybe, encodeJson, jsonParser, printJson)
+  import Data.Argonaut.Decode (DecodeJson)
+  import Data.Argonaut.Encode (EncodeJson)
+  import Data.Array (filter, head, last, length, snoc)
+  import Data.Either (either, Either(..))
+  import Data.Function (mkFn0, mkFn1, mkFn3, runFn1, Fn1())
+  import Data.Maybe (Maybe(..))
   import Data.Maybe.Unsafe (fromJust)
+  import Data.String (joinWith, split, trim)
+  import Data.Tuple (fst)
 
-  import Debug.Trace (trace)
+  import Debug.Trace (trace, print, Trace())
+
+  import DOM (DOM())
+
+  import Network.HTTP (Verb(..))
+  import Network.Oboe (done, oboe, oboeGet, oboeOptions, JSON())
+
+  import Node.ChildProcess (defaultSpawnOptions, spawn, ChildProcess(..), Stream())
+  import Node.ChildProcess.Signal (sigterm)
+  import Node.Encoding (Encoding(UTF8))
+  import Node.Events (emit, emitter, on, Event(..), EventEff(), EventEmitter)
+  import Node.FS.Sync (writeTextFile)
+  import Node.Path (join, FilePath())
+  import Node.UUID (runUUID, v4)
+  import Node.Webkit
+    ( closeWindow
+    , get
+    , ignore
+    , nwShell
+    , nwWindow
+    , onClose
+    , onNewWinPolicy
+    , openExternal
+    )
+
+  import Showdown (makeHtml)
 
   import SlamData (slamData)
   import SlamData.Lens
-  import SlamData.Helpers (defaultSDConfig, defaultSEConfig)
+    ( _children
+    , _fileTypeRec
+    , _files
+    , _java
+    , _mountings
+    , _nodeWebkit
+    , _sdConfigNodeWebkit
+    , _sdConfigRec
+    , _seConfigRec
+    )
+  import SlamData.Helpers
+    ( defaultMountPath
+    , defaultSDConfig
+    , defaultSEConfig
+    , getOrElse
+    , serverURI
+
+    )
   import SlamData.Types
-    ( FilePath()
-    , FS()
-    , FSWrite()
-    , Mounting()
-    , Settings()
-    , SDConfig(..)
+    ( requestEvent
+    , responseEvent
+    , SlamDataEventTy(..)
     , SEConfig(..)
     )
+  import SlamData.Types.Workspace.Notebook.Block
+    ( Block(..)
+    , BlockID(..)
+    , BlockMode(..)
+    , BlockType(..)
+    )
+  import SlamData.Types.Workspace.Notebook.Block.Visual (VisualData(..))
+  import SlamData.Types.Workspace.FileSystem (FileType(..), FileTypeRec())
+  import SlamData.Types.Workspace.Notebook
+    ( Notebook(..)
+    , NotebookID(..)
+    , NotebookRec(..)
+    )
+  import Text.Parsing.Parser (runParser)
 
   import qualified Data.Map as M
+  import qualified Network.XHR as X
+  import qualified Network.XHR.Types as XT
 
-  -- TODO: The majority of this needs to be moved to separate modules.
-  -- There's about 200 lines of ffi boilerplate here.
-
-  class EventEmitter e
-
-  instance eventEmitterChildProcess :: EventEmitter ChildProcess
-  instance eventEmitterNWWindow :: EventEmitter NWWindow
-  instance eventEmitterStreamStdout :: EventEmitter (Stream Stdout)
-  instance eventEmitterStreamStderr :: EventEmitter (Stream Stderr)
-
-  class Variadic func ret
-
-  instance variadicFn0 :: Variadic (Fn0 a) a
-  instance variadicFn1 :: Variadic (Fn1 a b) b
-  instance variadicFn2 :: Variadic (Fn2 a b c) c
-  instance variadicFn3 :: Variadic (Fn3 a b c d) d
-
-  foreign import data ChildProcess :: *
-  foreign import data IFrame :: *
-  foreign import data NWGUI :: *
-  foreign import data NWShell :: *
-  foreign import data NWWindow :: *
-  foreign import data NW :: !
-  foreign import data Path :: *
-  foreign import data Process :: *
-  foreign import data Spawn :: !
-  foreign import data Signal :: !
-  foreign import data Stream :: ! -> *
-  foreign import data Stdout :: !
-  foreign import data Stderr :: !
-  foreign import data Window :: # *
-  foreign import data WindowHistory :: *
-  foreign import data WindowPolicy :: *
-  foreign import data WindowHistoryEff :: !
-  foreign import data WindowPolicyEff :: !
-
-  foreign import child_process
-    "var child_process = require('child_process');" :: ChildProcess
-  foreign import fs "var fs = require('fs');" :: FS
-  foreign import gui "var gui = require('nw.gui');" :: NWGUI
-  foreign import path "var path = require('path');" :: Path
   foreign import platform "var platform = process.platform;" :: String
-  foreign import process :: Process
-  foreign import window :: {history :: WindowHistory}
-
-  windowHistory :: WindowHistory
-  windowHistory = window.history
-
-  foreign import writeFileSync
-    "function writeFileSync(path) {\
-    \  return function(data) {\
-    \    return function() {\
-    \      fs.writeFileSync(path, data);\
-    \    }\
-    \  }\
-    \}" :: forall eff. FilePath -> String -> Eff (fsWrite :: FSWrite | eff) Unit
-
-  foreign import replaceState
-    "function replaceState(state) {\
-    \  return function(title) {\
-    \    return function(url) {\
-    \      return function() {\
-    \        window.history.replaceState(state, title, url);\
-    \      }\
-    \    }\
-    \  }\
-    \}" :: forall eff r
-        .  { | r}
-        -> String
-        -> String
-        -> Eff (windowHistory :: WindowHistoryEff | eff) Unit
 
   foreign import unsafeEnv
     "function unsafeEnv(nothing) {\
     \  return function(just) {\
     \    return function(key) {\
     \      var val = process.env[key];\
-    \      return val === null || val === undefined ? nothing : just(val);\
+    \      return val == null ? nothing : just(val);\
     \    }\
     \  }\
     \}" :: Maybe String -> (String -> Maybe String) -> String -> Maybe String
@@ -127,170 +118,21 @@ module SlamData.NodeWebkit where
   env :: String -> Maybe String
   env = unsafeEnv Nothing Just
 
-  foreign import spawn
-    "function spawn(proc) {\
-    \  return function(args) {\
-    \    return function() {\
-    \      return child_process.spawn(proc, args);\
-    \    }\
-    \  }\
-    \}" :: forall eff
-        .  String
-        -> [String]
-        -> Eff (spawn :: Spawn | eff) ChildProcess
-
-  foreign import joinPath
-    "function joinPath(paths) {\
-    \  return path.join.apply(null, paths);\
-    \}" :: [String] -> String
-
   (</>) :: FilePath -> FilePath -> FilePath
-  (</>) fp fp' = joinPath [fp, fp']
+  (</>) fp fp' = join [fp, fp']
 
-  foreign import guiShell
-    "function guiShell(gui) {\
-    \  return function() {\
-    \    return gui.Shell;\
-    \  }\
-    \}" :: forall eff. NWGUI -> Eff (nw :: NW | eff) NWShell
-
-  foreign import guiWindow
-    "function guiWindow(gui) {\
-    \  return function() {\
-    \    return gui.Window.get();\
-    \  }\
-    \}" :: forall eff. NWGUI -> Eff (nw :: NW | eff) NWWindow
-
-  foreign import openExternal
-    "function openExternal(url) {\
-    \  return function(shell) {\
-    \    return function() {\
-    \      return shell.openExternal(url);\
-    \    }\
-    \  }\
-    \}" :: forall eff. String -> NWShell -> Eff (nw :: NW | eff) NWShell
-
-  foreign import showDevTools
-    "function showDevTools(win) {\
-    \  return function() {\
-    \    return win.showDevTools();\
-    \  }\
-    \}" :: forall eff. NWWindow -> Eff (nw :: NW | eff) NWWindow
-
-  foreign import closeWindow
-    "function closeWindow(win) {\
-    \  return function() {\
-    \    return win.close(true);\
-    \  }\
-    \}" :: forall eff. NWWindow -> Eff (nw :: NW | eff) NWWindow
-
-  foreign import kill
-    "function kill(child) {\
-    \  return function() {\
-    \    return child.kill();\
-    \  }\
-    \}" :: forall eff. ChildProcess -> Eff (signal :: Signal | eff) Unit
-
-  foreign import stdout
-    "function stdout(child) {\
-    \  return child.stdout;\
-    \}" :: ChildProcess -> Stream Stdout
-
-  foreign import stderr
-    "function stderr(child) {\
-    \  return child.stderr;\
-    \}" :: ChildProcess -> Stream Stderr
-
-  foreign import windowPolicy
-    "function windowPolicy(method) {\
-    \  return function(policy) {\
-    \    return function() {\
-    \      return policy[method]();\
-    \    }\
-    \  }\
-    \}" :: forall eff
-        .  String
-        -> WindowPolicy
-        -> Eff (policy :: WindowPolicyEff | eff) Unit
-
-  ignore         :: forall e. WindowPolicy -> Eff (policy :: WindowPolicyEff | e) Unit
-  ignore         = windowPolicy "ignore"
-  forceCurrent   :: forall e. WindowPolicy -> Eff (policy :: WindowPolicyEff | e) Unit
-  forceCurrent   = windowPolicy "forceCurrent"
-  forceDownload  :: forall e. WindowPolicy -> Eff (policy :: WindowPolicyEff | e) Unit
-  forceDownload  = windowPolicy "forceDownload"
-  forceNewWindow :: forall e. WindowPolicy -> Eff (policy :: WindowPolicyEff | e) Unit
-  forceNewWindow = windowPolicy "forceNewWindow"
-  forceNewPopup  :: forall e. WindowPolicy -> Eff (policy :: WindowPolicyEff | e) Unit
-  forceNewPopup  = windowPolicy "forceNewPopup"
-
-  foreign import onEvent
-    "function onEvent(__emitter) {\
-    \  return function(__variadic) {\
-    \    return function(event) {\
-    \      return function(cb) {\
-    \        return function(child) {\
-    \          return function() {\
-    \            return child.on(event, function () {\
-    \              return cb.apply(this, arguments)();\
-    \            }.bind(this));\
-    \          }\
-    \        }\
-    \      }\
-    \    }\
-    \  }\
-    \}" :: forall eff emitter fn
-        .  (EventEmitter emitter, Variadic fn (Eff eff Unit))
-        => String
-        -> fn
-        -> emitter
-        -> Eff eff emitter
-
+  -- PS doesn't do well with instance inference.
   onData :: forall eff ioStream
          .  (EventEmitter (Stream ioStream))
-         => (String -> Eff eff Unit)
+         => Fn1 String (Eff eff Unit)
          -> Stream ioStream
-         -> Eff eff (Stream ioStream)
-  onData = onEvent "data" <<< mkFn1
-
-  onCloseNWWindow :: forall eff
-          .  (Unit -> Eff eff Unit)
-          -> NWWindow
-          -> Eff eff NWWindow
-  onCloseNWWindow = onEvent "close" <<< mkFn0
-
-  onNewWinPolicy :: forall eff
-          .  (Maybe IFrame -> String -> WindowPolicy -> Eff eff Unit)
-          -> NWWindow
-          -> Eff eff NWWindow
-  onNewWinPolicy = onEvent "new-win-policy" <<< mkFn3
-
-  mEmpty_ :: M.Map String Mounting
-  mEmpty_ = M.empty
-
-  mInsert :: String -> Mounting -> M.Map String Mounting -> M.Map String Mounting
-  mInsert = M.insert
-
-  -- Finally, our actual logic!
-
-  foreign import stringify
-    "function stringify(obj) {\
-    \  return JSON.stringify(obj, null, 2);\
-    \}" :: forall r. { | r} -> String
+         -> Eff (event :: EventEff | eff) (Stream ioStream)
+  onData = on $ Event "data"
 
   foreign import requireConfig
     "function requireConfig(location) {\
-    \  return require(location);\
-    \}" :: forall r. FilePath -> { | r}
-
-  foreign import rawMountings2Mountings
-    "function rawMountings2Mountings(raw) {\
-    \  var mountings = mEmpty_;\
-    \  for (var path in raw) {\
-    \    mountings = mInsert(path)(raw[path])(mountings);\
-    \  }\
-    \  return mountings;\
-    \}" :: forall r. { | r} -> M.Map String Mounting
+    \  return JSON.stringify(require(location));\
+    \}" :: forall r. FilePath -> String
 
   linuxConfigHome :: Maybe FilePath
   linuxConfigHome = env "XDG_CONFIG_HOME"
@@ -310,29 +152,339 @@ module SlamData.NodeWebkit where
   seJar :: FilePath
   seJar = "jar" </> "slamengine_2.10-0.1-SNAPSHOT-one-jar.jar"
 
-  main = do
-    let sdConfigStr = stringify $ requireConfig sdConfigFile
-    let sdConfigM = parseMaybe sdConfigStr >>= decodeMaybe
-    let sdConfig = maybe defaultSDConfig id sdConfigM
-    let seConfigStr = stringify $ requireConfig seConfigFile
-    let seConfigM = parseMaybe seConfigStr >>= decodeMaybe
-    let seConfig = maybe defaultSEConfig id seConfigM
-    let java = sdConfig^._sdConfigRec.._nodeWebkit.._java
-    -- Start up SlamEngine.
-    se <- spawn java ["-jar", seJar, seConfigFile]
-    -- Log out things.
-    stdout se # onData (trace <<< (<>) "stdout: ")
-    stderr se # onData (trace <<< (<>) "stderr: ")
+  showConfig :: forall a. (EncodeJson a) => a -> String
+  showConfig = encodeJson >>> printJson
 
-    win <- guiWindow gui
+  parseConfig :: forall a. (DecodeJson a) => String -> Maybe a
+  parseConfig config = case runParser (requireConfig config) jsonParser of
+    Left err -> Nothing
+    Right config -> decodeMaybe config
+
+  showError :: forall eff. Either Error Unit -> Eff (trace :: Trace | eff) Unit
+  showError = either print pure
+
+  mount :: SEConfig -> String
+  mount (SEConfig {mountings = m}) =
+    (fst <$> head (M.toList m)) `getOrElse` defaultMountPath
+
+  main = do
+    let sdConfig = parseConfig sdConfigFile `getOrElse` defaultSDConfig
+    let seConfig = parseConfig seConfigFile `getOrElse` defaultSEConfig
+    let java = sdConfig^._sdConfigRec.._nodeWebkit.._sdConfigNodeWebkit.._java
+
+    -- Start up SlamEngine.
+    ChildProcess se <- spawn java ["-jar", seJar, seConfigFile] defaultSpawnOptions
+    -- Log out things.
+    se.stdout # onData (mkFn1 \msg -> trace $ "stdout: " ++ msg)
+    se.stderr # onData (mkFn1 \msg -> trace $ "stderr: " ++ msg)
+
+    win <- nwWindow >>= get
     -- Open links in the user's default method, e.g. in the browser.
-    onNewWinPolicy (\_ url policy ->
-      (guiShell gui >>= openExternal url) *>
-      ignore policy) win
+    win # onNewWinPolicy (mkFn3 \_ url policy -> do
+      nwShell >>= openExternal url
+      ignore policy)
+
     -- Cleanup after ourselves.
-    onCloseNWWindow (\_ -> kill se *> closeWindow win *> trace "gone") win
-    -- Pass down the config  to the web page.
-    runContT (slamData {sdConfig: sdConfig, seConfig: seConfig})
-             \{sdConfig = sdC, seConfig = seC} -> do
-                writeFileSync sdConfigFile (printToString $ encodeIdentity $ sdC)
-                writeFileSync seConfigFile (printToString $ encodeIdentity $ seC)
+    win # onClose (mkFn0 \_ -> do
+      pure $ runFn1 se.kill sigterm
+      closeWindow win
+      pure unit)
+
+    -- Make an emitter.
+    e <- emitter
+    let respond d = e # emit responseEvent d
+    e # on requestEvent (\{event = event, state = state} -> case event of
+      SaveSDConfig sdC ->
+        writeTextFile UTF8 sdConfigFile (showConfig sdC)
+      SaveSEConfig seC ->
+        writeTextFile UTF8 seConfigFile (showConfig seC)
+      ReadFileSystem paths -> do
+        let path = join paths
+        let fs = serverURI state.settings.sdConfig ++ "/metadata/fs" ++ path
+        o <- oboeGet fs
+        done o (\json ->
+          let children = (unsafeCoerceJSON json).children
+              files' = insertChildren paths [state.files] children
+          in e # emit responseEvent state{files = files'})
+        pure unit
+      ReadFields paths -> do
+        let path = join paths
+        let fs = serverURI state.settings.sdConfig ++ "/data/fs" ++ path ++ "?limit=1"
+        o <- oboeGet fs
+        done o (\json ->
+          let fields = objectKeys $ unsafeCoerceJSON json
+              files' = insertFields paths [state.files] fields
+          in e # emit responseEvent state{files = files'})
+        pure unit
+      CreateNotebook -> do
+        ident <- NotebookID <$> v4
+        let name = "Untitled" ++ show (length state.notebooks + 1)
+        let path = mount state.settings.seConfig
+        let notebook = Notebook {ident: ident, blocks: [], name: name, path: path}
+        e # emit responseEvent state{notebooks = state.notebooks `snoc` notebook}
+        pure unit
+      CloseNotebook ident -> do
+        let notebooks' = filter (\(Notebook n) -> n.ident /= ident) state.notebooks
+        e # emit responseEvent state{notebooks = notebooks'}
+        pure unit
+      ShowSettings -> do
+        e # emit responseEvent state{showSettings = true}
+        pure unit
+      HideSettings -> do
+        e # emit responseEvent state{showSettings = false}
+        pure unit
+      CreateBlock ident ty -> do
+        ident' <- BlockID <$> v4
+        let block = Block { ident: ident'
+                          , blockType: ty
+                          , blockMode: BlockMode "Edit"
+                          , editContent: ""
+                          , evalContent: ""
+                          , label: ""
+                          }
+        let notebooks' = createBlock ident block <$> state.notebooks
+        e # emit responseEvent state{notebooks = notebooks'}
+        pure unit
+      DeleteBlock nID bID -> do
+        let notebooks' = deleteBlock nID bID <$> state.notebooks
+        e # emit responseEvent state{notebooks = notebooks'}
+        pure unit
+      EditBlock (Notebook n) (Block b) -> do
+        let block' = Block b{blockMode = BlockMode "Edit"}
+        let notebooks' = updateBlock n.ident block' <$> state.notebooks
+        e # emit responseEvent state{notebooks = notebooks'}
+        pure unit
+      EvalBlock (Notebook n) (Block b@{blockType = BlockType "Markdown"}) -> do
+        let block' = Block b{ evalContent = makeHtml b.editContent
+                            , blockMode = BlockMode "Eval"
+                            }
+        let notebooks' = updateBlock n.ident block' <$> state.notebooks
+        e # emit responseEvent state{notebooks = notebooks'}
+        pure unit
+      EvalBlock (Notebook n) (Block b@{blockType = BlockType "SQL"}) -> do
+        let blockName = "out" ++ show (countOut n)
+        let queryUrl = serverURI state.settings.sdConfig ++ "/query/fs" ++ n.path
+        let dataUrl = serverURI state.settings.sdConfig ++ "/data/fs"
+        let out = n.name ++ "/" ++ blockName ++ ".json"
+        X.post X.defaultAjaxOptions
+          { onReadyStateChange = X.onDone \res -> do
+            out' <- jsonParse {out: ""} <$> X.getResponseText res
+            X.get X.defaultAjaxOptions
+              {onLoad = \res -> do
+                content <- X.getResponseText res
+                let block'' = Block b{ blockMode = BlockMode "Eval"
+                                     , evalContent = content
+                                     , label = blockName
+                                     }
+                let notebooks' = updateBlock n.ident block'' <$> state.notebooks
+                e # emit responseEvent state{notebooks = notebooks'}
+                pure unit
+              } (dataUrl ++ out'.out) {limit: 20}
+            pure unit
+          } queryUrl {out: out} (XT.UrlEncoded b.editContent)
+        pure unit
+      EvalVisual (Notebook n) (Block b@{blockType = BlockType "Visual"}) ds -> do
+        let selector = "chart-" ++ show b.ident
+        let dataUrl = serverURI state.settings.sdConfig ++ "/data/fs"
+        let block' = Block b{ blockMode = BlockMode "Eval"
+                            , evalContent = selector
+                            }
+        let notebooks' = updateBlock n.ident block' <$> state.notebooks
+        e # emit responseEvent state{notebooks = notebooks'}
+        -- Give it a small amount of time to create the selector.
+        timeout 1000 $ createVisual showVisualType dataUrl selector ds
+        pure unit
+      SaveNotebook (Notebook n) -> do
+        let dataUrl = serverURI state.settings.sdConfig ++ "/data/fs"
+        let url = dataUrl ++ n.path ++ n.name ++ "/index.nb"
+        let n' = deleteID n
+        X.post X.defaultAjaxOptions
+          { onReadyStateChange = X.onDone \_ ->
+            (e # emit responseEvent state) *> pure unit
+          } url {} (XT.UrlEncoded $ jsonStringify n')
+        pure unit
+      OpenNotebook path -> do
+        let dataUrl = serverURI state.settings.sdConfig ++ "/data/fs"
+        let url = dataUrl ++ (path </> "index.nb")
+        X.get X.defaultAjaxOptions
+          {onLoad = \res -> do
+            revisions <- trim >>> split "\n" <$> X.getResponseText res
+            case last revisions of
+              Nothing -> pure unit
+              Just revision -> do
+                i <- NotebookID <$> v4
+                let default = {ident: i, blocks: [], name: "Untitled", path: path}
+                let notebook' = Notebook $ jsonParse default revision
+                let notebooks' = state.notebooks `snoc` notebook'
+                e # emit responseEvent state{notebooks = notebooks'}
+                pure unit
+          } url {}
+        pure unit
+      _ -> (e # emit responseEvent state) *> pure unit)
+
+    -- Start up SlamData.
+    slamData e { files: FileType { name: mount seConfig
+                                 , "type": "directory"
+                                 , children: []
+                                 }
+               , notebooks: []
+               , settings: {sdConfig: sdConfig, seConfig: seConfig}
+               , showSettings: false
+               }
+
+  countOut :: NotebookRec -> Number
+  countOut {blocks = bs} = length $ filter go bs
+    where
+      go (Block b) =
+        b.blockType == BlockType "SQL" && b.blockMode == BlockMode "Eval"
+
+  createBlock :: NotebookID -> Block -> Notebook -> Notebook
+  createBlock ident block (Notebook n@{ident = ident', blocks = blocks})
+    | ident == ident' = Notebook n{blocks = blocks `snoc` block}
+  createBlock _ _ nb = nb
+
+  deleteBlock :: NotebookID -> BlockID -> Notebook -> Notebook
+  deleteBlock nID bID (Notebook n@{ident = nID', blocks = blocks})
+    | nID == nID' = Notebook n{blocks = filter go blocks}
+    where
+      go (Block b) = b.ident /= bID
+  deleteBlock _ _ nb = nb
+
+  updateBlock :: NotebookID -> Block -> Notebook -> Notebook
+  updateBlock ident (Block b) (Notebook n@{ident = ident', blocks = blocks})
+    | ident == ident' = Notebook n{blocks = go <$> blocks}
+    where
+      go (Block b') | b.ident == b'.ident = Block b
+      go b'                               = b'
+  updateBlock _ _ nb = nb
+
+  insertChildren :: [String] -> [FileType] -> [FileType] -> FileType
+  insertChildren ds fs kids = case insertChildren' ds fs kids of
+    [f] -> f
+
+  insertChildren' :: [String] -> [FileType] -> [FileType] -> [FileType]
+  insertChildren' [d]    (FileType f:fs) children
+    | (d == f.name ++ "/" || d == f.name) && f."type" == "directory" =
+      mergeKids (FileType f) children : fs
+  insertChildren' (d:ds) (FileType f:fs) children
+    | d == f.name =
+      FileType f{children = insertChildren' ds f.children children} : fs
+  insertChildren' ds     (f:fs)          children =
+    f : insertChildren' ds fs children
+
+  mergeKids :: FileType -> [FileType] -> FileType
+  mergeKids (FileType f) kids = let kids' = unsafeMerge FileType f.children <$> kids in
+    FileType f{children = kids'}
+
+  insertFields :: [String] -> [FileType] -> [String] -> FileType
+  insertFields ds fs fields = case insertFields' ds fs fields of
+    [f] -> f
+
+  insertFields' :: [String] -> [FileType] -> [String] -> [FileType]
+  insertFields' [d]    (FileType f:fs) fields
+    | d == f.name && f."type" == "file" =
+      insertFields'' (FileType f) fields : fs
+  insertFields' (d:ds) (FileType f:fs) fields
+    | d == f.name =
+      FileType f{children = insertFields' ds f.children fields} : fs
+  insertFields' ds     (f:fs)          fields =
+    f : insertFields' ds fs fields
+
+  insertFields'' :: FileType -> [String] -> FileType
+  insertFields'' (FileType f) fields =
+    FileType f{children = insertField <$> fields}
+
+  insertField :: String -> FileType
+  insertField field = FileType {name: field, "type": "field", children: []}
+
+  foreign import unsafeMerge
+    "function unsafeMerge(ft) {\
+    \  return function (oldKids) {\
+    \    return function(c) {\
+    \      var kid = c;\
+    \      for (var i = 0; i < oldKids.length; ++i) {\
+    \        var oldKid = oldKids[i];\
+    \        if (oldKid.name == c.name && oldKid.type == c.type) {\
+    \          if (oldKid.children != null) {\
+    \            kid.children = oldKid.children;\
+    \          } else {\
+    \            kid.children = [];\
+    \          }\
+    \          return kid;\
+    \        }\
+    \      }\
+    \      kid.children = [];\
+    \      return ft(kid);\
+    \    }\
+    \  }\
+    \};" :: (FileTypeRec -> FileType) -> [FileType] -> FileType -> FileType
+
+  foreign import jsonParse
+    "function jsonParse(def) {\
+    \  return function(str) {\
+    \    try {\
+    \      return JSON.parse(str);\
+    \    } catch (e) {\
+    \      return def;\
+    \    }\
+    \  }\
+    \}" :: forall r. { | r} -> String -> { | r}
+
+  foreign import jsonStringify
+    "function jsonStringify(o) {\
+    \  return JSON.stringify(o);\
+    \}" :: forall r. { | r} -> String
+
+  foreign import unsafeCoerceJSON
+    "function unsafeCoerceJSON(json) {\
+    \  return json;\
+    \}" :: forall r. JSON -> { | r}
+
+  foreign import objectKeys
+    "function objectKeys(obj) {\
+    \  return Object.keys(obj);\
+    \}" :: forall r. { | r} -> [String]
+
+  -- At the moment, the c3 bindings don't allow us to easily do what we need to.
+  foreign import createVisual
+    "function createVisual(showData) {\
+    \  return function(baseUrl) {\
+    \    return function(selector) {\
+    \      return function(data) {\
+    \        return function() {\
+    \          if (data.length === 0) {\
+    \            return;\
+    \          }\
+    \          var chart = c3.generate({\
+    \              bindto: '#' + selector,\
+    \              data: {\
+    \                  json: {},\
+    \                  type: showData(data[0])\
+    \              }\
+    \          });\
+    \          var jsons = {};\
+    \          data.map(function(datum) {\
+    \              oboe(baseUrl + datum.path).node('!', function(json) {\
+    \                  datum.fields.map(function(field) {\
+    \                      if (jsons[field] == null) {\
+    \                          jsons[field] = [];\
+    \                      }\
+    \                      jsons[field].push(json[field]);\
+    \                  });\
+    \                  chart.load({json: jsons});\
+    \              });\
+    \          });\
+    \        }\
+    \      }\
+    \    }\
+    \  }\
+    \}" :: forall eff. (VisualData -> String) -> String -> String -> [VisualData] -> Eff (timer :: Timer, c3 :: DOM | eff) Unit
+
+  showVisualType (VisualData v) = show v."type"
+
+  -- SlamEngine currently barfs if you POST some JSON with the same _id.
+  foreign import deleteID
+    "function deleteID(notebook) {\
+    \  delete notebook._id;\
+    \  return notebook;\
+    \}" :: NotebookRec -> NotebookRec

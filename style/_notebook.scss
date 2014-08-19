@@ -54,87 +54,16 @@
     }
 }
 
-.block-sql .evaled-block {
-    ul {
-        list-style-type: none;
-        span {
-            font-family: monospace;
-            font-size: 10pt;
-        }
-    }
-    max-height: 250px;
-    overflow-y: auto;
+.block-label {
+    padding: 10px;
+    text-align: center;
 }
 
-#visual-modal {
-    &:before {
-        background: rgba(0, 0, 0, 0.6);
-        bottom: 0;
-        content: "";
-        left: 0;
-        position: fixed;
-        right: 0;
-        top: 0;
-        z-index: 100;
+.block-SQL .evaled-block {
+    span {
+        font-family: monospace;
+        font-size: 10pt;
     }
-
-    #visual-modal-content {
-        @extend .reveal-modal;
-        display: block;
-        height: 60%;
-        left: 50%;
-        margin-left: -40%;
-        opacity: 1;
-        padding: 1.875rem;
-        top: 6.25rem;
-        visibility: visible;
-        width: 60%;
-        position: fixed;
-        z-index: 200;
-
-        .tabs.vertical {
-            width: 15%;
-        }
-
-        .tabs-content {
-            height: 100%;
-            overflow-x: hidden;
-            width: 85%;
-            ul {
-                list-style-type: none;
-                width: auto;
-            }
-            .chart-type {
-                li {
-                    border: 1px solid $slamdata-border-color;
-                    color: $slamdata-orange;
-                    margin: 10px;
-                    text-align: center;
-                    &.selected {
-                        box-shadow: 0 0 5px $slamdata-orange;
-                    }
-                    &:hover {
-                        color: darken($slamdata-orange, 8%);
-                        cursor: pointer;
-                    }
-                    span {
-                        display: block;
-                        color: #222;
-                    }
-                    a {
-                        color: inherit;
-                    }
-                    i {
-                        font-size: 72px;
-                    }
-                }
-            }
-            .actions {
-                float: right;
-                a {
-                    margin: 10px;
-                }
-            }
-        }
-    }
+    max-height: 150px;
+    overflow-y: auto;
 }

@@ -2,16 +2,21 @@
 
 var gulp = require('gulp')
   , bower = require('gulp-bower')
+  , browserify = require('browserify')
   , compass = require('gulp-compass')
   , concat = require('gulp-concat')
+  , connect = require('gulp-connect')
   , es = require('event-stream')
   , fs = require('fs')
+  , gutil = require('gulp-util')
   , nwBuilder = require('node-webkit-builder')
   , path = require('path')
   , purescript = require('gulp-purescript')
   , rimraf = require('rimraf')
   , runSequence = require('run-sequence')
+  , sourceStream = require('vinyl-source-stream')
   , spawn = require('child_process').spawn
+  , taskListing = require('gulp-task-listing')
   ;
 
 // Configuration.
@@ -47,6 +52,7 @@ var paths = {
         css: [ 'bower_components/c3/c3.css'
              , 'bower_components/entypo/font/entypo.css'
              , 'bower_components/fontawesome/css/font-awesome.css'
+             , 'bower_components/react-treeview/react-treeview.css'
              ],
         entypo: [ 'bower_components/entypo/font/entypo.eot'
                 , 'bower_components/entypo/font/entypo.svg'
@@ -63,6 +69,7 @@ var paths = {
             , 'bower_components/node-uuid/uuid.js'
             , 'bower_components/oboe/dist/oboe-browser.js'
             , 'bower_components/react/react-with-addons.js'
+            , 'bower_components/react-treeview/react-treeview.js'
             , 'bower_components/showdown/src/showdown.js'
             , 'js/slamdata.js'
             ]
@@ -103,8 +110,17 @@ var options = {
         js: 'slamdata.js',
     },
     compile: {
-        externs: 'js/slamdata.e.purs',
-        output: 'slamdata.js'
+        // externs: 'js/slamdata.e.purs',
+        // modules: [ 'SlamData'
+        //          , 'SlamData.Types'
+        //          , 'SlamData.Types.JS'
+        //          , 'SlamData.Helpers'
+        //          ],
+        output: 'output/node_modules'
+    },
+    connect: {
+        port: 8251,
+        livereload: true
     },
     copy: {
         browser: {
@@ -116,12 +132,10 @@ var options = {
     },
     lib: {
         browser: {
-            codegen: 'SlamData.Browser',
             main: 'SlamData.Browser',
             output: 'slamdata-browser.js'
         },
         'node-webkit': {
-            codegen: 'SlamData.NodeWebkit',
             main: 'SlamData.NodeWebkit',
             output: 'slamdata-node-webkit.js'
         }
@@ -146,7 +160,7 @@ function compileLib(target) {
     return function() {
         var psc = purescript.psc(options.lib[target]);
         psc.on('error', function(e) {
-            console.error(e.message);
+            gutil.log(e.message);
             psc.end();
         });
         return gulp.src(paths.lib[target].src)
@@ -164,15 +178,15 @@ function concatJs(target) {
 };
 
 function concatCss(target) {
-    var fa = gulp.src(paths.concat.css);
-    var styles = gulp.src(paths.style)
-        .pipe(compass({
-            import_path: '.',
-            project: __dirname,
-            sass: 'style'
-        }));
-
     return function() {
+        var fa = gulp.src(paths.concat.css);
+        var styles = gulp.src(paths.style)
+            .pipe(compass({
+                import_path: '.',
+                project: __dirname,
+                sass: 'style'
+            }));
+
         return es.concat(fa, styles)
             .pipe(concat(options.build.css))
             .pipe(gulp.dest(paths.build[target].css));
@@ -218,6 +232,35 @@ function sequence () {
 gulp.task('bower-browser', bowerLib('browser'));
 gulp.task('bower-node-webkit', bowerLib('node-webkit'));
 
+gulp.task('browserify', ['compile', 'browserify-index'], function() {
+    return browserify('./output/index.js')
+        .require('./output/node_modules/Control.Alternative', {expose: 'Control.Alternative'})
+        .require('./output/node_modules/Control.Monad.Identity', {expose: 'Control.Monad.Identity'})
+        .require('./output/node_modules/Data.Argonaut', {expose: 'Data.Argonaut'})
+        .require('./output/node_modules/Data.Argonaut.Core', {expose: 'Data.Argonaut.Core'})
+        .require('./output/node_modules/Data.Argonaut.Printer', {expose: 'Data.Argonaut.Printer'})
+        .require('./output/node_modules/Data.Either', {expose: 'Data.Either'})
+        .require('./output/node_modules/Graphics.C3', {expose: 'Graphics.C3'})
+        .require('./output/node_modules/Prelude', {expose: 'Prelude'})
+        .require('./output/node_modules/SlamData', {expose: 'SlamData'})
+        .require('./output/node_modules/SlamData.Helpers', {expose: 'SlamData.Helpers'})
+        .require('./output/node_modules/SlamData.Types', {expose: 'SlamData.Types'})
+        .require('./output/node_modules/SlamData.Types.JS', {expose: 'SlamData.Types.JS'})
+        .require('./output/node_modules/SlamData.Types.Workspace.Notebook.Block', {expose: 'SlamData.Types.Workspace.Notebook.Block'})
+        .require('./output/node_modules/Text.Parsing.Parser', {expose: 'Text.Parsing.Parser'})
+        .require('./output/node_modules/Text.Parsing.Parser.Combinators', {expose: 'Text.Parsing.Parser.Combinators'})
+        .require('./output/node_modules/Text.Parsing.Parser.String', {expose: 'Text.Parsing.Parser.String'})
+        .bundle()
+        .pipe(sourceStream('slamdata.js'))
+        .pipe(gulp.dest('js'))
+        .pipe(connect.reload());
+});
+
+gulp.task('browserify-index', function() {
+    return gulp.src('index.js')
+        .pipe(gulp.dest('output'));
+});
+
 gulp.task('clean-build', clean('bin'));
 gulp.task('clean-compile', clean('js'));
 gulp.task('clean-dist', clean('dist'));
@@ -226,18 +269,22 @@ gulp.task('clean-sass', clean(paths.css));
 gulp.task('compile', ['clean-compile'], function() {
     // We need this hack for now until gulp does something about
     // https://github.com/gulpjs/gulp/issues/71
-    var psc = purescript.psc(options.compile);
-    psc.on('error', function(e) {
-        console.error(e.message);
-        psc.end();
+    var pscMake = purescript.pscMake(options.compile);
+    pscMake.on('error', function(e) {
+        gutil.log(e.message);
+        pscMake.end();
     });
     return gulp.src(paths.src)
-        .pipe(psc)
+        .pipe(pscMake)
         .pipe(gulp.dest(paths.dest));
 });
 
 gulp.task('compile-browser', compileLib('browser'));
 gulp.task('compile-node-webkit', compileLib('node-webkit'));
+
+gulp.task('connect', function() {
+    return connect.server(options.connect);
+});
 
 gulp.task('sass', ['clean-sass'], function() {
     return gulp.src(paths.style)
@@ -246,7 +293,8 @@ gulp.task('sass', ['clean-sass'], function() {
             project: __dirname,
             sass: 'style'
         }))
-        .pipe(gulp.dest(paths.css));
+        .pipe(gulp.dest(paths.css))
+        .pipe(connect.reload());
 });
 
 gulp.task('slamengine-jar', function() {
@@ -278,8 +326,8 @@ gulp.task('build-browser', sequence( 'bower-browser'
                                      , 'imgs-browser'
                                      ]
                                    ));
-gulp.task('build-node-webkit', sequence( 'bower-node-webkit'
-                                       , 'compile-node-webkit'
+gulp.task('build-node-webkit', sequence(/* 'bower-node-webkit'
+                                       ,*/ 'compile-node-webkit'
                                        , [ 'concat-css-node-webkit'
                                          , 'concat-js-node-webkit'
                                          , 'copy-node-webkit'
@@ -296,36 +344,26 @@ gulp.task('dist-node-webkit', function() {
         files: 'bin/node-webkit/**',
         macIcns: 'imgs/slamdata.icns',
         platforms: ['linux64', 'osx', 'win'],
-        winIco: 'imgs/slamdata.ico'
+        winIco: 'imgs/slamdata.ico',
+        version: '0.10.1'
     });
-    return nw.build().then(function() {
-        fs.renameSync(
-            'dist/SlamData/linux64/nw',
-            'dist/SlamData/linux64/SlamData'
-        );
-        fs.renameSync(
-            'dist/SlamData/osx/node-webkit.app',
-            'dist/SlamData/osx/SlamData.app'
-        );
-        fs.renameSync(
-            'dist/SlamData/win/nw.exe',
-            'dist/SlamData/win/SlamData.exe'
-        );
-    });
+    return nw.on('log', gutil.log).build();
 });
 
 gulp.task('test-casperjs', function(done) {
-    spawn('./node_modules/.bin/casperjs', ['test', 'test/'], {stdio: 'inherit'}).on('close', done);
+    spawn('./node_modules/.bin/casperjs', ['test', 'test/'], {stdio: 'inherit'})
+        .on('close', done);
 });
 
 // Main tasks.
-gulp.task('build', sequence( ['clean-build', 'compile']
+gulp.task('build', sequence( ['clean-build', 'browserify']
                            , ['build-browser', 'build-node-webkit']
                            ));
-gulp.task('default', sequence(['compile', 'sass']));
+gulp.task('default', sequence(['browserify', 'sass']));
 gulp.task('dist', sequence(['build', 'clean-dist'], 'dist-node-webkit'));
 gulp.task('test', sequence('build', ['test-casperjs']));
-gulp.task('watch', function() {
-    gulp.watch(paths.src, ['compile']);
+gulp.task('watch', ['connect'], function() {
+    gulp.watch(paths.src, ['browserify']);
     gulp.watch(paths.style, ['sass']);
 });
+gulp.task('help', taskListing);

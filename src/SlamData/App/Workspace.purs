@@ -1,76 +1,63 @@
-module SlamData.App.Workspace (workspace) where
+module SlamData.App.Workspace (workspace, WorkspaceProps(), WorkspaceState()) where
 
   import Control.Monad.Eff (Eff())
+  import Control.Reactive.Timer (interval)
 
-  import Data.Function (Fn2())
+  import Data.Array (head)
+  import Data.Tuple (fst)
 
-  import React (getProps, mkUI, readState, spec, EventHandlerContext(), UI())
+  import React (createClass, spec)
+  import React.Types (Component(), ComponentClass(), ReactThis())
 
-  import SlamData.App.FileSystem (filesystem)
-  import SlamData.App.Notebook (notebook)
-  import SlamData.Helpers (serverURI)
-  import SlamData.Types (SaveSettings(), Settings())
+  import SlamData.App.Workspace.FileSystem (filesystem)
+  import SlamData.App.Workspace.Notebook (notebooks)
+  import SlamData.Helpers (defaultMountPath, getOrElse, serverURI)
+  import SlamData.Lens (_mountings, _seConfigRec)
+  import SlamData.Types
+    ( SlamDataEventTy(..)
+    , SlamDataRequest()
+    , SlamDataRequestEff()
+    , SlamDataState()
+    , SEConfig(..)
+    )
+  import SlamData.Types.Workspace.FileSystem (FileType(), FileTypes(..))
 
   import qualified Data.Map as M
   import qualified React.DOM as D
 
-  workspace :: forall eff props state result
-            .  { settings :: Settings
-               , saveSettings :: SaveSettings eff
-               , showSettings :: Boolean
-               , hideSettings :: EventHandlerContext eff props state result
-               }
-            -> UI
-  workspace = mkUI spec{ getInitialState = pure {files: []}
-                       , componentWillMount = cwm
-                       } do
-    props <- getProps
-    state <- readState
-    pure $ D.div
-      [D.idProp "workspace"]
-      [D.div
-          [ D.className "row"
-          , D.idProp "main-row"
-          ]
-          [ D.div
-              [ D.className $ "large-2 medium-3 small-5 columns"
-              , D.idProp "filesystem"
-              ]
-              [filesystem {files: state.files}]
-          , D.div
-              [ D.className $ "large-10 medium-9 small-7 columns"
-              , D.idProp "notebook"
-              ]
-              [notebook { files: state.files
-                        , settings: props.settings
-                        , saveSettings: props.saveSettings
-                        , showSettings: props.showSettings
-                        , hideSettings: props.hideSettings
-                        }
-              ]
-          ]
+  type WorkspaceProps eff =
+    { request :: SlamDataRequest eff
+    , state :: SlamDataState
+    }
+  type WorkspaceState = {}
+
+  workspace :: forall eff. ComponentClass (WorkspaceProps eff) WorkspaceState
+  workspace = createClass spec
+    { displayName = "Workspace"
+    -- We need to use a method that has access to the current `this`
+    -- so we don't get caught with an old state.
+    , requestFS = \this ->
+      this.props.request $ ReadFileSystem [path this.props.state]
+    , componentDidMount = \this -> do
+      this.requestFS
+      interval 5000 $ this.requestFS -- Don't inline this!
+      pure unit
+    , render = \this -> pure $ D.div {id: "workspace"}
+      [workspace' {request: this.props.request, state: this.props.state}]
+    }
+
+  workspace' :: forall eff
+             .  WorkspaceProps eff
+             -> Component
+  workspace' props = D.div {className: "row", id: "main-row"}
+    [ D.div {className: "small-5 medium-3 large-2 columns", id: "filesystem"}
+      [filesystem {files: props.state.files, request: props.request}
+        []
       ]
+    , D.div {className: "small-7 medium-9 large-10 columns", id: "notebook"}
+      [notebooks props []]
+    ]
 
-  -- ffi helpers
-  pollRate :: Number
-  pollRate = 5000
-  serverURI_ = serverURI
-  keys_ = M.keys
-
-  foreign import cwm
-    "function cwm() {\
-    \  var fetchFS = function() {\
-    \    var settings = this.props.settings;\
-    \    oboe(serverURI_(settings.sdConfig) + '/metadata/fs' + keys_(settings.seConfig.mountings)[0])\
-    \    .done(function(json) {\
-    \      if (this.isMounted()) {\
-    \        var sorted = json.children.sort(function(a, b) {\
-    \          return a.name.localeCompare(b.name);\
-    \        });\
-    \        this.setState({files: sorted});\
-    \      }\
-    \    }.bind(this));\
-    \  }.bind(this);\
-    \  fetchFS();\
-    \  setInterval(fetchFS, pollRate);\
-    \}" :: forall a eff. Eff eff a
+  path :: SlamDataState -> String
+  path {settings = {seConfig = SEConfig {mountings = m}}} =
+    (fst <$> M.toList m # head) `getOrElse` defaultMountPath

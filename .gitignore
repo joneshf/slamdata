@@ -10,3 +10,6 @@ dist
 npm-debug.log
 .sass-cache
 test/screenshots
+.sublime-gulp.cache
+sublime-gulp.log
+output
