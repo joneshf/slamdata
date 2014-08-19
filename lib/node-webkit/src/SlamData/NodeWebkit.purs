@@ -223,7 +223,11 @@ module SlamData.NodeWebkit where
                           , evalContent: ""
                           , label: ""
                           }
-        let notebooks' = insertBlock ident block <$> state.notebooks
+        let notebooks' = createBlock ident block <$> state.notebooks
+        e # emit responseEvent state{notebooks = notebooks'}
+        pure unit
+      DeleteBlock nID bID -> do
+        let notebooks' = deleteBlock nID bID <$> state.notebooks
         e # emit responseEvent state{notebooks = notebooks'}
         pure unit
       _ -> (e # emit responseEvent state) *> pure unit)
@@ -238,10 +242,16 @@ module SlamData.NodeWebkit where
                , showSettings: false
                }
 
-  insertBlock :: NotebookID -> Block -> Notebook -> Notebook
-  insertBlock ident block (Notebook n@{ident = ident', blocks = blocks})
+  createBlock :: NotebookID -> Block -> Notebook -> Notebook
+  createBlock ident block (Notebook n@{ident = ident', blocks = blocks})
     | ident == ident' = Notebook n{blocks = blocks `snoc` block}
-  insertBlock _ _ nb = nb
+  createBlock _ _ nb = nb
+
+  deleteBlock :: NotebookID -> BlockID -> Notebook -> Notebook
+  deleteBlock nID bID (Notebook n@{ident = nID', blocks = blocks})
+    | nID == nID' = Notebook n{blocks = filter go blocks}
+    where go (Block b) = b.ident /= bID
+  deleteBlock _ _ nb = nb
 
   insertChildren :: [String] -> [FileType] -> [FileType] -> FileType
   insertChildren ds fs kids = case insertChildren' ds fs kids of
