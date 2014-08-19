@@ -230,6 +230,11 @@ module SlamData.NodeWebkit where
         let notebooks' = deleteBlock nID bID <$> state.notebooks
         e # emit responseEvent state{notebooks = notebooks'}
         pure unit
+      EditBlock (Notebook n) (Block b) -> do
+        let block' = Block b{blockMode = BlockMode "Edit"}
+        let notebooks' = editBlock n.ident block' <$> state.notebooks
+        e # emit responseEvent state{notebooks = notebooks'}
+        pure unit
       _ -> (e # emit responseEvent state) *> pure unit)
 
     -- Start up SlamData.
@@ -250,8 +255,17 @@ module SlamData.NodeWebkit where
   deleteBlock :: NotebookID -> BlockID -> Notebook -> Notebook
   deleteBlock nID bID (Notebook n@{ident = nID', blocks = blocks})
     | nID == nID' = Notebook n{blocks = filter go blocks}
-    where go (Block b) = b.ident /= bID
+    where
+      go (Block b) = b.ident /= bID
   deleteBlock _ _ nb = nb
+
+  editBlock :: NotebookID -> Block -> Notebook -> Notebook
+  editBlock ident (Block b) (Notebook n@{ident = ident', blocks = blocks})
+    | ident == ident' = Notebook n{blocks = go <$> blocks}
+    where
+      go (Block b') | b.ident == b'.ident = Block b
+      go b'                               = b'
+  editBlock _ _ nb = nb
 
   insertChildren :: [String] -> [FileType] -> [FileType] -> FileType
   insertChildren ds fs kids = case insertChildren' ds fs kids of
