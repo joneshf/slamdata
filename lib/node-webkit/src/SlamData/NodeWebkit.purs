@@ -52,6 +52,8 @@ module SlamData.NodeWebkit where
     , openExternal
     )
 
+  import Showdown (makeHtml)
+
   import SlamData (slamData)
   import SlamData.Lens
     ( _children
@@ -77,7 +79,12 @@ module SlamData.NodeWebkit where
     , SlamDataEventTy(..)
     , SEConfig(..)
     )
-  import SlamData.Types.Workspace.Notebook.Block (Block(..), BlockID(..), BlockMode(..))
+  import SlamData.Types.Workspace.Notebook.Block
+    ( Block(..)
+    , BlockID(..)
+    , BlockMode(..)
+    , BlockType(..)
+    )
   import SlamData.Types.Workspace.FileSystem (FileType(..), FileTypeRec())
   import SlamData.Types.Workspace.Notebook (Notebook(..), NotebookID(..))
   import Text.Parsing.Parser (runParser)
@@ -232,7 +239,17 @@ module SlamData.NodeWebkit where
         pure unit
       EditBlock (Notebook n) (Block b) -> do
         let block' = Block b{blockMode = BlockMode "Edit"}
-        let notebooks' = editBlock n.ident block' <$> state.notebooks
+        let notebooks' = updateBlock n.ident block' <$> state.notebooks
+        e # emit responseEvent state{notebooks = notebooks'}
+        pure unit
+      EvalBlock (Notebook n) (Block b) -> do
+        let block' = case b.blockType of
+              BlockType "Markdown" ->
+                Block b{ evalContent = makeHtml b.editContent
+                       , blockMode = BlockMode "Eval"
+                       }
+              _ -> Block b{blockMode = BlockMode "Eval"}
+        let notebooks' = updateBlock n.ident block' <$> state.notebooks
         e # emit responseEvent state{notebooks = notebooks'}
         pure unit
       _ -> (e # emit responseEvent state) *> pure unit)
@@ -259,13 +276,13 @@ module SlamData.NodeWebkit where
       go (Block b) = b.ident /= bID
   deleteBlock _ _ nb = nb
 
-  editBlock :: NotebookID -> Block -> Notebook -> Notebook
-  editBlock ident (Block b) (Notebook n@{ident = ident', blocks = blocks})
+  updateBlock :: NotebookID -> Block -> Notebook -> Notebook
+  updateBlock ident (Block b) (Notebook n@{ident = ident', blocks = blocks})
     | ident == ident' = Notebook n{blocks = go <$> blocks}
     where
       go (Block b') | b.ident == b'.ident = Block b
       go b'                               = b'
-  editBlock _ _ nb = nb
+  updateBlock _ _ nb = nb
 
   insertChildren :: [String] -> [FileType] -> [FileType] -> FileType
   insertChildren ds fs kids = case insertChildren' ds fs kids of

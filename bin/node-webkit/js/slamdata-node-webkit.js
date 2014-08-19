@@ -18115,6 +18115,9 @@ PS.SlamData_NodeWebkit = (function () {
     "use strict";
     var Prelude = PS.Prelude;
     var Node_Path = PS.Node_Path;
+    var SlamData_Types_Workspace_Notebook_Block = PS.SlamData_Types_Workspace_Notebook_Block;
+    var SlamData_Types_Workspace_Notebook = PS.SlamData_Types_Workspace_Notebook;
+    var Data_Array = PS.Data_Array;
     var Data_Either = PS.Data_Either;
     var Debug_Trace = PS.Debug_Trace;
     var Control_Monad_Eff_Exception = PS.Control_Monad_Eff_Exception;
@@ -18127,13 +18130,10 @@ PS.SlamData_NodeWebkit = (function () {
     var SlamData_Types = PS.SlamData_Types;
     var SlamData_Helpers = PS.SlamData_Helpers;
     var Data_Tuple = PS.Data_Tuple;
-    var Data_Array = PS.Data_Array;
     var Data_Map = PS.Data_Map;
     var SlamData_Types_Workspace_FileSystem = PS.SlamData_Types_Workspace_FileSystem;
     var Control_Alt = PS.Control_Alt;
     var Data_Maybe_Unsafe = PS.Data_Maybe_Unsafe;
-    var SlamData_Types_Workspace_Notebook_Block = PS.SlamData_Types_Workspace_Notebook_Block;
-    var SlamData_Types_Workspace_Notebook = PS.SlamData_Types_Workspace_Notebook;
     var Control_Lens = PS.Control_Lens;
     var SlamData_Lens = PS.SlamData_Lens;
     var Data_Const = PS.Data_Const;
@@ -18145,6 +18145,7 @@ PS.SlamData_NodeWebkit = (function () {
     var Node_Encoding = PS.Node_Encoding;
     var Network_Oboe = PS.Network_Oboe;
     var Node_UUID = PS.Node_UUID;
+    var Showdown = PS.Showdown;
     var Control_Apply = PS.Control_Apply;
     var SlamData = PS.SlamData;
     var platform = process.platform;;
@@ -18158,6 +18159,29 @@ PS.SlamData_NodeWebkit = (function () {
             return Node_Path.join([ fp, fp$prime ]);
         };
     };
+    var updateBlock = function (_862) {
+        return function (_863) {
+            return function (_864) {
+                if (Prelude["=="](SlamData_Types_Workspace_Notebook.eqNotebookID({}))(_862)(_864.ident)) {
+                    var go = function (_876) {
+                        if (Prelude["=="](SlamData_Types_Workspace_Notebook_Block.eqBlockID({}))(_863.ident)(_876.ident)) {
+                            return _863;
+                        };
+                        return _876;
+                    };
+                    var _2999 = {};
+                    for (var _3000 in _864) {
+                        if (_864.hasOwnProperty(_3000)) {
+                            _2999[_3000] = _864[_3000];
+                        };
+                    };
+                    _2999.blocks = Prelude["<$>"](Data_Array.functorArray({}))(go)(_864.blocks);
+                    return _2999;
+                };
+                return _864;
+            };
+        };
+    };
     var showError = Data_Either.either(Debug_Trace.print(Control_Monad_Eff_Exception.showError({})))(Prelude.pure(Control_Monad_Eff.applicativeEff({})));
     var showConfig = function (__dict_EncodeJson_766) {
         return Prelude[">>>"](Prelude.semigroupoidArr({}))(Data_Argonaut.encodeJson(__dict_EncodeJson_766))(Data_Argonaut.printJson(Data_Argonaut_Printer.printerJNull({})));
@@ -18165,12 +18189,12 @@ PS.SlamData_NodeWebkit = (function () {
     var seJar = $less$div$greater("jar")("slamengine_2.10-0.1-SNAPSHOT-one-jar.jar");
     var parseConfig = function (__dict_DecodeJson_767) {
         return function (config) {
-            var _2995 = Text_Parsing_Parser.runParser(requireConfig(config))(Data_Argonaut.jsonParser);
-            if (_2995 instanceof Data_Either.Left) {
+            var _3003 = Text_Parsing_Parser.runParser(requireConfig(config))(Data_Argonaut.jsonParser);
+            if (_3003 instanceof Data_Either.Left) {
                 return Data_Maybe.Nothing.value;
             };
-            if (_2995 instanceof Data_Either.Right) {
-                return Data_Argonaut.decodeMaybe(__dict_DecodeJson_767)(_2995.value0);
+            if (_3003 instanceof Data_Either.Right) {
+                return Data_Argonaut.decodeMaybe(__dict_DecodeJson_767)(_3003.value0);
             };
             throw new Error("Failed pattern match");
         };
@@ -18184,14 +18208,14 @@ PS.SlamData_NodeWebkit = (function () {
     var mergeKids = function (_868) {
         return function (_869) {
             var kids$prime = Prelude["<$>"](Data_Array.functorArray({}))(unsafeMerge(SlamData_Types_Workspace_FileSystem.FileType.create)(_868.children))(_869);
-            var _3002 = {};
-            for (var _3003 in _868) {
-                if (_868.hasOwnProperty(_3003)) {
-                    _3002[_3003] = _868[_3003];
+            var _3010 = {};
+            for (var _3011 in _868) {
+                if (_868.hasOwnProperty(_3011)) {
+                    _3010[_3011] = _868[_3011];
                 };
             };
-            _3002.children = kids$prime;
-            return _3002;
+            _3010.children = kids$prime;
+            return _3010;
         };
     };
     var insertField = function (field) {
@@ -18203,46 +18227,46 @@ PS.SlamData_NodeWebkit = (function () {
     };
     var insertFields$prime$prime = function (_873) {
         return function (_874) {
-            var _3006 = {};
-            for (var _3007 in _873) {
-                if (_873.hasOwnProperty(_3007)) {
-                    _3006[_3007] = _873[_3007];
+            var _3014 = {};
+            for (var _3015 in _873) {
+                if (_873.hasOwnProperty(_3015)) {
+                    _3014[_3015] = _873[_3015];
                 };
             };
-            _3006.children = Prelude["<$>"](Data_Array.functorArray({}))(insertField)(_874);
-            return _3006;
+            _3014.children = Prelude["<$>"](Data_Array.functorArray({}))(insertField)(_874);
+            return _3014;
         };
     };
     var insertFields$prime = function (_870) {
         return function (_871) {
             return function (_872) {
                 if (_870.length === 1 && _871.length > 0) {
-                    var _3012 = _871.slice(1);
+                    var _3020 = _871.slice(1);
                     if (_870[0] === (_871[0]).name && (_871[0]).type === "file") {
-                        return Prelude[":"](insertFields$prime$prime(_871[0])(_872))(_3012);
+                        return Prelude[":"](insertFields$prime$prime(_871[0])(_872))(_3020);
                     };
                 };
                 if (_870.length > 0) {
-                    var _3019 = _870.slice(1);
+                    var _3027 = _870.slice(1);
                     if (_871.length > 0) {
-                        var _3017 = _871.slice(1);
+                        var _3025 = _871.slice(1);
                         if (_870[0] === (_871[0]).name) {
                             return Prelude[":"]((function () {
-                                var _3014 = {};
-                                for (var _3015 in _871[0]) {
-                                    if ((_871[0]).hasOwnProperty(_3015)) {
-                                        _3014[_3015] = _871[0][_3015];
+                                var _3022 = {};
+                                for (var _3023 in _871[0]) {
+                                    if ((_871[0]).hasOwnProperty(_3023)) {
+                                        _3022[_3023] = _871[0][_3023];
                                     };
                                 };
-                                _3014.children = insertFields$prime(_3019)((_871[0]).children)(_872);
-                                return _3014;
-                            })())(_3017);
+                                _3022.children = insertFields$prime(_3027)((_871[0]).children)(_872);
+                                return _3022;
+                            })())(_3025);
                         };
                     };
                 };
                 if (_871.length > 0) {
-                    var _3021 = _871.slice(1);
-                    return Prelude[":"](_871[0])(insertFields$prime(_870)(_3021)(_872));
+                    var _3029 = _871.slice(1);
+                    return Prelude[":"](_871[0])(insertFields$prime(_870)(_3029)(_872));
                 };
                 throw new Error("Failed pattern match");
             };
@@ -18251,9 +18275,9 @@ PS.SlamData_NodeWebkit = (function () {
     var insertFields = function (ds) {
         return function (fs) {
             return function (fields) {
-                var _3022 = insertFields$prime(ds)(fs)(fields);
-                if (_3022.length === 1) {
-                    return _3022[0];
+                var _3030 = insertFields$prime(ds)(fs)(fields);
+                if (_3030.length === 1) {
+                    return _3030[0];
                 };
                 throw new Error("Failed pattern match");
             };
@@ -18263,32 +18287,32 @@ PS.SlamData_NodeWebkit = (function () {
         return function (_866) {
             return function (_867) {
                 if (_865.length === 1 && _866.length > 0) {
-                    var _3028 = _866.slice(1);
+                    var _3036 = _866.slice(1);
                     if ((_865[0] === (_866[0]).name + "/" || _865[0] === (_866[0]).name) && (_866[0]).type === "directory") {
-                        return Prelude[":"](mergeKids(_866[0])(_867))(_3028);
+                        return Prelude[":"](mergeKids(_866[0])(_867))(_3036);
                     };
                 };
                 if (_865.length > 0) {
-                    var _3035 = _865.slice(1);
+                    var _3043 = _865.slice(1);
                     if (_866.length > 0) {
-                        var _3033 = _866.slice(1);
+                        var _3041 = _866.slice(1);
                         if (_865[0] === (_866[0]).name) {
                             return Prelude[":"]((function () {
-                                var _3030 = {};
-                                for (var _3031 in _866[0]) {
-                                    if ((_866[0]).hasOwnProperty(_3031)) {
-                                        _3030[_3031] = _866[0][_3031];
+                                var _3038 = {};
+                                for (var _3039 in _866[0]) {
+                                    if ((_866[0]).hasOwnProperty(_3039)) {
+                                        _3038[_3039] = _866[0][_3039];
                                     };
                                 };
-                                _3030.children = insertChildren$prime(_3035)((_866[0]).children)(_867);
-                                return _3030;
-                            })())(_3033);
+                                _3038.children = insertChildren$prime(_3043)((_866[0]).children)(_867);
+                                return _3038;
+                            })())(_3041);
                         };
                     };
                 };
                 if (_866.length > 0) {
-                    var _3037 = _866.slice(1);
-                    return Prelude[":"](_866[0])(insertChildren$prime(_865)(_3037)(_867));
+                    var _3045 = _866.slice(1);
+                    return Prelude[":"](_866[0])(insertChildren$prime(_865)(_3045)(_867));
                 };
                 throw new Error("Failed pattern match");
             };
@@ -18297,9 +18321,9 @@ PS.SlamData_NodeWebkit = (function () {
     var insertChildren = function (ds) {
         return function (fs) {
             return function (kids) {
-                var _3038 = insertChildren$prime(ds)(fs)(kids);
-                if (_3038.length === 1) {
-                    return _3038[0];
+                var _3046 = insertChildren$prime(ds)(fs)(kids);
+                if (_3046.length === 1) {
+                    return _3046[0];
                 };
                 throw new Error("Failed pattern match");
             };
@@ -18323,29 +18347,6 @@ PS.SlamData_NodeWebkit = (function () {
     })();
     var sdConfigFile = $less$div$greater(resolveConfigDir)("slamdata-config.json");
     var seConfigFile = $less$div$greater(resolveConfigDir)("slamengine-config.json");
-    var editBlock = function (_862) {
-        return function (_863) {
-            return function (_864) {
-                if (Prelude["=="](SlamData_Types_Workspace_Notebook.eqNotebookID({}))(_862)(_864.ident)) {
-                    var go = function (_876) {
-                        if (Prelude["=="](SlamData_Types_Workspace_Notebook_Block.eqBlockID({}))(_863.ident)(_876.ident)) {
-                            return _863;
-                        };
-                        return _876;
-                    };
-                    var _3045 = {};
-                    for (var _3046 in _864) {
-                        if (_864.hasOwnProperty(_3046)) {
-                            _3045[_3046] = _864[_3046];
-                        };
-                    };
-                    _3045.blocks = Prelude["<$>"](Data_Array.functorArray({}))(go)(_864.blocks);
-                    return _3045;
-                };
-                return _864;
-            };
-        };
-    };
     var deleteBlock = function (_859) {
         return function (_860) {
             return function (_861) {
@@ -18598,7 +18599,7 @@ PS.SlamData_NodeWebkit = (function () {
                                 _3099.blockMode = "Edit";
                                 return _3099;
                             })();
-                            var notebooks$prime = Prelude["<$>"](Data_Array.functorArray({}))(editBlock(_854.event.value0.ident)(block$prime))(_854.state.notebooks);
+                            var notebooks$prime = Prelude["<$>"](Data_Array.functorArray({}))(updateBlock(_854.event.value0.ident)(block$prime))(_854.state.notebooks);
                             return function __do() {
                                 Node_Events.emit(Node_Events.eventEmitterEmitter({}))(SlamData_Types.responseEvent)((function () {
                                     var _3101 = {};
@@ -18609,6 +18610,43 @@ PS.SlamData_NodeWebkit = (function () {
                                     };
                                     _3101.notebooks = notebooks$prime;
                                     return _3101;
+                                })())(_131)();
+                                return Prelude.unit;
+                            };
+                        };
+                        if (_854.event instanceof SlamData_Types.EvalBlock) {
+                            var block$prime = (function () {
+                                if (_854.event.value1.blockType === "Markdown") {
+                                    var _3106 = {};
+                                    for (var _3107 in _854.event.value1) {
+                                        if (_854.event.value1.hasOwnProperty(_3107)) {
+                                            _3106[_3107] = _854.event.value1[_3107];
+                                        };
+                                    };
+                                    _3106.evalContent = Showdown.makeHtml(_854.event.value1.editContent);
+                                    _3106.blockMode = "Eval";
+                                    return _3106;
+                                };
+                                var _3108 = {};
+                                for (var _3109 in _854.event.value1) {
+                                    if (_854.event.value1.hasOwnProperty(_3109)) {
+                                        _3108[_3109] = _854.event.value1[_3109];
+                                    };
+                                };
+                                _3108.blockMode = "Eval";
+                                return _3108;
+                            })();
+                            var notebooks$prime = Prelude["<$>"](Data_Array.functorArray({}))(updateBlock(_854.event.value0.ident)(block$prime))(_854.state.notebooks);
+                            return function __do() {
+                                Node_Events.emit(Node_Events.eventEmitterEmitter({}))(SlamData_Types.responseEvent)((function () {
+                                    var _3110 = {};
+                                    for (var _3111 in _854.state) {
+                                        if (_854.state.hasOwnProperty(_3111)) {
+                                            _3110[_3111] = _854.state[_3111];
+                                        };
+                                    };
+                                    _3110.notebooks = notebooks$prime;
+                                    return _3110;
                                 })())(_131)();
                                 return Prelude.unit;
                             };
@@ -18643,7 +18681,7 @@ PS.SlamData_NodeWebkit = (function () {
         mergeKids: mergeKids, 
         "insertChildren'": insertChildren$prime, 
         insertChildren: insertChildren, 
-        editBlock: editBlock, 
+        updateBlock: updateBlock, 
         deleteBlock: deleteBlock, 
         createBlock: createBlock, 
         main: main, 
