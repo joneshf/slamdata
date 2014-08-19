@@ -19,6 +19,8 @@
     "purescript-node-webkit": "~0.0.3",
     "purescript-node-events": "~0.0.6",
     "purescript-node-child-process": "~0.0.1",
-    "purescript-xhr": "~0.2.0"
+    "purescript-xhr": "~0.2.0",
+    "purescript-timers": "~0.0.4",
+    "purescript-c3": "~0.1.0"
   }
 }

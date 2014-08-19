@@ -18,6 +18,7 @@ module SlamData.NodeWebkit where
   import Control.Monad.Identity (Identity())
   import Control.Monad.Cont.Trans (runContT)
   import Control.Monad.Eff.Exception (Error())
+  import Control.Reactive.Timer (timeout, Timer())
 
   import Data.Argonaut (decodeMaybe, encodeJson, jsonParser, printJson)
   import Data.Argonaut.Decode (DecodeJson)
@@ -31,6 +32,8 @@ module SlamData.NodeWebkit where
   import Data.Tuple (fst)
 
   import Debug.Trace (trace, print, Trace())
+
+  import DOM (DOM())
 
   import Network.HTTP (Verb(..))
   import Network.Oboe (done, oboe, oboeGet, oboeOptions, JSON())
@@ -73,6 +76,7 @@ module SlamData.NodeWebkit where
     , defaultSEConfig
     , getOrElse
     , serverURI
+
     )
   import SlamData.Types
     ( requestEvent
@@ -86,6 +90,7 @@ module SlamData.NodeWebkit where
     , BlockMode(..)
     , BlockType(..)
     )
+  import SlamData.Types.Workspace.Notebook.Block.Visual (VisualData(..))
   import SlamData.Types.Workspace.FileSystem (FileType(..), FileTypeRec())
   import SlamData.Types.Workspace.Notebook
     ( Notebook(..)
@@ -278,10 +283,16 @@ module SlamData.NodeWebkit where
             pure unit
           } queryUrl {out: out} (XT.UrlEncoded b.editContent)
         pure unit
-      EvalBlock (Notebook n) (Block b) -> do
-        let block' = Block b{blockMode = BlockMode "Eval"}
+      EvalVisual (Notebook n) (Block b@{blockType = BlockType "Visual"}) ds -> do
+        let selector = "chart-" ++ show b.ident
+        let dataUrl = serverURI state.settings.sdConfig ++ "/data/fs"
+        let block' = Block b{ blockMode = BlockMode "Eval"
+                            , evalContent = selector
+                            }
         let notebooks' = updateBlock n.ident block' <$> state.notebooks
         e # emit responseEvent state{notebooks = notebooks'}
+        -- Give it a small amount of time to create the selector.
+        timeout 1000 $ createVisual showVisualType dataUrl selector ds
         pure unit
       _ -> (e # emit responseEvent state) *> pure unit)
 
@@ -402,3 +413,40 @@ module SlamData.NodeWebkit where
     "function objectKeys(obj) {\
     \  return Object.keys(obj);\
     \}" :: forall r. { | r} -> [String]
+
+  -- At the moment, the c3 bindings don't allow us to easily do what we need to.
+  foreign import createVisual
+    "function createVisual(showData) {\
+    \  return function(baseUrl) {\
+    \    return function(selector) {\
+    \      return function(data) {\
+    \        return function() {\
+    \          if (data.length === 0) {\
+    \            return;\
+    \          }\
+    \          var chart = c3.generate({\
+    \              bindto: '#' + selector,\
+    \              data: {\
+    \                  json: {},\
+    \                  type: showData(data[0])\
+    \              }\
+    \          });\
+    \          var jsons = {};\
+    \          data.map(function(datum) {\
+    \              oboe(baseUrl + datum.path).node('!', function(json) {\
+    \                  datum.fields.map(function(field) {\
+    \                      if (jsons[field] == null) {\
+    \                          jsons[field] = [];\
+    \                      }\
+    \                      jsons[field].push(json[field]);\
+    \                  });\
+    \                  chart.load({json: jsons});\
+    \              });\
+    \          });\
+    \        }\
+    \      }\
+    \    }\
+    \  }\
+    \}" :: forall eff. (VisualData -> String) -> String -> String -> [VisualData] -> Eff (timer :: Timer, c3 :: DOM | eff) Unit
+
+  showVisualType (VisualData v) = show v."type"

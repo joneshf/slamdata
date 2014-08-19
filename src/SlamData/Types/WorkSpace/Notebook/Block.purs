@@ -70,6 +70,9 @@ module SlamData.Types.Workspace.Notebook.Block where
   instance showBlockMode :: Show BlockMode where
     show (BlockMode bm) = bm
 
+  instance showBlockID :: Show BlockID where
+    show (BlockID bID) = show bID
+
   -- instance eqBlockType :: Eq BlockType where
   --   (==) Markdown Markdown = true
   --   (==) SQL      SQL      = true
