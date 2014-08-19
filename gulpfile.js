@@ -357,7 +357,7 @@ gulp.task('test-casperjs', function(done) {
 
 // Main tasks.
 gulp.task('build', sequence( ['clean-build', 'browserify']
-                           , ['build-browser', 'build-node-webkit']
+                           , [/*'build-browser',*/ 'build-node-webkit']
                            ));
 gulp.task('default', sequence(['browserify', 'sass']));
 gulp.task('dist', sequence(['build', 'clean-dist'], 'dist-node-webkit'));
