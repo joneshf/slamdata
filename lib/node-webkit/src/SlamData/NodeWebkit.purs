@@ -54,6 +54,7 @@ module SlamData.NodeWebkit where
   import SlamData (slamData)
   import SlamData.Lens
     ( _children
+    , _fileTypeRec
     , _files
     , _java
     , _mountings
@@ -70,7 +71,7 @@ module SlamData.NodeWebkit where
     , serverURI
     )
   import SlamData.Types (requestEvent, responseEvent, SlamDataEventTy(..))
-  import SlamData.Types.Workspace.FileSystem (FileType(..))
+  import SlamData.Types.Workspace.FileSystem (FileType(..), FileTypeRec())
   import Text.Parsing.Parser (runParser)
 
   import qualified Data.Map as M
@@ -169,15 +170,15 @@ module SlamData.NodeWebkit where
       SaveSEConfig seC ->
         writeTextFile UTF8 seConfigFile (showConfig seC)
       ReadFileSystem paths -> do
-        let path = joinWith "/" paths
+        let path = join paths
         let fs = serverURI state.settings.sdConfig ++ "/metadata/fs" ++ path
         o <- oboeGet fs
         done o (\json ->
           let children = (unsafeCoerceJSON json).children
-              state' = state^._files.._children .~ children
-          in respond state')
+              files' = insertChildren paths [state.files] children
+          in e # emit responseEvent state{files = files'})
         pure unit
-      _ -> respond state *> pure unit)
+      _ -> (e # emit responseEvent state) *> pure unit)
 
     -- Start up SlamData.
     slamData e { files: FileType {name: mount, "type": "directory", children: []}
@@ -185,6 +186,54 @@ module SlamData.NodeWebkit where
                , settings: {sdConfig: sdConfig, seConfig: seConfig}
                , showSettings: false
                }
+
+  insertChildren :: [String] -> [FileType] -> [FileType] -> FileType
+  insertChildren ds fs kids = case insertChildren' ds fs kids of
+    [f] -> f
+
+  insertChildren' :: [String] -> [FileType] -> [FileType] -> [FileType]
+  insertChildren' [d]    (FileType f:fs) children
+    | (d == f.name ++ "/" || d == f.name) && f."type" == "directory" =
+      mergeKids (FileType f) children : fs
+  insertChildren' (d:ds) (FileType f:fs) children
+    | d == f.name = FileType f{children =
+      insertChildren' ds f.children children} : fs
+  insertChildren' ds     (f:fs)          children =
+    f : insertChildren' ds fs children
+
+  mergeKids :: FileType -> [FileType] -> FileType
+  mergeKids (FileType f) kids = let kids' = unsafeMerge FileType f.children <$> kids in
+    FileType f{children = kids'}
+
+  -- insertChildren [d]    (f:fs) children
+  --   | d == f.name && f."type" == "file" = insertKids f children : fs
+  -- insertKids :: FileType -> [FileType] -> FileType
+  -- insertKids (FileType f) kids = FileType f{children = insertKid <$> f.children}
+
+  -- insertKid :: String -> FileType
+  -- insertKid field = FileType {name: field, "type": "field", children: []}
+
+  foreign import unsafeMerge
+    "function unsafeMerge(ft) {\
+    \  return function (oldKids) {\
+    \    return function(c) {\
+    \      var kid = c;\
+    \      for (var i = 0; i < oldKids.length; ++i) {\
+    \        var oldKid = oldKids[i];\
+    \        if (oldKid.name == c.name && oldKid.type == c.type) {\
+    \          if (oldKid.children != null) {\
+    \            kid.children = oldKid.children;\
+    \          } else {\
+    \            kid.children = [];\
+    \          }\
+    \          return kid;\
+    \        }\
+    \      }\
+    \      kid.children = [];\
+    \      return ft(kid);\
+    \    }\
+    \  }\
+    \};" :: (FileTypeRec -> FileType) -> [FileType] -> FileType -> FileType
 
   foreign import unsafeCoerceJSON
     "function unsafeCoerceJSON(json) {\
