@@ -22,7 +22,7 @@ module SlamData.NodeWebkit where
   import Data.Argonaut (decodeMaybe, encodeJson, jsonParser, printJson)
   import Data.Argonaut.Decode (DecodeJson)
   import Data.Argonaut.Encode (EncodeJson)
-  import Data.Array (head, length, snoc)
+  import Data.Array (filter, head, length, snoc)
   import Data.Either (either, Either(..))
   import Data.Function (mkFn0, mkFn1, mkFn3, runFn1, Fn1())
   import Data.Maybe (Maybe(..))
@@ -78,6 +78,7 @@ module SlamData.NodeWebkit where
     , SEConfig(..)
     )
   import SlamData.Types.Workspace.FileSystem (FileType(..), FileTypeRec())
+  import SlamData.Types.Workspace.Notebook (Notebook(..), NotebookID(..))
   import Text.Parsing.Parser (runParser)
 
   import qualified Data.Map as M
@@ -199,8 +200,12 @@ module SlamData.NodeWebkit where
         ident <- v4
         let name = "Untitled" ++ show (length state.notebooks + 1)
         let path = mount state.settings.seConfig
-        let notebook = {ident: ident, blocks: [], name: name, path: path}
+        let notebook = Notebook {ident: NotebookID ident, blocks: [], name: name, path: path}
         e # emit responseEvent state{notebooks = state.notebooks `snoc` notebook}
+        pure unit
+      CloseNotebook ident -> do
+        let notebooks' = filter (\(Notebook n) -> n.ident /= ident) state.notebooks
+        e # emit responseEvent state{notebooks = notebooks'}
         pure unit
       _ -> (e # emit responseEvent state) *> pure unit)
 
