@@ -207,6 +207,12 @@ module SlamData.NodeWebkit where
         let notebooks' = filter (\(Notebook n) -> n.ident /= ident) state.notebooks
         e # emit responseEvent state{notebooks = notebooks'}
         pure unit
+      ShowSettings -> do
+        e # emit responseEvent state{showSettings = true}
+        pure unit
+      HideSettings -> do
+        e # emit responseEvent state{showSettings = false}
+        pure unit
       _ -> (e # emit responseEvent state) *> pure unit)
 
     -- Start up SlamData.

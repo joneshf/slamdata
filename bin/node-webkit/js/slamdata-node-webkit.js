@@ -18451,6 +18451,36 @@ PS.SlamData_NodeWebkit = (function () {
                                 return Prelude.unit;
                             };
                         };
+                        if (_853.event instanceof SlamData_Types.ShowSettings) {
+                            return function __do() {
+                                Node_Events.emit(Node_Events.eventEmitterEmitter({}))(SlamData_Types.responseEvent)((function () {
+                                    var _3051 = {};
+                                    for (var _3052 in _853.state) {
+                                        if (_853.state.hasOwnProperty(_3052)) {
+                                            _3051[_3052] = _853.state[_3052];
+                                        };
+                                    };
+                                    _3051.showSettings = true;
+                                    return _3051;
+                                })())(_130)();
+                                return Prelude.unit;
+                            };
+                        };
+                        if (_853.event instanceof SlamData_Types.HideSettings) {
+                            return function __do() {
+                                Node_Events.emit(Node_Events.eventEmitterEmitter({}))(SlamData_Types.responseEvent)((function () {
+                                    var _3053 = {};
+                                    for (var _3054 in _853.state) {
+                                        if (_853.state.hasOwnProperty(_3054)) {
+                                            _3053[_3054] = _853.state[_3054];
+                                        };
+                                    };
+                                    _3053.showSettings = false;
+                                    return _3053;
+                                })())(_130)();
+                                return Prelude.unit;
+                            };
+                        };
                         return Control_Apply["*>"](Control_Monad_Eff.applyEff({}))(Node_Events.emit(Node_Events.eventEmitterEmitter({}))(SlamData_Types.responseEvent)(_853.state)(_130))(Prelude.pure(Control_Monad_Eff.applicativeEff({}))(Prelude.unit));
                     })(_130)();
                     return SlamData.slamData(_130)({
