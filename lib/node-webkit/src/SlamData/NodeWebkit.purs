@@ -23,12 +23,12 @@ module SlamData.NodeWebkit where
   import Data.Argonaut (decodeMaybe, encodeJson, jsonParser, printJson)
   import Data.Argonaut.Decode (DecodeJson)
   import Data.Argonaut.Encode (EncodeJson)
-  import Data.Array (filter, head, length, snoc)
+  import Data.Array (filter, head, last, length, snoc)
   import Data.Either (either, Either(..))
   import Data.Function (mkFn0, mkFn1, mkFn3, runFn1, Fn1())
   import Data.Maybe (Maybe(..))
   import Data.Maybe.Unsafe (fromJust)
-  import Data.String (joinWith)
+  import Data.String (joinWith, split, trim)
   import Data.Tuple (fst)
 
   import Debug.Trace (trace, print, Trace())
@@ -44,7 +44,7 @@ module SlamData.NodeWebkit where
   import Node.Events (emit, emitter, on, Event(..), EventEff(), EventEmitter)
   import Node.FS.Sync (writeTextFile)
   import Node.Path (join, FilePath())
-  import Node.UUID (v4)
+  import Node.UUID (runUUID, v4)
   import Node.Webkit
     ( closeWindow
     , get
@@ -294,6 +294,32 @@ module SlamData.NodeWebkit where
         -- Give it a small amount of time to create the selector.
         timeout 1000 $ createVisual showVisualType dataUrl selector ds
         pure unit
+      SaveNotebook (Notebook n) -> do
+        let dataUrl = serverURI state.settings.sdConfig ++ "/data/fs"
+        let url = dataUrl ++ n.path ++ n.name ++ "/index.nb"
+        let n' = deleteID n
+        X.post X.defaultAjaxOptions
+          { onReadyStateChange = X.onDone \_ ->
+            (e # emit responseEvent state) *> pure unit
+          } url {} (XT.UrlEncoded $ jsonStringify n')
+        pure unit
+      OpenNotebook path -> do
+        let dataUrl = serverURI state.settings.sdConfig ++ "/data/fs"
+        let url = dataUrl ++ (path </> "index.nb")
+        X.get X.defaultAjaxOptions
+          {onLoad = \res -> do
+            revisions <- trim >>> split "\n" <$> X.getResponseText res
+            case last revisions of
+              Nothing -> pure unit
+              Just revision -> do
+                i <- NotebookID <$> v4
+                let default = {ident: i, blocks: [], name: "Untitled", path: path}
+                let notebook' = Notebook $ jsonParse default revision
+                let notebooks' = state.notebooks `snoc` notebook'
+                e # emit responseEvent state{notebooks = notebooks'}
+                pure unit
+          } url {}
+        pure unit
       _ -> (e # emit responseEvent state) *> pure unit)
 
     -- Start up SlamData.
@@ -404,6 +430,11 @@ module SlamData.NodeWebkit where
     \  }\
     \}" :: forall r. { | r} -> String -> { | r}
 
+  foreign import jsonStringify
+    "function jsonStringify(o) {\
+    \  return JSON.stringify(o);\
+    \}" :: forall r. { | r} -> String
+
   foreign import unsafeCoerceJSON
     "function unsafeCoerceJSON(json) {\
     \  return json;\
@@ -450,3 +481,10 @@ module SlamData.NodeWebkit where
     \}" :: forall eff. (VisualData -> String) -> String -> String -> [VisualData] -> Eff (timer :: Timer, c3 :: DOM | eff) Unit
 
   showVisualType (VisualData v) = show v."type"
+
+  -- SlamEngine currently barfs if you POST some JSON with the same _id.
+  foreign import deleteID
+    "function deleteID(notebook) {\
+    \  delete notebook._id;\
+    \  return notebook;\
+    \}" :: NotebookRec -> NotebookRec
