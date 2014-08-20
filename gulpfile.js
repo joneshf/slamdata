@@ -349,8 +349,10 @@ gulp.task('dist-node-webkit', function() {
 });
 
 gulp.task('test-casperjs', function(done) {
-    spawn('./node_modules/.bin/casperjs', ['test', 'test/'], {stdio: 'inherit'})
-        .on('close', done);
+    spawn( './node_modules/.bin/casperjs'
+         , ['test', 'test/tests']
+         , {stdio: 'inherit'}
+         ).on('close', done);
 });
 
 // Main tasks.

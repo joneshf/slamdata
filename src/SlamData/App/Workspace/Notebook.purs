@@ -55,11 +55,6 @@ module SlamData.App.Workspace.Notebook
   notebooks :: forall eff. ComponentClass (NotebookProps eff) NotebookState
   notebooks = createClass spec
     { displayName = "Notebooks"
-    -- , shouldComponentUpdate = mkFn3 \this props state -> pure $
-    --   this.props.state.notebooks /= props.state.notebooks ||
-    --   this.props.state.files /= props.state.files ||
-    --   this.props.state.showSettings /= props.state.showSettings ||
-    --   this.state.active /= state.active
     , componentWillReceiveProps = mkFn2 \this props ->
       let oldBooks = this.props.state.notebooks in
       let newBooks = props.state.notebooks in
