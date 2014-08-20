@@ -23,7 +23,7 @@ module SlamData.NodeWebkit where
   import Data.Argonaut (decodeMaybe, encodeJson, jsonParser, printJson)
   import Data.Argonaut.Decode (DecodeJson)
   import Data.Argonaut.Encode (EncodeJson)
-  import Data.Array (filter, head, last, length, snoc)
+  import Data.Array (filter, head, last, length, nubBy, snoc)
   import Data.Either (either, Either(..))
   import Data.Function (mkFn0, mkFn1, mkFn3, runFn1, Fn1())
   import Data.Maybe (Maybe(..))
@@ -318,7 +318,8 @@ module SlamData.NodeWebkit where
                 let nb = jsonParse default revision
                 let notebook' = Notebook nb{name = name}
                 let notebooks' = state.notebooks `snoc` notebook'
-                e # emit responseEvent state{notebooks = notebooks'}
+                let notebooks'' = nubBy uniqueNotebooks notebooks'
+                e # emit responseEvent state{notebooks = notebooks''}
                 pure unit
           } url {}
         pure unit
@@ -349,6 +350,9 @@ module SlamData.NodeWebkit where
                , settings: {sdConfig: sdConfig, seConfig: seConfig}
                , showSettings: false
                }
+
+  uniqueNotebooks :: Notebook -> Notebook -> Boolean
+  uniqueNotebooks (Notebook nb) (Notebook nb') = nb.ident == nb'.ident
 
   replaceNotebook :: Notebook -> Notebook -> Notebook
   replaceNotebook n@(Notebook nb) (Notebook nb')
