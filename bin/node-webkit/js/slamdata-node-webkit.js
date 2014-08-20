@@ -17049,7 +17049,6 @@ PS.SlamData_App_Workspace_FileSystem = (function () {
     var React_DOM = PS.React_DOM;
     var Data_String = PS.Data_String;
     var React_TreeView = PS.React_TreeView;
-    var Data_Function = PS.Data_Function;
     var toggleTree = function (_819) {
         return function (_820) {
             var name = Control_Lens["^."](_819.props.files)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._fileTypeRec(Data_Const.functorConst({})))(SlamData_Lens._name(Data_Const.functorConst({}))));
@@ -17142,9 +17141,6 @@ PS.SlamData_App_Workspace_FileSystem = (function () {
             };
         };
         _2898.displayName = "FileSystem";
-        _2898.shouldComponentUpdate = function ($$this, props, _) {
-            return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(Prelude["/="](SlamData_Types_Workspace_FileSystem.eqFileType({}))($$this.props.files)(props.files));
-        };
         _2898.render = function ($$this) {
             return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div({
                 className: "slamdata-panel"
