@@ -63,9 +63,7 @@ var paths = {
         js: [ 'bower_components/jquery/dist/jquery.js'
             , 'bower_components/c3/c3.js'
             , 'bower_components/d3/d3.js'
-            , 'bower_components/fastclick/lib/fastclick.js'
             , 'bower_components/foundation/js/foundation.js'
-            , 'bower_components/modernizr/modernizr.js'
             , 'bower_components/node-uuid/uuid.js'
             , 'bower_components/oboe/dist/oboe-browser.js'
             , 'bower_components/react/react-with-addons.js'
@@ -356,7 +354,7 @@ gulp.task('test-casperjs', function(done) {
 });
 
 // Main tasks.
-gulp.task('build', sequence( ['clean-build', 'browserify']
+gulp.task('build', sequence( ['clean-build', 'browserify', 'sass']
                            , [/*'build-browser',*/ 'build-node-webkit']
                            ));
 gulp.task('default', sequence(['browserify', 'sass']));

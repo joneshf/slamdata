@@ -9364,7 +9364,7 @@ return jQuery;
 
         // configuration for no plot-able data supplied.
         var __data_empty_label_text = getConfig(['data', 'empty', 'label', 'text'], "");
-
+        
         // subchart
         var __subchart_show = getConfig(['subchart', 'show'], false),
             __subchart_size_height = getConfig(['subchart', 'size', 'height'], 60),
@@ -11746,7 +11746,7 @@ return jQuery;
 
             area = __axis_rotated ? area.x0(value0).x1(value1).y(xx) : area.x(xx).y0(value0).y1(value1);
             if (!__line_connect_null) { area = area.defined(function (d) { return d.value !== null; }); }
-
+            
             return function (d) {
                 var data = __line_connect_null ? filterRemoveNull(d.values):d.values, x0 = 0, y0 = 0, path;
 
@@ -15876,7 +15876,7 @@ return jQuery;
         d3_mouse_bug44083 = !(ctm.f || ctm.e);
         svg.remove();
       }
-      if (d3_mouse_bug44083) point.x = e.pageX, point.y = e.pageY; else point.x = e.clientX,
+      if (d3_mouse_bug44083) point.x = e.pageX, point.y = e.pageY; else point.x = e.clientX, 
       point.y = e.clientY;
       point = point.matrixTransform(container.getScreenCTM().inverse());
       return [ point.x, point.y ];
@@ -16217,7 +16217,7 @@ return jQuery;
     }
     function mousewheeled() {
       var dispatch = event.of(this, arguments);
-      if (mousewheelTimer) clearTimeout(mousewheelTimer); else translate0 = location(center0 = center || d3.mouse(this)),
+      if (mousewheelTimer) clearTimeout(mousewheelTimer); else translate0 = location(center0 = center || d3.mouse(this)), 
       d3_selection_interrupt.call(this), zoomstarted(dispatch);
       mousewheelTimer = setTimeout(function() {
         mousewheelTimer = null;
@@ -16597,7 +16597,7 @@ return jQuery;
   d3.xhr = d3_xhrType(d3_identity);
   function d3_xhrType(response) {
     return function(url, mimeType, callback) {
-      if (arguments.length === 2 && typeof mimeType === "function") callback = mimeType,
+      if (arguments.length === 2 && typeof mimeType === "function") callback = mimeType, 
       mimeType = null;
       return d3_xhr(url, mimeType, response, callback);
     };
@@ -17429,7 +17429,7 @@ return jQuery;
     return n ? (date.y = d3_time_expandYear(+n[0]), i + n[0].length) : -1;
   }
   function d3_time_parseZone(date, string, i) {
-    return /^[+-]\d{4}$/.test(string = string.substring(i, i + 5)) ? (date.Z = -string,
+    return /^[+-]\d{4}$/.test(string = string.substring(i, i + 5)) ? (date.Z = -string, 
     i + 5) : -1;
   }
   function d3_time_expandYear(d) {
@@ -17622,7 +17622,7 @@ return jQuery;
     var λ00, φ00, λ0, cosφ0, sinφ0;
     d3_geo_area.point = function(λ, φ) {
       d3_geo_area.point = nextPoint;
-      λ0 = (λ00 = λ) * d3_radians, cosφ0 = Math.cos(φ = (φ00 = φ) * d3_radians / 2 + π / 4),
+      λ0 = (λ00 = λ) * d3_radians, cosφ0 = Math.cos(φ = (φ00 = φ) * d3_radians / 2 + π / 4), 
       sinφ0 = Math.sin(φ);
     };
     function nextPoint(λ, φ) {
@@ -19451,7 +19451,7 @@ return jQuery;
       return _ ? center([ -_[1], _[0] ]) : (_ = center(), [ _[1], -_[0] ]);
     };
     projection.rotate = function(_) {
-      return _ ? rotate([ _[0], _[1], _.length > 2 ? _[2] + 90 : 90 ]) : (_ = rotate(),
+      return _ ? rotate([ _[0], _[1], _.length > 2 ? _[2] + 90 : 90 ]) : (_ = rotate(), 
       [ _[0], _[1], _[2] - 90 ]);
     };
     return rotate([ 0, 0, 90 ]);
@@ -20302,7 +20302,7 @@ return jQuery;
     };
     quadtree.extent = function(_) {
       if (!arguments.length) return x1 == null ? null : [ [ x1, y1 ], [ x2, y2 ] ];
-      if (_ == null) x1 = y1 = x2 = y2 = null; else x1 = +_[0][0], y1 = +_[0][1], x2 = +_[1][0],
+      if (_ == null) x1 = y1 = x2 = y2 = null; else x1 = +_[0][0], y1 = +_[0][1], x2 = +_[1][0], 
       y2 = +_[1][1];
       return quadtree;
     };
@@ -21968,7 +21968,7 @@ return jQuery;
         return d3_layout_treemapPad(node, x);
       }
       var type;
-      pad = (padding = x) == null ? d3_layout_treemapPadNull : (type = typeof x) === "function" ? padFunction : type === "number" ? (x = [ x, x, x, x ],
+      pad = (padding = x) == null ? d3_layout_treemapPadNull : (type = typeof x) === "function" ? padFunction : type === "number" ? (x = [ x, x, x, x ], 
       padConstant) : padConstant;
       return treemap;
     };
@@ -22268,7 +22268,7 @@ return jQuery;
     scale.tickFormat = function(n, format) {
       if (!arguments.length) return d3_scale_logFormat;
       if (arguments.length < 2) format = d3_scale_logFormat; else if (typeof format !== "function") format = d3.format(format);
-      var k = Math.max(.1, n / scale.ticks().length), f = positive ? (e = 1e-12, Math.ceil) : (e = -1e-12,
+      var k = Math.max(.1, n / scale.ticks().length), f = positive ? (e = 1e-12, Math.ceil) : (e = -1e-12, 
       Math.floor), e;
       return function(d) {
         return d / pow(f(log(d) + e)) <= k ? format(d) : "";
@@ -22554,7 +22554,7 @@ return jQuery;
   d3.svg.arc = function() {
     var innerRadius = d3_svg_arcInnerRadius, outerRadius = d3_svg_arcOuterRadius, startAngle = d3_svg_arcStartAngle, endAngle = d3_svg_arcEndAngle;
     function arc() {
-      var r0 = innerRadius.apply(this, arguments), r1 = outerRadius.apply(this, arguments), a0 = startAngle.apply(this, arguments) + d3_svg_arcOffset, a1 = endAngle.apply(this, arguments) + d3_svg_arcOffset, da = (a1 < a0 && (da = a0,
+      var r0 = innerRadius.apply(this, arguments), r1 = outerRadius.apply(this, arguments), a0 = startAngle.apply(this, arguments) + d3_svg_arcOffset, a1 = endAngle.apply(this, arguments) + d3_svg_arcOffset, da = (a1 < a0 && (da = a0, 
       a0 = a1, a1 = da), a1 - a0), df = da < π ? "0" : "1", c0 = Math.cos(a0), s0 = Math.sin(a0), c1 = Math.cos(a1), s1 = Math.sin(a1);
       return da >= d3_svg_arcMax ? r0 ? "M0," + r1 + "A" + r1 + "," + r1 + " 0 1,1 0," + -r1 + "A" + r1 + "," + r1 + " 0 1,1 0," + r1 + "M0," + r0 + "A" + r0 + "," + r0 + " 0 1,0 0," + -r0 + "A" + r0 + "," + r0 + " 0 1,0 0," + r0 + "Z" : "M0," + r1 + "A" + r1 + "," + r1 + " 0 1,1 0," + -r1 + "A" + r1 + "," + r1 + " 0 1,1 0," + r1 + "Z" : r0 ? "M" + r1 * c0 + "," + r1 * s0 + "A" + r1 + "," + r1 + " 0 " + df + ",1 " + r1 * c1 + "," + r1 * s1 + "L" + r0 * c1 + "," + r0 * s1 + "A" + r0 + "," + r0 + " 0 " + df + ",0 " + r0 * c0 + "," + r0 * s0 + "Z" : "M" + r1 * c0 + "," + r1 * s0 + "A" + r1 + "," + r1 + " 0 " + df + ",1 " + r1 * c1 + "," + r1 * s1 + "L0,0" + "Z";
     }
@@ -22690,7 +22690,7 @@ return jQuery;
     return points.length < 4 ? d3_svg_lineLinear(points) : points[1] + d3_svg_lineHermite(points.slice(1, points.length - 1), d3_svg_lineCardinalTangents(points, tension));
   }
   function d3_svg_lineCardinalClosed(points, tension) {
-    return points.length < 3 ? d3_svg_lineLinear(points) : points[0] + d3_svg_lineHermite((points.push(points[0]),
+    return points.length < 3 ? d3_svg_lineLinear(points) : points[0] + d3_svg_lineHermite((points.push(points[0]), 
     points), d3_svg_lineCardinalTangents([ points[points.length - 2] ].concat(points, [ points[1] ]), tension));
   }
   function d3_svg_lineCardinal(points, tension) {
@@ -23396,7 +23396,7 @@ return jQuery;
         var g = d3.select(this);
         var scale0 = this.__chart__ || scale, scale1 = this.__chart__ = scale.copy();
         var ticks = tickValues == null ? scale1.ticks ? scale1.ticks.apply(scale1, tickArguments_) : scale1.domain() : tickValues, tickFormat = tickFormat_ == null ? scale1.tickFormat ? scale1.tickFormat.apply(scale1, tickArguments_) : d3_identity : tickFormat_, tick = g.selectAll(".tick").data(ticks, scale1), tickEnter = tick.enter().insert("g", ".domain").attr("class", "tick").style("opacity", ε), tickExit = d3.transition(tick.exit()).style("opacity", ε).remove(), tickUpdate = d3.transition(tick.order()).style("opacity", 1), tickTransform;
-        var range = d3_scaleRange(scale1), path = g.selectAll(".domain").data([ 0 ]), pathUpdate = (path.enter().append("path").attr("class", "domain"),
+        var range = d3_scaleRange(scale1), path = g.selectAll(".domain").data([ 0 ]), pathUpdate = (path.enter().append("path").attr("class", "domain"), 
         d3.transition(path));
         tickEnter.append("line");
         tickEnter.append("text");
@@ -23999,828 +23999,6 @@ return jQuery;
   if (typeof define === "function" && define.amd) define(d3); else if (typeof module === "object" && module.exports) module.exports = d3;
   this.d3 = d3;
 }();
-/**
- * @preserve FastClick: polyfill to remove click delays on browsers with touch UIs.
- *
- * @version 1.0.3
- * @codingstandard ftlabs-jsv2
- * @copyright The Financial Times Limited [All Rights Reserved]
- * @license MIT License (see LICENSE.txt)
- */
-
-/*jslint browser:true, node:true*/
-/*global define, Event, Node*/
-
-
-/**
- * Instantiate fast-clicking listeners on the specified layer.
- *
- * @constructor
- * @param {Element} layer The layer to listen on
- * @param {Object} options The options to override the defaults
- */
-function FastClick(layer, options) {
-	'use strict';
-	var oldOnClick;
-
-	options = options || {};
-
-	/**
-	 * Whether a click is currently being tracked.
-	 *
-	 * @type boolean
-	 */
-	this.trackingClick = false;
-
-
-	/**
-	 * Timestamp for when click tracking started.
-	 *
-	 * @type number
-	 */
-	this.trackingClickStart = 0;
-
-
-	/**
-	 * The element being tracked for a click.
-	 *
-	 * @type EventTarget
-	 */
-	this.targetElement = null;
-
-
-	/**
-	 * X-coordinate of touch start event.
-	 *
-	 * @type number
-	 */
-	this.touchStartX = 0;
-
-
-	/**
-	 * Y-coordinate of touch start event.
-	 *
-	 * @type number
-	 */
-	this.touchStartY = 0;
-
-
-	/**
-	 * ID of the last touch, retrieved from Touch.identifier.
-	 *
-	 * @type number
-	 */
-	this.lastTouchIdentifier = 0;
-
-
-	/**
-	 * Touchmove boundary, beyond which a click will be cancelled.
-	 *
-	 * @type number
-	 */
-	this.touchBoundary = options.touchBoundary || 10;
-
-
-	/**
-	 * The FastClick layer.
-	 *
-	 * @type Element
-	 */
-	this.layer = layer;
-
-	/**
-	 * The minimum time between tap(touchstart and touchend) events
-	 *
-	 * @type number
-	 */
-	this.tapDelay = options.tapDelay || 200;
-
-	if (FastClick.notNeeded(layer)) {
-		return;
-	}
-
-	// Some old versions of Android don't have Function.prototype.bind
-	function bind(method, context) {
-		return function() { return method.apply(context, arguments); };
-	}
-
-
-	var methods = ['onMouse', 'onClick', 'onTouchStart', 'onTouchMove', 'onTouchEnd', 'onTouchCancel'];
-	var context = this;
-	for (var i = 0, l = methods.length; i < l; i++) {
-		context[methods[i]] = bind(context[methods[i]], context);
-	}
-
-	// Set up event handlers as required
-	if (deviceIsAndroid) {
-		layer.addEventListener('mouseover', this.onMouse, true);
-		layer.addEventListener('mousedown', this.onMouse, true);
-		layer.addEventListener('mouseup', this.onMouse, true);
-	}
-
-	layer.addEventListener('click', this.onClick, true);
-	layer.addEventListener('touchstart', this.onTouchStart, false);
-	layer.addEventListener('touchmove', this.onTouchMove, false);
-	layer.addEventListener('touchend', this.onTouchEnd, false);
-	layer.addEventListener('touchcancel', this.onTouchCancel, false);
-
-	// Hack is required for browsers that don't support Event#stopImmediatePropagation (e.g. Android 2)
-	// which is how FastClick normally stops click events bubbling to callbacks registered on the FastClick
-	// layer when they are cancelled.
-	if (!Event.prototype.stopImmediatePropagation) {
-		layer.removeEventListener = function(type, callback, capture) {
-			var rmv = Node.prototype.removeEventListener;
-			if (type === 'click') {
-				rmv.call(layer, type, callback.hijacked || callback, capture);
-			} else {
-				rmv.call(layer, type, callback, capture);
-			}
-		};
-
-		layer.addEventListener = function(type, callback, capture) {
-			var adv = Node.prototype.addEventListener;
-			if (type === 'click') {
-				adv.call(layer, type, callback.hijacked || (callback.hijacked = function(event) {
-					if (!event.propagationStopped) {
-						callback(event);
-					}
-				}), capture);
-			} else {
-				adv.call(layer, type, callback, capture);
-			}
-		};
-	}
-
-	// If a handler is already declared in the element's onclick attribute, it will be fired before
-	// FastClick's onClick handler. Fix this by pulling out the user-defined handler function and
-	// adding it as listener.
-	if (typeof layer.onclick === 'function') {
-
-		// Android browser on at least 3.2 requires a new reference to the function in layer.onclick
-		// - the old one won't work if passed to addEventListener directly.
-		oldOnClick = layer.onclick;
-		layer.addEventListener('click', function(event) {
-			oldOnClick(event);
-		}, false);
-		layer.onclick = null;
-	}
-}
-
-
-/**
- * Android requires exceptions.
- *
- * @type boolean
- */
-var deviceIsAndroid = navigator.userAgent.indexOf('Android') > 0;
-
-
-/**
- * iOS requires exceptions.
- *
- * @type boolean
- */
-var deviceIsIOS = /iP(ad|hone|od)/.test(navigator.userAgent);
-
-
-/**
- * iOS 4 requires an exception for select elements.
- *
- * @type boolean
- */
-var deviceIsIOS4 = deviceIsIOS && (/OS 4_\d(_\d)?/).test(navigator.userAgent);
-
-
-/**
- * iOS 6.0(+?) requires the target element to be manually derived
- *
- * @type boolean
- */
-var deviceIsIOSWithBadTarget = deviceIsIOS && (/OS ([6-9]|\d{2})_\d/).test(navigator.userAgent);
-
-/**
- * BlackBerry requires exceptions.
- *
- * @type boolean
- */
-var deviceIsBlackBerry10 = navigator.userAgent.indexOf('BB10') > 0;
-
-/**
- * Determine whether a given element requires a native click.
- *
- * @param {EventTarget|Element} target Target DOM element
- * @returns {boolean} Returns true if the element needs a native click
- */
-FastClick.prototype.needsClick = function(target) {
-	'use strict';
-	switch (target.nodeName.toLowerCase()) {
-
-	// Don't send a synthetic click to disabled inputs (issue #62)
-	case 'button':
-	case 'select':
-	case 'textarea':
-		if (target.disabled) {
-			return true;
-		}
-
-		break;
-	case 'input':
-
-		// File inputs need real clicks on iOS 6 due to a browser bug (issue #68)
-		if ((deviceIsIOS && target.type === 'file') || target.disabled) {
-			return true;
-		}
-
-		break;
-	case 'label':
-	case 'video':
-		return true;
-	}
-
-	return (/\bneedsclick\b/).test(target.className);
-};
-
-
-/**
- * Determine whether a given element requires a call to focus to simulate click into element.
- *
- * @param {EventTarget|Element} target Target DOM element
- * @returns {boolean} Returns true if the element requires a call to focus to simulate native click.
- */
-FastClick.prototype.needsFocus = function(target) {
-	'use strict';
-	switch (target.nodeName.toLowerCase()) {
-	case 'textarea':
-		return true;
-	case 'select':
-		return !deviceIsAndroid;
-	case 'input':
-		switch (target.type) {
-		case 'button':
-		case 'checkbox':
-		case 'file':
-		case 'image':
-		case 'radio':
-		case 'submit':
-			return false;
-		}
-
-		// No point in attempting to focus disabled inputs
-		return !target.disabled && !target.readOnly;
-	default:
-		return (/\bneedsfocus\b/).test(target.className);
-	}
-};
-
-
-/**
- * Send a click event to the specified element.
- *
- * @param {EventTarget|Element} targetElement
- * @param {Event} event
- */
-FastClick.prototype.sendClick = function(targetElement, event) {
-	'use strict';
-	var clickEvent, touch;
-
-	// On some Android devices activeElement needs to be blurred otherwise the synthetic click will have no effect (#24)
-	if (document.activeElement && document.activeElement !== targetElement) {
-		document.activeElement.blur();
-	}
-
-	touch = event.changedTouches[0];
-
-	// Synthesise a click event, with an extra attribute so it can be tracked
-	clickEvent = document.createEvent('MouseEvents');
-	clickEvent.initMouseEvent(this.determineEventType(targetElement), true, true, window, 1, touch.screenX, touch.screenY, touch.clientX, touch.clientY, false, false, false, false, 0, null);
-	clickEvent.forwardedTouchEvent = true;
-	targetElement.dispatchEvent(clickEvent);
-};
-
-FastClick.prototype.determineEventType = function(targetElement) {
-	'use strict';
-
-	//Issue #159: Android Chrome Select Box does not open with a synthetic click event
-	if (deviceIsAndroid && targetElement.tagName.toLowerCase() === 'select') {
-		return 'mousedown';
-	}
-
-	return 'click';
-};
-
-
-/**
- * @param {EventTarget|Element} targetElement
- */
-FastClick.prototype.focus = function(targetElement) {
-	'use strict';
-	var length;
-
-	// Issue #160: on iOS 7, some input elements (e.g. date datetime) throw a vague TypeError on setSelectionRange. These elements don't have an integer value for the selectionStart and selectionEnd properties, but unfortunately that can't be used for detection because accessing the properties also throws a TypeError. Just check the type instead. Filed as Apple bug #15122724.
-	if (deviceIsIOS && targetElement.setSelectionRange && targetElement.type.indexOf('date') !== 0 && targetElement.type !== 'time') {
-		length = targetElement.value.length;
-		targetElement.setSelectionRange(length, length);
-	} else {
-		targetElement.focus();
-	}
-};
-
-
-/**
- * Check whether the given target element is a child of a scrollable layer and if so, set a flag on it.
- *
- * @param {EventTarget|Element} targetElement
- */
-FastClick.prototype.updateScrollParent = function(targetElement) {
-	'use strict';
-	var scrollParent, parentElement;
-
-	scrollParent = targetElement.fastClickScrollParent;
-
-	// Attempt to discover whether the target element is contained within a scrollable layer. Re-check if the
-	// target element was moved to another parent.
-	if (!scrollParent || !scrollParent.contains(targetElement)) {
-		parentElement = targetElement;
-		do {
-			if (parentElement.scrollHeight > parentElement.offsetHeight) {
-				scrollParent = parentElement;
-				targetElement.fastClickScrollParent = parentElement;
-				break;
-			}
-
-			parentElement = parentElement.parentElement;
-		} while (parentElement);
-	}
-
-	// Always update the scroll top tracker if possible.
-	if (scrollParent) {
-		scrollParent.fastClickLastScrollTop = scrollParent.scrollTop;
-	}
-};
-
-
-/**
- * @param {EventTarget} targetElement
- * @returns {Element|EventTarget}
- */
-FastClick.prototype.getTargetElementFromEventTarget = function(eventTarget) {
-	'use strict';
-
-	// On some older browsers (notably Safari on iOS 4.1 - see issue #56) the event target may be a text node.
-	if (eventTarget.nodeType === Node.TEXT_NODE) {
-		return eventTarget.parentNode;
-	}
-
-	return eventTarget;
-};
-
-
-/**
- * On touch start, record the position and scroll offset.
- *
- * @param {Event} event
- * @returns {boolean}
- */
-FastClick.prototype.onTouchStart = function(event) {
-	'use strict';
-	var targetElement, touch, selection;
-
-	// Ignore multiple touches, otherwise pinch-to-zoom is prevented if both fingers are on the FastClick element (issue #111).
-	if (event.targetTouches.length > 1) {
-		return true;
-	}
-
-	targetElement = this.getTargetElementFromEventTarget(event.target);
-	touch = event.targetTouches[0];
-
-	if (deviceIsIOS) {
-
-		// Only trusted events will deselect text on iOS (issue #49)
-		selection = window.getSelection();
-		if (selection.rangeCount && !selection.isCollapsed) {
-			return true;
-		}
-
-		if (!deviceIsIOS4) {
-
-			// Weird things happen on iOS when an alert or confirm dialog is opened from a click event callback (issue #23):
-			// when the user next taps anywhere else on the page, new touchstart and touchend events are dispatched
-			// with the same identifier as the touch event that previously triggered the click that triggered the alert.
-			// Sadly, there is an issue on iOS 4 that causes some normal touch events to have the same identifier as an
-			// immediately preceeding touch event (issue #52), so this fix is unavailable on that platform.
-			// Issue 120: touch.identifier is 0 when Chrome dev tools 'Emulate touch events' is set with an iOS device UA string,
-			// which causes all touch events to be ignored. As this block only applies to iOS, and iOS identifiers are always long,
-			// random integers, it's safe to to continue if the identifier is 0 here.
-			if (touch.identifier && touch.identifier === this.lastTouchIdentifier) {
-				event.preventDefault();
-				return false;
-			}
-
-			this.lastTouchIdentifier = touch.identifier;
-
-			// If the target element is a child of a scrollable layer (using -webkit-overflow-scrolling: touch) and:
-			// 1) the user does a fling scroll on the scrollable layer
-			// 2) the user stops the fling scroll with another tap
-			// then the event.target of the last 'touchend' event will be the element that was under the user's finger
-			// when the fling scroll was started, causing FastClick to send a click event to that layer - unless a check
-			// is made to ensure that a parent layer was not scrolled before sending a synthetic click (issue #42).
-			this.updateScrollParent(targetElement);
-		}
-	}
-
-	this.trackingClick = true;
-	this.trackingClickStart = event.timeStamp;
-	this.targetElement = targetElement;
-
-	this.touchStartX = touch.pageX;
-	this.touchStartY = touch.pageY;
-
-	// Prevent phantom clicks on fast double-tap (issue #36)
-	if ((event.timeStamp - this.lastClickTime) < this.tapDelay) {
-		event.preventDefault();
-	}
-
-	return true;
-};
-
-
-/**
- * Based on a touchmove event object, check whether the touch has moved past a boundary since it started.
- *
- * @param {Event} event
- * @returns {boolean}
- */
-FastClick.prototype.touchHasMoved = function(event) {
-	'use strict';
-	var touch = event.changedTouches[0], boundary = this.touchBoundary;
-
-	if (Math.abs(touch.pageX - this.touchStartX) > boundary || Math.abs(touch.pageY - this.touchStartY) > boundary) {
-		return true;
-	}
-
-	return false;
-};
-
-
-/**
- * Update the last position.
- *
- * @param {Event} event
- * @returns {boolean}
- */
-FastClick.prototype.onTouchMove = function(event) {
-	'use strict';
-	if (!this.trackingClick) {
-		return true;
-	}
-
-	// If the touch has moved, cancel the click tracking
-	if (this.targetElement !== this.getTargetElementFromEventTarget(event.target) || this.touchHasMoved(event)) {
-		this.trackingClick = false;
-		this.targetElement = null;
-	}
-
-	return true;
-};
-
-
-/**
- * Attempt to find the labelled control for the given label element.
- *
- * @param {EventTarget|HTMLLabelElement} labelElement
- * @returns {Element|null}
- */
-FastClick.prototype.findControl = function(labelElement) {
-	'use strict';
-
-	// Fast path for newer browsers supporting the HTML5 control attribute
-	if (labelElement.control !== undefined) {
-		return labelElement.control;
-	}
-
-	// All browsers under test that support touch events also support the HTML5 htmlFor attribute
-	if (labelElement.htmlFor) {
-		return document.getElementById(labelElement.htmlFor);
-	}
-
-	// If no for attribute exists, attempt to retrieve the first labellable descendant element
-	// the list of which is defined here: http://www.w3.org/TR/html5/forms.html#category-label
-	return labelElement.querySelector('button, input:not([type=hidden]), keygen, meter, output, progress, select, textarea');
-};
-
-
-/**
- * On touch end, determine whether to send a click event at once.
- *
- * @param {Event} event
- * @returns {boolean}
- */
-FastClick.prototype.onTouchEnd = function(event) {
-	'use strict';
-	var forElement, trackingClickStart, targetTagName, scrollParent, touch, targetElement = this.targetElement;
-
-	if (!this.trackingClick) {
-		return true;
-	}
-
-	// Prevent phantom clicks on fast double-tap (issue #36)
-	if ((event.timeStamp - this.lastClickTime) < this.tapDelay) {
-		this.cancelNextClick = true;
-		return true;
-	}
-
-	// Reset to prevent wrong click cancel on input (issue #156).
-	this.cancelNextClick = false;
-
-	this.lastClickTime = event.timeStamp;
-
-	trackingClickStart = this.trackingClickStart;
-	this.trackingClick = false;
-	this.trackingClickStart = 0;
-
-	// On some iOS devices, the targetElement supplied with the event is invalid if the layer
-	// is performing a transition or scroll, and has to be re-detected manually. Note that
-	// for this to function correctly, it must be called *after* the event target is checked!
-	// See issue #57; also filed as rdar://13048589 .
-	if (deviceIsIOSWithBadTarget) {
-		touch = event.changedTouches[0];
-
-		// In certain cases arguments of elementFromPoint can be negative, so prevent setting targetElement to null
-		targetElement = document.elementFromPoint(touch.pageX - window.pageXOffset, touch.pageY - window.pageYOffset) || targetElement;
-		targetElement.fastClickScrollParent = this.targetElement.fastClickScrollParent;
-	}
-
-	targetTagName = targetElement.tagName.toLowerCase();
-	if (targetTagName === 'label') {
-		forElement = this.findControl(targetElement);
-		if (forElement) {
-			this.focus(targetElement);
-			if (deviceIsAndroid) {
-				return false;
-			}
-
-			targetElement = forElement;
-		}
-	} else if (this.needsFocus(targetElement)) {
-
-		// Case 1: If the touch started a while ago (best guess is 100ms based on tests for issue #36) then focus will be triggered anyway. Return early and unset the target element reference so that the subsequent click will be allowed through.
-		// Case 2: Without this exception for input elements tapped when the document is contained in an iframe, then any inputted text won't be visible even though the value attribute is updated as the user types (issue #37).
-		if ((event.timeStamp - trackingClickStart) > 100 || (deviceIsIOS && window.top !== window && targetTagName === 'input')) {
-			this.targetElement = null;
-			return false;
-		}
-
-		this.focus(targetElement);
-		this.sendClick(targetElement, event);
-
-		// Select elements need the event to go through on iOS 4, otherwise the selector menu won't open.
-		// Also this breaks opening selects when VoiceOver is active on iOS6, iOS7 (and possibly others)
-		if (!deviceIsIOS || targetTagName !== 'select') {
-			this.targetElement = null;
-			event.preventDefault();
-		}
-
-		return false;
-	}
-
-	if (deviceIsIOS && !deviceIsIOS4) {
-
-		// Don't send a synthetic click event if the target element is contained within a parent layer that was scrolled
-		// and this tap is being used to stop the scrolling (usually initiated by a fling - issue #42).
-		scrollParent = targetElement.fastClickScrollParent;
-		if (scrollParent && scrollParent.fastClickLastScrollTop !== scrollParent.scrollTop) {
-			return true;
-		}
-	}
-
-	// Prevent the actual click from going though - unless the target node is marked as requiring
-	// real clicks or if it is in the whitelist in which case only non-programmatic clicks are permitted.
-	if (!this.needsClick(targetElement)) {
-		event.preventDefault();
-		this.sendClick(targetElement, event);
-	}
-
-	return false;
-};
-
-
-/**
- * On touch cancel, stop tracking the click.
- *
- * @returns {void}
- */
-FastClick.prototype.onTouchCancel = function() {
-	'use strict';
-	this.trackingClick = false;
-	this.targetElement = null;
-};
-
-
-/**
- * Determine mouse events which should be permitted.
- *
- * @param {Event} event
- * @returns {boolean}
- */
-FastClick.prototype.onMouse = function(event) {
-	'use strict';
-
-	// If a target element was never set (because a touch event was never fired) allow the event
-	if (!this.targetElement) {
-		return true;
-	}
-
-	if (event.forwardedTouchEvent) {
-		return true;
-	}
-
-	// Programmatically generated events targeting a specific element should be permitted
-	if (!event.cancelable) {
-		return true;
-	}
-
-	// Derive and check the target element to see whether the mouse event needs to be permitted;
-	// unless explicitly enabled, prevent non-touch click events from triggering actions,
-	// to prevent ghost/doubleclicks.
-	if (!this.needsClick(this.targetElement) || this.cancelNextClick) {
-
-		// Prevent any user-added listeners declared on FastClick element from being fired.
-		if (event.stopImmediatePropagation) {
-			event.stopImmediatePropagation();
-		} else {
-
-			// Part of the hack for browsers that don't support Event#stopImmediatePropagation (e.g. Android 2)
-			event.propagationStopped = true;
-		}
-
-		// Cancel the event
-		event.stopPropagation();
-		event.preventDefault();
-
-		return false;
-	}
-
-	// If the mouse event is permitted, return true for the action to go through.
-	return true;
-};
-
-
-/**
- * On actual clicks, determine whether this is a touch-generated click, a click action occurring
- * naturally after a delay after a touch (which needs to be cancelled to avoid duplication), or
- * an actual click which should be permitted.
- *
- * @param {Event} event
- * @returns {boolean}
- */
-FastClick.prototype.onClick = function(event) {
-	'use strict';
-	var permitted;
-
-	// It's possible for another FastClick-like library delivered with third-party code to fire a click event before FastClick does (issue #44). In that case, set the click-tracking flag back to false and return early. This will cause onTouchEnd to return early.
-	if (this.trackingClick) {
-		this.targetElement = null;
-		this.trackingClick = false;
-		return true;
-	}
-
-	// Very odd behaviour on iOS (issue #18): if a submit element is present inside a form and the user hits enter in the iOS simulator or clicks the Go button on the pop-up OS keyboard the a kind of 'fake' click event will be triggered with the submit-type input element as the target.
-	if (event.target.type === 'submit' && event.detail === 0) {
-		return true;
-	}
-
-	permitted = this.onMouse(event);
-
-	// Only unset targetElement if the click is not permitted. This will ensure that the check for !targetElement in onMouse fails and the browser's click doesn't go through.
-	if (!permitted) {
-		this.targetElement = null;
-	}
-
-	// If clicks are permitted, return true for the action to go through.
-	return permitted;
-};
-
-
-/**
- * Remove all FastClick's event listeners.
- *
- * @returns {void}
- */
-FastClick.prototype.destroy = function() {
-	'use strict';
-	var layer = this.layer;
-
-	if (deviceIsAndroid) {
-		layer.removeEventListener('mouseover', this.onMouse, true);
-		layer.removeEventListener('mousedown', this.onMouse, true);
-		layer.removeEventListener('mouseup', this.onMouse, true);
-	}
-
-	layer.removeEventListener('click', this.onClick, true);
-	layer.removeEventListener('touchstart', this.onTouchStart, false);
-	layer.removeEventListener('touchmove', this.onTouchMove, false);
-	layer.removeEventListener('touchend', this.onTouchEnd, false);
-	layer.removeEventListener('touchcancel', this.onTouchCancel, false);
-};
-
-
-/**
- * Check whether FastClick is needed.
- *
- * @param {Element} layer The layer to listen on
- */
-FastClick.notNeeded = function(layer) {
-	'use strict';
-	var metaViewport;
-	var chromeVersion;
-	var blackberryVersion;
-
-	// Devices that don't support touch don't need FastClick
-	if (typeof window.ontouchstart === 'undefined') {
-		return true;
-	}
-
-	// Chrome version - zero for other browsers
-	chromeVersion = +(/Chrome\/([0-9]+)/.exec(navigator.userAgent) || [,0])[1];
-
-	if (chromeVersion) {
-
-		if (deviceIsAndroid) {
-			metaViewport = document.querySelector('meta[name=viewport]');
-
-			if (metaViewport) {
-				// Chrome on Android with user-scalable="no" doesn't need FastClick (issue #89)
-				if (metaViewport.content.indexOf('user-scalable=no') !== -1) {
-					return true;
-				}
-				// Chrome 32 and above with width=device-width or less don't need FastClick
-				if (chromeVersion > 31 && document.documentElement.scrollWidth <= window.outerWidth) {
-					return true;
-				}
-			}
-
-		// Chrome desktop doesn't need FastClick (issue #15)
-		} else {
-			return true;
-		}
-	}
-
-	if (deviceIsBlackBerry10) {
-		blackberryVersion = navigator.userAgent.match(/Version\/([0-9]*)\.([0-9]*)/);
-
-		// BlackBerry 10.3+ does not require Fastclick library.
-		// https://github.com/ftlabs/fastclick/issues/251
-		if (blackberryVersion[1] >= 10 && blackberryVersion[2] >= 3) {
-			metaViewport = document.querySelector('meta[name=viewport]');
-
-			if (metaViewport) {
-				// user-scalable=no eliminates click delay.
-				if (metaViewport.content.indexOf('user-scalable=no') !== -1) {
-					return true;
-				}
-				// width=device-width (or less than device-width) eliminates click delay.
-				if (document.documentElement.scrollWidth <= window.outerWidth) {
-					return true;
-				}
-			}
-		}
-	}
-
-	// IE10 with -ms-touch-action: none, which disables double-tap-to-zoom (issue #97)
-	if (layer.style.msTouchAction === 'none') {
-		return true;
-	}
-
-	return false;
-};
-
-
-/**
- * Factory method for creating a FastClick object
- *
- * @param {Element} layer The layer to listen on
- * @param {Object} options The options to override the defaults
- */
-FastClick.attach = function(layer, options) {
-	'use strict';
-	return new FastClick(layer, options);
-};
-
-
-if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) {
-
-	// AMD. Register as an anonymous module.
-	define(function() {
-		'use strict';
-		return FastClick;
-	});
-} else if (typeof module !== 'undefined' && module.exports) {
-	module.exports = FastClick.attach;
-	module.exports.FastClick = FastClick;
-} else {
-	window.FastClick = FastClick;
-}
-
 /*
  * Foundation Responsive Library
  * http://foundation.zurb.com
@@ -24921,9 +24099,6 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
     var self = this,
         should_bind_events = !S(this).data(this.attr_name(true));
 
-    if (typeof method === 'string') {
-      return this[method].call(this, options);
-    }
 
     if (S(this.scope).is('[' + this.attr_name() +']')) {
       S(this.scope).data(this.attr_name(true) + '-init', $.extend({}, this.settings, (options || method), this.data_options(S(this.scope))));
@@ -24942,6 +24117,11 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
         }
       });
     }
+    // # Patch to fix #5043 to move this *after* the if/else clause in order for Backbone and similar frameworks to have improved control over event binding and data-options updating. 
+    if (typeof method === 'string') {
+      return this[method].call(this, options);
+    }
+
   };
 
   var single_image_loaded = function (image, callback) {
@@ -25099,7 +24279,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
   window.Foundation = {
     name : 'Foundation',
 
-    version : '5.2.3',
+    version : '5.3.1',
 
     media_queries : {
       small : S('.foundation-mq-small').css('font-family').replace(/^[\/\\'"]+|(;\s?})+|[\/\\'"]+$/g, ''),
@@ -25353,7 +24533,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
       //    Class (String): Class name for the generated <meta> tag
       register_media : function (media, media_class) {
         if(Foundation.media_queries[media] === undefined) {
-          $('head').append('<meta class="' + media_class + '">');
+          $('head').append('<meta class="' + media_class + '"/>');
           Foundation.media_queries[media] = removeQuotes($('.' + media_class).css('font-family'));
         }
       },
@@ -25439,7 +24619,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
   Foundation.libs.abide = {
     name : 'abide',
 
-    version : '5.2.3',
+    version : '5.3.3',
 
     settings : {
       live_validate : true,
@@ -25450,7 +24630,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
         alpha: /^[a-zA-Z]+$/,
         alpha_numeric : /^[a-zA-Z0-9]+$/,
         integer: /^[-+]?\d+$/,
-        number: /^[-+]?\d*(?:\.\d+)?$/,
+        number: /^[-+]?\d*(?:[\.\,]\d+)?$/,
 
         // amex, visa, diners
         card : /^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|6(?:011|5[0-9][0-9])[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|(?:2131|1800|35\d{3})\d{11})$/,
@@ -25532,17 +24712,15 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
     validate : function (els, e, is_ajax) {
       var validations = this.parse_patterns(els),
           validation_count = validations.length,
-          form = this.S(els[0]).closest('[data-' + this.attr_name(true) + ']'),
-          settings = form.data(this.attr_name(true) + '-init') || {},
+          form = this.S(els[0]).closest('form'),
           submit_event = /submit/.test(e.type);
 
-      form.trigger('validated');
       // Has to count up to make sure the focus gets applied to the top error
       for (var i=0; i < validation_count; i++) {
         if (!validations[i] && (submit_event || is_ajax)) {
-          if (settings.focus_on_invalid) els[i].focus();
+          if (this.settings.focus_on_invalid) els[i].focus();
           form.trigger('invalid');
-          this.S(els[i]).closest('[data-' + this.attr_name(true) + ']').attr(this.invalid_attr, '');
+          this.S(els[i]).closest('form').attr(this.invalid_attr, '');
           return false;
         }
       }
@@ -25578,7 +24756,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
       if (this.settings.patterns.hasOwnProperty(pattern) && pattern.length > 0) {
         return [el, this.settings.patterns[pattern], required];
       } else if (pattern.length > 0) {
-        return [el, new RegExp('^'+pattern+'$'), required];
+        return [el, new RegExp(pattern), required];
       }
 
       if (this.settings.patterns.hasOwnProperty(type)) {
@@ -25595,7 +24773,6 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
           validations = [],
           form = this.S(el_patterns[0][0]).closest('[data-' + this.attr_name(true) + ']'),
           settings = form.data(this.attr_name(true) + '-init') || {};
-
       while (i--) {
         var el = el_patterns[i][0],
             required = el_patterns[i][2],
@@ -25622,36 +24799,34 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
           validations.push(this.valid_radio(el, required));
         } else if (is_checkbox && required) {
           validations.push(this.valid_checkbox(el, required));
-        } else if (validator) {
-          valid = this.settings.validators[validator].apply(this, [el, required, parent])
-          validations.push(valid);
-
-          if (valid) {
-            this.S(el).removeAttr(this.invalid_attr);
-            parent.removeClass('error');
-          } else {
-            this.S(el).attr(this.invalid_attr, '');
-            parent.addClass('error');
-          }
-
         } else {
+          
+          if (validator) {
+            valid = this.settings.validators[validator].apply(this, [el, required, parent]);
+            validations.push(valid);
+          }
 
           if (el_patterns[i][1].test(value) && valid_length ||
             !required && el.value.length < 1 || $(el).attr('disabled')) {
+            validations.push(true);
+          } else {
+            validations.push(false);
+          }
+
+          validations = [validations.every(function(valid){return valid;})];
+
+          if(validations[0]){
             this.S(el).removeAttr(this.invalid_attr);
             parent.removeClass('error');
-            if (label.length > 0 && settings.error_labels) label.removeClass('error');
-
-            validations.push(true);
+            if (label.length > 0 && this.settings.error_labels) label.removeClass('error');
             $(el).triggerHandler('valid');
           } else {
-            this.S(el).attr(this.invalid_attr, '');
             parent.addClass('error');
-            if (label.length > 0 && settings.error_labels) label.addClass('error');
-
-            validations.push(false);
+            this.S(el).attr(this.invalid_attr, '');
+            if (label.length > 0 && this.settings.error_labels) label.addClass('error');
             $(el).triggerHandler('invalid');
           }
+
         }
       }
 
@@ -25739,7 +24914,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
   Foundation.libs.accordion = {
     name : 'accordion',
 
-    version : '5.2.3',
+    version : '5.3.3',
 
     settings : {
       active_class: 'active',
@@ -25759,12 +24934,12 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
       .off('.fndtn.accordion')
       .on('click.fndtn.accordion', '[' + this.attr_name() + '] > dd > a', function (e) {
         var accordion = S(this).closest('[' + self.attr_name() + ']'),
-            target = S('#' + this.href.split('#')[1]),
-            siblings = S('dd > .content', accordion),
-            aunts = $('dd', accordion),
             groupSelector = self.attr_name() + '=' + accordion.attr(self.attr_name()),
             settings = accordion.data(self.attr_name(true) + '-init'),
-            active_content = S('dd > .content.' + settings.active_class, accordion);
+            target = S('#' + this.href.split('#')[1]),
+            aunts = $('> dd', accordion),
+            siblings = aunts.children('.content'),
+            active_content = siblings.filter('.' + settings.active_class);
         e.preventDefault();
 
         if (accordion.attr(self.attr_name())) {
@@ -25774,7 +24949,11 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
 
         if (settings.toggleable && target.is(active_content)) {
           target.parent('dd').toggleClass(settings.active_class, false);
-          return target.toggleClass(settings.active_class, false);
+          target.toggleClass(settings.active_class, false);
+          settings.callback(target);
+          target.triggerHandler('toggled', [accordion]);
+          accordion.triggerHandler('toggled', [target]);
+          return;
         }
 
         if (!settings.multi_expand) {
@@ -25784,6 +24963,8 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
 
         target.addClass(settings.active_class).parent().addClass(settings.active_class);
         settings.callback(target);
+        target.triggerHandler('toggled', [accordion]);
+        accordion.triggerHandler('toggled', [target]);
       });
     },
 
@@ -25799,7 +24980,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
   Foundation.libs.alert = {
     name : 'alert',
 
-    version : '5.2.3',
+    version : '5.3.3',
 
     settings : {
       callback: function (){}
@@ -25818,15 +24999,15 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
               settings = alertBox.data(self.attr_name(true) + '-init') || self.settings;
 
         e.preventDefault();
-        if ('transitionend' in window || 'webkitTransitionEnd' in window || 'oTransitionEnd' in window) {
+        if (Modernizr.csstransitions) {
           alertBox.addClass("alert-close");
           alertBox.on('transitionend webkitTransitionEnd oTransitionEnd', function(e) {
-            S(this).trigger('close').remove();
+            S(this).trigger('close').trigger('close.fndtn.alert').remove();
             settings.callback();
           });
         } else {
           alertBox.fadeOut(300, function () {
-            S(this).trigger('close').remove();
+            S(this).trigger('close').trigger('close.fndtn.alert').remove();
             settings.callback();
           });
         }
@@ -25843,7 +25024,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
   Foundation.libs.clearing = {
     name : 'clearing',
 
-    version: '5.2.3',
+    version: '5.3.3',
 
     settings : {
       templates : {
@@ -25855,7 +25036,13 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
 
       // comma delimited list of selectors that, on click, will close clearing,
       // add 'div.clearing-blackout, div.visible-img' to close on background click
-      close_selectors : '.clearing-close',
+      close_selectors : '.clearing-close, div.clearing-blackout', 
+
+      // Default to the entire li element.
+      open_selectors : '',
+
+      // Image will be skipped in carousel.
+      skip_selector : '',
 
       touch_label : '',
 
@@ -25890,7 +25077,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
 
       S(this.scope)
         .off('.clearing')
-        .on('click.fndtn.clearing', 'ul[' + this.attr_name() + '] li',
+        .on('click.fndtn.clearing', 'ul[' + this.attr_name() + '] li ' + this.settings.open_selectors,
           function (e, current, target) {
             var current = current || S(this),
                 target = target || current,
@@ -25966,7 +25153,11 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
 
           data.delta_x = e.touches[0].pageX - data.start_page_x;
 
-          if ( typeof data.is_scrolling === 'undefined') {
+          if (Foundation.rtl) {
+            data.delta_x = -data.delta_x;
+          }
+
+          if (typeof data.is_scrolling === 'undefined') {
             data.is_scrolling = !!( data.is_scrolling || Math.abs(data.delta_x) < Math.abs(e.touches[0].pageY - data.start_page_y) );
           }
 
@@ -25989,7 +25180,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
       if ($el.parent().hasClass('carousel')) {
         return;
       }
-
+      
       $el.after('<div id="foundationClearingHolder"></div>');
 
       var grid = $el.detach(),
@@ -26000,7 +25191,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
       } else {
         grid_outerHTML = grid[0].outerHTML;
       }
-
+      
       var holder = this.S('#foundationClearingHolder'),
           settings = $el.data(this.attr_name(true) + '-init'),
           data = {
@@ -26028,6 +25219,11 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
           label = self.S('.clearing-touch-label', container),
           error = false;
 
+      // Event to disable scrolling on touch devices when Clearing is activated
+      $('body').on('touchmove',function(e){
+        e.preventDefault();
+      });
+
       image.error(function () {
         error = true;
       });
@@ -26041,7 +25237,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
               cb.call(this, image);
             }
           }.bind(this));
-        }.bind(this), 50);
+        }.bind(this), 100);
       }
 
       function cb (image) {
@@ -26056,8 +25252,8 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
           .caption(self.S('.clearing-caption', visible_image), self.S('img', target))
           .center_and_label(image, label)
           .shift(current, target, function () {
-            target.siblings().removeClass('visible');
-            target.addClass('visible');
+            target.closest('li').siblings().removeClass('visible');
+            target.closest('li').addClass('visible');
           });
         visible_image.trigger('opened.fndtn.clearing')
       }
@@ -26096,8 +25292,11 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
           .removeClass('clearing-blackout');
         container.removeClass('clearing-container');
         visible_image.hide();
-        visible_image.trigger('closed.fndtn.clearing');
+        visible_image.trigger('closed.fndtn.clearing');        
       }
+
+      // Event to re-enable scrolling on touch devices
+      $('body').off('touchmove');
 
       return false;
     },
@@ -26114,7 +25313,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
 
       if (e.which === NEXT_KEY) this.go(clearing, 'next');
       if (e.which === PREV_KEY) this.go(clearing, 'prev');
-      if (e.which === ESC_KEY) this.S('a.clearing-close').trigger('click');
+      if (e.which === ESC_KEY) this.S('a.clearing-close').trigger('click').trigger('click.fndtn.clearing');
     },
 
     nav : function (e, direction) {
@@ -26154,6 +25353,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
     },
 
     update_paddles : function (target) {
+      target = target.closest('li');
       var visible_image = target
         .closest('.carousel')
         .siblings('.visible-img');
@@ -26256,7 +25456,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
           .hide();
       }
       return this;
-    },
+    }, 
 
     // directional methods
 
@@ -26264,9 +25464,14 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
       var current = this.S('.visible', $ul),
           target = current[direction]();
 
+      // Check for skip selector.
+      if (this.settings.skip_selector && target.find(this.settings.skip_selector).length != 0) {
+        target = target[direction]();
+      }
+
       if (target.length) {
         this.S('img', target)
-          .trigger('click', [current, target])
+          .trigger('click', [current, target]).trigger('click.fndtn.clearing', [current, target])
           .trigger('change.fndtn.clearing');
       }
     },
@@ -26378,7 +25583,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
   Foundation.libs.dropdown = {
     name : 'dropdown',
 
-    version : '5.2.3',
+    version : '5.3.3',
 
     settings : {
       active_class: 'open',
@@ -26423,11 +25628,11 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
           }
 
           var settings = target.data(self.attr_name(true) + '-init') || self.settings;
-
+          
           if(S(e.target).data(self.data_attr()) && settings.is_hover) {
             self.closeall.call(self);
           }
-
+          
           if (settings.is_hover) self.open.apply(self, [dropdown, target]);
         })
         .on('mouseleave.fndtn.dropdown', '[' + this.attr_name() + '], [' + this.attr_name() + '-content]', function (e) {
@@ -26446,11 +25651,11 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
         .on('click.fndtn.dropdown', function (e) {
           var parent = S(e.target).closest('[' + self.attr_name() + '-content]');
 
-          if (S(e.target).data(self.data_attr()) || S(e.target).parent().data(self.data_attr())) {
+          if (S(e.target).closest('[' + self.attr_name() + ']').length > 0) {
             return;
           }
-          if (!(S(e.target).data('revealId')) &&
-            (parent.length > 0 && (S(e.target).is('[' + self.attr_name() + '-content]') ||
+          if (!(S(e.target).data('revealId')) && 
+            (parent.length > 0 && (S(e.target).is('[' + self.attr_name() + '-content]') || 
               $.contains(parent.first()[0], e.target)))) {
             e.stopPropagation();
             return;
@@ -26485,7 +25690,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
             .removeClass(self.settings.active_class)
             .removeData('target');
 
-          self.S(this).trigger('closed', [dropdown]);
+          self.S(this).trigger('closed').trigger('closed.fndtn.dropdown', [dropdown]);
         }
       });
     },
@@ -26502,7 +25707,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
           .css(dropdown
             .addClass(this.settings.active_class), target);
         dropdown.prev('[' + this.attr_name() + ']').addClass(this.settings.active_class);
-        dropdown.data('target', target.get(0)).trigger('opened', [dropdown, target]);
+        dropdown.data('target', target.get(0)).trigger('opened').trigger('opened.fndtn.dropdown', [dropdown, target]);
     },
 
     data_attr: function () {
@@ -26541,6 +25746,8 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
     },
 
     css : function (dropdown, target) {
+      var left_offset = Math.max((target.width() - dropdown.width()) / 2, 8);
+      
       this.clear_idx();
 
       if (this.small()) {
@@ -26553,7 +25760,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
           top: p.top
         });
 
-        dropdown.css(Foundation.rtl ? 'right':'left', '2.5%');
+        dropdown.css(Foundation.rtl ? 'right':'left', left_offset);
       } else {
         var settings = target.data(this.attr_name(true) + '-init') || this.settings;
 
@@ -26564,7 +25771,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
     },
 
     style : function (dropdown, target, settings) {
-      var css = $.extend({position: 'absolute'},
+      var css = $.extend({position: 'absolute'}, 
         this.dirs[settings.align].call(dropdown, target, settings));
 
       dropdown.attr('style', '').css(css);
@@ -26587,7 +25794,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
       top: function (t, s) {
         var self = Foundation.libs.dropdown,
             p = self.dirs._base.call(this, t),
-            pip_offset_base = (t.outerWidth() / 2) - 8;
+            pip_offset_base = 8;
 
         this.addClass('drop-top');
 
@@ -26596,7 +25803,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
         }
 
         if (Foundation.rtl) {
-          return {left: p.left - this.outerWidth() + t.outerWidth(),
+          return {left: p.left - this.outerWidth() + t.outerWidth(), 
             top: p.top - this.outerHeight()};
         }
 
@@ -26605,7 +25812,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
       bottom: function (t, s) {
         var self = Foundation.libs.dropdown,
             p = self.dirs._base.call(this, t),
-            pip_offset_base = (t.outerWidth() / 2) - 8;
+            pip_offset_base = 8;
 
         if (t.outerWidth() < this.outerWidth() || self.small()) {
           self.adjust_pip(pip_offset_base, p);
@@ -26690,7 +25897,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
   Foundation.libs.equalizer = {
     name : 'equalizer',
 
-    version : '5.2.3',
+    version : '5.3.3',
 
     settings : {
       use_tallest: true,
@@ -26719,7 +25926,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
       if (vals.length === 0) return;
       var firstTopOffset = vals.first().offset().top;
       settings.before_height_change();
-      equalizer.trigger('before-height-change');
+      equalizer.trigger('before-height-change').trigger('before-height-change.fndth.equalizer');
       vals.height('inherit');
       vals.each(function(){
         var el = $(this);
@@ -26742,7 +25949,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
         vals.css('height', min);
       }
       settings.after_height_change();
-      equalizer.trigger('after-height-change');
+      equalizer.trigger('after-height-change').trigger('after-height-change.fndtn.equalizer');
     },
 
     reflow : function () {
@@ -26765,7 +25972,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
   Foundation.libs.interchange = {
     name : 'interchange',
 
-    version : '5.2.3',
+    version : '5.3.3',
 
     cache : {},
 
@@ -26814,7 +26021,8 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
 
             return trigger(el[0].src);
           }
-          var last_path = el.data(this.data_attr + '-last-path');
+          var last_path = el.data(this.data_attr + '-last-path'),
+              self = this;
 
           if (last_path == path) return;
 
@@ -26826,7 +26034,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
 
           return $.get(path, function (response) {
             el.html(response);
-            el.data(this.data_attr + '-last-path', path);
+            el.data(self.data_attr + '-last-path', path);
             trigger();
           });
 
@@ -26883,9 +26091,9 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
           if (passed) {
             this.settings.directives[passed
               .scenario[1]].call(this, passed.el, passed.scenario[0], function () {
-                if (arguments[0] instanceof Array) {
+                if (arguments[0] instanceof Array) { 
                   var args = arguments[0];
-                } else {
+                } else { 
                   var args = Array.prototype.slice.call(arguments, 0);
                 }
 
@@ -26992,11 +26200,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
         this.object($(this['cached_' + type][i]));
       }
 
-      return $(window).trigger('resize');
-    },
-
-    parse_params : function (path, directive, mq) {
-      return [this.trim(path), this.convert_directive(directive), this.trim(mq)];
+      return $(window).trigger('resize').trigger('resize.fndtn.interchange');
     },
 
     convert_directive : function (directive) {
@@ -27010,9 +26214,28 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
       return 'replace';
     },
 
+    parse_scenario : function (scenario) {
+      // This logic had to be made more complex since some users were using commas in the url path
+      // So we cannot simply just split on a comma
+      var directive_match = scenario[0].match(/(.+),\s*(\w+)\s*$/),
+      media_query         = scenario[1];
+
+      if (directive_match) {
+        var path  = directive_match[1],
+        directive = directive_match[2];
+      }
+      else {
+        var cached_split = scenario[0].split(/,\s*$/),
+        path             = cached_split[0],
+        directive        = '';               
+      }
+
+      return [this.trim(path), this.convert_directive(directive), this.trim(media_query)];
+    },
+
     object : function(el) {
       var raw_arr = this.parse_data_attr(el),
-          scenarios = [],
+          scenarios = [], 
           i = raw_arr.length;
 
       if (i > 0) {
@@ -27020,10 +26243,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
           var split = raw_arr[i].split(/\((.*?)(\))$/);
 
           if (split.length > 1) {
-            var cached_split = split[0].split(/\, /),
-                params = this.parse_params(cached_split[0],
-                  cached_split[1], split[1]);
-
+            var params = this.parse_scenario(split);
             scenarios.push(params);
           }
         }
@@ -27070,7 +26290,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
 
     parse_data_attr : function (el) {
       var raw = el.attr(this.attr_name()).split(/\[(.*?)\]/),
-          i = raw.length,
+          i = raw.length, 
           output = [];
 
       while (i--) {
@@ -27099,7 +26319,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
   Foundation.libs.joyride = {
     name : 'joyride',
 
-    version : '5.2.3',
+    version : '5.3.3',
 
     defaults : {
       expose                   : false,     // turn on or off the expose feature
@@ -27112,6 +26332,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
       start_timer_on_click     : true,      // true or false - true requires clicking the first button start the timer
       start_offset             : 0,         // the index of the tooltip you want to start on (index of the li)
       next_button              : true,      // true or false to control whether a next button is used
+      prev_button              : true,      // true or false to control whether a prev button is used
       tip_animation            : 'fade',    // 'pop' or 'fade' in each tip
       pause_after              : [],        // array of indexes where to pause the tour after
       exposed                  : [],        // array of expose elements
@@ -27134,14 +26355,15 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
       pre_ride_callback      : function (){},    // A method to call before the tour starts (passed index, tip, and cloned exposed element)
       post_expose_callback   : function (){},    // A method to call after an element has been exposed
       template : { // HTML segments for tip layout
-        link    : '<a href="#close" class="joyride-close-tip">&times;</a>',
-        timer   : '<div class="joyride-timer-indicator-wrap"><span class="joyride-timer-indicator"></span></div>',
-        tip     : '<div class="joyride-tip-guide"><span class="joyride-nub"></span></div>',
-        wrapper : '<div class="joyride-content-wrapper"></div>',
-        button  : '<a href="#" class="small button joyride-next-tip"></a>',
-        modal   : '<div class="joyride-modal-bg"></div>',
-        expose  : '<div class="joyride-expose-wrapper"></div>',
-        expose_cover: '<div class="joyride-expose-cover"></div>'
+        link          : '<a href="#close" class="joyride-close-tip">&times;</a>',
+        timer         : '<div class="joyride-timer-indicator-wrap"><span class="joyride-timer-indicator"></span></div>',
+        tip           : '<div class="joyride-tip-guide"><span class="joyride-nub"></span></div>',
+        wrapper       : '<div class="joyride-content-wrapper"></div>',
+        button        : '<a href="#" class="small button joyride-next-tip"></a>',
+        prev_button   : '<a href="#" class="small button joyride-prev-tip"></a>',
+        modal         : '<div class="joyride-modal-bg"></div>',
+        expose        : '<div class="joyride-expose-wrapper"></div>',
+        expose_cover  : '<div class="joyride-expose-cover"></div>'
       },
       expose_add_class : '' // One or more space-separated class names to be added to exposed element
     },
@@ -27172,6 +26394,22 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
           } else {
             this.hide();
             this.show();
+          }
+
+        }.bind(this))
+        .on('click.fndtn.joyride', '.joyride-prev-tip', function (e) {
+          e.preventDefault();
+
+          if (this.settings.$li.prev().length < 1) {
+            // Do nothing if there are no prev element
+          } else if (this.settings.timer > 0) {
+            clearTimeout(this.settings.automate);
+            this.hide();
+            this.show(null, true);
+            this.startTimer();
+          } else {
+            this.hide();
+            this.show(null, true);
           }
 
         }.bind(this))
@@ -27266,6 +26504,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
 
       $blank = $(this.settings.template.tip).addClass(opts.tip_class);
       content = $.trim($(opts.li).html()) +
+        this.prev_button_text(opts.prev_button_text, opts.index) +
         this.button_text(opts.button_text) +
         this.settings.template.link +
         this.timer_instance(opts.index);
@@ -27289,7 +26528,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
     },
 
     button_text : function (txt) {
-      if (this.settings.next_button) {
+      if (this.settings.tip_settings.next_button) {
         txt = $.trim(txt) || 'Next';
         txt = $(this.settings.template.button).append(txt)[0].outerHTML;
       } else {
@@ -27298,21 +26537,40 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
       return txt;
     },
 
+    prev_button_text : function (txt, idx) {
+      if (this.settings.tip_settings.prev_button) {
+        txt = $.trim(txt) || 'Previous';
+
+        // Add the disabled class to the button if it's the first element
+        if (idx == 0)
+          txt = $(this.settings.template.prev_button).append(txt).addClass('disabled')[0].outerHTML;
+        else
+          txt = $(this.settings.template.prev_button).append(txt)[0].outerHTML;
+      } else {
+        txt = '';
+      }
+      return txt;
+    },
+
     create : function (opts) {
+      this.settings.tip_settings = $.extend({}, this.settings, this.data_options(opts.$li));
       var buttonText = opts.$li.attr(this.add_namespace('data-button'))
         || opts.$li.attr(this.add_namespace('data-text')),
+          prevButtonText = opts.$li.attr(this.add_namespace('data-button-prev'))
+        || opts.$li.attr(this.add_namespace('data-prev-text')),
         tipClass = opts.$li.attr('class'),
         $tip_content = $(this.tip_template({
           tip_class : tipClass,
           index : opts.index,
           button_text : buttonText,
+          prev_button_text : prevButtonText,
           li : opts.$li
         }));
 
       $(this.settings.tip_container).append($tip_content);
     },
 
-    show : function (init) {
+    show : function (init, is_prev) {
       var $timer = null;
 
       // are we paused?
@@ -27323,7 +26581,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
         if (this.settings.paused) {
           this.settings.paused = false;
         } else {
-          this.set_li(init);
+          this.set_li(init, is_prev);
         }
 
         this.settings.attempts = 0;
@@ -27446,13 +26704,16 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
         this.settings.$current_tip);
     },
 
-    set_li : function (init) {
+    set_li : function (init, is_prev) {
       if (init) {
         this.settings.$li = this.settings.$tip_content.eq(this.settings.start_offset);
         this.set_next_tip();
         this.settings.$current_tip = this.settings.$next_tip;
       } else {
-        this.settings.$li = this.settings.$li.next();
+        if (is_prev)
+          this.settings.$li = this.settings.$li.prev();
+        else
+          this.settings.$li = this.settings.$li.next();
         this.set_next_tip();
       }
 
@@ -27516,15 +26777,18 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
       }
 
       if (!/body/i.test(this.settings.$target.selector)) {
+      	  var topAdjustment = this.settings.tip_settings.tipAdjustmentY ? parseInt(this.settings.tip_settings.tipAdjustmentY) : 0,
+			        leftAdjustment = this.settings.tip_settings.tipAdjustmentX ? parseInt(this.settings.tip_settings.tipAdjustmentX) : 0;
+
           if (this.bottom()) {
             if (this.rtl) {
               this.settings.$next_tip.css({
-                top: (this.settings.$target.offset().top + nub_height + this.settings.$target.outerHeight()),
-                left: this.settings.$target.offset().left + this.settings.$target.outerWidth() - this.settings.$next_tip.outerWidth()});
+                top: (this.settings.$target.offset().top + nub_height + this.settings.$target.outerHeight() + topAdjustment),
+                left: this.settings.$target.offset().left + this.settings.$target.outerWidth() - this.settings.$next_tip.outerWidth() + leftAdjustment});
             } else {
               this.settings.$next_tip.css({
-                top: (this.settings.$target.offset().top + nub_height + this.settings.$target.outerHeight()),
-                left: this.settings.$target.offset().left});
+                top: (this.settings.$target.offset().top + nub_height + this.settings.$target.outerHeight() + topAdjustment),
+                left: this.settings.$target.offset().left + leftAdjustment});
             }
 
             this.nub_position($nub, this.settings.tip_settings.nub_position, 'top');
@@ -27532,12 +26796,12 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
           } else if (this.top()) {
             if (this.rtl) {
               this.settings.$next_tip.css({
-                top: (this.settings.$target.offset().top - this.settings.$next_tip.outerHeight() - nub_height),
+                top: (this.settings.$target.offset().top - this.settings.$next_tip.outerHeight() - nub_height + topAdjustment),
                 left: this.settings.$target.offset().left + this.settings.$target.outerWidth() - this.settings.$next_tip.outerWidth()});
             } else {
               this.settings.$next_tip.css({
-                top: (this.settings.$target.offset().top - this.settings.$next_tip.outerHeight() - nub_height),
-                left: this.settings.$target.offset().left});
+                top: (this.settings.$target.offset().top - this.settings.$next_tip.outerHeight() - nub_height + topAdjustment),
+                left: this.settings.$target.offset().left + leftAdjustment});
             }
 
             this.nub_position($nub, this.settings.tip_settings.nub_position, 'bottom');
@@ -27545,16 +26809,16 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
           } else if (this.right()) {
 
             this.settings.$next_tip.css({
-              top: this.settings.$target.offset().top,
-              left: (this.settings.$target.outerWidth() + this.settings.$target.offset().left + nub_width)});
+              top: this.settings.$target.offset().top + topAdjustment,
+              left: (this.settings.$target.outerWidth() + this.settings.$target.offset().left + nub_width + leftAdjustment)});
 
             this.nub_position($nub, this.settings.tip_settings.nub_position, 'left');
 
           } else if (this.left()) {
 
             this.settings.$next_tip.css({
-              top: this.settings.$target.offset().top,
-              left: (this.settings.$target.offset().left - this.settings.$next_tip.outerWidth() - nub_width)});
+              top: this.settings.$target.offset().top + topAdjustment,
+              left: (this.settings.$target.offset().left - this.settings.$next_tip.outerWidth() - nub_width + leftAdjustment)});
 
             this.nub_position($nub, this.settings.tip_settings.nub_position, 'right');
 
@@ -27941,7 +27205,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
   Foundation.libs['magellan-expedition'] = {
     name : 'magellan-expedition',
 
-    version : '5.2.3',
+    version : '5.3.3',
 
     settings : {
       active_class: 'active',
@@ -27949,7 +27213,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
       destination_threshold: 20, // pixels from the top of destination for it to be considered active
       throttle_delay: 30, // calculation throttling to increase framerate
       fixed_top: 0 // top distance in pixels assigend to the fixed element on scroll
-    },
+    }, 
 
     init : function (scope, method, options) {
       Foundation.inherit(this, 'throttle');
@@ -27972,13 +27236,15 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
               settings = expedition.data('magellan-expedition-init'),
               hash = this.hash.split('#').join(''),
               target = $("a[name='"+hash+"']");
-
+          
           if (target.length === 0) {
             target = $('#'+hash);
+            
           }
 
+
           // Account for expedition height if fixed position
-          var scroll_top = target.offset().top;
+          var scroll_top = target.offset().top - settings.destination_threshold + 1;
           scroll_top = scroll_top - expedition.outerHeight();
 
           $('html, body').stop().animate({
@@ -27993,7 +27259,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
           });
         })
         .on('scroll.fndtn.magellan', self.throttle(this.check_for_arrivals.bind(this), settings.throttle_delay));
-
+      
       $(window)
         .on('resize.fndtn.magellan', self.throttle(this.set_expedition_position.bind(this), settings.throttle_delay));
     },
@@ -28008,11 +27274,17 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
       var self = this;
       $('[' + this.attr_name() + '=fixed]', self.scope).each(function(idx, el) {
         var expedition = $(this),
+            settings = expedition.data('magellan-expedition-init'),
             styles = expedition.attr('styles'), // save styles
-            top_offset;
+            top_offset, fixed_top;
 
         expedition.attr('style', '');
-        top_offset = expedition.offset().top + self.settings.threshold;
+        top_offset = expedition.offset().top + settings.threshold;
+
+        //set fixed-top by attribute
+        fixed_top = parseInt(expedition.data('magellan-fixed-top'));
+        if(!isNaN(fixed_top))
+            self.settings.fixed_top = fixed_top;
 
         expedition.data(self.data_attr('magellan-top-offset'), top_offset);
         expedition.attr('style', styles);
@@ -28025,9 +27297,12 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
 
       $('[' + this.attr_name() + '=fixed]', self.scope).each(function() {
         var expedition = $(this),
+            settings = expedition.data('magellan-expedition-init'),
+            styles = expedition.attr('style'), // save styles
             top_offset = expedition.data('magellan-top-offset');
 
-        if (window_top_offset >= top_offset) {
+        //scroll to the top distance
+        if (window_top_offset+self.settings.fixed_top >= top_offset) {
           // Placeholder allows height calculations to be consistent even when
           // appearing to switch between fixed/non-fixed placement
           var placeholder = expedition.prev('[' + self.add_namespace('data-magellan-expedition-clone') + ']');
@@ -28037,10 +27312,10 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
             placeholder.attr(self.add_namespace('data-magellan-expedition-clone'),'');
             expedition.before(placeholder);
           }
-          expedition.css({position:'fixed', top: self.settings.fixed_top});
+          expedition.css({position:'fixed', top: settings.fixed_top});
         } else {
           expedition.prev('[' + self.add_namespace('data-magellan-expedition-clone') + ']').remove();
-          expedition.attr('style','').removeClass('fixed');
+          expedition.attr('style',styles).css('position','').css('top','').removeClass('fixed');
         }
       });
     },
@@ -28078,7 +27353,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
         var name = $(this).data(self.data_attr('magellan-arrival')),
             dest = $('[' + self.add_namespace('data-magellan-destination') + '=' + name + ']');
         if (dest.length > 0) {
-          var top_offset = dest.offset().top - settings.destination_threshold - expedition.outerHeight();
+          var top_offset = Math.floor(dest.offset().top - settings.destination_threshold - expedition.outerHeight());
           return {
             destination : dest,
             arrival : $(this),
@@ -28120,11 +27395,11 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
   Foundation.libs.offcanvas = {
     name : 'offcanvas',
 
-    version : '5.2.3',
+    version : '5.3.3',
 
     settings : {
       open_method: 'move',
-      close_on_click: true
+      close_on_click: false
     },
 
     init : function (scope, method, options) {
@@ -28183,13 +27458,13 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
 
     show: function(class_name, $off_canvas) {
       $off_canvas = $off_canvas || this.get_wrapper();
-      $off_canvas.trigger('open');
+      $off_canvas.trigger('open').trigger('open.fndtn.offcanvas');
       $off_canvas.addClass(class_name);
     },
 
     hide: function(class_name, $off_canvas) {
       $off_canvas = $off_canvas || this.get_wrapper();
-      $off_canvas.trigger('close');
+      $off_canvas.trigger('close').trigger('close.fndtn.offcanvas');
       $off_canvas.removeClass(class_name);
     },
 
@@ -28242,16 +27517,16 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
         timer_container,
         idx = 0,
         animate,
-        adjust_height_after = false,
-        has_init_active = slides_container.find("." + settings.active_slide_class).length > 0;
+        timer,
+        locked = false,
+        adjust_height_after = false;
 
-    self.cache = {};
 
     self.slides = function() {
       return slides_container.children(settings.slide_selector);
     };
 
-    if (!has_init_active) {self.slides().first().addClass(settings.active_slide_class)};
+    self.slides().first().addClass(settings.active_slide_class);
 
     self.update_slide_number = function(index) {
       if (settings.slide_number) {
@@ -28274,7 +27549,6 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
       slides_container.wrap('<div class="'+settings.container_class+'"></div>');
       container = slides_container.parent();
       slides_container.addClass(settings.slides_container_class);
-      slides_container.addClass(settings.animation);
 
       if (settings.stack_on_small) {
         container.addClass(settings.stack_on_small_class);
@@ -28288,9 +27562,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
       if (settings.timer) {
         timer_container = $('<div>').addClass(settings.timer_container_class);
         timer_container.append('<span>');
-        if (settings.timer_show_progress_bar) {
-            timer_container.append($('<div>').addClass(settings.timer_progress_class));
-        }
+        timer_container.append($('<div>').addClass(settings.timer_progress_class));
         timer_container.addClass(settings.timer_paused_class);
         container.append(timer_container);
       }
@@ -28306,27 +27578,22 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
         container.append(bullets_container);
         bullets_container.wrap('<div class="orbit-bullets-container"></div>');
         self.slides().each(function(idx, el) {
-          var bullet = $('<li>').attr('data-orbit-slide', idx)
-            .on('click', self.link_bullet);
+          var bullet = $('<li>').attr('data-orbit-slide', idx).on('click', self.link_bullet);;
           bullets_container.append(bullet);
         });
       }
 
     };
 
-    self._prepare_direction = function(next_idx, current_direction) {
-      var dir = 'next';
-      if (next_idx <= idx) { dir = 'prev'; }
-
-      if (settings.animation === 'slide') {
-        setTimeout(function(){
-          slides_container.removeClass("swipe-prev swipe-next");
-          if (dir === 'next') {slides_container.addClass("swipe-next");}
-          else if (dir === 'prev') {slides_container.addClass("swipe-prev");}
-        },0);
-      }
-
+    self._goto = function(next_idx, start_timer) {
+      // if (locked) {return false;}
+      if (next_idx === idx) {return false;}
+      if (typeof timer === 'object') {timer.restart();}
       var slides = self.slides();
+
+      var dir = 'next';
+      locked = true;
+      if (next_idx < idx) {dir = 'prev';}
       if (next_idx >= slides.length) {
         if (!settings.circular) return false;
         next_idx = 0;
@@ -28334,53 +27601,29 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
         if (!settings.circular) return false;
         next_idx = slides.length - 1;
       }
-      var current = $(slides.get(idx))
-        , next = $(slides.get(next_idx));
 
-      return [dir, current, next, next_idx];
-    };
+      var current = $(slides.get(idx));
+      var next = $(slides.get(next_idx));
 
-    self._goto = function(next_idx, start_timer) {
-      if (next_idx === null) {return false;}
-      if (self.cache.animating) {return false;}
-      if (next_idx === idx) {return false;}
-      if (typeof self.cache.timer === 'object') {self.cache.timer.restart();}
-
-      var slides = self.slides();
-      self.cache.animating = true;
-      var res = self._prepare_direction(next_idx)
-        , dir = res[0]
-        , current = res[1]
-        , next = res[2]
-        , next_idx = res[3];
-
-      // This means that circular is disabled and we most likely reached the last slide.
-      if (res === false) return false;
+      current.css('zIndex', 2);
+      current.removeClass(settings.active_slide_class);
+      next.css('zIndex', 4).addClass(settings.active_slide_class);
 
       slides_container.trigger('before-slide-change.fndtn.orbit');
       settings.before_slide_change();
-      idx = next_idx;
-
-      current.css("transitionDuration", settings.animation_speed+"ms");
-      next.css("transitionDuration", settings.animation_speed+"ms");
+      self.update_active_link(next_idx);
 
       var callback = function() {
         var unlock = function() {
-          if (start_timer === true) {self.cache.timer.restart();}
+          idx = next_idx;
+          locked = false;
+          if (start_timer === true) {timer = self.create_timer(); timer.start();}
           self.update_slide_number(idx);
-          // Remove "animate-in" class as late as possible to avoid "flickering" (especially with variable_height).
-          next.removeClass("animate-in");
-          next.addClass(settings.active_slide_class);
-          self.update_active_link(next_idx);
           slides_container.trigger('after-slide-change.fndtn.orbit',[{slide_number: idx, total_slides: slides.length}]);
           settings.after_slide_change(idx, slides.length);
-          setTimeout(function(){
-            self.cache.animating = false;
-          }, 100);
-
         };
         if (slides_container.height() != next.height() && settings.variable_height) {
-          slides_container.animate({'min-height': next.height()}, 250, 'linear', unlock);
+          slides_container.animate({'height': next.height()}, 250, 'linear', unlock);
         } else {
           unlock();
         }
@@ -28394,7 +27637,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
       };
 
       if (next.height() > slides_container.height() && settings.variable_height) {
-        slides_container.animate({'min-height': next.height()}, 250, 'linear', start_animation);
+        slides_container.animate({'height': next.height()}, 250, 'linear', start_animation);
       } else {
         start_animation();
       }
@@ -28403,19 +27646,13 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
     self.next = function(e) {
       e.stopImmediatePropagation();
       e.preventDefault();
-      self._prepare_direction(idx + 1);
-      setTimeout(function(){
-        self._goto(idx + 1);
-    }, 100);
+      self._goto(idx + 1);
     };
 
     self.prev = function(e) {
       e.stopImmediatePropagation();
       e.preventDefault();
-      self._prepare_direction(idx - 1);
-      setTimeout(function(){
-        self._goto(idx - 1)
-      }, 100);
+      self._goto(idx - 1);
     };
 
     self.link_custom = function(e) {
@@ -28423,38 +27660,24 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
       var link = $(this).attr('data-orbit-link');
       if ((typeof link === 'string') && (link = $.trim(link)) != "") {
         var slide = container.find('[data-orbit-slide='+link+']');
-        if (slide.index() != -1) {
-          setTimeout(function(){
-            self._goto(slide.index());
-          },100);
-        }
+        if (slide.index() != -1) {self._goto(slide.index());}
       }
     };
 
-    // Click handler for slides and bullets.
     self.link_bullet = function(e) {
       var index = $(this).attr('data-orbit-slide');
       if ((typeof index === 'string') && (index = $.trim(index)) != "") {
         if(isNaN(parseInt(index)))
         {
           var slide = container.find('[data-orbit-slide='+index+']');
-          if (slide.index() != -1) {
-            index = slide.index() + 1;
-            self._prepare_direction(index);
-            setTimeout(function(){
-              self._goto(index);
-            },100);
-          }
+          if (slide.index() != -1) {self._goto(slide.index() + 1);}
         }
         else
         {
-          index = parseInt(index);
-          self._prepare_direction(index);
-          setTimeout(function(){
-            self._goto(index);
-          },100);
+          self._goto(parseInt(index));
         }
       }
+
     }
 
     self.timer_callback = function() {
@@ -28469,7 +27692,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
           if ($(this).height() > h) { h = $(this).height(); }
         });
       }
-      slides_container.css('minHeight', String(h)+'px');
+      slides_container.height(h);
     };
 
     self.create_timer = function() {
@@ -28482,37 +27705,29 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
     };
 
     self.stop_timer = function() {
-      if (typeof self.cache.timer === 'object') self.cache.timer.stop();
+      if (typeof timer === 'object') timer.stop();
     };
 
     self.toggle_timer = function() {
       var t = container.find('.'+settings.timer_container_class);
       if (t.hasClass(settings.timer_paused_class)) {
-        if (typeof self.cache.timer === 'undefined') {self.cache.timer = self.create_timer();}
-        self.cache.timer.start();
+        if (typeof timer === 'undefined') {timer = self.create_timer();}
+        timer.start();
       }
       else {
-        if (typeof self.cache.timer === 'object') {self.cache.timer.stop();}
+        if (typeof timer === 'object') {timer.stop();}
       }
     };
 
     self.init = function() {
       self.build_markup();
       if (settings.timer) {
-        self.cache.timer = self.create_timer();
-        Foundation.utils.image_loaded(this.slides().find('img'), self.cache.timer.start);
+        timer = self.create_timer();
+        Foundation.utils.image_loaded(this.slides().children('img'), timer.start);
       }
-
-      animate = new CSSAnimation(settings, slides_container);
-
-      if (has_init_active) {
-        var $init_target = slides_container.find("." + settings.active_slide_class),
-            animation_speed = settings.animation_speed;
-        settings.animation_speed = 1;
-        $init_target.removeClass('active');
-        self._goto($init_target.index());
-        settings.animation_speed = animation_speed;
-      }
+      animate = new FadeAnimation(settings, slides_container);
+      if (settings.animation === 'slide')
+        animate = new SlideAnimation(settings, slides_container);
 
       container.on('click', '.'+settings.next_class, self.next);
       container.on('click', '.'+settings.prev_class, self.prev);
@@ -28523,73 +27738,43 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
 
       container.on('click', self.toggle_timer);
       if (settings.swipe) {
-        slides_container.on('touchstart.fndtn.orbit',function(e) {
-          if (self.cache.animating) {return;}
+        container.on('touchstart.fndtn.orbit', function(e) {
           if (!e.touches) {e = e.originalEvent;}
-          e.preventDefault();
+          var data = {
+            start_page_x: e.touches[0].pageX,
+            start_page_y: e.touches[0].pageY,
+            start_time: (new Date()).getTime(),
+            delta_x: 0,
+            is_scrolling: undefined
+          };
+          container.data('swipe-transition', data);
           e.stopPropagation();
-
-          self.cache.start_page_x = e.touches[0].pageX;
-          self.cache.start_page_y = e.touches[0].pageY;
-          self.cache.start_time = (new Date()).getTime();
-          self.cache.delta_x = 0;
-          self.cache.is_scrolling = null;
-          self.cache.direction = null;
-
-          self.stop_timer(); // does not appear to prevent callback from occurring
         })
-        .on('touchmove.fndtn.orbit',function(e) {
-          if (Math.abs(self.cache.delta_x) > 5) {
-            e.preventDefault();
-            e.stopPropagation();
+        .on('touchmove.fndtn.orbit', function(e) {
+          if (!e.touches) { e = e.originalEvent; }
+          // Ignore pinch/zoom events
+          if(e.touches.length > 1 || e.scale && e.scale !== 1) return;
+
+          var data = container.data('swipe-transition');
+          if (typeof data === 'undefined') {data = {};}
+
+          data.delta_x = e.touches[0].pageX - data.start_page_x;
+
+          if ( typeof data.is_scrolling === 'undefined') {
+            data.is_scrolling = !!( data.is_scrolling || Math.abs(data.delta_x) < Math.abs(e.touches[0].pageY - data.start_page_y) );
           }
 
-          if (self.cache.animating) {return;}
-          requestAnimationFrame(function(){
-            if (!e.touches) { e = e.originalEvent; }
-
-            // Ignore pinch/zoom events
-            if(e.touches.length > 1 || e.scale && e.scale !== 1) return;
-
-            self.cache.delta_x = e.touches[0].pageX - self.cache.start_page_x;
-
-            if (self.cache.is_scrolling === null) {
-              self.cache.is_scrolling = !!( self.cache.is_scrolling || Math.abs(self.cache.delta_x) < Math.abs(e.touches[0].pageY - self.cache.start_page_y) );
-            }
-
-            if (self.cache.is_scrolling) {
-              return;
-            }
-
-            var direction = (self.cache.delta_x < 0) ? (idx+1) : (idx-1);
-            if (self.cache.direction !== direction) {
-              var res = self._prepare_direction(direction);
-              self.cache.direction = direction;
-              self.cache.dir = res[0];
-              self.cache.current = res[1];
-              self.cache.next = res[2];
-            }
-
-            if (settings.animation === 'slide') {
-              var offset, next_offset;
-
-              offset = (self.cache.delta_x / container.width()) * 100;
-              if (offset >= 0) {next_offset = -(100 - offset);}
-              else {next_offset = 100 + offset;}
-
-              self.cache.current.css("transform","translate3d("+offset+"%,0,0)");
-              self.cache.next.css("transform","translate3d("+next_offset+"%,0,0)");
-            }
-          });
+          if (!data.is_scrolling && !data.active) {
+            e.preventDefault();
+            var direction = (data.delta_x < 0) ? (idx+1) : (idx-1);
+            data.active = true;
+            self._goto(direction);
+          }
         })
         .on('touchend.fndtn.orbit', function(e) {
-          if (self.cache.animating) {return;}
-          e.preventDefault();
+          container.data('swipe-transition', {});
           e.stopPropagation();
-          setTimeout(function(){
-            self._goto(self.cache.direction);
-          }, 50);
-        });
+        })
       }
       container.on('mouseenter.fndtn.orbit', function(e) {
         if (settings.timer && settings.pause_on_hover) {
@@ -28598,18 +27783,17 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
       })
       .on('mouseleave.fndtn.orbit', function(e) {
         if (settings.timer && settings.resume_on_mouseout) {
-          self.cache.timer.start();
+          timer.start();
         }
       });
 
       $(document).on('click', '[data-orbit-link]', self.link_custom);
       $(window).on('load resize', self.compute_dimensions);
-      var children = this.slides().find('img');
-      Foundation.utils.image_loaded(children, self.compute_dimensions);
-      Foundation.utils.image_loaded(children, function() {
+      Foundation.utils.image_loaded(this.slides().children('img'), self.compute_dimensions);
+      Foundation.utils.image_loaded(this.slides().children('img'), function() {
         container.prev('.'+settings.preloader_class).css('display', 'none');
-        self.update_slide_number(idx);
-        self.update_active_link(idx);
+        self.update_slide_number(0);
+        self.update_active_link(0);
         slides_container.trigger('ready.fndtn.orbit');
       });
     };
@@ -28621,7 +27805,6 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
     var self = this,
         duration = settings.timer_speed,
         progress = el.find('.'+settings.timer_progress_class),
-        do_progress = progress && progress.css('display') != 'none',
         start,
         timeout,
         left = -1;
@@ -28638,18 +27821,15 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
       clearTimeout(timeout);
       el.addClass(settings.timer_paused_class);
       left = -1;
-      if (do_progress) {self.update_progress(0);}
-      self.start();
+      self.update_progress(0);
     };
 
     this.start = function() {
       if (!el.hasClass(settings.timer_paused_class)) {return true;}
       left = (left === -1) ? duration : left;
       el.removeClass(settings.timer_paused_class);
-      if (do_progress) {
-          start = new Date().getTime();
-          progress.animate({'width': '100%'}, left, 'linear');
-      }
+      start = new Date().getTime();
+      progress.animate({'width': '100%'}, left, 'linear');
       timeout = setTimeout(function() {
         self.restart();
         callback();
@@ -28661,99 +27841,58 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
       if (el.hasClass(settings.timer_paused_class)) {return true;}
       clearTimeout(timeout);
       el.addClass(settings.timer_paused_class);
-      if (do_progress) {
-          var end = new Date().getTime();
-          left = left - (end - start);
-          var w = 100 - ((left / duration) * 100);
-          self.update_progress(w);
-      }
+      var end = new Date().getTime();
+      left = left - (end - start);
+      var w = 100 - ((left / duration) * 100);
+      self.update_progress(w);
       el.trigger('timer-stopped.fndtn.orbit');
     };
   };
 
-  var CSSAnimation = function(settings, container) {
-    var animation_end = "webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend";
+  var SlideAnimation = function(settings, container) {
+    var duration = settings.animation_speed;
+    var is_rtl = ($('html[dir=rtl]').length === 1);
+    var margin = is_rtl ? 'marginRight' : 'marginLeft';
+    var animMargin = {};
+    animMargin[margin] = '0%';
 
     this.next = function(current, next, callback) {
-      if (Modernizr.csstransitions) {
-        next.on(animation_end, function(e){
-          next.unbind(animation_end);
-          current.removeClass("active animate-out");
-          container.children().css({
-            "transform":"",
-            "-ms-transform":"",
-            "-webkit-transition-duration":"",
-            "-moz-transition-duration": "",
-            "-o-transition-duration": "",
-            "transition-duration":""
-          });
-          callback();
-        });
-      } else {
-        setTimeout(function(){
-          current.removeClass("active animate-out");
-          container.children().css({
-            "transform":"",
-            "-ms-transform":"",
-            "-webkit-transition-duration":"",
-            "-moz-transition-duration": "",
-            "-o-transition-duration": "",
-            "transition-duration":""
-          });
-          callback();
-        }, settings.animation_speed);
-      }
-      container.children().css({
-        "transform":"",
-        "-ms-transform":"",
-        "-webkit-transition-duration":"",
-        "-moz-transition-duration": "",
-        "-o-transition-duration": "",
-        "transition-duration":""
+      current.animate({marginLeft:'-100%'}, duration);
+      next.animate(animMargin, duration, function() {
+        current.css(margin, '100%');
+        callback();
       });
-      current.addClass("animate-out");
-      next.addClass("animate-in");
     };
 
     this.prev = function(current, prev, callback) {
-      if (Modernizr.csstransitions) {
-        prev.on(animation_end, function(e){
-          prev.unbind(animation_end);
-          current.removeClass("active animate-out");
-          container.children().css({
-            "transform":"",
-            "-ms-transform":"",
-            "-webkit-transition-duration":"",
-            "-moz-transition-duration": "",
-            "-o-transition-duration": "",
-            "transition-duration":""
-          });
-          callback();
-        });
-      } else {
-        setTimeout(function(){
-          current.removeClass("active animate-out");
-          container.children().css({
-            "transform":"",
-            "-ms-transform":"",
-            "-webkit-transition-duration":"",
-            "-moz-transition-duration": "",
-            "-o-transition-duration": "",
-            "transition-duration":""
-          });
-          callback();
-        }, settings.animation_speed);
-      }
-      container.children().css({
-        "transform":"",
-        "-ms-transform":"",
-        "-webkit-transition-duration":"",
-        "-moz-transition-duration": "",
-        "-o-transition-duration": "",
-        "transition-duration":""
+      current.animate({marginLeft:'100%'}, duration);
+      prev.css(margin, '-100%');
+      prev.animate(animMargin, duration, function() {
+        current.css(margin, '100%');
+        callback();
       });
-      current.addClass("animate-out");
-      prev.addClass("animate-in");
+    };
+  };
+
+  var FadeAnimation = function(settings, container) {
+    var duration = settings.animation_speed;
+    var is_rtl = ($('html[dir=rtl]').length === 1);
+    var margin = is_rtl ? 'marginRight' : 'marginLeft';
+
+    this.next = function(current, next, callback) {
+      next.css({'margin':'0%', 'opacity':'0.01'});
+      next.animate({'opacity':'1'}, duration, 'linear', function() {
+        current.css('margin', '100%');
+        callback();
+      });
+    };
+
+    this.prev = function(current, prev, callback) {
+      prev.css({'margin':'0%', 'opacity':'0.01'});
+      prev.animate({'opacity':'1'}, duration, 'linear', function() {
+        current.css('margin', '100%');
+        callback();
+      });
     };
   };
 
@@ -28763,7 +27902,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
   Foundation.libs.orbit = {
     name: 'orbit',
 
-    version: '5.2.3',
+    version: '5.3.1',
 
     settings: {
       animation: 'slide',
@@ -28783,7 +27922,6 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
       timer_container_class: 'orbit-timer',
       timer_paused_class: 'paused',
       timer_progress_class: 'orbit-progress',
-      timer_show_progress_bar: true,
       slides_container_class: 'orbit-slides-container',
       preloader_class: 'preloader',
       slide_selector: '*',
@@ -28808,9 +27946,8 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
     },
 
     events : function (instance) {
-      var self = this;
       var orbit_instance = new Orbit(this.S(instance), this.S(instance).data('orbit-init'));
-      this.S(instance).data(self.name + '-instance', orbit_instance);
+      this.S(instance).data(this.name + '-instance', orbit_instance);
     },
 
     reflow : function () {
@@ -28840,7 +27977,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
   Foundation.libs.reveal = {
     name : 'reveal',
 
-    version : '5.2.3',
+    version : '5.3.3',
 
     locked : false,
 
@@ -28851,6 +27988,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
       close_on_esc: true,
       dismiss_modal_class: 'close-reveal-modal',
       bg_class: 'reveal-modal-bg',
+      root_element: 'body',
       open: function(){},
       opened: function(){},
       close: function(){},
@@ -28881,9 +28019,9 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
 
       S(this.scope)
         .off('.reveal')
-        .on('click.fndtn.reveal', '[' + this.add_namespace('data-reveal-id') + ']', function (e) {
+        .on('click.fndtn.reveal', '[' + this.add_namespace('data-reveal-id') + ']:not([disabled])', function (e) {
           e.preventDefault();
-
+        
           if (!self.locked) {
             var element = S(this),
                 ajax = element.data(self.data_attr('reveal-ajax'));
@@ -28901,7 +28039,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
         });
 
       S(document)
-        .on('touchend.fndtn.reveal click.fndtn.reveal', this.close_targets(), function (e) {
+        .on('click.fndtn.reveal', this.close_targets(), function (e) {
 
           e.preventDefault();
 
@@ -28952,7 +28090,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
       // PATCH #1: fixing multiple keyup event trigger from single key press
       self.S('body').off('keyup.fndtn.reveal').on('keyup.fndtn.reveal', function ( event ) {
         var open_modal = self.S('[' + self.attr_name() + '].open'),
-            settings = open_modal.data(self.attr_name(true) + '-init');
+            settings = open_modal.data(self.attr_name(true) + '-init') || self.settings ;
         // PATCH #2: making sure that the close event can be called only while unlocked,
         //           so that multiple keyup.fndtn.reveal events don't prevent clean closing of the reveal window.
         if ( settings && event.which === 27  && settings.close_on_esc && !self.locked) { // 27 is the keycode for the Escape key
@@ -28968,6 +28106,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
       this.S('body').off('keyup.fndtn.reveal');
       return true;
     },
+
 
     open : function (target, ajax_settings) {
       var self = this,
@@ -28989,6 +28128,11 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
       var settings = modal.data(self.attr_name(true) + '-init');
       settings = settings || this.settings;
 
+
+      if (modal.hasClass('open') && target.attr('data-reveal-id') == modal.attr('id')) {
+        return self.close(modal);
+      }
+
       if (!modal.hasClass('open')) {
         var open_modal = self.S('[' + self.attr_name() + '].open');
 
@@ -28998,7 +28142,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
         }
 
         this.key_up_on(modal);    // PATCH #3: turning on key up capture only when a reveal window is open
-        modal.trigger('open');
+        modal.trigger('open').trigger('open.fndtn.reveal');
 
         if (open_modal.length < 1) {
           this.toggle_bg(modal, true);
@@ -29049,7 +28193,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
       if (open_modals.length > 0) {
         this.locked = true;
         this.key_up_off(modal);   // PATCH #3: turning on key up capture only when a reveal window is open
-        modal.trigger('close');
+        modal.trigger('close').trigger('close.fndtn.reveal');
         this.toggle_bg(modal, false);
         this.hide(open_modals, settings.css.close, settings);
       }
@@ -29084,19 +28228,18 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
     show : function (el, css) {
       // is modal
       if (css) {
-        var settings = el.data(this.attr_name(true) + '-init');
-        settings = settings || this.settings;
+        var settings = el.data(this.attr_name(true) + '-init') || this.settings,
+            root_element = settings.root_element;
 
-        if (el.parent('body').length === 0) {
-          var placeholder = el.wrap('<div style="display: none;" />').parent(),
-              rootElement = this.settings.rootElement || 'body';
+        if (el.parent(root_element).length === 0) {
+          var placeholder = el.wrap('<div style="display: none;" />').parent();
 
           el.on('closed.fndtn.reveal.wrapped', function() {
             el.detach().appendTo(placeholder);
             el.unwrap().unbind('closed.fndtn.reveal.wrapped');
           });
 
-          el.detach().appendTo(rootElement);
+          el.detach().appendTo(root_element);
         }
 
         var animData = getAnimationData(settings.animation);
@@ -29115,7 +28258,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
               .css(css)
               .animate(end_css, settings.animation_speed, 'linear', function () {
                 this.locked = false;
-                el.trigger('opened');
+                el.trigger('opened').trigger('opened.fndtn.reveal');
               }.bind(this))
               .addClass('open');
           }.bind(this), settings.animation_speed / 2);
@@ -29130,13 +28273,13 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
               .css(css)
               .animate(end_css, settings.animation_speed, 'linear', function () {
                 this.locked = false;
-                el.trigger('opened');
+                el.trigger('opened').trigger('opened.fndtn.reveal');
               }.bind(this))
               .addClass('open');
           }.bind(this), settings.animation_speed / 2);
         }
 
-        return el.css(css).show().css({opacity: 1}).addClass('open').trigger('opened');
+        return el.css(css).show().css({opacity: 1}).addClass('open').trigger('opened').trigger('opened.fndtn.reveal');
       }
 
       var settings = this.settings;
@@ -29171,7 +28314,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
             return el
               .animate(end_css, settings.animation_speed, 'linear', function () {
                 this.locked = false;
-                el.css(css).trigger('closed');
+                el.css(css).trigger('closed').trigger('closed.fndtn.reveal');
               }.bind(this))
               .removeClass('open');
           }.bind(this), settings.animation_speed / 2);
@@ -29184,13 +28327,13 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
             return el
               .animate(end_css, settings.animation_speed, 'linear', function () {
                 this.locked = false;
-                el.css(css).trigger('closed');
+                el.css(css).trigger('closed').trigger('closed.fndtn.reveal');
               }.bind(this))
               .removeClass('open');
           }.bind(this), settings.animation_speed / 2);
         }
 
-        return el.hide().css(css).removeClass('open').trigger('closed');
+        return el.hide().css(css).removeClass('open').trigger('closed').trigger('closed.fndtn.reveal');
       }
 
       var settings = this.settings;
@@ -29209,7 +28352,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
 
       if (iframe.length > 0) {
         iframe.attr('data-src', iframe[0].src);
-        iframe.attr('src', 'about:blank');
+        iframe.attr('src', iframe.attr('src'));
         video.hide();
       }
     },
@@ -29278,7 +28421,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
   Foundation.libs.slider = {
     name : 'slider',
 
-    version : '5.2.3',
+    version : '5.3.3',
 
     settings: {
       start: 0,
@@ -29286,6 +28429,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
       step: 1,
       initial: null,
       display_selector: '',
+      vertical: false,
       on_change: function(){}
     },
 
@@ -29303,7 +28447,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
       $(this.scope)
         .off('.slider')
         .on('mousedown.fndtn.slider touchstart.fndtn.slider pointerdown.fndtn.slider',
-        '[' + self.attr_name() + '] .range-slider-handle', function(e) {
+        '[' + self.attr_name() + ']:not(.disabled, [disabled]) .range-slider-handle', function(e) {
           if (!self.cache.active) {
             e.preventDefault();
             self.set_active_slider($(e.target));
@@ -29312,7 +28456,22 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
         .on('mousemove.fndtn.slider touchmove.fndtn.slider pointermove.fndtn.slider', function(e) {
           if (!!self.cache.active) {
             e.preventDefault();
-            self.calculate_position(self.cache.active, e.pageX || e.originalEvent.clientX || e.originalEvent.touches[0].clientX || e.currentPoint.x);
+            if ($.data(self.cache.active[0], 'settings').vertical) {
+              var scroll_offset = 0;
+              if (!e.pageY) {
+                scroll_offset = window.scrollY;
+              }
+              self.calculate_position(self.cache.active, (e.pageY || 
+                                                          e.originalEvent.clientY || 
+                                                          e.originalEvent.touches[0].clientY || 
+                                                          e.currentPoint.y) 
+                                                          + scroll_offset);
+            } else {
+              self.calculate_position(self.cache.active, e.pageX || 
+                                                         e.originalEvent.clientX || 
+                                                         e.originalEvent.touches[0].clientX || 
+                                                         e.currentPoint.x);
+            }
           }
         })
         .on('mouseup.fndtn.slider touchend.fndtn.slider pointerup.fndtn.slider', function(e) {
@@ -29338,20 +28497,22 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
 
     calculate_position : function($handle, cursor_x) {
       var self = this,
-          settings = $.extend({}, self.settings, self.data_options($handle.parent())),
-          handle_w = $.data($handle[0], 'handle_w'),
+          settings = $.data($handle[0], 'settings'),
+          handle_l = $.data($handle[0], 'handle_l'),
           handle_o = $.data($handle[0], 'handle_o'),
-          bar_w = $.data($handle[0], 'bar_w'),
+          bar_l = $.data($handle[0], 'bar_l'),
           bar_o = $.data($handle[0], 'bar_o');
 
       requestAnimationFrame(function(){
         var pct;
 
-        if (Foundation.rtl) {
-          pct = self.limit_to(((bar_o+bar_w-cursor_x)/bar_w),0,1);
+        if (Foundation.rtl && !settings.vertical) {
+          pct = self.limit_to(((bar_o+bar_l-cursor_x)/bar_l),0,1);
         } else {
-          pct = self.limit_to(((cursor_x-bar_o)/bar_w),0,1);
+          pct = self.limit_to(((cursor_x-bar_o)/bar_l),0,1);
         }
+
+        pct = settings.vertical ? 1-pct : pct;
 
         var norm = self.normalized_value(pct, settings.start, settings.end, settings.step);
 
@@ -29360,22 +28521,27 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
     },
 
     set_ui : function($handle, value) {
-      var settings = $.extend({}, this.settings, this.data_options($handle.parent())),
-          handle_w = $.data($handle[0], 'handle_w'),
-          bar_w = $.data($handle[0], 'bar_w'),
+      var settings = $.data($handle[0], 'settings'),
+          handle_l = $.data($handle[0], 'handle_l'),
+          bar_l = $.data($handle[0], 'bar_l'),
           norm_pct = this.normalized_percentage(value, settings.start, settings.end),
-          handle_offset = norm_pct*(bar_w-handle_w)-1,
-          progress_bar_width = norm_pct*100;
+          handle_offset = norm_pct*(bar_l-handle_l)-1,
+          progress_bar_length = norm_pct*100;
 
-      if (Foundation.rtl) {
+      if (Foundation.rtl && !settings.vertical) {
         handle_offset = -handle_offset;
       }
 
-      this.set_translate($handle, handle_offset);
-      $handle.siblings('.range-slider-active-segment').css('width', progress_bar_width+'%');
+      handle_offset = settings.vertical ? -handle_offset + bar_l - handle_l + 1 : handle_offset;
+      this.set_translate($handle, handle_offset, settings.vertical);
 
-      $handle.parent().attr(this.attr_name(), value);
-      $handle.parent().trigger('change');
+      if (settings.vertical) {
+        $handle.siblings('.range-slider-active-segment').css('height', progress_bar_length + '%');
+      } else {
+        $handle.siblings('.range-slider-active-segment').css('width', progress_bar_length + '%');
+      }
+
+      $handle.parent().attr(this.attr_name(), value).trigger('change').trigger('change.fndtn.slider');
 
       $handle.parent().children('input[type=hidden]').val(value);
 
@@ -29427,12 +28593,22 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
     },
 
     initialize_settings : function(handle) {
+      var settings = $.extend({}, this.settings, this.data_options($(handle).parent()));
+
+      if (settings.vertical) {
+        $.data(handle, 'bar_o', $(handle).parent().offset().top);
+        $.data(handle, 'bar_l', $(handle).parent().outerHeight());
+        $.data(handle, 'handle_o', $(handle).offset().top);
+        $.data(handle, 'handle_l', $(handle).outerHeight());
+      } else {
+        $.data(handle, 'bar_o', $(handle).parent().offset().left);
+        $.data(handle, 'bar_l', $(handle).parent().outerWidth());
+        $.data(handle, 'handle_o', $(handle).offset().left);
+        $.data(handle, 'handle_l', $(handle).outerWidth());
+      }
+
       $.data(handle, 'bar', $(handle).parent());
-      $.data(handle, 'bar_o', $(handle).parent().offset().left);
-      $.data(handle, 'bar_w', $(handle).parent().outerWidth());
-      $.data(handle, 'handle_o', $(handle).offset().left);
-      $.data(handle, 'handle_w', $(handle).outerWidth());
-      $.data(handle, 'settings', $.extend({}, this.settings, this.data_options($(handle).parent())));
+      $.data(handle, 'settings', settings);
     },
 
     set_initial_position : function($ele) {
@@ -29467,7 +28643,6 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
         }
       });
     }
-
   };
 
 }(jQuery, window, window.document));
@@ -29478,7 +28653,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
   Foundation.libs.tab = {
     name : 'tab',
 
-    version : '5.2.3',
+    version : '5.3.3',
 
     settings : {
       active_class: 'active',
@@ -29646,7 +28821,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
   Foundation.libs.tooltip = {
     name : 'tooltip',
 
-    version : '5.2.3',
+    version : '5.3.3',
 
     settings : {
       additional_inheritable_classes : [],
@@ -29922,7 +29097,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
 
       $tip.fadeOut(150, function() {
         $tip.find('.tap-to-close').remove();
-        $tip.off('click.fndtn.tooltip.tapclose touchstart.fndtn.tooltip.tapclose MSPointerDown.fndtn.tapclose');
+        $tip.off('click.fndtn.tooltip.tapclose MSPointerDown.fndtn.tapclose');
         $target.removeClass('open');
       });
     },
@@ -29945,19 +29120,19 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
   Foundation.libs.topbar = {
     name : 'topbar',
 
-    version: '5.2.3',
+    version: '5.3.3',
 
     settings : {
       index : 0,
       sticky_class : 'sticky',
       custom_back_text: true,
       back_text: 'Back',
+      mobile_show_parent_link: true,
       is_hover: true,
-      mobile_show_parent_link: false,
       scrolltop : true, // jump to top when sticky nav menu toggle is clicked
       sticky_on : 'all'
     },
-
+    
     init : function (section, method, options) {
       Foundation.inherit(this, 'add_custom_rule register_media throttle');
       var self = this;
@@ -30007,11 +29182,17 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
       if (sticky && settings.sticky_on === 'all') {
         return true;
       } else if (sticky && this.small() && settings.sticky_on === 'small') {
-        return true;
+        return (matchMedia(Foundation.media_queries.small).matches && !matchMedia(Foundation.media_queries.medium).matches &&
+            !matchMedia(Foundation.media_queries.large).matches); 
+        //return true;
       } else if (sticky && this.medium() && settings.sticky_on === 'medium') {
-        return true;
-      } else if (sticky && this.large() && settings.sticky_on === 'large') {
-        return true;
+        return (matchMedia(Foundation.media_queries.small).matches && matchMedia(Foundation.media_queries.medium).matches &&
+            !matchMedia(Foundation.media_queries.large).matches);
+        //return true;
+      } else if(sticky && this.large() && settings.sticky_on === 'large') {
+        return (matchMedia(Foundation.media_queries.small).matches && matchMedia(Foundation.media_queries.medium).matches &&
+            matchMedia(Foundation.media_queries.large).matches);
+        //return true;
       }
 
       return false;
@@ -30163,12 +29344,12 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
             topbar.css('height', $this.siblings('ul').outerHeight(true) + topbar.data('height'));
           }
         });
-
+      
       S(window).off('.topbar').on('resize.fndtn.topbar', self.throttle(function () {
         self.resize.call(self);
-      }, 50)).trigger('resize');
+      }, 50)).trigger('resize').trigger('resize.fndtn.topbar');
 
-      S('body').off('.topbar').on('click.fndtn.topbar touchstart.fndtn.topbar', function (e) {
+      S('body').off('.topbar').on('click.fndtn.topbar', function (e) {
         var parent = S(e.target).closest('li').closest('li.hover');
 
         if (parent.length > 0) {
@@ -30284,13 +29465,15 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
             url = $link.attr('href'),
             $titleLi;
 
-        if (!$dropdown.find('.title.back').length) {
-          if (settings.mobile_show_parent_link && url && url.length > 1) {
-            $titleLi = $('<li class="title back js-generated"><h5><a href="javascript:void(0)"></a></h5></li><li><a class="parent-link js-generated" href="' + url + '">' + $link.text() +'</a></li>');
-          } else {
-            $titleLi = $('<li class="title back js-generated"><h5><a href="javascript:void(0)"></a></h5></li>');
-          }
 
+        if (!$dropdown.find('.title.back').length) {
+
+          if (settings.mobile_show_parent_link == true && url) {
+            $titleLi = $('<li class="title back js-generated"><h5><a href="javascript:void(0)"></a></h5></li><li class="parent-link show-for-small"><a class="parent-link js-generated" href="' + url + '">' + $link.html() +'</a></li>');
+          } else {
+            $titleLi = $('<li class="title back js-generated"><h5><a href="javascript:void(0)"></a></h5>');
+          }
+          
           // Copy link to subnav
           if (settings.custom_back_text == true) {
             $('h5>a', $titleLi).html(settings.back_text);
@@ -30318,8 +29501,8 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
       var total = 0,
           self = this;
 
-      $('> li', ul).each(function () {
-        total += self.S(this).outerHeight(true);
+      $('> li', ul).each(function () { 
+        total += self.S(this).outerHeight(true); 
       });
 
       return total;
@@ -30335,7 +29518,7 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
 
     update_sticky_positioning: function() {
       var klass = '.' + this.settings.sticky_class,
-          $window = this.S(window),
+          $window = this.S(window), 
           self = this;
 
       if (self.settings.sticky_topbar && self.is_sticky(this.settings.sticky_topbar,this.settings.sticky_topbar.parent(), this.settings)) {
@@ -30364,1413 +29547,6 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
     reflow : function () {}
   };
 }(jQuery, this, this.document));
-
-/*!
- * Modernizr v2.8.3
- * www.modernizr.com
- *
- * Copyright (c) Faruk Ates, Paul Irish, Alex Sexton
- * Available under the BSD and MIT licenses: www.modernizr.com/license/
- */
-
-/*
- * Modernizr tests which native CSS3 and HTML5 features are available in
- * the current UA and makes the results available to you in two ways:
- * as properties on a global Modernizr object, and as classes on the
- * <html> element. This information allows you to progressively enhance
- * your pages with a granular level of control over the experience.
- *
- * Modernizr has an optional (not included) conditional resource loader
- * called Modernizr.load(), based on Yepnope.js (yepnopejs.com).
- * To get a build that includes Modernizr.load(), as well as choosing
- * which tests to include, go to www.modernizr.com/download/
- *
- * Authors        Faruk Ates, Paul Irish, Alex Sexton
- * Contributors   Ryan Seddon, Ben Alman
- */
-
-window.Modernizr = (function( window, document, undefined ) {
-
-    var version = '2.8.3',
-
-    Modernizr = {},
-
-    /*>>cssclasses*/
-    // option for enabling the HTML classes to be added
-    enableClasses = true,
-    /*>>cssclasses*/
-
-    docElement = document.documentElement,
-
-    /**
-     * Create our "modernizr" element that we do most feature tests on.
-     */
-    mod = 'modernizr',
-    modElem = document.createElement(mod),
-    mStyle = modElem.style,
-
-    /**
-     * Create the input element for various Web Forms feature tests.
-     */
-    inputElem /*>>inputelem*/ = document.createElement('input') /*>>inputelem*/ ,
-
-    /*>>smile*/
-    smile = ':)',
-    /*>>smile*/
-
-    toString = {}.toString,
-
-    // TODO :: make the prefixes more granular
-    /*>>prefixes*/
-    // List of property values to set for css tests. See ticket #21
-    prefixes = ' -webkit- -moz- -o- -ms- '.split(' '),
-    /*>>prefixes*/
-
-    /*>>domprefixes*/
-    // Following spec is to expose vendor-specific style properties as:
-    //   elem.style.WebkitBorderRadius
-    // and the following would be incorrect:
-    //   elem.style.webkitBorderRadius
-
-    // Webkit ghosts their properties in lowercase but Opera & Moz do not.
-    // Microsoft uses a lowercase `ms` instead of the correct `Ms` in IE8+
-    //   erik.eae.net/archives/2008/03/10/21.48.10/
-
-    // More here: github.com/Modernizr/Modernizr/issues/issue/21
-    omPrefixes = 'Webkit Moz O ms',
-
-    cssomPrefixes = omPrefixes.split(' '),
-
-    domPrefixes = omPrefixes.toLowerCase().split(' '),
-    /*>>domprefixes*/
-
-    /*>>ns*/
-    ns = {'svg': 'http://www.w3.org/2000/svg'},
-    /*>>ns*/
-
-    tests = {},
-    inputs = {},
-    attrs = {},
-
-    classes = [],
-
-    slice = classes.slice,
-
-    featureName, // used in testing loop
-
-
-    /*>>teststyles*/
-    // Inject element with style element and some CSS rules
-    injectElementWithStyles = function( rule, callback, nodes, testnames ) {
-
-      var style, ret, node, docOverflow,
-          div = document.createElement('div'),
-          // After page load injecting a fake body doesn't work so check if body exists
-          body = document.body,
-          // IE6 and 7 won't return offsetWidth or offsetHeight unless it's in the body element, so we fake it.
-          fakeBody = body || document.createElement('body');
-
-      if ( parseInt(nodes, 10) ) {
-          // In order not to give false positives we create a node for each test
-          // This also allows the method to scale for unspecified uses
-          while ( nodes-- ) {
-              node = document.createElement('div');
-              node.id = testnames ? testnames[nodes] : mod + (nodes + 1);
-              div.appendChild(node);
-          }
-      }
-
-      // <style> elements in IE6-9 are considered 'NoScope' elements and therefore will be removed
-      // when injected with innerHTML. To get around this you need to prepend the 'NoScope' element
-      // with a 'scoped' element, in our case the soft-hyphen entity as it won't mess with our measurements.
-      // msdn.microsoft.com/en-us/library/ms533897%28VS.85%29.aspx
-      // Documents served as xml will throw if using &shy; so use xml friendly encoded version. See issue #277
-      style = ['&#173;','<style id="s', mod, '">', rule, '</style>'].join('');
-      div.id = mod;
-      // IE6 will false positive on some tests due to the style element inside the test div somehow interfering offsetHeight, so insert it into body or fakebody.
-      // Opera will act all quirky when injecting elements in documentElement when page is served as xml, needs fakebody too. #270
-      (body ? div : fakeBody).innerHTML += style;
-      fakeBody.appendChild(div);
-      if ( !body ) {
-          //avoid crashing IE8, if background image is used
-          fakeBody.style.background = '';
-          //Safari 5.13/5.1.4 OSX stops loading if ::-webkit-scrollbar is used and scrollbars are visible
-          fakeBody.style.overflow = 'hidden';
-          docOverflow = docElement.style.overflow;
-          docElement.style.overflow = 'hidden';
-          docElement.appendChild(fakeBody);
-      }
-
-      ret = callback(div, rule);
-      // If this is done after page load we don't want to remove the body so check if body exists
-      if ( !body ) {
-          fakeBody.parentNode.removeChild(fakeBody);
-          docElement.style.overflow = docOverflow;
-      } else {
-          div.parentNode.removeChild(div);
-      }
-
-      return !!ret;
-
-    },
-    /*>>teststyles*/
-
-    /*>>mq*/
-    // adapted from matchMedia polyfill
-    // by Scott Jehl and Paul Irish
-    // gist.github.com/786768
-    testMediaQuery = function( mq ) {
-
-      var matchMedia = window.matchMedia || window.msMatchMedia;
-      if ( matchMedia ) {
-        return matchMedia(mq) && matchMedia(mq).matches || false;
-      }
-
-      var bool;
-
-      injectElementWithStyles('@media ' + mq + ' { #' + mod + ' { position: absolute; } }', function( node ) {
-        bool = (window.getComputedStyle ?
-                  getComputedStyle(node, null) :
-                  node.currentStyle)['position'] == 'absolute';
-      });
-
-      return bool;
-
-     },
-     /*>>mq*/
-
-
-    /*>>hasevent*/
-    //
-    // isEventSupported determines if a given element supports the given event
-    // kangax.github.com/iseventsupported/
-    //
-    // The following results are known incorrects:
-    //   Modernizr.hasEvent("webkitTransitionEnd", elem) // false negative
-    //   Modernizr.hasEvent("textInput") // in Webkit. github.com/Modernizr/Modernizr/issues/333
-    //   ...
-    isEventSupported = (function() {
-
-      var TAGNAMES = {
-        'select': 'input', 'change': 'input',
-        'submit': 'form', 'reset': 'form',
-        'error': 'img', 'load': 'img', 'abort': 'img'
-      };
-
-      function isEventSupported( eventName, element ) {
-
-        element = element || document.createElement(TAGNAMES[eventName] || 'div');
-        eventName = 'on' + eventName;
-
-        // When using `setAttribute`, IE skips "unload", WebKit skips "unload" and "resize", whereas `in` "catches" those
-        var isSupported = eventName in element;
-
-        if ( !isSupported ) {
-          // If it has no `setAttribute` (i.e. doesn't implement Node interface), try generic element
-          if ( !element.setAttribute ) {
-            element = document.createElement('div');
-          }
-          if ( element.setAttribute && element.removeAttribute ) {
-            element.setAttribute(eventName, '');
-            isSupported = is(element[eventName], 'function');
-
-            // If property was created, "remove it" (by setting value to `undefined`)
-            if ( !is(element[eventName], 'undefined') ) {
-              element[eventName] = undefined;
-            }
-            element.removeAttribute(eventName);
-          }
-        }
-
-        element = null;
-        return isSupported;
-      }
-      return isEventSupported;
-    })(),
-    /*>>hasevent*/
-
-    // TODO :: Add flag for hasownprop ? didn't last time
-
-    // hasOwnProperty shim by kangax needed for Safari 2.0 support
-    _hasOwnProperty = ({}).hasOwnProperty, hasOwnProp;
-
-    if ( !is(_hasOwnProperty, 'undefined') && !is(_hasOwnProperty.call, 'undefined') ) {
-      hasOwnProp = function (object, property) {
-        return _hasOwnProperty.call(object, property);
-      };
-    }
-    else {
-      hasOwnProp = function (object, property) { /* yes, this can give false positives/negatives, but most of the time we don't care about those */
-        return ((property in object) && is(object.constructor.prototype[property], 'undefined'));
-      };
-    }
-
-    // Adapted from ES5-shim https://github.com/kriskowal/es5-shim/blob/master/es5-shim.js
-    // es5.github.com/#x15.3.4.5
-
-    if (!Function.prototype.bind) {
-      Function.prototype.bind = function bind(that) {
-
-        var target = this;
-
-        if (typeof target != "function") {
-            throw new TypeError();
-        }
-
-        var args = slice.call(arguments, 1),
-            bound = function () {
-
-            if (this instanceof bound) {
-
-              var F = function(){};
-              F.prototype = target.prototype;
-              var self = new F();
-
-              var result = target.apply(
-                  self,
-                  args.concat(slice.call(arguments))
-              );
-              if (Object(result) === result) {
-                  return result;
-              }
-              return self;
-
-            } else {
-
-              return target.apply(
-                  that,
-                  args.concat(slice.call(arguments))
-              );
-
-            }
-
-        };
-
-        return bound;
-      };
-    }
-
-    /**
-     * setCss applies given styles to the Modernizr DOM node.
-     */
-    function setCss( str ) {
-        mStyle.cssText = str;
-    }
-
-    /**
-     * setCssAll extrapolates all vendor-specific css strings.
-     */
-    function setCssAll( str1, str2 ) {
-        return setCss(prefixes.join(str1 + ';') + ( str2 || '' ));
-    }
-
-    /**
-     * is returns a boolean for if typeof obj is exactly type.
-     */
-    function is( obj, type ) {
-        return typeof obj === type;
-    }
-
-    /**
-     * contains returns a boolean for if substr is found within str.
-     */
-    function contains( str, substr ) {
-        return !!~('' + str).indexOf(substr);
-    }
-
-    /*>>testprop*/
-
-    // testProps is a generic CSS / DOM property test.
-
-    // In testing support for a given CSS property, it's legit to test:
-    //    `elem.style[styleName] !== undefined`
-    // If the property is supported it will return an empty string,
-    // if unsupported it will return undefined.
-
-    // We'll take advantage of this quick test and skip setting a style
-    // on our modernizr element, but instead just testing undefined vs
-    // empty string.
-
-    // Because the testing of the CSS property names (with "-", as
-    // opposed to the camelCase DOM properties) is non-portable and
-    // non-standard but works in WebKit and IE (but not Gecko or Opera),
-    // we explicitly reject properties with dashes so that authors
-    // developing in WebKit or IE first don't end up with
-    // browser-specific content by accident.
-
-    function testProps( props, prefixed ) {
-        for ( var i in props ) {
-            var prop = props[i];
-            if ( !contains(prop, "-") && mStyle[prop] !== undefined ) {
-                return prefixed == 'pfx' ? prop : true;
-            }
-        }
-        return false;
-    }
-    /*>>testprop*/
-
-    // TODO :: add testDOMProps
-    /**
-     * testDOMProps is a generic DOM property test; if a browser supports
-     *   a certain property, it won't return undefined for it.
-     */
-    function testDOMProps( props, obj, elem ) {
-        for ( var i in props ) {
-            var item = obj[props[i]];
-            if ( item !== undefined) {
-
-                // return the property name as a string
-                if (elem === false) return props[i];
-
-                // let's bind a function
-                if (is(item, 'function')){
-                  // default to autobind unless override
-                  return item.bind(elem || obj);
-                }
-
-                // return the unbound function or obj or value
-                return item;
-            }
-        }
-        return false;
-    }
-
-    /*>>testallprops*/
-    /**
-     * testPropsAll tests a list of DOM properties we want to check against.
-     *   We specify literally ALL possible (known and/or likely) properties on
-     *   the element including the non-vendor prefixed one, for forward-
-     *   compatibility.
-     */
-    function testPropsAll( prop, prefixed, elem ) {
-
-        var ucProp  = prop.charAt(0).toUpperCase() + prop.slice(1),
-            props   = (prop + ' ' + cssomPrefixes.join(ucProp + ' ') + ucProp).split(' ');
-
-        // did they call .prefixed('boxSizing') or are we just testing a prop?
-        if(is(prefixed, "string") || is(prefixed, "undefined")) {
-          return testProps(props, prefixed);
-
-        // otherwise, they called .prefixed('requestAnimationFrame', window[, elem])
-        } else {
-          props = (prop + ' ' + (domPrefixes).join(ucProp + ' ') + ucProp).split(' ');
-          return testDOMProps(props, prefixed, elem);
-        }
-    }
-    /*>>testallprops*/
-
-
-    /**
-     * Tests
-     * -----
-     */
-
-    // The *new* flexbox
-    // dev.w3.org/csswg/css3-flexbox
-
-    tests['flexbox'] = function() {
-      return testPropsAll('flexWrap');
-    };
-
-    // The *old* flexbox
-    // www.w3.org/TR/2009/WD-css3-flexbox-20090723/
-
-    tests['flexboxlegacy'] = function() {
-        return testPropsAll('boxDirection');
-    };
-
-    // On the S60 and BB Storm, getContext exists, but always returns undefined
-    // so we actually have to call getContext() to verify
-    // github.com/Modernizr/Modernizr/issues/issue/97/
-
-    tests['canvas'] = function() {
-        var elem = document.createElement('canvas');
-        return !!(elem.getContext && elem.getContext('2d'));
-    };
-
-    tests['canvastext'] = function() {
-        return !!(Modernizr['canvas'] && is(document.createElement('canvas').getContext('2d').fillText, 'function'));
-    };
-
-    // webk.it/70117 is tracking a legit WebGL feature detect proposal
-
-    // We do a soft detect which may false positive in order to avoid
-    // an expensive context creation: bugzil.la/732441
-
-    tests['webgl'] = function() {
-        return !!window.WebGLRenderingContext;
-    };
-
-    /*
-     * The Modernizr.touch test only indicates if the browser supports
-     *    touch events, which does not necessarily reflect a touchscreen
-     *    device, as evidenced by tablets running Windows 7 or, alas,
-     *    the Palm Pre / WebOS (touch) phones.
-     *
-     * Additionally, Chrome (desktop) used to lie about its support on this,
-     *    but that has since been rectified: crbug.com/36415
-     *
-     * We also test for Firefox 4 Multitouch Support.
-     *
-     * For more info, see: modernizr.github.com/Modernizr/touch.html
-     */
-
-    tests['touch'] = function() {
-        var bool;
-
-        if(('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch) {
-          bool = true;
-        } else {
-          injectElementWithStyles(['@media (',prefixes.join('touch-enabled),('),mod,')','{#modernizr{top:9px;position:absolute}}'].join(''), function( node ) {
-            bool = node.offsetTop === 9;
-          });
-        }
-
-        return bool;
-    };
-
-
-    // geolocation is often considered a trivial feature detect...
-    // Turns out, it's quite tricky to get right:
-    //
-    // Using !!navigator.geolocation does two things we don't want. It:
-    //   1. Leaks memory in IE9: github.com/Modernizr/Modernizr/issues/513
-    //   2. Disables page caching in WebKit: webk.it/43956
-    //
-    // Meanwhile, in Firefox < 8, an about:config setting could expose
-    // a false positive that would throw an exception: bugzil.la/688158
-
-    tests['geolocation'] = function() {
-        return 'geolocation' in navigator;
-    };
-
-
-    tests['postmessage'] = function() {
-      return !!window.postMessage;
-    };
-
-
-    // Chrome incognito mode used to throw an exception when using openDatabase
-    // It doesn't anymore.
-    tests['websqldatabase'] = function() {
-      return !!window.openDatabase;
-    };
-
-    // Vendors had inconsistent prefixing with the experimental Indexed DB:
-    // - Webkit's implementation is accessible through webkitIndexedDB
-    // - Firefox shipped moz_indexedDB before FF4b9, but since then has been mozIndexedDB
-    // For speed, we don't test the legacy (and beta-only) indexedDB
-    tests['indexedDB'] = function() {
-      return !!testPropsAll("indexedDB", window);
-    };
-
-    // documentMode logic from YUI to filter out IE8 Compat Mode
-    //   which false positives.
-    tests['hashchange'] = function() {
-      return isEventSupported('hashchange', window) && (document.documentMode === undefined || document.documentMode > 7);
-    };
-
-    // Per 1.6:
-    // This used to be Modernizr.historymanagement but the longer
-    // name has been deprecated in favor of a shorter and property-matching one.
-    // The old API is still available in 1.6, but as of 2.0 will throw a warning,
-    // and in the first release thereafter disappear entirely.
-    tests['history'] = function() {
-      return !!(window.history && history.pushState);
-    };
-
-    tests['draganddrop'] = function() {
-        var div = document.createElement('div');
-        return ('draggable' in div) || ('ondragstart' in div && 'ondrop' in div);
-    };
-
-    // FF3.6 was EOL'ed on 4/24/12, but the ESR version of FF10
-    // will be supported until FF19 (2/12/13), at which time, ESR becomes FF17.
-    // FF10 still uses prefixes, so check for it until then.
-    // for more ESR info, see: mozilla.org/en-US/firefox/organizations/faq/
-    tests['websockets'] = function() {
-        return 'WebSocket' in window || 'MozWebSocket' in window;
-    };
-
-
-    // css-tricks.com/rgba-browser-support/
-    tests['rgba'] = function() {
-        // Set an rgba() color and check the returned value
-
-        setCss('background-color:rgba(150,255,150,.5)');
-
-        return contains(mStyle.backgroundColor, 'rgba');
-    };
-
-    tests['hsla'] = function() {
-        // Same as rgba(), in fact, browsers re-map hsla() to rgba() internally,
-        //   except IE9 who retains it as hsla
-
-        setCss('background-color:hsla(120,40%,100%,.5)');
-
-        return contains(mStyle.backgroundColor, 'rgba') || contains(mStyle.backgroundColor, 'hsla');
-    };
-
-    tests['multiplebgs'] = function() {
-        // Setting multiple images AND a color on the background shorthand property
-        //  and then querying the style.background property value for the number of
-        //  occurrences of "url(" is a reliable method for detecting ACTUAL support for this!
-
-        setCss('background:url(https://),url(https://),red url(https://)');
-
-        // If the UA supports multiple backgrounds, there should be three occurrences
-        //   of the string "url(" in the return value for elemStyle.background
-
-        return (/(url\s*\(.*?){3}/).test(mStyle.background);
-    };
-
-
-
-    // this will false positive in Opera Mini
-    //   github.com/Modernizr/Modernizr/issues/396
-
-    tests['backgroundsize'] = function() {
-        return testPropsAll('backgroundSize');
-    };
-
-    tests['borderimage'] = function() {
-        return testPropsAll('borderImage');
-    };
-
-
-    // Super comprehensive table about all the unique implementations of
-    // border-radius: muddledramblings.com/table-of-css3-border-radius-compliance
-
-    tests['borderradius'] = function() {
-        return testPropsAll('borderRadius');
-    };
-
-    // WebOS unfortunately false positives on this test.
-    tests['boxshadow'] = function() {
-        return testPropsAll('boxShadow');
-    };
-
-    // FF3.0 will false positive on this test
-    tests['textshadow'] = function() {
-        return document.createElement('div').style.textShadow === '';
-    };
-
-
-    tests['opacity'] = function() {
-        // Browsers that actually have CSS Opacity implemented have done so
-        //  according to spec, which means their return values are within the
-        //  range of [0.0,1.0] - including the leading zero.
-
-        setCssAll('opacity:.55');
-
-        // The non-literal . in this regex is intentional:
-        //   German Chrome returns this value as 0,55
-        // github.com/Modernizr/Modernizr/issues/#issue/59/comment/516632
-        return (/^0.55$/).test(mStyle.opacity);
-    };
-
-
-    // Note, Android < 4 will pass this test, but can only animate
-    //   a single property at a time
-    //   goo.gl/v3V4Gp
-    tests['cssanimations'] = function() {
-        return testPropsAll('animationName');
-    };
-
-
-    tests['csscolumns'] = function() {
-        return testPropsAll('columnCount');
-    };
-
-
-    tests['cssgradients'] = function() {
-        /**
-         * For CSS Gradients syntax, please see:
-         * webkit.org/blog/175/introducing-css-gradients/
-         * developer.mozilla.org/en/CSS/-moz-linear-gradient
-         * developer.mozilla.org/en/CSS/-moz-radial-gradient
-         * dev.w3.org/csswg/css3-images/#gradients-
-         */
-
-        var str1 = 'background-image:',
-            str2 = 'gradient(linear,left top,right bottom,from(#9f9),to(white));',
-            str3 = 'linear-gradient(left top,#9f9, white);';
-
-        setCss(
-             // legacy webkit syntax (FIXME: remove when syntax not in use anymore)
-              (str1 + '-webkit- '.split(' ').join(str2 + str1) +
-             // standard syntax             // trailing 'background-image:'
-              prefixes.join(str3 + str1)).slice(0, -str1.length)
-        );
-
-        return contains(mStyle.backgroundImage, 'gradient');
-    };
-
-
-    tests['cssreflections'] = function() {
-        return testPropsAll('boxReflect');
-    };
-
-
-    tests['csstransforms'] = function() {
-        return !!testPropsAll('transform');
-    };
-
-
-    tests['csstransforms3d'] = function() {
-
-        var ret = !!testPropsAll('perspective');
-
-        // Webkit's 3D transforms are passed off to the browser's own graphics renderer.
-        //   It works fine in Safari on Leopard and Snow Leopard, but not in Chrome in
-        //   some conditions. As a result, Webkit typically recognizes the syntax but
-        //   will sometimes throw a false positive, thus we must do a more thorough check:
-        if ( ret && 'webkitPerspective' in docElement.style ) {
-
-          // Webkit allows this media query to succeed only if the feature is enabled.
-          // `@media (transform-3d),(-webkit-transform-3d){ ... }`
-          injectElementWithStyles('@media (transform-3d),(-webkit-transform-3d){#modernizr{left:9px;position:absolute;height:3px;}}', function( node, rule ) {
-            ret = node.offsetLeft === 9 && node.offsetHeight === 3;
-          });
-        }
-        return ret;
-    };
-
-
-    tests['csstransitions'] = function() {
-        return testPropsAll('transition');
-    };
-
-
-    /*>>fontface*/
-    // @font-face detection routine by Diego Perini
-    // javascript.nwbox.com/CSSSupport/
-
-    // false positives:
-    //   WebOS github.com/Modernizr/Modernizr/issues/342
-    //   WP7   github.com/Modernizr/Modernizr/issues/538
-    tests['fontface'] = function() {
-        var bool;
-
-        injectElementWithStyles('@font-face {font-family:"font";src:url("https://")}', function( node, rule ) {
-          var style = document.getElementById('smodernizr'),
-              sheet = style.sheet || style.styleSheet,
-              cssText = sheet ? (sheet.cssRules && sheet.cssRules[0] ? sheet.cssRules[0].cssText : sheet.cssText || '') : '';
-
-          bool = /src/i.test(cssText) && cssText.indexOf(rule.split(' ')[0]) === 0;
-        });
-
-        return bool;
-    };
-    /*>>fontface*/
-
-    // CSS generated content detection
-    tests['generatedcontent'] = function() {
-        var bool;
-
-        injectElementWithStyles(['#',mod,'{font:0/0 a}#',mod,':after{content:"',smile,'";visibility:hidden;font:3px/1 a}'].join(''), function( node ) {
-          bool = node.offsetHeight >= 3;
-        });
-
-        return bool;
-    };
-
-
-
-    // These tests evaluate support of the video/audio elements, as well as
-    // testing what types of content they support.
-    //
-    // We're using the Boolean constructor here, so that we can extend the value
-    // e.g.  Modernizr.video     // true
-    //       Modernizr.video.ogg // 'probably'
-    //
-    // Codec values from : github.com/NielsLeenheer/html5test/blob/9106a8/index.html#L845
-    //                     thx to NielsLeenheer and zcorpan
-
-    // Note: in some older browsers, "no" was a return value instead of empty string.
-    //   It was live in FF3.5.0 and 3.5.1, but fixed in 3.5.2
-    //   It was also live in Safari 4.0.0 - 4.0.4, but fixed in 4.0.5
-
-    tests['video'] = function() {
-        var elem = document.createElement('video'),
-            bool = false;
-
-        // IE9 Running on Windows Server SKU can cause an exception to be thrown, bug #224
-        try {
-            if ( bool = !!elem.canPlayType ) {
-                bool      = new Boolean(bool);
-                bool.ogg  = elem.canPlayType('video/ogg; codecs="theora"')      .replace(/^no$/,'');
-
-                // Without QuickTime, this value will be `undefined`. github.com/Modernizr/Modernizr/issues/546
-                bool.h264 = elem.canPlayType('video/mp4; codecs="avc1.42E01E"') .replace(/^no$/,'');
-
-                bool.webm = elem.canPlayType('video/webm; codecs="vp8, vorbis"').replace(/^no$/,'');
-            }
-
-        } catch(e) { }
-
-        return bool;
-    };
-
-    tests['audio'] = function() {
-        var elem = document.createElement('audio'),
-            bool = false;
-
-        try {
-            if ( bool = !!elem.canPlayType ) {
-                bool      = new Boolean(bool);
-                bool.ogg  = elem.canPlayType('audio/ogg; codecs="vorbis"').replace(/^no$/,'');
-                bool.mp3  = elem.canPlayType('audio/mpeg;')               .replace(/^no$/,'');
-
-                // Mimetypes accepted:
-                //   developer.mozilla.org/En/Media_formats_supported_by_the_audio_and_video_elements
-                //   bit.ly/iphoneoscodecs
-                bool.wav  = elem.canPlayType('audio/wav; codecs="1"')     .replace(/^no$/,'');
-                bool.m4a  = ( elem.canPlayType('audio/x-m4a;')            ||
-                              elem.canPlayType('audio/aac;'))             .replace(/^no$/,'');
-            }
-        } catch(e) { }
-
-        return bool;
-    };
-
-
-    // In FF4, if disabled, window.localStorage should === null.
-
-    // Normally, we could not test that directly and need to do a
-    //   `('localStorage' in window) && ` test first because otherwise Firefox will
-    //   throw bugzil.la/365772 if cookies are disabled
-
-    // Also in iOS5 Private Browsing mode, attempting to use localStorage.setItem
-    // will throw the exception:
-    //   QUOTA_EXCEEDED_ERRROR DOM Exception 22.
-    // Peculiarly, getItem and removeItem calls do not throw.
-
-    // Because we are forced to try/catch this, we'll go aggressive.
-
-    // Just FWIW: IE8 Compat mode supports these features completely:
-    //   www.quirksmode.org/dom/html5.html
-    // But IE8 doesn't support either with local files
-
-    tests['localstorage'] = function() {
-        try {
-            localStorage.setItem(mod, mod);
-            localStorage.removeItem(mod);
-            return true;
-        } catch(e) {
-            return false;
-        }
-    };
-
-    tests['sessionstorage'] = function() {
-        try {
-            sessionStorage.setItem(mod, mod);
-            sessionStorage.removeItem(mod);
-            return true;
-        } catch(e) {
-            return false;
-        }
-    };
-
-
-    tests['webworkers'] = function() {
-        return !!window.Worker;
-    };
-
-
-    tests['applicationcache'] = function() {
-        return !!window.applicationCache;
-    };
-
-
-    // Thanks to Erik Dahlstrom
-    tests['svg'] = function() {
-        return !!document.createElementNS && !!document.createElementNS(ns.svg, 'svg').createSVGRect;
-    };
-
-    // specifically for SVG inline in HTML, not within XHTML
-    // test page: paulirish.com/demo/inline-svg
-    tests['inlinesvg'] = function() {
-      var div = document.createElement('div');
-      div.innerHTML = '<svg/>';
-      return (div.firstChild && div.firstChild.namespaceURI) == ns.svg;
-    };
-
-    // SVG SMIL animation
-    tests['smil'] = function() {
-        return !!document.createElementNS && /SVGAnimate/.test(toString.call(document.createElementNS(ns.svg, 'animate')));
-    };
-
-    // This test is only for clip paths in SVG proper, not clip paths on HTML content
-    // demo: srufaculty.sru.edu/david.dailey/svg/newstuff/clipPath4.svg
-
-    // However read the comments to dig into applying SVG clippaths to HTML content here:
-    //   github.com/Modernizr/Modernizr/issues/213#issuecomment-1149491
-    tests['svgclippaths'] = function() {
-        return !!document.createElementNS && /SVGClipPath/.test(toString.call(document.createElementNS(ns.svg, 'clipPath')));
-    };
-
-    /*>>webforms*/
-    // input features and input types go directly onto the ret object, bypassing the tests loop.
-    // Hold this guy to execute in a moment.
-    function webforms() {
-        /*>>input*/
-        // Run through HTML5's new input attributes to see if the UA understands any.
-        // We're using f which is the <input> element created early on
-        // Mike Taylr has created a comprehensive resource for testing these attributes
-        //   when applied to all input types:
-        //   miketaylr.com/code/input-type-attr.html
-        // spec: www.whatwg.org/specs/web-apps/current-work/multipage/the-input-element.html#input-type-attr-summary
-
-        // Only input placeholder is tested while textarea's placeholder is not.
-        // Currently Safari 4 and Opera 11 have support only for the input placeholder
-        // Both tests are available in feature-detects/forms-placeholder.js
-        Modernizr['input'] = (function( props ) {
-            for ( var i = 0, len = props.length; i < len; i++ ) {
-                attrs[ props[i] ] = !!(props[i] in inputElem);
-            }
-            if (attrs.list){
-              // safari false positive's on datalist: webk.it/74252
-              // see also github.com/Modernizr/Modernizr/issues/146
-              attrs.list = !!(document.createElement('datalist') && window.HTMLDataListElement);
-            }
-            return attrs;
-        })('autocomplete autofocus list placeholder max min multiple pattern required step'.split(' '));
-        /*>>input*/
-
-        /*>>inputtypes*/
-        // Run through HTML5's new input types to see if the UA understands any.
-        //   This is put behind the tests runloop because it doesn't return a
-        //   true/false like all the other tests; instead, it returns an object
-        //   containing each input type with its corresponding true/false value
-
-        // Big thanks to @miketaylr for the html5 forms expertise. miketaylr.com/
-        Modernizr['inputtypes'] = (function(props) {
-
-            for ( var i = 0, bool, inputElemType, defaultView, len = props.length; i < len; i++ ) {
-
-                inputElem.setAttribute('type', inputElemType = props[i]);
-                bool = inputElem.type !== 'text';
-
-                // We first check to see if the type we give it sticks..
-                // If the type does, we feed it a textual value, which shouldn't be valid.
-                // If the value doesn't stick, we know there's input sanitization which infers a custom UI
-                if ( bool ) {
-
-                    inputElem.value         = smile;
-                    inputElem.style.cssText = 'position:absolute;visibility:hidden;';
-
-                    if ( /^range$/.test(inputElemType) && inputElem.style.WebkitAppearance !== undefined ) {
-
-                      docElement.appendChild(inputElem);
-                      defaultView = document.defaultView;
-
-                      // Safari 2-4 allows the smiley as a value, despite making a slider
-                      bool =  defaultView.getComputedStyle &&
-                              defaultView.getComputedStyle(inputElem, null).WebkitAppearance !== 'textfield' &&
-                              // Mobile android web browser has false positive, so must
-                              // check the height to see if the widget is actually there.
-                              (inputElem.offsetHeight !== 0);
-
-                      docElement.removeChild(inputElem);
-
-                    } else if ( /^(search|tel)$/.test(inputElemType) ){
-                      // Spec doesn't define any special parsing or detectable UI
-                      //   behaviors so we pass these through as true
-
-                      // Interestingly, opera fails the earlier test, so it doesn't
-                      //  even make it here.
-
-                    } else if ( /^(url|email)$/.test(inputElemType) ) {
-                      // Real url and email support comes with prebaked validation.
-                      bool = inputElem.checkValidity && inputElem.checkValidity() === false;
-
-                    } else {
-                      // If the upgraded input compontent rejects the :) text, we got a winner
-                      bool = inputElem.value != smile;
-                    }
-                }
-
-                inputs[ props[i] ] = !!bool;
-            }
-            return inputs;
-        })('search tel url email datetime date month week time datetime-local number range color'.split(' '));
-        /*>>inputtypes*/
-    }
-    /*>>webforms*/
-
-
-    // End of test definitions
-    // -----------------------
-
-
-
-    // Run through all tests and detect their support in the current UA.
-    // todo: hypothetically we could be doing an array of tests and use a basic loop here.
-    for ( var feature in tests ) {
-        if ( hasOwnProp(tests, feature) ) {
-            // run the test, throw the return value into the Modernizr,
-            //   then based on that boolean, define an appropriate className
-            //   and push it into an array of classes we'll join later.
-            featureName  = feature.toLowerCase();
-            Modernizr[featureName] = tests[feature]();
-
-            classes.push((Modernizr[featureName] ? '' : 'no-') + featureName);
-        }
-    }
-
-    /*>>webforms*/
-    // input tests need to run.
-    Modernizr.input || webforms();
-    /*>>webforms*/
-
-
-    /**
-     * addTest allows the user to define their own feature tests
-     * the result will be added onto the Modernizr object,
-     * as well as an appropriate className set on the html element
-     *
-     * @param feature - String naming the feature
-     * @param test - Function returning true if feature is supported, false if not
-     */
-     Modernizr.addTest = function ( feature, test ) {
-       if ( typeof feature == 'object' ) {
-         for ( var key in feature ) {
-           if ( hasOwnProp( feature, key ) ) {
-             Modernizr.addTest( key, feature[ key ] );
-           }
-         }
-       } else {
-
-         feature = feature.toLowerCase();
-
-         if ( Modernizr[feature] !== undefined ) {
-           // we're going to quit if you're trying to overwrite an existing test
-           // if we were to allow it, we'd do this:
-           //   var re = new RegExp("\\b(no-)?" + feature + "\\b");
-           //   docElement.className = docElement.className.replace( re, '' );
-           // but, no rly, stuff 'em.
-           return Modernizr;
-         }
-
-         test = typeof test == 'function' ? test() : test;
-
-         if (typeof enableClasses !== "undefined" && enableClasses) {
-           docElement.className += ' ' + (test ? '' : 'no-') + feature;
-         }
-         Modernizr[feature] = test;
-
-       }
-
-       return Modernizr; // allow chaining.
-     };
-
-
-    // Reset modElem.cssText to nothing to reduce memory footprint.
-    setCss('');
-    modElem = inputElem = null;
-
-    /*>>shiv*/
-    /**
-     * @preserve HTML5 Shiv prev3.7.1 | @afarkas @jdalton @jon_neal @rem | MIT/GPL2 Licensed
-     */
-    ;(function(window, document) {
-        /*jshint evil:true */
-        /** version */
-        var version = '3.7.0';
-
-        /** Preset options */
-        var options = window.html5 || {};
-
-        /** Used to skip problem elements */
-        var reSkip = /^<|^(?:button|map|select|textarea|object|iframe|option|optgroup)$/i;
-
-        /** Not all elements can be cloned in IE **/
-        var saveClones = /^(?:a|b|code|div|fieldset|h1|h2|h3|h4|h5|h6|i|label|li|ol|p|q|span|strong|style|table|tbody|td|th|tr|ul)$/i;
-
-        /** Detect whether the browser supports default html5 styles */
-        var supportsHtml5Styles;
-
-        /** Name of the expando, to work with multiple documents or to re-shiv one document */
-        var expando = '_html5shiv';
-
-        /** The id for the the documents expando */
-        var expanID = 0;
-
-        /** Cached data for each document */
-        var expandoData = {};
-
-        /** Detect whether the browser supports unknown elements */
-        var supportsUnknownElements;
-
-        (function() {
-          try {
-            var a = document.createElement('a');
-            a.innerHTML = '<xyz></xyz>';
-            //if the hidden property is implemented we can assume, that the browser supports basic HTML5 Styles
-            supportsHtml5Styles = ('hidden' in a);
-
-            supportsUnknownElements = a.childNodes.length == 1 || (function() {
-              // assign a false positive if unable to shiv
-              (document.createElement)('a');
-              var frag = document.createDocumentFragment();
-              return (
-                typeof frag.cloneNode == 'undefined' ||
-                typeof frag.createDocumentFragment == 'undefined' ||
-                typeof frag.createElement == 'undefined'
-              );
-            }());
-          } catch(e) {
-            // assign a false positive if detection fails => unable to shiv
-            supportsHtml5Styles = true;
-            supportsUnknownElements = true;
-          }
-
-        }());
-
-        /*--------------------------------------------------------------------------*/
-
-        /**
-         * Creates a style sheet with the given CSS text and adds it to the document.
-         * @private
-         * @param {Document} ownerDocument The document.
-         * @param {String} cssText The CSS text.
-         * @returns {StyleSheet} The style element.
-         */
-        function addStyleSheet(ownerDocument, cssText) {
-          var p = ownerDocument.createElement('p'),
-          parent = ownerDocument.getElementsByTagName('head')[0] || ownerDocument.documentElement;
-
-          p.innerHTML = 'x<style>' + cssText + '</style>';
-          return parent.insertBefore(p.lastChild, parent.firstChild);
-        }
-
-        /**
-         * Returns the value of `html5.elements` as an array.
-         * @private
-         * @returns {Array} An array of shived element node names.
-         */
-        function getElements() {
-          var elements = html5.elements;
-          return typeof elements == 'string' ? elements.split(' ') : elements;
-        }
-
-        /**
-         * Returns the data associated to the given document
-         * @private
-         * @param {Document} ownerDocument The document.
-         * @returns {Object} An object of data.
-         */
-        function getExpandoData(ownerDocument) {
-          var data = expandoData[ownerDocument[expando]];
-          if (!data) {
-            data = {};
-            expanID++;
-            ownerDocument[expando] = expanID;
-            expandoData[expanID] = data;
-          }
-          return data;
-        }
-
-        /**
-         * returns a shived element for the given nodeName and document
-         * @memberOf html5
-         * @param {String} nodeName name of the element
-         * @param {Document} ownerDocument The context document.
-         * @returns {Object} The shived element.
-         */
-        function createElement(nodeName, ownerDocument, data){
-          if (!ownerDocument) {
-            ownerDocument = document;
-          }
-          if(supportsUnknownElements){
-            return ownerDocument.createElement(nodeName);
-          }
-          if (!data) {
-            data = getExpandoData(ownerDocument);
-          }
-          var node;
-
-          if (data.cache[nodeName]) {
-            node = data.cache[nodeName].cloneNode();
-          } else if (saveClones.test(nodeName)) {
-            node = (data.cache[nodeName] = data.createElem(nodeName)).cloneNode();
-          } else {
-            node = data.createElem(nodeName);
-          }
-
-          // Avoid adding some elements to fragments in IE < 9 because
-          // * Attributes like `name` or `type` cannot be set/changed once an element
-          //   is inserted into a document/fragment
-          // * Link elements with `src` attributes that are inaccessible, as with
-          //   a 403 response, will cause the tab/window to crash
-          // * Script elements appended to fragments will execute when their `src`
-          //   or `text` property is set
-          return node.canHaveChildren && !reSkip.test(nodeName) && !node.tagUrn ? data.frag.appendChild(node) : node;
-        }
-
-        /**
-         * returns a shived DocumentFragment for the given document
-         * @memberOf html5
-         * @param {Document} ownerDocument The context document.
-         * @returns {Object} The shived DocumentFragment.
-         */
-        function createDocumentFragment(ownerDocument, data){
-          if (!ownerDocument) {
-            ownerDocument = document;
-          }
-          if(supportsUnknownElements){
-            return ownerDocument.createDocumentFragment();
-          }
-          data = data || getExpandoData(ownerDocument);
-          var clone = data.frag.cloneNode(),
-          i = 0,
-          elems = getElements(),
-          l = elems.length;
-          for(;i<l;i++){
-            clone.createElement(elems[i]);
-          }
-          return clone;
-        }
-
-        /**
-         * Shivs the `createElement` and `createDocumentFragment` methods of the document.
-         * @private
-         * @param {Document|DocumentFragment} ownerDocument The document.
-         * @param {Object} data of the document.
-         */
-        function shivMethods(ownerDocument, data) {
-          if (!data.cache) {
-            data.cache = {};
-            data.createElem = ownerDocument.createElement;
-            data.createFrag = ownerDocument.createDocumentFragment;
-            data.frag = data.createFrag();
-          }
-
-
-          ownerDocument.createElement = function(nodeName) {
-            //abort shiv
-            if (!html5.shivMethods) {
-              return data.createElem(nodeName);
-            }
-            return createElement(nodeName, ownerDocument, data);
-          };
-
-          ownerDocument.createDocumentFragment = Function('h,f', 'return function(){' +
-                                                          'var n=f.cloneNode(),c=n.createElement;' +
-                                                          'h.shivMethods&&(' +
-                                                          // unroll the `createElement` calls
-                                                          getElements().join().replace(/[\w\-]+/g, function(nodeName) {
-            data.createElem(nodeName);
-            data.frag.createElement(nodeName);
-            return 'c("' + nodeName + '")';
-          }) +
-            ');return n}'
-                                                         )(html5, data.frag);
-        }
-
-        /*--------------------------------------------------------------------------*/
-
-        /**
-         * Shivs the given document.
-         * @memberOf html5
-         * @param {Document} ownerDocument The document to shiv.
-         * @returns {Document} The shived document.
-         */
-        function shivDocument(ownerDocument) {
-          if (!ownerDocument) {
-            ownerDocument = document;
-          }
-          var data = getExpandoData(ownerDocument);
-
-          if (html5.shivCSS && !supportsHtml5Styles && !data.hasCSS) {
-            data.hasCSS = !!addStyleSheet(ownerDocument,
-                                          // corrects block display not defined in IE6/7/8/9
-                                          'article,aside,dialog,figcaption,figure,footer,header,hgroup,main,nav,section{display:block}' +
-                                            // adds styling not present in IE6/7/8/9
-                                            'mark{background:#FF0;color:#000}' +
-                                            // hides non-rendered elements
-                                            'template{display:none}'
-                                         );
-          }
-          if (!supportsUnknownElements) {
-            shivMethods(ownerDocument, data);
-          }
-          return ownerDocument;
-        }
-
-        /*--------------------------------------------------------------------------*/
-
-        /**
-         * The `html5` object is exposed so that more elements can be shived and
-         * existing shiving can be detected on iframes.
-         * @type Object
-         * @example
-         *
-         * // options can be changed before the script is included
-         * html5 = { 'elements': 'mark section', 'shivCSS': false, 'shivMethods': false };
-         */
-        var html5 = {
-
-          /**
-           * An array or space separated string of node names of the elements to shiv.
-           * @memberOf html5
-           * @type Array|String
-           */
-          'elements': options.elements || 'abbr article aside audio bdi canvas data datalist details dialog figcaption figure footer header hgroup main mark meter nav output progress section summary template time video',
-
-          /**
-           * current version of html5shiv
-           */
-          'version': version,
-
-          /**
-           * A flag to indicate that the HTML5 style sheet should be inserted.
-           * @memberOf html5
-           * @type Boolean
-           */
-          'shivCSS': (options.shivCSS !== false),
-
-          /**
-           * Is equal to true if a browser supports creating unknown/HTML5 elements
-           * @memberOf html5
-           * @type boolean
-           */
-          'supportsUnknownElements': supportsUnknownElements,
-
-          /**
-           * A flag to indicate that the document's `createElement` and `createDocumentFragment`
-           * methods should be overwritten.
-           * @memberOf html5
-           * @type Boolean
-           */
-          'shivMethods': (options.shivMethods !== false),
-
-          /**
-           * A string to describe the type of `html5` object ("default" or "default print").
-           * @memberOf html5
-           * @type String
-           */
-          'type': 'default',
-
-          // shivs the document according to the specified `html5` object options
-          'shivDocument': shivDocument,
-
-          //creates a shived element
-          createElement: createElement,
-
-          //creates a shived documentFragment
-          createDocumentFragment: createDocumentFragment
-        };
-
-        /*--------------------------------------------------------------------------*/
-
-        // expose html5
-        window.html5 = html5;
-
-        // shiv the document
-        shivDocument(document);
-
-    }(this, document));
-    /*>>shiv*/
-
-    // Assign private properties to the return object with prefix
-    Modernizr._version      = version;
-
-    // expose these for the plugin API. Look in the source for how to join() them against your input
-    /*>>prefixes*/
-    Modernizr._prefixes     = prefixes;
-    /*>>prefixes*/
-    /*>>domprefixes*/
-    Modernizr._domPrefixes  = domPrefixes;
-    Modernizr._cssomPrefixes  = cssomPrefixes;
-    /*>>domprefixes*/
-
-    /*>>mq*/
-    // Modernizr.mq tests a given media query, live against the current state of the window
-    // A few important notes:
-    //   * If a browser does not support media queries at all (eg. oldIE) the mq() will always return false
-    //   * A max-width or orientation query will be evaluated against the current state, which may change later.
-    //   * You must specify values. Eg. If you are testing support for the min-width media query use:
-    //       Modernizr.mq('(min-width:0)')
-    // usage:
-    // Modernizr.mq('only screen and (max-width:768)')
-    Modernizr.mq            = testMediaQuery;
-    /*>>mq*/
-
-    /*>>hasevent*/
-    // Modernizr.hasEvent() detects support for a given event, with an optional element to test on
-    // Modernizr.hasEvent('gesturestart', elem)
-    Modernizr.hasEvent      = isEventSupported;
-    /*>>hasevent*/
-
-    /*>>testprop*/
-    // Modernizr.testProp() investigates whether a given style property is recognized
-    // Note that the property names must be provided in the camelCase variant.
-    // Modernizr.testProp('pointerEvents')
-    Modernizr.testProp      = function(prop){
-        return testProps([prop]);
-    };
-    /*>>testprop*/
-
-    /*>>testallprops*/
-    // Modernizr.testAllProps() investigates whether a given style property,
-    //   or any of its vendor-prefixed variants, is recognized
-    // Note that the property names must be provided in the camelCase variant.
-    // Modernizr.testAllProps('boxSizing')
-    Modernizr.testAllProps  = testPropsAll;
-    /*>>testallprops*/
-
-
-    /*>>teststyles*/
-    // Modernizr.testStyles() allows you to add custom styles to the document and test an element afterwards
-    // Modernizr.testStyles('#modernizr { position:absolute }', function(elem, rule){ ... })
-    Modernizr.testStyles    = injectElementWithStyles;
-    /*>>teststyles*/
-
-
-    /*>>prefixed*/
-    // Modernizr.prefixed() returns the prefixed or nonprefixed property name variant of your input
-    // Modernizr.prefixed('boxSizing') // 'MozBoxSizing'
-
-    // Properties must be passed as dom-style camelcase, rather than `box-sizing` hypentated style.
-    // Return values will also be the camelCase variant, if you need to translate that to hypenated style use:
-    //
-    //     str.replace(/([A-Z])/g, function(str,m1){ return '-' + m1.toLowerCase(); }).replace(/^ms-/,'-ms-');
-
-    // If you're trying to ascertain which transition end event to bind to, you might do something like...
-    //
-    //     var transEndEventNames = {
-    //       'WebkitTransition' : 'webkitTransitionEnd',
-    //       'MozTransition'    : 'transitionend',
-    //       'OTransition'      : 'oTransitionEnd',
-    //       'msTransition'     : 'MSTransitionEnd',
-    //       'transition'       : 'transitionend'
-    //     },
-    //     transEndEventName = transEndEventNames[ Modernizr.prefixed('transition') ];
-
-    Modernizr.prefixed      = function(prop, obj, elem){
-      if(!obj) {
-        return testPropsAll(prop, 'pfx');
-      } else {
-        // Testing DOM property e.g. Modernizr.prefixed('requestAnimationFrame', window) // 'mozRequestAnimationFrame'
-        return testPropsAll(prop, obj, elem);
-      }
-    };
-    /*>>prefixed*/
-
-
-    /*>>cssclasses*/
-    // Remove "no-js" class from <html> element, if it exists:
-    docElement.className = docElement.className.replace(/(^|\s)no-js(\s|$)/, '$1$2') +
-
-                            // Add the new classes to the <html> element.
-                            (enableClasses ? ' js ' + classes.join(' ') : '');
-    /*>>cssclasses*/
-
-    return Modernizr;
-
-})(this, this.document);
 
 //     uuid.js
 //
@@ -32021,7 +29797,7 @@ window.Modernizr = (function( window, document, undefined ) {
 // This file is the concatenation of many js files.
 // See http://github.com/jimhigson/oboe.js for the raw source
 
-// having a local undefined, window, Object etc allows slightly better minification:
+// having a local undefined, window, Object etc allows slightly better minification:                    
 (function  (window, Object, Array, Error, JSON, undefined ) {
 
    // v1.15.0-1-gbd91d2c
@@ -32057,59 +29833,59 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-/**
+/** 
  * Partially complete a function.
- *
+ * 
  *  var add3 = partialComplete( function add(a,b){return a+b}, 3 );
- *
+ *  
  *  add3(4) // gives 7
- *
+ *  
  *  function wrap(left, right, cen){return left + " " + cen + " " + right;}
- *
+ *  
  *  var pirateGreeting = partialComplete( wrap , "I'm", ", a mighty pirate!" );
- *
- *  pirateGreeting("Guybrush Threepwood");
+ *  
+ *  pirateGreeting("Guybrush Threepwood"); 
  *  // gives "I'm Guybrush Threepwood, a mighty pirate!"
  */
 var partialComplete = varArgs(function( fn, args ) {
 
       // this isn't the shortest way to write this but it does
       // avoid creating a new array each time to pass to fn.apply,
-      // otherwise could just call boundArgs.concat(callArgs)
+      // otherwise could just call boundArgs.concat(callArgs)       
 
       var numBoundArgs = args.length;
 
       return varArgs(function( callArgs ) {
-
+         
          for (var i = 0; i < callArgs.length; i++) {
             args[numBoundArgs + i] = callArgs[i];
          }
-
-         args.length = numBoundArgs + callArgs.length;
-
+         
+         args.length = numBoundArgs + callArgs.length;         
+                     
          return fn.apply(this, args);
-      });
+      }); 
    }),
 
 /**
  * Compose zero or more functions:
- *
+ * 
  *    compose(f1, f2, f3)(x) = f1(f2(f3(x))))
- *
+ * 
  * The last (inner-most) function may take more than one parameter:
- *
+ * 
  *    compose(f1, f2, f3)(x,y) = f1(f2(f3(x,y))))
  */
    compose = varArgs(function(fns) {
 
       var fnsList = arrayAsList(fns);
-
-      function next(params, curFn) {
-         return [apply(params, curFn)];
+   
+      function next(params, curFn) {  
+         return [apply(params, curFn)];   
       }
-
+            
       return varArgs(function(startParams){
-
+        
          return foldR(next, startParams, fnsList)[0];
       });
    });
@@ -32127,55 +29903,55 @@ function compose2(f1, f2){
 
 /**
  * Generic form for a function to get a property from an object
- *
+ * 
  *    var o = {
  *       foo:'bar'
  *    }
- *
+ *    
  *    var getFoo = attr('foo')
- *
+ *    
  *    fetFoo(o) // returns 'bar'
- *
+ * 
  * @param {String} key the property name
  */
 function attr(key) {
    return function(o) { return o[key]; };
 }
-
+        
 /**
- * Call a list of functions with the same args until one returns a
+ * Call a list of functions with the same args until one returns a 
  * truthy result. Similar to the || operator.
- *
+ * 
  * So:
  *      lazyUnion([f1,f2,f3 ... fn])( p1, p2 ... pn )
- *
- * Is equivalent to:
- *      apply([p1, p2 ... pn], f1) ||
- *      apply([p1, p2 ... pn], f2) ||
- *      apply([p1, p2 ... pn], f3) ... apply(fn, [p1, p2 ... pn])
- *
+ *      
+ * Is equivalent to: 
+ *      apply([p1, p2 ... pn], f1) || 
+ *      apply([p1, p2 ... pn], f2) || 
+ *      apply([p1, p2 ... pn], f3) ... apply(fn, [p1, p2 ... pn])  
+ *  
  * @returns the first return value that is given that is truthy.
  */
    var lazyUnion = varArgs(function(fns) {
 
       return varArgs(function(params){
-
+   
          var maybeValue;
-
+   
          for (var i = 0; i < len(fns); i++) {
-
+   
             maybeValue = apply(params, fns[i]);
-
+   
             if( maybeValue ) {
                return maybeValue;
             }
          }
       });
-   });
+   });   
 
 /**
  * This file declares various pieces of functional programming.
- *
+ * 
  * This isn't a general purpose functional library, to keep things small it
  * has just the parts useful for Oboe.js.
  */
@@ -32183,9 +29959,9 @@ function attr(key) {
 
 /**
  * Call a single function with the given arguments array.
- * Basically, a functional-style version of the OO-style Function#apply for
+ * Basically, a functional-style version of the OO-style Function#apply for 
  * when we don't care about the context ('this') of the call.
- *
+ * 
  * The order of arguments allows partial completion of the arguments array
  */
 function apply(args, fn) {
@@ -32193,72 +29969,72 @@ function apply(args, fn) {
 }
 
 /**
- * Define variable argument functions but cut out all that tedious messing about
+ * Define variable argument functions but cut out all that tedious messing about 
  * with the arguments object. Delivers the variable-length part of the arguments
  * list as an array.
- *
+ * 
  * Eg:
- *
+ * 
  * var myFunction = varArgs(
  *    function( fixedArgument, otherFixedArgument, variableNumberOfArguments ){
  *       console.log( variableNumberOfArguments );
  *    }
  * )
- *
+ * 
  * myFunction('a', 'b', 1, 2, 3); // logs [1,2,3]
- *
+ * 
  * var myOtherFunction = varArgs(function( variableNumberOfArguments ){
  *    console.log( variableNumberOfArguments );
  * })
- *
+ * 
  * myFunction(1, 2, 3); // logs [1,2,3]
- *
+ * 
  */
 function varArgs(fn){
 
    var numberOfFixedArguments = fn.length -1,
-       slice = Array.prototype.slice;
-
-
+       slice = Array.prototype.slice;          
+         
+                   
    if( numberOfFixedArguments == 0 ) {
-      // an optimised case for when there are no fixed args:
-
+      // an optimised case for when there are no fixed args:   
+   
       return function(){
          return fn.call(this, slice.call(arguments));
       }
-
+      
    } else if( numberOfFixedArguments == 1 ) {
       // an optimised case for when there are is one fixed args:
-
+   
       return function(){
          return fn.call(this, arguments[0], slice.call(arguments, 1));
       }
    }
-
-   // general case
+   
+   // general case   
 
    // we know how many arguments fn will always take. Create a
    // fixed-size array to hold that many, to be re-used on
    // every call to the returned function
-   var argsHolder = Array(fn.length);
-
+   var argsHolder = Array(fn.length);   
+                             
    return function(){
-
+                            
       for (var i = 0; i < numberOfFixedArguments; i++) {
-         argsHolder[i] = arguments[i];
+         argsHolder[i] = arguments[i];         
       }
 
-      argsHolder[numberOfFixedArguments] =
+      argsHolder[numberOfFixedArguments] = 
          slice.call(arguments, numberOfFixedArguments);
-
-      return fn.apply( this, argsHolder);
-   }
+                                
+      return fn.apply( this, argsHolder);      
+   }       
 }
 
 
 /**
  * Swap the order of parameters to a binary function
- *
+ * 
  * A bit like this flip: http://zvon.org/other/haskell/Outputprelude/flip_f.html
  */
 function flip(fn){
@@ -32270,16 +30046,16 @@ function flip(fn){
 
 /**
  * Create a function which is the intersection of two other functions.
- *
+ * 
  * Like the && operator, if the first is truthy, the second is never called,
  * otherwise the return value from the second is returned.
  */
 function lazyIntersection(fn1, fn2) {
 
    return function (param) {
-
+                                                              
       return fn1(param) && fn2(param);
-   };
+   };   
 }
 
 /**
@@ -32295,9 +30071,9 @@ function always(){return true}
 /**
  * Create a function which always returns the same
  * value
- *
+ * 
  * var return3 = functor(3);
- *
+ * 
  * return3() // gives 3
  * return3() // still gives 3
  * return3() // will always give 3
@@ -32309,8 +30085,8 @@ function functor(val){
 }
 
 /**
- * This file defines some loosely associated syntactic sugar for
- * Javascript programming
+ * This file defines some loosely associated syntactic sugar for 
+ * Javascript programming 
  */
 
 
@@ -32321,44 +30097,44 @@ function isOfType(T, maybeSomething){
    return maybeSomething && maybeSomething.constructor === T;
 }
 
-var len = attr('length'),
+var len = attr('length'),    
     isString = partialComplete(isOfType, String);
 
-/**
+/** 
  * I don't like saying this:
- *
+ * 
  *    foo !=== undefined
- *
+ *    
  * because of the double-negative. I find this:
- *
+ * 
  *    defined(foo)
- *
+ *    
  * easier to read.
- */
+ */ 
 function defined( value ) {
    return value !== undefined;
 }
 
 /**
- * Returns true if object o has a key named like every property in
- * the properties array. Will give false if any are missing, or if o
+ * Returns true if object o has a key named like every property in 
+ * the properties array. Will give false if any are missing, or if o 
  * is not an object.
  */
 function hasAllProperties(fieldList, o) {
 
-   return      (o instanceof Object)
+   return      (o instanceof Object) 
             &&
-               all(function (field) {
-                  return (field in o);
+               all(function (field) {         
+                  return (field in o);         
                }, fieldList);
 }
 /**
  * Like cons in Lisp
  */
 function cons(x, xs) {
-
+   
    /* Internally lists are linked 2-element Javascript arrays.
-
+          
       Ideally the return here would be Object.freeze([x,xs])
       so that bugs related to mutation are found fast.
       However, cons is right on the critical path for
@@ -32368,7 +30144,7 @@ function cons(x, xs) {
       run faster) this should be considered for
       restoration.
    */
-
+   
    return [x,xs];
 }
 
@@ -32379,34 +30155,34 @@ var emptyList = null,
 
 /**
  * Get the head of a list.
- *
+ * 
  * Ie, head(cons(a,b)) = a
  */
     head = attr(0),
 
 /**
  * Get the tail of a list.
- *
+ * 
  * Ie, head(cons(a,b)) = a
  */
     tail = attr(1);
 
 
-/**
- * Converts an array to a list
- *
+/** 
+ * Converts an array to a list 
+ * 
  *    asList([a,b,c])
- *
+ * 
  * is equivalent to:
- *
- *    cons(a, cons(b, cons(c, emptyList)))
+ *    
+ *    cons(a, cons(b, cons(c, emptyList))) 
  **/
 function arrayAsList(inputArray){
 
-   return reverseList(
+   return reverseList( 
       inputArray.reduce(
          flip(cons),
-         emptyList
+         emptyList 
       )
    );
 }
@@ -32414,11 +30190,11 @@ function arrayAsList(inputArray){
 /**
  * A varargs version of arrayAsList. Works a bit like list
  * in LISP.
- *
- *    list(a,b,c)
- *
+ * 
+ *    list(a,b,c) 
+ *    
  * is equivalent to:
- *
+ * 
  *    cons(a, cons(b, cons(c, emptyList)))
  */
 var list = varArgs(arrayAsList);
@@ -32429,16 +30205,16 @@ var list = varArgs(arrayAsList);
 function listAsArray(list){
 
    return foldR( function(arraySoFar, listItem){
-
+      
       arraySoFar.unshift(listItem);
       return arraySoFar;
-
+           
    }, [], list );
-
+   
 }
 
 /**
- * Map a function over a list
+ * Map a function over a list 
  */
 function map(fn, list) {
 
@@ -32450,12 +30226,12 @@ function map(fn, list) {
 
 /**
  * foldR implementation. Reduce a list down to a single value.
- *
- * @pram {Function} fn     (rightEval, curVal) -> result
+ * 
+ * @pram {Function} fn     (rightEval, curVal) -> result 
  */
 function foldR(fn, startValue, list) {
-
-   return list
+      
+   return list 
             ? fn(foldR(fn, startValue, tail(list)), head(list))
             : startValue
             ;
@@ -32463,12 +30239,12 @@ function foldR(fn, startValue, list) {
 
 /**
  * foldR implementation. Reduce a list down to a single value.
- *
- * @pram {Function} fn     (rightEval, curVal) -> result
+ * 
+ * @pram {Function} fn     (rightEval, curVal) -> result 
  */
 function foldR1(fn, list) {
-
-   return tail(list)
+      
+   return tail(list) 
             ? fn(foldR1(fn, tail(list)), head(list))
             : head(list)
             ;
@@ -32476,46 +30252,46 @@ function foldR1(fn, list) {
 
 
 /**
- * Return a list like the one given but with the first instance equal
- * to item removed
+ * Return a list like the one given but with the first instance equal 
+ * to item removed 
  */
 function without(list, test, removedFn) {
-
+ 
    return withoutInner(list, removedFn || noop);
-
+ 
    function withoutInner(subList, removedFn) {
-      return subList
-         ?  ( test(head(subList))
-                  ? (removedFn(head(subList)), tail(subList))
+      return subList  
+         ?  ( test(head(subList)) 
+                  ? (removedFn(head(subList)), tail(subList)) 
                   : cons(head(subList), withoutInner(tail(subList), removedFn))
             )
          : emptyList
          ;
-   }
+   }               
 }
 
-/**
- * Returns true if the given function holds for every item in
- * the list, false otherwise
+/** 
+ * Returns true if the given function holds for every item in 
+ * the list, false otherwise 
  */
 function all(fn, list) {
-
-   return !list ||
+   
+   return !list || 
           ( fn(head(list)) && all(fn, tail(list)) );
 }
 
 /**
  * Call every function in a list of functions with the same arguments
- *
- * This doesn't make any sense if we're doing pure functional because
+ * 
+ * This doesn't make any sense if we're doing pure functional because 
  * it doesn't return anything. Hence, this is only really useful if the
- * functions being called have side-effects.
+ * functions being called have side-effects. 
  */
 function applyEach(fnList, args) {
 
-   if( fnList ) {
+   if( fnList ) {  
       head(fnList).apply(null, args);
-
+      
       applyEach(tail(fnList), args);
    }
 }
@@ -32523,7 +30299,7 @@ function applyEach(fnList, args) {
 /**
  * Reverse the order of a list
  */
-function reverseList(list){
+function reverseList(list){ 
 
    // js re-implementation of 3rd solution from:
    //    http://www.haskell.org/haskellwiki/99_questions/Solutions/5
@@ -32531,7 +30307,7 @@ function reverseList(list){
       if( !list ) {
          return reversedAlready;
       }
-
+      
       return reverseInner(tail(list), cons(head(list), reversedAlready))
    }
 
@@ -32540,26 +30316,26 @@ function reverseList(list){
 
 function first(test, list) {
    return   list &&
-               (test(head(list))
-                  ? head(list)
-                  : first(test,tail(list)));
+               (test(head(list)) 
+                  ? head(list) 
+                  : first(test,tail(list))); 
 }
 
-/*
-   This is a slightly hacked-up browser only version of clarinet
-
-      *  some features removed to help keep browser Oboe under
+/* 
+   This is a slightly hacked-up browser only version of clarinet 
+   
+      *  some features removed to help keep browser Oboe under 
          the 5k micro-library limit
       *  plug directly into event bus
-
+   
    For the original go here:
       https://github.com/dscape/clarinet
  */
 
 function clarinet(eventBus) {
   "use strict";
-
-  var
+   
+  var 
       // shortcut some events on the bus
       emitSaxOpenObject    = eventBus(SAX_OPEN_OBJECT).emit,
       emitSaxCloseObject   = eventBus(SAX_CLOSE_OBJECT).emit,
@@ -32568,11 +30344,11 @@ function clarinet(eventBus) {
       emitSaxKey           = eventBus(SAX_KEY).emit,
       emitSaxValue         = eventBus(SAX_VALUE).emit,
       emitFail             = eventBus(FAIL_EVENT).emit,
-
+              
       MAX_BUFFER_LENGTH = 64 * 1024
   ,   stringTokenPattern = /[\\"\n]/g
   ,   _n = 0
-
+  
       // states
   ,   BEGIN                = _n++
   ,   VALUE                = _n++ // general stuff
@@ -32598,11 +30374,11 @@ function clarinet(eventBus) {
 
       // setup initial parser values
   ,   bufferCheckPosition  = MAX_BUFFER_LENGTH
-  ,   latestError
-  ,   c
-  ,   p
+  ,   latestError                
+  ,   c                    
+  ,   p                    
   ,   textNode             = ""
-  ,   numberNode           = ""
+  ,   numberNode           = ""     
   ,   slashed              = false
   ,   closed               = false
   ,   state                = BEGIN
@@ -32616,9 +30392,9 @@ function clarinet(eventBus) {
   ;
 
   function checkBufferLength () {
-
+     
     var maxActual = 0;
-
+     
     if (textNode.length > MAX_BUFFER_LENGTH) {
       emitError("Max buffer length exceeded: textNode");
       maxActual = Math.max(maxActual, textNode.length);
@@ -32627,17 +30403,17 @@ function clarinet(eventBus) {
       emitError("Max buffer length exceeded: numberNode");
       maxActual = Math.max(maxActual, numberNode.length);
     }
-
+     
     bufferCheckPosition = (MAX_BUFFER_LENGTH - maxActual)
                                + position;
   }
 
   eventBus(STREAM_DATA).on(write);
 
-   /* At the end of the http content close the clarinet
-    This will provide an error if the total content provided was not
+   /* At the end of the http content close the clarinet 
+    This will provide an error if the total content provided was not 
     valid json, ie if not all arrays, objects and Strings closed properly */
-  eventBus(STREAM_END).on(end);
+  eventBus(STREAM_END).on(end);   
 
   function emitError (errorString) {
      if (textNode) {
@@ -32648,40 +30424,40 @@ function clarinet(eventBus) {
      latestError = Error(errorString + "\nLn: "+line+
                                        "\nCol: "+column+
                                        "\nChr: "+c);
-
+     
      emitFail(errorReport(undefined, undefined, latestError));
   }
 
   function end() {
     if (state !== VALUE || depth !== 0)
       emitError("Unexpected end");
-
+ 
      if (textNode) {
         emitSaxValue(textNode);
         textNode = "";
      }
-
+     
      closed = true;
   }
 
   function whitespace(c){
      return c == '\r' || c == '\n' || c == ' ' || c == '\t';
   }
-
+   
   function write (chunk) {
-
+         
     // this used to throw the error but inside Oboe we will have already
     // gotten the error when it was emitted. The important thing is to
     // not continue with the parse.
     if (latestError)
       return;
-
+      
     if (closed) {
        return emitError("Cannot write after close");
     }
 
     var i = 0;
-    c = chunk[0];
+    c = chunk[0]; 
 
     while (c) {
       p = c;
@@ -32759,7 +30535,7 @@ function clarinet(eventBus) {
                 textNode = "";
              }
              state  = OPEN_KEY;
-          } else
+          } else 
              return emitError('Bad object');
         continue;
 
@@ -32768,7 +30544,7 @@ function clarinet(eventBus) {
           if (whitespace(c)) continue;
           if(state===OPEN_ARRAY) {
             emitSaxOpenArray();
-            depth++;
+            depth++;             
             state = VALUE;
             if(c === ']') {
               emitSaxCloseArray();
@@ -32793,7 +30569,7 @@ function clarinet(eventBus) {
           } else if('123456789'.indexOf(c) !== -1) {
             numberNode += c;
             state = NUMBER_DIGIT;
-          } else
+          } else               
             return emitError("Bad value");
         continue;
 
@@ -32815,14 +30591,14 @@ function clarinet(eventBus) {
             state = stack.pop() || VALUE;
           } else if (whitespace(c))
               continue;
-          else
+          else 
              return emitError('Bad array');
         continue;
 
         case STRING:
           // thanks thejh, this is an about 50% performance improvement.
           var starti              = i-1;
-
+           
           STRING_BIGLOOP: while (true) {
 
             // zero means "no unicode active". 1-4 mean "parse some more". end after 4.
@@ -32962,7 +30738,7 @@ function clarinet(eventBus) {
           if(c==='l') {
             emitSaxValue(null);
             state = stack.pop() || VALUE;
-          } else
+          } else 
              return emitError('Invalid null started with nul'+ c);
         continue;
 
@@ -32970,7 +30746,7 @@ function clarinet(eventBus) {
           if(c==='.') {
             numberNode += c;
             state       = NUMBER_DIGIT;
-          } else
+          } else 
              return emitError('Leading zero not followed by .');
         continue;
 
@@ -33009,19 +30785,19 @@ function clarinet(eventBus) {
 }
 
 
-/**
+/** 
  * A bridge used to assign stateless functions to listen to clarinet.
- *
+ * 
  * As well as the parameter from clarinet, each callback will also be passed
  * the result of the last callback.
- *
+ * 
  * This may also be used to clear all listeners by assigning zero handlers:
- *
+ * 
  *    ascentManager( clarinet, {} )
  */
 function ascentManager(oboeBus, handlers){
    "use strict";
-
+   
    var id = {},
        state;
 
@@ -33030,18 +30806,18 @@ function ascentManager(oboeBus, handlers){
          state = handler( state, param);
       }
    }
-
+   
    for( var i in handlers ) {
 
       oboeBus(i).on(nextState(handlers[i]), id);
    }
 
    oboeBus(ABORTING).on(function(){
-
+      
       for( var i in handlers ) {
          oboeBus(i).un(id);
       }
-   });
+   });   
 }
 
 // based on gist https://gist.github.com/monsur/706839
@@ -33054,29 +30830,29 @@ function ascentManager(oboeBus, handlers){
  */
 function parseResponseHeaders(headerStr) {
    var headers = {};
-
+   
    headerStr && headerStr.split('\u000d\u000a')
       .forEach(function(headerPair){
-
+   
          // Can't use split() here because it does the wrong thing
          // if the header value has the string ": " in it.
          var index = headerPair.indexOf('\u003a\u0020');
-
-         headers[headerPair.substring(0, index)]
+         
+         headers[headerPair.substring(0, index)] 
                      = headerPair.substring(index + 2);
       });
-
+   
    return headers;
 }
 
 /**
  * Detect if a given URL is cross-origin in the scope of the
  * current page.
- *
+ * 
  * Browser only (since cross-origin has no meaning in Node.js)
  *
  * @param {Object} pageLocation - as in window.location
- * @param {Object} ajaxHost - an object like window.location describing the
+ * @param {Object} ajaxHost - an object like window.location describing the 
  *    origin of the url that we want to ajax in
  */
 function isCrossOrigin(pageLocation, ajaxHost) {
@@ -33088,18 +30864,18 @@ function isCrossOrigin(pageLocation, ajaxHost) {
    function defaultPort(protocol) {
       return {'http:':80, 'https:':443}[protocol];
    }
-
+   
    function portOf(location) {
       // pageLocation should always have a protocol. ajaxHost if no port or
       // protocol is specified, should use the port of the containing page
-
+      
       return location.port || defaultPort(location.protocol||pageLocation.protocol);
    }
 
    // if ajaxHost doesn't give a domain, port is the same as pageLocation
    // it can't give a protocol but not a domain
    // it can't give a port but not a domain
-
+   
    return !!(  (ajaxHost.protocol  && (ajaxHost.protocol  != pageLocation.protocol)) ||
                (ajaxHost.host      && (ajaxHost.host      != pageLocation.host))     ||
                (ajaxHost.host      && (portOf(ajaxHost) != portOf(pageLocation)))
@@ -33115,11 +30891,11 @@ function parseUrlOrigin(url) {
    //    same domain
    //    same port
    //    some protocol
-   // so, same everything up to the first (single) slash
+   // so, same everything up to the first (single) slash 
    // if such is given
    //
-   // can ignore everything after that
-
+   // can ignore everything after that   
+   
    var URL_HOST_PATTERN = /(\w+:)?(?:\/\/)([\w.-]+)?(?::(\d+))?\/?/,
 
          // if no match, use an empty array so that
@@ -33127,7 +30903,7 @@ function parseUrlOrigin(url) {
          // and will ultimately return all empty
          // strings as the parse result:
        urlHostMatch = URL_HOST_PATTERN.exec(url) || [];
-
+   
    return {
       protocol:   urlHostMatch[1] || '',
       host:       urlHostMatch[2] || '',
@@ -33140,13 +30916,13 @@ function httpTransport(){
 }
 
 /**
- * A wrapper around the browser XmlHttpRequest object that raises an
+ * A wrapper around the browser XmlHttpRequest object that raises an 
  * event whenever a new part of the response is available.
- *
- * In older browsers progressive reading is impossible so all the
+ * 
+ * In older browsers progressive reading is impossible so all the 
  * content is given in a single call. For newer ones several events
  * should be raised, allowing progressive interpretation of the response.
- *
+ *      
  * @param {Function} oboeBus an event bus local to this Oboe instance
  * @param {XMLHttpRequest} xhr the xhr to use as the transport. Under normal
  *          operation, will have been created using httpTransport() above
@@ -33158,61 +30934,61 @@ function httpTransport(){
  * @param {Object} [headers] the http request headers to send
  * @param {boolean} withCredentials the XHR withCredentials property will be
  *    set to this value
- */
+ */  
 function streamingHttp(oboeBus, xhr, method, url, data, headers, withCredentials) {
-
+           
    "use strict";
-
+   
    var emitStreamData = oboeBus(STREAM_DATA).emit,
        emitFail       = oboeBus(FAIL_EVENT).emit,
        numberOfCharsAlreadyGivenToCallback = 0,
        stillToSendStartEvent = true;
 
-   // When an ABORTING message is put on the event bus abort
-   // the ajax request
+   // When an ABORTING message is put on the event bus abort 
+   // the ajax request         
    oboeBus( ABORTING ).on( function(){
-
-      // if we keep the onreadystatechange while aborting the XHR gives
+  
+      // if we keep the onreadystatechange while aborting the XHR gives 
       // a callback like a successful call so first remove this listener
       // by assigning null:
       xhr.onreadystatechange = null;
-
+            
       xhr.abort();
    });
 
-   /**
+   /** 
     * Handle input from the underlying xhr: either a state change,
     * the progress event or the request being complete.
     */
    function handleProgress() {
-
+                        
       var textSoFar = xhr.responseText,
           newText = textSoFar.substr(numberOfCharsAlreadyGivenToCallback);
-
-
+      
+      
       /* Raise the event for new text.
-
-         On older browsers, the new text is the whole response.
-         On newer/better ones, the fragment part that we got since
+      
+         On older browsers, the new text is the whole response. 
+         On newer/better ones, the fragment part that we got since 
          last progress. */
-
+         
       if( newText ) {
          emitStreamData( newText );
-      }
+      } 
 
       numberOfCharsAlreadyGivenToCallback = len(textSoFar);
    }
-
-
+   
+   
    if('onprogress' in xhr){  // detect browser support for progressive delivery
       xhr.onprogress = handleProgress;
    }
-
+      
    xhr.onreadystatechange = function() {
 
       function sendStartIfNotAlready() {
          // Internet Explorer is very unreliable as to when xhr.status etc can
-         // be read so has to be protected with try/catch and tried again on
+         // be read so has to be protected with try/catch and tried again on 
          // the next readyState if it fails
          try{
             stillToSendStartEvent && oboeBus( HTTP_START ).emit(
@@ -33221,111 +30997,111 @@ function streamingHttp(oboeBus, xhr, method, url, data, headers, withCredentials
             stillToSendStartEvent = false;
          } catch(e){/* do nothing, will try again on next readyState*/}
       }
-
+      
       switch( xhr.readyState ) {
-
+               
          case 2: // HEADERS_RECEIVED
          case 3: // LOADING
             return sendStartIfNotAlready();
-
+            
          case 4: // DONE
             sendStartIfNotAlready(); // if xhr.status hasn't been available yet, it must be NOW, huh IE?
-
+            
             // is this a 2xx http code?
             var successful = String(xhr.status)[0] == 2;
-
+            
             if( successful ) {
                // In Chrome 29 (not 28) no onprogress is emitted when a response
                // is complete before the onload. We need to always do handleInput
                // in case we get the load but have not had a final progress event.
                // This looks like a bug and may change in future but let's take
-               // the safest approach and assume we might not have received a
+               // the safest approach and assume we might not have received a 
                // progress event for each part of the response
                handleProgress();
-
+               
                oboeBus(STREAM_END).emit();
             } else {
 
                emitFail( errorReport(
-                  xhr.status,
+                  xhr.status, 
                   xhr.responseText
                ));
             }
       }
    };
-
+   
    try{
-
+   
       xhr.open(method, url, true);
-
+   
       for( var headerName in headers ){
          xhr.setRequestHeader(headerName, headers[headerName]);
       }
-
+      
       if( !isCrossOrigin(window.location, parseUrlOrigin(url)) ) {
          xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
       }
 
       xhr.withCredentials = withCredentials;
-
+      
       xhr.send(data);
-
+      
    } catch( e ) {
-
+      
       // To keep a consistent interface with Node, we can't emit an event here.
       // Node's streaming http adaptor receives the error as an asynchronous
       // event rather than as an exception. If we emitted now, the Oboe user
       // has had no chance to add a .fail listener so there is no way
       // the event could be useful. For both these reasons defer the
-      // firing to the next JS frame.
+      // firing to the next JS frame.  
       window.setTimeout(
          partialComplete(emitFail, errorReport(undefined, undefined, e))
       ,  0
       );
-   }
+   }            
 }
 
 var jsonPathSyntax = (function() {
-
+ 
    var
-
-   /**
-    * Export a regular expression as a simple function by exposing just
-    * the Regex#exec. This allows regex tests to be used under the same
+   
+   /** 
+    * Export a regular expression as a simple function by exposing just 
+    * the Regex#exec. This allows regex tests to be used under the same 
     * interface as differently implemented tests, or for a user of the
     * tests to not concern themselves with their implementation as regular
     * expressions.
-    *
+    * 
     * This could also be expressed point-free as:
     *   Function.prototype.bind.bind(RegExp.prototype.exec),
-    *
-    * But that's far too confusing! (and not even smaller once minified
+    *   
+    * But that's far too confusing! (and not even smaller once minified 
     * and gzipped)
     */
        regexDescriptor = function regexDescriptor(regex) {
             return regex.exec.bind(regex);
        }
-
+       
    /**
     * Join several regular expressions and express as a function.
     * This allows the token patterns to reuse component regular expressions
     * instead of being expressed in full using huge and confusing regular
     * expressions.
-    */
+    */       
    ,   jsonPathClause = varArgs(function( componentRegexes ) {
 
-            // The regular expressions all start with ^ because we
-            // only want to find matches at the start of the
-            // JSONPath fragment we are inspecting
+            // The regular expressions all start with ^ because we 
+            // only want to find matches at the start of the 
+            // JSONPath fragment we are inspecting           
             componentRegexes.unshift(/^/);
-
+            
             return   regexDescriptor(
                         RegExp(
                            componentRegexes.map(attr('source')).join('')
                         )
                      );
        })
-
+       
    ,   possiblyCapturing =           /(\$?)/
    ,   namedNode =                   /([\w-_]+|\*)/
    ,   namePlaceholder =             /()/
@@ -33333,76 +31109,76 @@ var jsonPathSyntax = (function() {
    ,   numberedNodeInArrayNotation = /\[(\d+|\*)\]/
    ,   fieldList =                      /{([\w ]*?)}/
    ,   optionalFieldList =           /(?:{([\w ]*?)})?/
+    
 
+       //   foo or *                  
+   ,   jsonPathNamedNodeInObjectNotation   = jsonPathClause( 
+                                                possiblyCapturing, 
+                                                namedNode, 
+                                                optionalFieldList
+                                             )
+                                             
+       //   ["foo"]   
+   ,   jsonPathNamedNodeInArrayNotation    = jsonPathClause( 
+                                                possiblyCapturing, 
+                                                nodeInArrayNotation, 
+                                                optionalFieldList
+                                             )  
 
-       //   foo or *
-   ,   jsonPathNamedNodeInObjectNotation   = jsonPathClause(
-                                                possiblyCapturing,
-                                                namedNode,
+       //   [2] or [*]       
+   ,   jsonPathNumberedNodeInArrayNotation = jsonPathClause( 
+                                                possiblyCapturing, 
+                                                numberedNodeInArrayNotation, 
                                                 optionalFieldList
                                              )
 
-       //   ["foo"]
-   ,   jsonPathNamedNodeInArrayNotation    = jsonPathClause(
-                                                possiblyCapturing,
-                                                nodeInArrayNotation,
-                                                optionalFieldList
-                                             )
-
-       //   [2] or [*]
-   ,   jsonPathNumberedNodeInArrayNotation = jsonPathClause(
-                                                possiblyCapturing,
-                                                numberedNodeInArrayNotation,
-                                                optionalFieldList
-                                             )
-
-       //   {a b c}
-   ,   jsonPathPureDuckTyping              = jsonPathClause(
-                                                possiblyCapturing,
-                                                namePlaceholder,
+       //   {a b c}      
+   ,   jsonPathPureDuckTyping              = jsonPathClause( 
+                                                possiblyCapturing, 
+                                                namePlaceholder, 
                                                 fieldList
                                              )
-
+   
        //   ..
-   ,   jsonPathDoubleDot                   = jsonPathClause(/\.\./)
-
+   ,   jsonPathDoubleDot                   = jsonPathClause(/\.\./)                  
+   
        //   .
-   ,   jsonPathDot                         = jsonPathClause(/\./)
-
+   ,   jsonPathDot                         = jsonPathClause(/\./)                    
+   
        //   !
    ,   jsonPathBang                        = jsonPathClause(
-                                                possiblyCapturing,
+                                                possiblyCapturing, 
                                                 /!/
-                                             )
-
+                                             )  
+   
        //   nada!
-   ,   emptyString                         = jsonPathClause(/$/)
-
+   ,   emptyString                         = jsonPathClause(/$/)                     
+   
    ;
-
-
-   /* We export only a single function. When called, this function injects
-      into another function the descriptors from above.
+   
+  
+   /* We export only a single function. When called, this function injects 
+      into another function the descriptors from above.             
     */
-   return function (fn){
-      return fn(
+   return function (fn){      
+      return fn(      
          lazyUnion(
             jsonPathNamedNodeInObjectNotation
          ,  jsonPathNamedNodeInArrayNotation
          ,  jsonPathNumberedNodeInArrayNotation
-         ,  jsonPathPureDuckTyping
+         ,  jsonPathPureDuckTyping 
          )
       ,  jsonPathDoubleDot
       ,  jsonPathDot
       ,  jsonPathBang
-      ,  emptyString
+      ,  emptyString 
       );
-   };
+   }; 
 
 }());
 /**
  * Get a new key->node mapping
- *
+ * 
  * @param {String|Number} key
  * @param {Object|Array|String|Number|null} node a value found in the json
  */
@@ -33415,11 +31191,11 @@ var keyOf = attr('key');
 
 /** get the node from a namedNode */
 var nodeOf = attr('node');
-/**
+/** 
  * This file provides various listeners which can be used to build up
  * a changing ascent based on the callbacks provided by Clarinet. It listens
  * to the low-level events from Clarinet and emits higher-level ones.
- *
+ *  
  * The building up is stateless so to track a JSON file
  * ascentManager.js is required to store the ascent state
  * between calls.
@@ -33427,26 +31203,26 @@ var nodeOf = attr('node');
 
 
 
-/**
- * A special value to use in the path list to represent the path 'to' a root
- * object (which doesn't really have any path). This prevents the need for
- * special-casing detection of the root object and allows it to be treated
- * like any other object. We might think of this as being similar to the
- * 'unnamed root' domain ".", eg if I go to
- * http://en.wikipedia.org./wiki/En/Main_page the dot after 'org' deliminates
+/** 
+ * A special value to use in the path list to represent the path 'to' a root 
+ * object (which doesn't really have any path). This prevents the need for 
+ * special-casing detection of the root object and allows it to be treated 
+ * like any other object. We might think of this as being similar to the 
+ * 'unnamed root' domain ".", eg if I go to 
+ * http://en.wikipedia.org./wiki/En/Main_page the dot after 'org' deliminates 
  * the unnamed root of the DNS.
- *
- * This is kept as an object to take advantage that in Javascript's OO objects
- * are guaranteed to be distinct, therefore no other object can possibly clash
- * with this one. Strings, numbers etc provide no such guarantee.
+ * 
+ * This is kept as an object to take advantage that in Javascript's OO objects 
+ * are guaranteed to be distinct, therefore no other object can possibly clash 
+ * with this one. Strings, numbers etc provide no such guarantee. 
  **/
 var ROOT_PATH = {};
 
 
 /**
- * Create a new set of handlers for clarinet's events, bound to the emit
- * function given.
- */
+ * Create a new set of handlers for clarinet's events, bound to the emit 
+ * function given.  
+ */ 
 function incrementalContentBuilder( oboeBus ) {
 
    var emitNodeOpened = oboeBus(NODE_OPENED).emit,
@@ -33455,52 +31231,52 @@ function incrementalContentBuilder( oboeBus ) {
        emitRootClosed = oboeBus(ROOT_NODE_FOUND).emit;
 
    function arrayIndicesAreKeys( possiblyInconsistentAscent, newDeepestNode) {
-
-      /* for values in arrays we aren't pre-warned of the coming paths
-         (Clarinet gives no call to onkey like it does for values in objects)
-         so if we are in an array we need to create this path ourselves. The
-         key will be len(parentNode) because array keys are always sequential
+   
+      /* for values in arrays we aren't pre-warned of the coming paths 
+         (Clarinet gives no call to onkey like it does for values in objects) 
+         so if we are in an array we need to create this path ourselves. The 
+         key will be len(parentNode) because array keys are always sequential 
          numbers. */
 
       var parentNode = nodeOf( head( possiblyInconsistentAscent));
-
+      
       return      isOfType( Array, parentNode)
                ?
-                  keyFound(  possiblyInconsistentAscent,
-                              len(parentNode),
+                  keyFound(  possiblyInconsistentAscent, 
+                              len(parentNode), 
                               newDeepestNode
                   )
-               :
+               :  
                   // nothing needed, return unchanged
-                  possiblyInconsistentAscent
+                  possiblyInconsistentAscent 
                ;
    }
-
+                 
    function nodeOpened( ascent, newDeepestNode ) {
-
+      
       if( !ascent ) {
-         // we discovered the root node,
+         // we discovered the root node,         
          emitRootOpened( newDeepestNode);
-
-         return keyFound( ascent, ROOT_PATH, newDeepestNode);
+                    
+         return keyFound( ascent, ROOT_PATH, newDeepestNode);         
       }
 
       // we discovered a non-root node
-
-      var arrayConsistentAscent  = arrayIndicesAreKeys( ascent, newDeepestNode),
+                 
+      var arrayConsistentAscent  = arrayIndicesAreKeys( ascent, newDeepestNode),      
           ancestorBranches       = tail( arrayConsistentAscent),
           previouslyUnmappedName = keyOf( head( arrayConsistentAscent));
-
-      appendBuiltContent(
-         ancestorBranches,
-         previouslyUnmappedName,
-         newDeepestNode
+          
+      appendBuiltContent( 
+         ancestorBranches, 
+         previouslyUnmappedName, 
+         newDeepestNode 
       );
-
-      return cons(
-               namedNode( previouslyUnmappedName, newDeepestNode ),
+                                                                                                         
+      return cons( 
+               namedNode( previouslyUnmappedName, newDeepestNode ), 
                ancestorBranches
-      );
+      );                                                                          
    }
 
 
@@ -33509,39 +31285,39 @@ function incrementalContentBuilder( oboeBus ) {
     * parsed JSON
     */
    function appendBuiltContent( ancestorBranches, key, node ){
-
+     
       nodeOf( head( ancestorBranches))[key] = node;
    }
 
-
+     
    /**
     * For when we find a new key in the json.
-    *
-    * @param {String|Number|Object} newDeepestName the key. If we are in an
-    *    array will be a number, otherwise a string. May take the special
+    * 
+    * @param {String|Number|Object} newDeepestName the key. If we are in an 
+    *    array will be a number, otherwise a string. May take the special 
     *    value ROOT_PATH if the root node has just been found
-    *
-    * @param {String|Number|Object|Array|Null|undefined} [maybeNewDeepestNode]
-    *    usually this won't be known so can be undefined. Can't use null
+    *    
+    * @param {String|Number|Object|Array|Null|undefined} [maybeNewDeepestNode] 
+    *    usually this won't be known so can be undefined. Can't use null 
     *    to represent unknown because null is a valid value in JSON
-    **/
+    **/  
    function keyFound(ascent, newDeepestName, maybeNewDeepestNode) {
 
       if( ascent ) { // if not root
-
+      
          // If we have the key but (unless adding to an array) no known value
-         // yet. Put that key in the output but against no defined value:
+         // yet. Put that key in the output but against no defined value:      
          appendBuiltContent( ascent, newDeepestName, maybeNewDeepestNode );
       }
-
-      var ascentWithNewPath = cons(
-                                 namedNode( newDeepestName,
-                                            maybeNewDeepestNode),
+   
+      var ascentWithNewPath = cons( 
+                                 namedNode( newDeepestName, 
+                                            maybeNewDeepestNode), 
                                  ascent
                               );
 
       emitNodeOpened( ascentWithNewPath);
-
+ 
       return ascentWithNewPath;
    }
 
@@ -33552,42 +31328,42 @@ function incrementalContentBuilder( oboeBus ) {
    function nodeClosed( ascent ) {
 
       emitNodeClosed( ascent);
-
+                          
       // pop the complete node and its path off the list. If we have
       // nothing left emit that the root closed
       return tail( ascent) || emitRootClosed(nodeOf(head(ascent)));
-   }
-
+   }      
+                 
    var contentBuilderHandlers = {};
    contentBuilderHandlers[SAX_OPEN_OBJECT] = function (ascent) {
       return nodeOpened(ascent, {});
-   };
+   }; 
    contentBuilderHandlers[SAX_OPEN_ARRAY] = function (ascent) {
       return nodeOpened(ascent, []);
-   };
-   contentBuilderHandlers[SAX_KEY] = keyFound;
-   contentBuilderHandlers[SAX_VALUE] = compose2( nodeClosed, nodeOpened );
+   }; 
+   contentBuilderHandlers[SAX_KEY] = keyFound; 
+   contentBuilderHandlers[SAX_VALUE] = compose2( nodeClosed, nodeOpened ); 
    contentBuilderHandlers[SAX_CLOSE_OBJECT] = nodeClosed;
-   contentBuilderHandlers[SAX_CLOSE_ARRAY] = nodeClosed;
+   contentBuilderHandlers[SAX_CLOSE_ARRAY] = nodeClosed; 
    return contentBuilderHandlers;
 }
 
 /**
- * The jsonPath evaluator compiler used for Oboe.js.
- *
- * One function is exposed. This function takes a String JSONPath spec and
+ * The jsonPath evaluator compiler used for Oboe.js. 
+ * 
+ * One function is exposed. This function takes a String JSONPath spec and 
  * returns a function to test candidate ascents for matches.
- *
+ * 
  *  String jsonPath -> (List ascent) -> Boolean|Object
  *
- * This file is coded in a pure functional style. That is, no function has
- * side effects, every function evaluates to the same value for the same
+ * This file is coded in a pure functional style. That is, no function has 
+ * side effects, every function evaluates to the same value for the same 
  * arguments and no variables are reassigned.
- */
-// the call to jsonPathSyntax injects the token syntaxes that are needed
+ */  
+// the call to jsonPathSyntax injects the token syntaxes that are needed 
 // inside the compiler
-var jsonPathCompiler = jsonPathSyntax(function (pathNodeSyntax,
-                                                doubleDotSyntax,
+var jsonPathCompiler = jsonPathSyntax(function (pathNodeSyntax, 
+                                                doubleDotSyntax, 
                                                 dotSyntax,
                                                 bangSyntax,
                                                 emptySyntax ) {
@@ -33598,29 +31374,29 @@ var jsonPathCompiler = jsonPathSyntax(function (pathNodeSyntax,
 
    var headKey  = compose2(keyOf, head),
        headNode = compose2(nodeOf, head);
-
+                   
    /**
     * Create an evaluator function for a named path node, expressed in the
     * JSONPath like:
     *    foo
     *    ["bar"]
-    *    [2]
+    *    [2]   
     */
    function nameClause(previousExpr, detection ) {
-
+     
       var name = detection[NAME_INDEX],
-
-          matchesName = ( !name || name == '*' )
+            
+          matchesName = ( !name || name == '*' ) 
                            ?  always
                            :  function(ascent){return headKey(ascent) == name};
-
+     
 
       return lazyIntersection(matchesName, previousExpr);
    }
 
    /**
     * Create an evaluator function for a a duck-typed node, expressed like:
-    *
+    * 
     *    {spin, taste, colour}
     *    .particle{spin, taste, colour}
     *    *{spin, taste, colour}
@@ -33629,16 +31405,16 @@ var jsonPathCompiler = jsonPathSyntax(function (pathNodeSyntax,
 
       var fieldListStr = detection[FIELD_LIST_INDEX];
 
-      if (!fieldListStr)
-         return previousExpr; // don't wrap at all, return given expr as-is
+      if (!fieldListStr) 
+         return previousExpr; // don't wrap at all, return given expr as-is      
 
       var hasAllrequiredFields = partialComplete(
-                                    hasAllProperties,
+                                    hasAllProperties, 
                                     arrayAsList(fieldListStr.split(/\W+/))
                                  ),
-
-          isMatch =  compose2(
-                        hasAllrequiredFields,
+                                 
+          isMatch =  compose2( 
+                        hasAllrequiredFields, 
                         headNode
                      );
 
@@ -33650,30 +31426,30 @@ var jsonPathCompiler = jsonPathSyntax(function (pathNodeSyntax,
     */
    function capture( previousExpr, detection ) {
 
-      // extract meaning from the detection
+      // extract meaning from the detection      
       var capturing = !!detection[CAPTURING_INDEX];
 
-      if (!capturing)
-         return previousExpr; // don't wrap at all, return given expr as-is
-
+      if (!capturing)          
+         return previousExpr; // don't wrap at all, return given expr as-is      
+      
       return lazyIntersection(previousExpr, head);
-
-   }
-
+            
+   }            
+      
    /**
-    * Create an evaluator function that moves onto the next item on the
-    * lists. This function is the place where the logic to move up a
-    * level in the ascent exists.
-    *
+    * Create an evaluator function that moves onto the next item on the 
+    * lists. This function is the place where the logic to move up a 
+    * level in the ascent exists. 
+    * 
     * Eg, for JSONPath ".foo" we need skip1(nameClause(always, [,'foo']))
     */
    function skip1(previousExpr) {
-
-
+   
+   
       if( previousExpr == always ) {
-         /* If there is no previous expression this consume command
+         /* If there is no previous expression this consume command 
             is at the start of the jsonPath.
-            Since JSONPath specifies what we'd like to find but not
+            Since JSONPath specifies what we'd like to find but not 
             necessarily everything leading down to it, when running
             out of JSONPath to check against we default to true */
          return always;
@@ -33685,42 +31461,42 @@ var jsonPathCompiler = jsonPathSyntax(function (pathNodeSyntax,
       function notAtRoot(ascent){
          return headKey(ascent) != ROOT_PATH;
       }
-
+      
       return lazyIntersection(
-               /* If we're already at the root but there are more
+               /* If we're already at the root but there are more 
                   expressions to satisfy, can't consume any more. No match.
 
-                  This check is why none of the other exprs have to be able
-                  to handle empty lists; skip1 is the only evaluator that
-                  moves onto the next token and it refuses to do so once it
+                  This check is why none of the other exprs have to be able 
+                  to handle empty lists; skip1 is the only evaluator that 
+                  moves onto the next token and it refuses to do so once it 
                   reaches the last item in the list. */
                notAtRoot,
-
+               
                /* We are not at the root of the ascent yet.
-                  Move to the next level of the ascent by handing only
-                  the tail to the previous expression */
-               compose2(previousExpr, tail)
+                  Move to the next level of the ascent by handing only 
+                  the tail to the previous expression */ 
+               compose2(previousExpr, tail) 
       );
-
-   }
-
+                                                                                                               
+   }   
+   
    /**
     * Create an evaluator function for the .. (double dot) token. Consumes
     * zero or more levels of the ascent, the fewest that are required to find
     * a match when given to previousExpr.
-    */
+    */   
    function skipMany(previousExpr) {
 
       if( previousExpr == always ) {
-         /* If there is no previous expression this consume command
+         /* If there is no previous expression this consume command 
             is at the start of the jsonPath.
-            Since JSONPath specifies what we'd like to find but not
+            Since JSONPath specifies what we'd like to find but not 
             necessarily everything leading down to it, when running
-            out of JSONPath to check against we default to true */
+            out of JSONPath to check against we default to true */            
          return always;
       }
-
-      var
+          
+      var 
           // In JSONPath .. is equivalent to !.. so if .. reaches the root
           // the match has succeeded. Ie, we might write ..foo or !..foo
           // and both should match identically.
@@ -33733,203 +31509,203 @@ var jsonPathCompiler = jsonPathSyntax(function (pathNodeSyntax,
           cases = lazyUnion(
                      terminalCaseWhenArrivingAtRoot
                   ,  terminalCaseWhenPreviousExpressionIsSatisfied
-                  ,  recursiveCase
+                  ,  recursiveCase  
                   );
-
+      
       return cases;
-   }
-
+   }      
+   
    /**
     * Generate an evaluator for ! - matches only the root element of the json
-    * and ignores any previous expressions since nothing may precede !.
-    */
+    * and ignores any previous expressions since nothing may precede !. 
+    */   
    function rootExpr() {
-
+      
       return function(ascent){
          return headKey(ascent) == ROOT_PATH;
       };
-   }
-
+   }   
+         
    /**
-    * Generate a statement wrapper to sit around the outermost
+    * Generate a statement wrapper to sit around the outermost 
     * clause evaluator.
-    *
+    * 
     * Handles the case where the capturing is implicit because the JSONPath
     * did not contain a '$' by returning the last node.
-    */
+    */   
    function statementExpr(lastClause) {
-
+      
       return function(ascent) {
-
+   
          // kick off the evaluation by passing through to the last clause
          var exprMatch = lastClause(ascent);
-
+                                                     
          return exprMatch === true ? head(ascent) : exprMatch;
       };
-   }
-
+   }      
+                          
    /**
     * For when a token has been found in the JSONPath input.
     * Compiles the parser for that token and returns in combination with the
     * parser already generated.
-    *
+    * 
     * @param {Function} exprs  a list of the clause evaluator generators for
     *                          the token that was found
     * @param {Function} parserGeneratedSoFar the parser already found
-    * @param {Array} detection the match given by the regex engine when
+    * @param {Array} detection the match given by the regex engine when 
     *                          the feature was found
     */
    function expressionsReader( exprs, parserGeneratedSoFar, detection ) {
-
-      // if exprs is zero-length foldR will pass back the
-      // parserGeneratedSoFar as-is so we don't need to treat
+                     
+      // if exprs is zero-length foldR will pass back the 
+      // parserGeneratedSoFar as-is so we don't need to treat 
       // this as a special case
-
-      return   foldR(
+      
+      return   foldR( 
                   function( parserGeneratedSoFar, expr ){
-
+         
                      return expr(parserGeneratedSoFar, detection);
-                  },
-                  parserGeneratedSoFar,
+                  }, 
+                  parserGeneratedSoFar, 
                   exprs
-               );
+               );                     
 
    }
 
-   /**
+   /** 
     *  If jsonPath matches the given detector function, creates a function which
     *  evaluates against every clause in the clauseEvaluatorGenerators. The
     *  created function is propagated to the onSuccess function, along with
     *  the remaining unparsed JSONPath substring.
-    *
+    *  
     *  The intended use is to create a clauseMatcher by filling in
     *  the first two arguments, thus providing a function that knows
     *  some syntax to match and what kind of generator to create if it
     *  finds it. The parameter list once completed is:
-    *
+    *  
     *    (jsonPath, parserGeneratedSoFar, onSuccess)
-    *
-    *  onSuccess may be compileJsonPathToFunction, to recursively continue
+    *  
+    *  onSuccess may be compileJsonPathToFunction, to recursively continue 
     *  parsing after finding a match or returnFoundParser to stop here.
     */
    function generateClauseReaderIfTokenFound (
-
+     
                         tokenDetector, clauseEvaluatorGenerators,
-
+                         
                         jsonPath, parserGeneratedSoFar, onSuccess) {
-
+                        
       var detected = tokenDetector(jsonPath);
 
       if(detected) {
          var compiledParser = expressionsReader(
-                                 clauseEvaluatorGenerators,
-                                 parserGeneratedSoFar,
+                                 clauseEvaluatorGenerators, 
+                                 parserGeneratedSoFar, 
                                  detected
                               ),
-
-             remainingUnparsedJsonPath = jsonPath.substr(len(detected[0]));
-
+         
+             remainingUnparsedJsonPath = jsonPath.substr(len(detected[0]));                
+                               
          return onSuccess(remainingUnparsedJsonPath, compiledParser);
-      }
+      }         
    }
-
+                 
    /**
-    * Partially completes generateClauseReaderIfTokenFound above.
+    * Partially completes generateClauseReaderIfTokenFound above. 
     */
    function clauseMatcher(tokenDetector, exprs) {
-
-      return   partialComplete(
-                  generateClauseReaderIfTokenFound,
-                  tokenDetector,
-                  exprs
+        
+      return   partialComplete( 
+                  generateClauseReaderIfTokenFound, 
+                  tokenDetector, 
+                  exprs 
                );
    }
 
    /**
-    * clauseForJsonPath is a function which attempts to match against
+    * clauseForJsonPath is a function which attempts to match against 
     * several clause matchers in order until one matches. If non match the
     * jsonPath expression is invalid and an error is thrown.
-    *
+    * 
     * The parameter list is the same as a single clauseMatcher:
-    *
+    * 
     *    (jsonPath, parserGeneratedSoFar, onSuccess)
-    */
+    */     
    var clauseForJsonPath = lazyUnion(
 
-      clauseMatcher(pathNodeSyntax   , list( capture,
-                                             duckTypeClause,
-                                             nameClause,
+      clauseMatcher(pathNodeSyntax   , list( capture, 
+                                             duckTypeClause, 
+                                             nameClause, 
                                              skip1 ))
-
+                                                     
    ,  clauseMatcher(doubleDotSyntax  , list( skipMany))
-
-       // dot is a separator only (like whitespace in other languages) but
-       // rather than make it a special case, use an empty list of
+       
+       // dot is a separator only (like whitespace in other languages) but 
+       // rather than make it a special case, use an empty list of 
        // expressions when this token is found
-   ,  clauseMatcher(dotSyntax        , list() )
-
+   ,  clauseMatcher(dotSyntax        , list() )  
+                                                                                      
    ,  clauseMatcher(bangSyntax       , list( capture,
                                              rootExpr))
-
+                                                          
    ,  clauseMatcher(emptySyntax      , list( statementExpr))
-
+   
    ,  function (jsonPath) {
-         throw Error('"' + jsonPath + '" could not be tokenised')
+         throw Error('"' + jsonPath + '" could not be tokenised')      
       }
    );
 
 
    /**
-    * One of two possible values for the onSuccess argument of
+    * One of two possible values for the onSuccess argument of 
     * generateClauseReaderIfTokenFound.
-    *
-    * When this function is used, generateClauseReaderIfTokenFound simply
-    * returns the compiledParser that it made, regardless of if there is
+    * 
+    * When this function is used, generateClauseReaderIfTokenFound simply 
+    * returns the compiledParser that it made, regardless of if there is 
     * any remaining jsonPath to be compiled.
     */
-   function returnFoundParser(_remainingJsonPath, compiledParser){
-      return compiledParser
-   }
-
+   function returnFoundParser(_remainingJsonPath, compiledParser){ 
+      return compiledParser 
+   }     
+              
    /**
     * Recursively compile a JSONPath expression.
-    *
-    * This function serves as one of two possible values for the onSuccess
+    * 
+    * This function serves as one of two possible values for the onSuccess 
     * argument of generateClauseReaderIfTokenFound, meaning continue to
     * recursively compile. Otherwise, returnFoundParser is given and
     * compilation terminates.
     */
-   function compileJsonPathToFunction( uncompiledJsonPath,
+   function compileJsonPathToFunction( uncompiledJsonPath, 
                                        parserGeneratedSoFar ) {
 
       /**
        * On finding a match, if there is remaining text to be compiled
-       * we want to either continue parsing using a recursive call to
-       * compileJsonPathToFunction. Otherwise, we want to stop and return
+       * we want to either continue parsing using a recursive call to 
+       * compileJsonPathToFunction. Otherwise, we want to stop and return 
        * the parser that we have found so far.
        */
       var onFind =      uncompiledJsonPath
-                     ?  compileJsonPathToFunction
+                     ?  compileJsonPathToFunction 
                      :  returnFoundParser;
-
-      return   clauseForJsonPath(
-                  uncompiledJsonPath,
-                  parserGeneratedSoFar,
+                   
+      return   clauseForJsonPath( 
+                  uncompiledJsonPath, 
+                  parserGeneratedSoFar, 
                   onFind
-               );
+               );                              
    }
 
    /**
     * This is the function that we expose to the rest of the library.
     */
    return function(jsonPath){
-
+        
       try {
-         // Kick off the recursive parsing of the jsonPath
+         // Kick off the recursive parsing of the jsonPath 
          return compileJsonPathToFunction(jsonPath, always);
-
+         
       } catch( e ) {
-         throw Error( 'Could not compile "' + jsonPath +
+         throw Error( 'Could not compile "' + jsonPath + 
                       '" because ' + e.message
          );
       }
@@ -33937,23 +31713,23 @@ var jsonPathCompiler = jsonPathSyntax(function (pathNodeSyntax,
 
 });
 
-/**
- * A pub/sub which is responsible for a single event type. A
+/** 
+ * A pub/sub which is responsible for a single event type. A 
  * multi-event type event bus is created by pubSub by collecting
  * several of these.
- *
- * @param {String} eventType
+ * 
+ * @param {String} eventType                   
  *    the name of the events managed by this singleEventPubSub
- * @param {singleEventPubSub} [newListener]
+ * @param {singleEventPubSub} [newListener]    
  *    place to notify of new listeners
- * @param {singleEventPubSub} [removeListener]
+ * @param {singleEventPubSub} [removeListener] 
  *    place to notify of when listeners are removed
  */
 function singleEventPubSub(eventType, newListener, removeListener){
 
    /** we are optimised for emitting events over firing them.
     *  As well as the tuple list which stores event ids and
-    *  listeners there is a list with just the listeners which
+    *  listeners there is a list with just the listeners which 
     *  can be iterated more quickly when we are emitting
     */
    var listenerTupleList,
@@ -33961,20 +31737,20 @@ function singleEventPubSub(eventType, newListener, removeListener){
 
    function hasId(id){
       return function(tuple) {
-         return tuple.id == id;
-      };
+         return tuple.id == id;      
+      };  
    }
-
+              
    return {
 
       /**
        * @param {Function} listener
-       * @param {*} listenerId
-       *    an id that this listener can later by removed by.
+       * @param {*} listenerId 
+       *    an id that this listener can later by removed by. 
        *    Can be of any type, to be compared to other ids using ==
        */
       on:function( listener, listenerId ) {
-
+         
          var tuple = {
             listener: listener
          ,  id:       listenerId || listener // when no id is given use the
@@ -33984,48 +31760,48 @@ function singleEventPubSub(eventType, newListener, removeListener){
          if( newListener ) {
             newListener.emit(eventType, listener, tuple.id);
          }
-
+         
          listenerTupleList = cons( tuple,    listenerTupleList );
          listenerList      = cons( listener, listenerList      );
 
          return this; // chaining
       },
-
-      emit:function () {
+     
+      emit:function () {                                                                                           
          applyEach( listenerList, arguments );
       },
-
+      
       un: function( listenerId ) {
-
-         var removed;
-
+             
+         var removed;             
+              
          listenerTupleList = without(
             listenerTupleList,
             hasId(listenerId),
             function(tuple){
                removed = tuple;
             }
-         );
-
+         );    
+         
          if( removed ) {
             listenerList = without( listenerList, function(listener){
                return listener == removed.listener;
             });
-
+         
             if( removeListener ) {
                removeListener.emit(eventType, removed.listener, removed.id);
             }
          }
       },
-
+      
       listeners: function(){
          // differs from Node EventEmitter: returns list, not array
          return listenerList;
       },
-
+      
       hasListener: function(listenerId){
          var test = listenerId? hasId(listenerId) : always;
-
+      
          return defined(first( test, listenerTupleList));
       }
    };
@@ -34033,65 +31809,65 @@ function singleEventPubSub(eventType, newListener, removeListener){
 /**
  * pubSub is a curried interface for listening to and emitting
  * events.
- *
+ * 
  * If we get a bus:
- *
+ *    
  *    var bus = pubSub();
- *
+ * 
  * We can listen to event 'foo' like:
- *
+ * 
  *    bus('foo').on(myCallback)
- *
+ *    
  * And emit event foo like:
- *
+ * 
  *    bus('foo').emit()
- *
+ *    
  * or, with a parameter:
- *
+ * 
  *    bus('foo').emit('bar')
- *
- * All functions can be cached and don't need to be
+ *     
+ * All functions can be cached and don't need to be 
  * bound. Ie:
- *
+ * 
  *    var fooEmitter = bus('foo').emit
  *    fooEmitter('bar');  // emit an event
  *    fooEmitter('baz');  // emit another
- *
+ *    
  * There's also an uncurried[1] shortcut for .emit and .on:
- *
+ * 
  *    bus.on('foo', callback)
  *    bus.emit('foo', 'bar')
- *
+ * 
  * [1]: http://zvon.org/other/haskell/Outputprelude/uncurry_f.html
  */
 function pubSub(){
 
    var singles = {},
        newListener = newSingle('newListener'),
-       removeListener = newSingle('removeListener');
-
+       removeListener = newSingle('removeListener'); 
+      
    function newSingle(eventName) {
       return singles[eventName] = singleEventPubSub(
-         eventName,
-         newListener,
+         eventName, 
+         newListener, 
          removeListener
-      );
-   }
+      );   
+   }      
 
    /** pubSub instances are functions */
-   function pubSubInstance( eventName ){
-
-      return singles[eventName] || newSingle( eventName );
+   function pubSubInstance( eventName ){   
+      
+      return singles[eventName] || newSingle( eventName );   
    }
 
    // add convenience EventEmitter-style uncurried form of 'emit' and 'on'
    ['emit', 'on', 'un'].forEach(function(methodName){
-
+   
       pubSubInstance[methodName] = varArgs(function(eventName, parameters){
          apply( parameters, pubSubInstance( eventName )[methodName]);
-      });
+      });   
    });
-
+         
    return pubSubInstance;
 }
 
@@ -34099,7 +31875,7 @@ function pubSub(){
  * This file declares some constants to use as names for event types.
  */
 
-var // the events which are never exported are kept as
+var // the events which are never exported are kept as 
     // the smallest possible representation, in numbers:
     _S = 1,
 
@@ -34108,12 +31884,12 @@ var // the events which are never exported are kept as
 
     // fired whenever a node closes in the JSON stream:
     NODE_CLOSED     = _S++,
-
+                
     FAIL_EVENT      = 'fail',
-
+   
     ROOT_NODE_FOUND = _S++,
     ROOT_PATH_FOUND = _S++,
-
+   
     HTTP_START      = 'start',
     STREAM_DATA     = 'data',
     STREAM_END      = 'end',
@@ -34126,7 +31902,7 @@ var // the events which are never exported are kept as
     SAX_CLOSE_OBJECT = _S++,
     SAX_OPEN_ARRAY   = _S++,
     SAX_CLOSE_ARRAY  = _S++;
-
+    
 function errorReport(statusCode, body, error) {
    try{
       var jsonBody = JSON.parse(body);
@@ -34138,14 +31914,14 @@ function errorReport(statusCode, body, error) {
       jsonBody:jsonBody,
       thrown:error
    };
-}
+}    
 
-/**
+/** 
  *  The pattern adaptor listens for newListener and removeListener
  *  events. When patterns are added or removed it compiles the JSONPath
  *  and wires them up.
- *
- *  When nodes and paths are found it emits the fully-qualified match
+ *  
+ *  When nodes and paths are found it emits the fully-qualified match 
  *  events with parameters ready to ship to the outside world
  */
 
@@ -34155,108 +31931,108 @@ function patternAdapter(oboeBus, jsonPathCompiler) {
       node:oboeBus(NODE_CLOSED)
    ,  path:oboeBus(NODE_OPENED)
    };
-
+     
    function emitMatchingNode(emitMatch, node, ascent) {
-
-      /*
-         We're now calling to the outside world where Lisp-style
-         lists will not be familiar. Convert to standard arrays.
-
-         Also, reverse the order because it is more common to
+         
+      /* 
+         We're now calling to the outside world where Lisp-style 
+         lists will not be familiar. Convert to standard arrays. 
+   
+         Also, reverse the order because it is more common to 
          list paths "root to leaf" than "leaf to root"  */
       var descent     = reverseList(ascent);
-
+                
       emitMatch(
          node,
-
+         
          // To make a path, strip off the last item which is the special
-         // ROOT_PATH token for the 'path' to the root node
+         // ROOT_PATH token for the 'path' to the root node          
          listAsArray(tail(map(keyOf,descent))),  // path
-         listAsArray(map(nodeOf, descent))       // ancestors
-      );
+         listAsArray(map(nodeOf, descent))       // ancestors    
+      );         
    }
 
-   /*
-    * Set up the catching of events such as NODE_CLOSED and NODE_OPENED and, if
-    * matching the specified pattern, propagate to pattern-match events such as
+   /* 
+    * Set up the catching of events such as NODE_CLOSED and NODE_OPENED and, if 
+    * matching the specified pattern, propagate to pattern-match events such as 
     * oboeBus('node:!')
-    *
-    *
-    *
-    * @param {Function} predicateEvent
+    * 
+    * 
+    * 
+    * @param {Function} predicateEvent 
     *          either oboeBus(NODE_CLOSED) or oboeBus(NODE_OPENED).
-    * @param {Function} compiledJsonPath
+    * @param {Function} compiledJsonPath          
     */
    function addUnderlyingListener( fullEventName, predicateEvent, compiledJsonPath ){
-
+   
       var emitMatch = oboeBus(fullEventName).emit;
-
+   
       predicateEvent.on( function (ascent) {
 
          var maybeMatchingMapping = compiledJsonPath(ascent);
 
          /* Possible values for maybeMatchingMapping are now:
 
-          false:
-          we did not match
+          false: 
+          we did not match 
 
-          an object/array/string/number/null:
+          an object/array/string/number/null: 
           we matched and have the node that matched.
           Because nulls are valid json values this can be null.
 
           undefined:
           we matched but don't have the matching node yet.
-          ie, we know there is an upcoming node that matches but we
-          can't say anything else about it.
+          ie, we know there is an upcoming node that matches but we 
+          can't say anything else about it. 
           */
          if (maybeMatchingMapping !== false) {
 
             emitMatchingNode(
-               emitMatch,
-               nodeOf(maybeMatchingMapping),
+               emitMatch, 
+               nodeOf(maybeMatchingMapping), 
                ascent
             );
          }
       }, fullEventName);
-
+     
       oboeBus('removeListener').on( function(removedEventName){
 
-         // if the fully qualified match event listener is later removed, clean up
+         // if the fully qualified match event listener is later removed, clean up 
          // by removing the underlying listener if it was the last using that pattern:
-
+      
          if( removedEventName == fullEventName ) {
-
+         
             if( !oboeBus(removedEventName).listeners(  )) {
                predicateEvent.un( fullEventName );
             }
          }
-      });
+      });   
    }
 
    oboeBus('newListener').on( function(fullEventName){
 
       var match = /(node|path):(.*)/.exec(fullEventName);
-
+      
       if( match ) {
          var predicateEvent = predicateEventMap[match[1]];
-
-         if( !predicateEvent.hasListener( fullEventName) ) {
-
+                    
+         if( !predicateEvent.hasListener( fullEventName) ) {  
+                  
             addUnderlyingListener(
                fullEventName,
-               predicateEvent,
+               predicateEvent, 
                jsonPathCompiler( match[2] )
             );
          }
-      }
+      }    
    })
 
 }
 
-/**
+/** 
  * The instance API is the thing that is returned when oboe() is called.
  * it allows:
- *
+ * 
  *    - listeners for various events to be added and removed
  *    - the http response header/headers to be read
  */
@@ -34267,77 +32043,77 @@ function instanceApi(oboeBus, contentSource){
        rootNodeFinishedEvent = oboeBus(ROOT_NODE_FOUND),
 
        /**
-        * Add any kind of listener that the instance api exposes
-        */
+        * Add any kind of listener that the instance api exposes 
+        */          
        addListener = varArgs(function( eventId, parameters ){
-
+             
             if( oboeApi[eventId] ) {
-
-               // for events added as .on(event, callback), if there is a
+       
+               // for events added as .on(event, callback), if there is a 
                // .event() equivalent with special behaviour , pass through
-               // to that:
-               apply(parameters, oboeApi[eventId]);
+               // to that: 
+               apply(parameters, oboeApi[eventId]);                     
             } else {
-
+       
                // we have a standard Node.js EventEmitter 2-argument call.
                // The first parameter is the listener.
                var event = oboeBus(eventId),
                    listener = parameters[0];
-
+       
                if( fullyQualifiedNamePattern.test(eventId) ) {
-
-                  // allow fully-qualified node/path listeners
-                  // to be added
-                  addForgettableCallback(event, listener);
+                
+                  // allow fully-qualified node/path listeners 
+                  // to be added                                             
+                  addForgettableCallback(event, listener);                  
                } else  {
-
-                  // the event has no special handling, pass through
-                  // directly onto the event bus:
+       
+                  // the event has no special handling, pass through 
+                  // directly onto the event bus:          
                   event.on( listener);
                }
             }
-
+                
             return oboeApi; // chaining
        }),
-
+ 
        /**
-        * Remove any kind of listener that the instance api exposes
-        */
+        * Remove any kind of listener that the instance api exposes 
+        */ 
        removeListener = function( eventId, p2, p3 ){
-
+             
             if( eventId == 'done' ) {
-
+            
                rootNodeFinishedEvent.un(p2);
-
+               
             } else if( eventId == 'node' || eventId == 'path' ) {
-
-               // allow removal of node and path
-               oboeBus.un(eventId + ':' + p2, p3);
+      
+               // allow removal of node and path 
+               oboeBus.un(eventId + ':' + p2, p3);          
             } else {
-
+      
                // we have a standard Node.js EventEmitter 2-argument call.
                // The second parameter is the listener. This may be a call
                // to remove a fully-qualified node/path listener but requires
                // no special handling
                var listener = p2;
 
-               oboeBus(eventId).un(listener);
+               oboeBus(eventId).un(listener);                  
             }
-
-            return oboeApi; // chaining
-       };
-
-   /**
+               
+            return oboeApi; // chaining      
+       };                               
+                        
+   /** 
     * Add a callback, wrapped in a try/catch so as to not break the
-    * execution of Oboe if an exception is thrown (fail events are
+    * execution of Oboe if an exception is thrown (fail events are 
     * fired instead)
-    *
+    * 
     * The callback is used as the listener id so that it can later be
     * removed using .un(callback)
     */
    function addProtectedCallback(eventName, callback) {
       oboeBus(eventName).on(protectedCallback(callback), callback);
-      return oboeApi; // chaining
+      return oboeApi; // chaining            
    }
 
    /**
@@ -34346,67 +32122,67 @@ function instanceApi(oboeBus, contentSource){
     */
    function addForgettableCallback(event, callback) {
       var safeCallback = protectedCallback(callback);
-
+   
       event.on( function() {
-
+      
          var discard = false;
-
+             
          oboeApi.forget = function(){
             discard = true;
-         };
-
-         apply( arguments, safeCallback );
-
+         };           
+         
+         apply( arguments, safeCallback );         
+               
          delete oboeApi.forget;
-
-         if( discard ) {
+         
+         if( discard ) {          
             event.un(callback);
          }
       }, callback)
-
-      return oboeApi; // chaining
-   }
-
+      
+      return oboeApi; // chaining         
+   }  
+         
    function protectedCallback( callback ) {
       return function() {
-         try{
-            callback.apply(oboeApi, arguments);
+         try{      
+            callback.apply(oboeApi, arguments);   
          }catch(e)  {
-
-            // An error occured during the callback, publish it on the event bus
+         
+            // An error occured during the callback, publish it on the event bus 
             oboeBus(FAIL_EVENT).emit( errorReport(undefined, undefined, e));
-         }
-      }
+         }      
+      }   
    }
 
    /**
     * Return the fully qualified event for when a pattern matches
     * either a node or a path
-    *
+    * 
     * @param type {String} either 'node' or 'path'
-    */
+    */      
    function fullyQualifiedPatternMatchEvent(type, pattern) {
       return oboeBus(type + ':' + pattern);
-   }
-
+   }      
+      
    /**
     * Add several listeners at a time, from a map
     */
    function addListenersMap(eventId, listenerMap) {
-
+   
       for( var pattern in listenerMap ) {
          addForgettableCallback(
-            fullyQualifiedPatternMatchEvent(eventId, pattern),
+            fullyQualifiedPatternMatchEvent(eventId, pattern), 
             listenerMap[pattern]
          );
       }
-   }
-
+   }    
+      
    /**
     * implementation behind .onPath() and .onNode()
-    */
+    */       
    function addNodeOrPathListenerApi( eventId, jsonPathOrListenerMap, callback ){
-
+   
       if( isString(jsonPathOrListenerMap) ) {
          addForgettableCallback(
             fullyQualifiedPatternMatchEvent(eventId, jsonPathOrListenerMap),
@@ -34415,15 +32191,15 @@ function instanceApi(oboeBus, contentSource){
       } else {
          addListenersMap(eventId, jsonPathOrListenerMap);
       }
-
+      
       return oboeApi; // chaining
    }
-
-
+      
+   
    // some interface methods are only filled in after we receive
-   // values and are noops before that:
+   // values and are noops before that:          
    oboeBus(ROOT_PATH_FOUND).on( function(rootNode) {
-      oboeApi.root = functor(rootNode);
+      oboeApi.root = functor(rootNode);   
    });
 
    /**
@@ -34431,45 +32207,45 @@ function instanceApi(oboeBus, contentSource){
     * instance API
     */
    oboeBus(HTTP_START).on( function(_statusCode, headers) {
-
+   
       oboeApi.header =  function(name) {
-                           return name ? headers[name]
+                           return name ? headers[name] 
                                        : headers
                                        ;
                         }
    });
-
+                                                               
    /**
-    * Construct and return the public API of the Oboe instance to be
+    * Construct and return the public API of the Oboe instance to be 
     * returned to the calling application
-    */
+    */       
    return oboeApi = {
       on             : addListener,
-      addListener    : addListener,
+      addListener    : addListener, 
       removeListener : removeListener,
-      emit           : oboeBus.emit,
-
+      emit           : oboeBus.emit,                
+                
       node           : partialComplete(addNodeOrPathListenerApi, 'node'),
       path           : partialComplete(addNodeOrPathListenerApi, 'path'),
-
-      done           : partialComplete(addForgettableCallback, rootNodeFinishedEvent),
+      
+      done           : partialComplete(addForgettableCallback, rootNodeFinishedEvent),            
       start          : partialComplete(addProtectedCallback, HTTP_START ),
-
-      // fail doesn't use protectedCallback because
+      
+      // fail doesn't use protectedCallback because 
       // could lead to non-terminating loops
       fail           : oboeBus(FAIL_EVENT).on,
-
+      
       // public api calling abort fires the ABORTING event
       abort          : oboeBus(ABORTING).emit,
-
+      
       // initially return nothing for header and root
       header         : noop,
       root           : noop,
-
+      
       source         : contentSource
-   };
+   };   
 }
-
+    
 
 /**
  * This file sits just behind the API which is used to attain a new
@@ -34480,15 +32256,15 @@ function instanceApi(oboeBus, contentSource){
 function wire (httpMethodName, contentSource, body, headers, withCredentials){
 
    var oboeBus = pubSub();
-
+   
    // Wire the input stream in if we are given a content source.
    // This will usually be the case. If not, the instance created
    // will have to be passed content from an external source.
-
+  
    if( contentSource ) {
 
       streamingHttp( oboeBus,
-                     httpTransport(),
+                     httpTransport(), 
                      httpMethodName,
                      contentSource,
                      body,
@@ -34500,9 +32276,9 @@ function wire (httpMethodName, contentSource, body, headers, withCredentials){
    clarinet(oboeBus);
 
    ascentManager(oboeBus, incrementalContentBuilder(oboeBus));
-
-   patternAdapter(oboeBus, jsonPathCompiler);
-
+      
+   patternAdapter(oboeBus, jsonPathCompiler);      
+      
    return instanceApi(oboeBus, contentSource);
 }
 
@@ -34553,10 +32329,10 @@ function oboe(arg1) {
 
    if( arg1 ) {
       if (arg1.url) {
-
+   
          // method signature is:
          //    oboe({method:m, url:u, body:b, headers:{...}})
-
+   
          return applyDefaults(
             wire,
             arg1.url,
@@ -34567,7 +32343,7 @@ function oboe(arg1) {
             arg1.cached
          );
       } else {
-
+   
          //  simple version for GETs. Signature is:
          //    oboe( url )
          //  or, under node:
@@ -34578,7 +32354,7 @@ function oboe(arg1) {
          );
       }
    } else {
-      // wire up a no-AJAX Oboe. Will have to have content
+      // wire up a no-AJAX Oboe. Will have to have content 
       // fed in externally and using .emit.
       return wire();
    }
@@ -54882,10 +52658,10 @@ module.exports = warning;
         React.DOM.div( {className:arrowClassName, onClick:this.handleClick}, "▾");
 
       return (
-        React.DOM.div( {className:"tree-view"},
+        React.DOM.div( {className:"tree-view"}, 
           this.transferPropsTo(arrow),
           this.props.nodeLabel,
-          React.DOM.div( {className:containerClassName},
+          React.DOM.div( {className:containerClassName}, 
             this.props.children
           )
         )
@@ -58429,7 +56205,7 @@ module.exports = function (Buffer, Hash) {
     if(!(this instanceof Sha1)) return new Sha1()
     this._w = W
     Hash.call(this, 16*4, 14*4)
-
+  
     this._h = null
     this.init()
   }
@@ -60110,7 +57886,7 @@ var $less$bar$greater = function (dict) {
     return dict["<|>"];
 };
 module.exports = {
-    Alt: Alt,
+    Alt: Alt, 
     "<|>": $less$bar$greater
 };
 },{"Prelude":undefined}],25:[function(require,module,exports){
@@ -60184,12 +57960,12 @@ var forever = function (__dict_Apply_6) {
     };
 };
 module.exports = {
-    forever: forever,
-    lift5: lift5,
-    lift4: lift4,
-    lift3: lift3,
-    lift2: lift2,
-    "*>": $times$greater,
+    forever: forever, 
+    lift5: lift5, 
+    lift4: lift4, 
+    lift3: lift3, 
+    lift2: lift2, 
+    "*>": $times$greater, 
     "<*": $less$times
 };
 },{"Prelude":undefined}],26:[function(require,module,exports){
@@ -60235,14 +58011,14 @@ var fix = function (__dict_Lazy_2) {
     };
 };
 module.exports = {
-    Lazy2: Lazy2,
-    Lazy1: Lazy1,
-    Lazy: Lazy,
-    fix2: fix2,
-    fix1: fix1,
-    fix: fix,
-    defer2: defer2,
-    defer1: defer1,
+    Lazy2: Lazy2, 
+    Lazy1: Lazy1, 
+    Lazy: Lazy, 
+    fix2: fix2, 
+    fix1: fix1, 
+    fix: fix, 
+    defer2: defer2, 
+    defer1: defer1, 
     defer: defer
 };
 },{"Prelude":undefined}],27:[function(require,module,exports){
@@ -60315,14 +58091,14 @@ var ixedMapKVKV = function (__dict_Ord_4) {
         return function (__dict_Applicative_5) {
             return function (v2fv) {
                 return function (mapKV) {
-                    var _2239 = Data_Map.lookup(__dict_Ord_4)(k)(mapKV);
-                    if (_2239 instanceof Data_Maybe.Nothing) {
+                    var _2242 = Data_Map.lookup(__dict_Ord_4)(k)(mapKV);
+                    if (_2242 instanceof Data_Maybe.Nothing) {
                         return Prelude.pure(__dict_Applicative_5)(mapKV);
                     };
-                    if (_2239 instanceof Data_Maybe.Just) {
+                    if (_2242 instanceof Data_Maybe.Just) {
                         return Prelude["<$>"]((__dict_Applicative_5["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(function (v$prime) {
                             return Data_Map.insert(__dict_Ord_4)(k)(v$prime)(mapKV);
-                        })(v2fv(_2239.value0));
+                        })(v2fv(_2242.value0));
                     };
                     throw new Error("Failed pattern match");
                 };
@@ -60371,12 +58147,12 @@ var ixedArrayaNumberA = function (__unused) {
                         return Prelude.pure(__dict_Applicative_9)([  ]);
                     };
                     if (_579 === 0 && _581.length > 0) {
-                        var _2248 = _581.slice(1);
-                        return Prelude["<$>"]((__dict_Applicative_9["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(Prelude.flip(Prelude[":"])(_2248))(_580(_581[0]));
+                        var _2251 = _581.slice(1);
+                        return Prelude["<$>"]((__dict_Applicative_9["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(Prelude.flip(Prelude[":"])(_2251))(_580(_581[0]));
                     };
                     if (_581.length > 0) {
-                        var _2250 = _581.slice(1);
-                        return Prelude["<$>"]((__dict_Applicative_9["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(Prelude[":"](_581[0]))(ix(ixedArrayaNumberA({}))(_579 - 1)(__dict_Applicative_9)(_580)(_2250));
+                        var _2253 = _581.slice(1);
+                        return Prelude["<$>"]((__dict_Applicative_9["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(Prelude[":"](_581[0]))(ix(ixedArrayaNumberA({}))(_579 - 1)(__dict_Applicative_9)(_580)(_2253));
                     };
                     throw new Error("Failed pattern match");
                 };
@@ -60466,19 +58242,19 @@ var ixAt = function (__dict_At_17) {
     };
 };
 module.exports = {
-    Ixed: Ixed,
-    At: At,
-    ix: ix,
-    at: at,
-    ixedArrEAEA: ixedArrEAEA,
-    ixedMaybeAUnitA: ixedMaybeAUnitA,
-    ixedMaybeUnitUnitA: ixedMaybeUnitUnitA,
-    ixedIdentityAAA: ixedIdentityAAA,
-    ixedArrayaNumberA: ixedArrayaNumberA,
-    ixedMapKVKV: ixedMapKVKV,
-    ixedSetKKUnit: ixedSetKKUnit,
-    atMaybe: atMaybe,
-    atMapKVKV: atMapKVKV,
+    Ixed: Ixed, 
+    At: At, 
+    ix: ix, 
+    at: at, 
+    ixedArrEAEA: ixedArrEAEA, 
+    ixedMaybeAUnitA: ixedMaybeAUnitA, 
+    ixedMaybeUnitUnitA: ixedMaybeUnitUnitA, 
+    ixedIdentityAAA: ixedIdentityAAA, 
+    ixedArrayaNumberA: ixedArrayaNumberA, 
+    ixedMapKVKV: ixedMapKVKV, 
+    ixedSetKKUnit: ixedSetKKUnit, 
+    atMaybe: atMaybe, 
+    atMapKVKV: atMapKVKV, 
     atSetKKUnit: atSetKKUnit
 };
 },{"Control.Monad.Identity":undefined,"Data.Map":74,"Data.Maybe":76,"Data.Set":85,"Data.Traversable":87,"Prelude":undefined}],28:[function(require,module,exports){
@@ -60539,13 +58315,13 @@ var filtered = function (__dict_Applicative_2) {
     };
 };
 module.exports = {
-    toListOf: toListOf,
-    foldrOf: foldrOf,
-    foldOf: foldOf,
-    foldMapOf: foldMapOf,
-    foldlOf: foldlOf,
-    filtered: filtered,
-    "^?": $up$qmark,
+    toListOf: toListOf, 
+    foldrOf: foldrOf, 
+    foldOf: foldOf, 
+    foldMapOf: foldMapOf, 
+    foldlOf: foldlOf, 
+    filtered: filtered, 
+    "^?": $up$qmark, 
     "^..": $up$dot$dot
 };
 },{"Data.Const":66,"Data.Either":undefined,"Data.Maybe":76,"Data.Monoid.Dual":79,"Data.Monoid.Endo":80,"Data.Monoid.First":81,"Data.Profunctor":84,"Data.Profunctor.Choice":83,"Prelude":undefined}],29:[function(require,module,exports){
@@ -60610,9 +58386,9 @@ var to = function (__dict_Conjoined_6) {
     };
 };
 module.exports = {
-    view: view,
-    use: use,
-    to: to,
+    view: view, 
+    use: use, 
+    to: to, 
     "^.": $up$dot
 };
 },{"Control.Monad.Reader.Class":47,"Control.Monad.State.Class":49,"Data.Const":66,"Data.Contravariant":67,"Data.Profunctor":84,"Prelude":undefined}],30:[function(require,module,exports){
@@ -60646,12 +58422,12 @@ var ifoldMap = function (dict) {
     return dict.ifoldMap;
 };
 module.exports = {
-    TraversableWithIndex: TraversableWithIndex,
-    FunctorWithIndex: FunctorWithIndex,
-    FoldableWithIndex: FoldableWithIndex,
-    itraversed: itraversed,
-    itraverse: itraverse,
-    ifoldMap: ifoldMap,
+    TraversableWithIndex: TraversableWithIndex, 
+    FunctorWithIndex: FunctorWithIndex, 
+    FoldableWithIndex: FoldableWithIndex, 
+    itraversed: itraversed, 
+    itraverse: itraverse, 
+    ifoldMap: ifoldMap, 
     imap: imap
 };
 },{"Prelude":undefined}],31:[function(require,module,exports){
@@ -60684,8 +58460,8 @@ var functorExchange = function (__unused) {
     });
 };
 module.exports = {
-    Exchange: Exchange,
-    functorExchange: functorExchange,
+    Exchange: Exchange, 
+    functorExchange: functorExchange, 
     profunctorExchange: profunctorExchange
 };
 },{"Data.Profunctor":84,"Prelude":undefined}],32:[function(require,module,exports){
@@ -60743,9 +58519,9 @@ var choiceMarket = function (__unused) {
     });
 };
 module.exports = {
-    Market: Market,
-    functorMarket: functorMarket,
-    profunctorMarket: profunctorMarket,
+    Market: Market, 
+    functorMarket: functorMarket, 
+    profunctorMarket: profunctorMarket, 
     choiceMarket: choiceMarket
 };
 },{"Data.Either":undefined,"Data.Profunctor":84,"Data.Profunctor.Choice":83,"Prelude":undefined}],33:[function(require,module,exports){
@@ -60823,12 +58599,12 @@ var settableIdentity = function (__unused) {
     });
 };
 module.exports = {
-    Settable: Settable,
-    taintedDot: taintedDot,
-    untaintedDot: untaintedDot,
-    untainted: untainted,
-    settableIdentity: settableIdentity,
-    foldableIdentity: foldableIdentity,
+    Settable: Settable, 
+    taintedDot: taintedDot, 
+    untaintedDot: untaintedDot, 
+    untainted: untainted, 
+    settableIdentity: settableIdentity, 
+    foldableIdentity: foldableIdentity, 
     traversableIdentity: traversableIdentity
 };
 },{"Control.Monad.Identity":undefined,"Data.Distributive":68,"Data.Foldable":71,"Data.Profunctor":84,"Data.Traversable":87,"Prelude":undefined}],34:[function(require,module,exports){
@@ -60842,8 +58618,8 @@ var Data_Maybe = require("Data.Maybe");
 var Data_Monoid = require("Data.Monoid");
 var withIso = function (stab) {
     return function (f) {
-        var _2228 = stab(new Control_Lens_Internal_Iso.Exchange(Prelude.id(Prelude.categoryArr({})), Control_Monad_Identity.Identity.create));
-        return f(_2228.value0)(Prelude["<<<"](Prelude.semigroupoidArr({}))(Control_Monad_Identity.runIdentity)(_2228.value1));
+        var _2231 = stab(new Control_Lens_Internal_Iso.Exchange(Prelude.id(Prelude.categoryArr({})), Control_Monad_Identity.Identity.create));
+        return f(_2231.value0)(Prelude["<<<"](Prelude.semigroupoidArr({}))(Control_Monad_Identity.runIdentity)(_2231.value1));
     };
 };
 var under = function (stab) {
@@ -60931,14 +58707,14 @@ var au = function (stab) {
     });
 };
 module.exports = {
-    withIso: withIso,
-    under: under,
-    mapping: mapping,
-    iso: iso,
-    from: from,
-    "enum": $$enum,
-    cloneIso: cloneIso,
-    auf: auf,
+    withIso: withIso, 
+    under: under, 
+    mapping: mapping, 
+    iso: iso, 
+    from: from, 
+    "enum": $$enum, 
+    cloneIso: cloneIso, 
+    auf: auf, 
     au: au
 };
 },{"Control.Lens.Internal.Iso":31,"Control.Monad.Identity":undefined,"Data.Enum":69,"Data.Maybe":76,"Data.Monoid":82,"Data.Profunctor":84,"Prelude":undefined}],35:[function(require,module,exports){
@@ -60978,9 +58754,9 @@ var lens = function (s2a) {
     };
 };
 module.exports = {
-    lens: lens,
-    "??": $qmark$qmark,
-    "<#>": $less$hash$greater,
+    lens: lens, 
+    "??": $qmark$qmark, 
+    "<#>": $less$hash$greater, 
     "#~": $hash$tilde
 };
 },{"Control.Monad.State":51,"Prelude":undefined}],36:[function(require,module,exports){
@@ -60994,8 +58770,8 @@ var Data_Profunctor_Choice = require("Data.Profunctor.Choice");
 var Data_Maybe = require("Data.Maybe");
 var withPrism = function (stab) {
     return function (f) {
-        var _2225 = stab(new Control_Lens_Internal_Prism.Market(Control_Monad_Identity.Identity.create, Data_Either.Right.create));
-        return f(Prelude["<<<"](Prelude.semigroupoidArr({}))(Control_Monad_Identity.runIdentity)(_2225.value0))(Prelude[">>>"](Prelude.semigroupoidArr({}))(_2225.value1)(Data_Either.either(Prelude[">>>"](Prelude.semigroupoidArr({}))(Control_Monad_Identity.runIdentity)(Data_Either.Left.create))(Data_Either.Right.create)));
+        var _2228 = stab(new Control_Lens_Internal_Prism.Market(Control_Monad_Identity.Identity.create, Data_Either.Right.create));
+        return f(Prelude["<<<"](Prelude.semigroupoidArr({}))(Control_Monad_Identity.runIdentity)(_2228.value0))(Prelude[">>>"](Prelude.semigroupoidArr({}))(_2228.value1)(Data_Either.either(Prelude[">>>"](Prelude.semigroupoidArr({}))(Control_Monad_Identity.runIdentity)(Data_Either.Left.create))(Data_Either.Right.create)));
     };
 };
 var prism = function (__dict_Applicative_0) {
@@ -61048,13 +58824,13 @@ var _Just = function (__dict_Applicative_12) {
     };
 };
 module.exports = {
-    _Nothing: _Nothing,
-    _Just: _Just,
-    _Right: _Right,
-    _Left: _Left,
-    withPrism: withPrism,
-    "prism'": prism$prime,
-    prism: prism,
+    _Nothing: _Nothing, 
+    _Just: _Just, 
+    _Right: _Right, 
+    _Left: _Left, 
+    withPrism: withPrism, 
+    "prism'": prism$prime, 
+    prism: prism, 
     clonePrism: clonePrism
 };
 },{"Control.Lens.Internal.Prism":32,"Control.Monad.Identity":undefined,"Data.Either":undefined,"Data.Maybe":76,"Data.Profunctor":84,"Data.Profunctor.Choice":83,"Prelude":undefined}],37:[function(require,module,exports){
@@ -61172,23 +58948,23 @@ var argument = function (__dict_Profunctor_17) {
     };
 };
 module.exports = {
-    sets: sets,
-    "set'": set$prime,
-    set: set,
-    over: over,
-    mapped: mapped,
-    contramapped: contramapped,
-    argument: argument,
-    "?~": $qmark$tilde,
-    "++~": $plus$plus$tilde,
-    "<>~": $less$greater$tilde,
-    "&&~": $amp$amp$tilde,
-    "||~": $bar$bar$tilde,
-    "/~": $div$tilde,
-    "*~": $times$tilde,
-    "-~": $minus$tilde,
-    "+~": $plus$tilde,
-    ".~": $dot$tilde,
+    sets: sets, 
+    "set'": set$prime, 
+    set: set, 
+    over: over, 
+    mapped: mapped, 
+    contramapped: contramapped, 
+    argument: argument, 
+    "?~": $qmark$tilde, 
+    "++~": $plus$plus$tilde, 
+    "<>~": $less$greater$tilde, 
+    "&&~": $amp$amp$tilde, 
+    "||~": $bar$bar$tilde, 
+    "/~": $div$tilde, 
+    "*~": $times$tilde, 
+    "-~": $minus$tilde, 
+    "+~": $plus$tilde, 
+    ".~": $dot$tilde, 
     "%~": $percent$tilde
 };
 },{"Control.Lens.Internal.Setter":33,"Control.Monad.Identity":undefined,"Data.Contravariant":67,"Data.Maybe":76,"Data.Profunctor":84,"Prelude":undefined}],38:[function(require,module,exports){
@@ -61208,9 +58984,9 @@ var both = function (__dict_Bitraversable_0) {
     };
 };
 module.exports = {
-    traverseOf: traverseOf,
-    sequenceOf: sequenceOf,
-    forOf: forOf,
+    traverseOf: traverseOf, 
+    sequenceOf: sequenceOf, 
+    forOf: forOf, 
     both: both
 };
 },{"Data.Bitraversable":65,"Prelude":undefined}],39:[function(require,module,exports){
@@ -61235,8 +59011,8 @@ var _1 = function (__dict_Functor_1) {
     };
 };
 module.exports = {
-    _2: _2,
-    _1: _1,
+    _2: _2, 
+    _1: _1, 
     "~": $tilde
 };
 },{"Data.Tuple":88,"Prelude":undefined}],40:[function(require,module,exports){
@@ -61318,70 +59094,70 @@ var _Just = Control_Lens_Prism._Just;
 var _2 = Control_Lens_Tuple._2;
 var _1 = Control_Lens_Tuple._1;
 module.exports = {
-    _2: _2,
-    _1: _1,
-    "~": $tilde,
-    traverseOf: traverseOf,
-    sequenceOf: sequenceOf,
-    forOf: forOf,
-    both: both,
-    sets: sets,
-    "set'": set$prime,
-    set: set,
-    over: over,
-    mapped: mapped,
-    contramapped: contramapped,
-    argument: argument,
-    "?~": $qmark$tilde,
-    "++~": $plus$plus$tilde,
-    "<>~": $less$greater$tilde,
-    "&&~": $amp$amp$tilde,
-    "||~": $bar$bar$tilde,
-    "/~": $div$tilde,
-    "*~": $times$tilde,
-    "-~": $minus$tilde,
-    "+~": $plus$tilde,
-    ".~": $dot$tilde,
-    "%~": $percent$tilde,
-    _Nothing: _Nothing,
-    _Just: _Just,
-    _Right: _Right,
-    _Left: _Left,
-    withPrism: withPrism,
-    "prism'": prism$prime,
-    prism: prism,
-    clonePrism: clonePrism,
-    lens: lens,
-    "??": $qmark$qmark,
-    "<#>": $less$hash$greater,
-    "#~": $hash$tilde,
-    withIso: withIso,
-    under: under,
-    mapping: mapping,
-    iso: iso,
-    from: from,
-    "enum": $$enum,
-    cloneIso: cloneIso,
-    auf: auf,
-    au: au,
-    itraversed: itraversed,
-    itraverse: itraverse,
-    ifoldMap: ifoldMap,
-    imap: imap,
-    view: view,
-    use: use,
-    to: to,
-    "^.": $up$dot,
-    toListOf: toListOf,
-    foldrOf: foldrOf,
-    foldOf: foldOf,
-    foldMapOf: foldMapOf,
-    foldlOf: foldlOf,
-    filtered: filtered,
-    "^?": $up$qmark,
-    "^..": $up$dot$dot,
-    ix: ix,
-    at: at,
+    _2: _2, 
+    _1: _1, 
+    "~": $tilde, 
+    traverseOf: traverseOf, 
+    sequenceOf: sequenceOf, 
+    forOf: forOf, 
+    both: both, 
+    sets: sets, 
+    "set'": set$prime, 
+    set: set, 
+    over: over, 
+    mapped: mapped, 
+    contramapped: contramapped, 
+    argument: argument, 
+    "?~": $qmark$tilde, 
+    "++~": $plus$plus$tilde, 
+    "<>~": $less$greater$tilde, 
+    "&&~": $amp$amp$tilde, 
+    "||~": $bar$bar$tilde, 
+    "/~": $div$tilde, 
+    "*~": $times$tilde, 
+    "-~": $minus$tilde, 
+    "+~": $plus$tilde, 
+    ".~": $dot$tilde, 
+    "%~": $percent$tilde, 
+    _Nothing: _Nothing, 
+    _Just: _Just, 
+    _Right: _Right, 
+    _Left: _Left, 
+    withPrism: withPrism, 
+    "prism'": prism$prime, 
+    prism: prism, 
+    clonePrism: clonePrism, 
+    lens: lens, 
+    "??": $qmark$qmark, 
+    "<#>": $less$hash$greater, 
+    "#~": $hash$tilde, 
+    withIso: withIso, 
+    under: under, 
+    mapping: mapping, 
+    iso: iso, 
+    from: from, 
+    "enum": $$enum, 
+    cloneIso: cloneIso, 
+    auf: auf, 
+    au: au, 
+    itraversed: itraversed, 
+    itraverse: itraverse, 
+    ifoldMap: ifoldMap, 
+    imap: imap, 
+    view: view, 
+    use: use, 
+    to: to, 
+    "^.": $up$dot, 
+    toListOf: toListOf, 
+    foldrOf: foldrOf, 
+    foldOf: foldOf, 
+    foldMapOf: foldMapOf, 
+    foldlOf: foldlOf, 
+    filtered: filtered, 
+    "^?": $up$qmark, 
+    "^..": $up$dot$dot, 
+    ix: ix, 
+    at: at, 
     "..": $dot$dot
 };
 },{"Control.Lens.At":27,"Control.Lens.Fold":28,"Control.Lens.Getter":29,"Control.Lens.Indexed":30,"Control.Lens.Iso":34,"Control.Lens.Lens":35,"Control.Lens.Prism":36,"Control.Lens.Setter":37,"Control.Lens.Traversal":38,"Control.Lens.Tuple":39,"Prelude":undefined}],41:[function(require,module,exports){
@@ -61410,17 +59186,17 @@ var functorEff = function (__unused) {
     return new Prelude.Functor(Prelude.liftA1(applicativeEff({})));
 };
 module.exports = {
-    foreachE: foreachE,
-    forE: forE,
-    whileE: whileE,
-    untilE: untilE,
-    runPure: runPure,
-    bindE: bindE,
-    returnE: returnE,
-    functorEff: functorEff,
-    applyEff: applyEff,
-    applicativeEff: applicativeEff,
-    bindEff: bindEff,
+    foreachE: foreachE, 
+    forE: forE, 
+    whileE: whileE, 
+    untilE: untilE, 
+    runPure: runPure, 
+    bindE: bindE, 
+    returnE: returnE, 
+    functorEff: functorEff, 
+    applyEff: applyEff, 
+    applicativeEff: applicativeEff, 
+    bindEff: bindEff, 
     monadEff: monadEff
 };
 },{"Prelude":undefined}],42:[function(require,module,exports){
@@ -61606,21 +59382,21 @@ var monadPlusErrorT = function (__dict_Monad_4) {
     };
 };
 module.exports = {
-    ErrorT: ErrorT,
-    liftCallCCError: liftCallCCError,
-    liftPassError: liftPassError,
-    liftListenError: liftListenError,
-    mapErrorT: mapErrorT,
-    runErrorT: runErrorT,
-    functorErrorT: functorErrorT,
-    applyErrorT: applyErrorT,
-    applicativeErrorT: applicativeErrorT,
-    altErrorT: altErrorT,
-    plusErrorT: plusErrorT,
-    alternativeErrorT: alternativeErrorT,
-    bindErrorT: bindErrorT,
-    monadErrorT: monadErrorT,
-    monadPlusErrorT: monadPlusErrorT,
+    ErrorT: ErrorT, 
+    liftCallCCError: liftCallCCError, 
+    liftPassError: liftPassError, 
+    liftListenError: liftListenError, 
+    mapErrorT: mapErrorT, 
+    runErrorT: runErrorT, 
+    functorErrorT: functorErrorT, 
+    applyErrorT: applyErrorT, 
+    applicativeErrorT: applicativeErrorT, 
+    altErrorT: altErrorT, 
+    plusErrorT: plusErrorT, 
+    alternativeErrorT: alternativeErrorT, 
+    bindErrorT: bindErrorT, 
+    monadErrorT: monadErrorT, 
+    monadPlusErrorT: monadPlusErrorT, 
     monadTransErrorT: monadTransErrorT
 };
 },{"Control.Alt":24,"Control.Alternative":undefined,"Control.Monad.Error":43,"Control.Monad.Trans":52,"Control.MonadPlus":54,"Control.Plus":55,"Data.Either":undefined,"Data.Tuple":88,"Prelude":undefined}],43:[function(require,module,exports){
@@ -61668,12 +59444,12 @@ var errorEitherAlternative = function (__dict_Error_1) {
     });
 };
 module.exports = {
-    Error: Error,
-    strMsg: strMsg,
-    noMsg: noMsg,
-    errorString: errorString,
-    errorEitherAlt: errorEitherAlt,
-    errorEitherPlus: errorEitherPlus,
+    Error: Error, 
+    strMsg: strMsg, 
+    noMsg: noMsg, 
+    errorString: errorString, 
+    errorEitherAlt: errorEitherAlt, 
+    errorEitherPlus: errorEitherPlus, 
     errorEitherAlternative: errorEitherAlternative
 };
 },{"Control.Alt":24,"Control.Alternative":undefined,"Control.Plus":55,"Data.Either":undefined,"Prelude":undefined}],44:[function(require,module,exports){
@@ -61780,18 +59556,18 @@ var functorMaybeT = function (__dict_Monad_4) {
     return new Prelude.Functor(Prelude.liftA1(applicativeMaybeT(__dict_Monad_4)));
 };
 module.exports = {
-    MaybeT: MaybeT,
-    liftCallCCMaybe: liftCallCCMaybe,
-    liftPassMaybe: liftPassMaybe,
-    liftListenMaybe: liftListenMaybe,
-    liftCatchMaybe: liftCatchMaybe,
-    mapMaybeT: mapMaybeT,
-    runMaybeT: runMaybeT,
-    functorMaybeT: functorMaybeT,
-    applyMaybeT: applyMaybeT,
-    applicativeMaybeT: applicativeMaybeT,
-    bindMaybeT: bindMaybeT,
-    monadMaybeT: monadMaybeT,
+    MaybeT: MaybeT, 
+    liftCallCCMaybe: liftCallCCMaybe, 
+    liftPassMaybe: liftPassMaybe, 
+    liftListenMaybe: liftListenMaybe, 
+    liftCatchMaybe: liftCatchMaybe, 
+    mapMaybeT: mapMaybeT, 
+    runMaybeT: runMaybeT, 
+    functorMaybeT: functorMaybeT, 
+    applyMaybeT: applyMaybeT, 
+    applicativeMaybeT: applicativeMaybeT, 
+    bindMaybeT: bindMaybeT, 
+    monadMaybeT: monadMaybeT, 
     monadTransMaybeT: monadTransMaybeT
 };
 },{"Control.Monad.Trans":52,"Data.Maybe":76,"Data.Tuple":88,"Prelude":undefined}],45:[function(require,module,exports){
@@ -61822,8 +59598,8 @@ var mkSee = function (__dict_Monoid_2) {
         return function (a) {
             return function (w) {
                 return {
-                    state: s,
-                    result: a,
+                    state: s, 
+                    result: a, 
                     log: w
                 };
             };
@@ -61858,14 +59634,14 @@ var functorRWST = function (__dict_Functor_5) {
             return function (r) {
                 return function (s) {
                     return Prelude["<$>"](__dict_Functor_5)(function (see) {
-                        var _1287 = {};
-                        for (var _1288 in see) {
-                            if (see.hasOwnProperty(_1288)) {
-                                _1287[_1288] = see[_1288];
+                        var _1290 = {};
+                        for (var _1291 in see) {
+                            if (see.hasOwnProperty(_1291)) {
+                                _1290[_1291] = see[_1291];
                             };
                         };
-                        _1287.result = f(see.result);
-                        return _1287;
+                        _1290.result = f(see.result);
+                        return _1290;
                     })(runRWST(m)(r)(s));
                 };
             };
@@ -61902,15 +59678,15 @@ var applyRWST = function (__dict_Apply_10) {
                     return function (s) {
                         return Prelude["<*>"](__dict_Apply_10)(Prelude["<$>"](__dict_Apply_10["__superclass_Prelude.Functor_0"]({}))(function (_357) {
                             return function (see) {
-                                var _1290 = {};
-                                for (var _1291 in see) {
-                                    if (see.hasOwnProperty(_1291)) {
-                                        _1290[_1291] = see[_1291];
+                                var _1293 = {};
+                                for (var _1294 in see) {
+                                    if (see.hasOwnProperty(_1294)) {
+                                        _1293[_1294] = see[_1294];
                                     };
                                 };
-                                _1290.result = _357.result(see.result);
-                                _1290.log = Prelude["<>"](__dict_Semigroup_11)(_357.log)(see.log);
-                                return _1290;
+                                _1293.result = _357.result(see.result);
+                                _1293.log = Prelude["<>"](__dict_Semigroup_11)(_357.log)(see.log);
+                                return _1293;
                             };
                         })(runRWST(f)(r)(s)))(runRWST(m)(r)(s));
                     };
@@ -61929,14 +59705,14 @@ var bindRWST = function (__dict_Bind_8) {
                     return function (s) {
                         return Prelude[">>="](__dict_Bind_8)(runRWST(m)(r)(s))(function (_358) {
                             return Prelude["<$>"]((__dict_Bind_8["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(function (see$prime) {
-                                var _1295 = {};
-                                for (var _1296 in see$prime) {
-                                    if (see$prime.hasOwnProperty(_1296)) {
-                                        _1295[_1296] = see$prime[_1296];
+                                var _1298 = {};
+                                for (var _1299 in see$prime) {
+                                    if (see$prime.hasOwnProperty(_1299)) {
+                                        _1298[_1299] = see$prime[_1299];
                                     };
                                 };
-                                _1295.log = Prelude["<>"](__dict_Semigroup_9)(_358.log)(see$prime.log);
-                                return _1295;
+                                _1298.log = Prelude["<>"](__dict_Semigroup_9)(_358.log)(see$prime.log);
+                                return _1298;
                             })(runRWST(f(_358.result))(r)(_358.state));
                         });
                     };
@@ -61970,18 +59746,18 @@ var monadRWST = function (__dict_Monad_0) {
     };
 };
 module.exports = {
-    RWST: RWST,
-    withRWST: withRWST,
-    mapRWST: mapRWST,
-    execRWST: execRWST,
-    evalRWST: evalRWST,
-    runRWST: runRWST,
-    mkSee: mkSee,
-    functorRWST: functorRWST,
-    applyRWST: applyRWST,
-    bindRWST: bindRWST,
-    applicativeRWST: applicativeRWST,
-    monadRWST: monadRWST,
+    RWST: RWST, 
+    withRWST: withRWST, 
+    mapRWST: mapRWST, 
+    execRWST: execRWST, 
+    evalRWST: evalRWST, 
+    runRWST: runRWST, 
+    mkSee: mkSee, 
+    functorRWST: functorRWST, 
+    applyRWST: applyRWST, 
+    bindRWST: bindRWST, 
+    applicativeRWST: applicativeRWST, 
+    monadRWST: monadRWST, 
     monadTransRWST: monadTransRWST
 };
 },{"Control.Monad.Trans":52,"Data.Monoid":82,"Data.Tuple":88,"Prelude":undefined}],46:[function(require,module,exports){
@@ -61996,8 +59772,8 @@ var writer = function (__dict_Applicative_0) {
         return function (_) {
             return function (s) {
                 return Prelude.pure(__dict_Applicative_0)({
-                    state: s,
-                    result: _363.value0,
+                    state: s, 
+                    result: _363.value0, 
                     log: _363.value1
                 });
             };
@@ -62015,8 +59791,8 @@ var state = function (__dict_Applicative_2) {
         return function (f) {
             return function (_) {
                 return function (s) {
-                    var _1303 = f(s);
-                    return Prelude.pure(__dict_Applicative_2)(Control_Monad_RWS_Trans.mkSee(__dict_Monoid_3)(_1303.value1)(_1303.value0)(Data_Monoid.mempty(__dict_Monoid_3)));
+                    var _1306 = f(s);
+                    return Prelude.pure(__dict_Applicative_2)(Control_Monad_RWS_Trans.mkSee(__dict_Monoid_3)(_1306.value1)(_1306.value0)(Data_Monoid.mempty(__dict_Monoid_3)));
                 };
             };
         };
@@ -62062,8 +59838,8 @@ var pass = function (__dict_Monad_8) {
             return function (s) {
                 return Prelude[">>="](__dict_Monad_8["__superclass_Prelude.Bind_1"]({}))(Control_Monad_RWS_Trans.runRWST(m)(r)(s))(function (_361) {
                     return Prelude.pure(__dict_Monad_8["__superclass_Prelude.Applicative_0"]({}))({
-                        state: _361.state,
-                        result: _361.result.value0,
+                        state: _361.state, 
+                        result: _361.result.value0, 
                         log: _361.result.value1(_361.log)
                     });
                 });
@@ -62099,8 +59875,8 @@ var listens = function (__dict_Monad_11) {
                 return function (s) {
                     return Prelude[">>="](__dict_Monad_11["__superclass_Prelude.Bind_1"]({}))(Control_Monad_RWS_Trans.runRWST(m)(r)(s))(function (_362) {
                         return Prelude.pure(__dict_Monad_11["__superclass_Prelude.Applicative_0"]({}))({
-                            state: _362.state,
-                            result: new Data_Tuple.Tuple(_362.result, f(_362.log)),
+                            state: _362.state, 
+                            result: new Data_Tuple.Tuple(_362.result, f(_362.log)), 
                             log: _362.log
                         });
                     });
@@ -62115,8 +59891,8 @@ var listen = function (__dict_Monad_12) {
             return function (s) {
                 return Prelude[">>="](__dict_Monad_12["__superclass_Prelude.Bind_1"]({}))(Control_Monad_RWS_Trans.runRWST(m)(r)(s))(function (_360) {
                     return Prelude.pure(__dict_Monad_12["__superclass_Prelude.Applicative_0"]({}))({
-                        state: _360.state,
-                        result: new Data_Tuple.Tuple(_360.result, _360.log),
+                        state: _360.state, 
+                        result: new Data_Tuple.Tuple(_360.result, _360.log), 
                         log: _360.log
                     });
                 });
@@ -62161,14 +59937,14 @@ var censor = function (__dict_Monad_17) {
                 return function (s) {
                     return Prelude[">>="](__dict_Monad_17["__superclass_Prelude.Bind_1"]({}))(Control_Monad_RWS_Trans.runRWST(m)(r)(s))(function (see) {
                         return Prelude.pure(__dict_Monad_17["__superclass_Prelude.Applicative_0"]({}))((function () {
-                            var _1320 = {};
-                            for (var _1321 in see) {
-                                if (see.hasOwnProperty(_1321)) {
-                                    _1320[_1321] = see[_1321];
+                            var _1323 = {};
+                            for (var _1324 in see) {
+                                if (see.hasOwnProperty(_1324)) {
+                                    _1323[_1324] = see[_1324];
                                 };
                             };
-                            _1320.log = f(see.log);
-                            return _1320;
+                            _1323.log = f(see.log);
+                            return _1323;
                         })());
                     });
                 };
@@ -62186,25 +59962,25 @@ var ask = function (__dict_Applicative_18) {
     };
 };
 module.exports = {
-    modify: modify,
-    put: put,
-    gets: gets,
-    get: get,
-    state: state,
-    censor: censor,
-    listens: listens,
-    tell: tell,
-    pass: pass,
-    listen: listen,
-    writer: writer,
-    reader: reader,
-    local: local,
-    ask: ask,
-    withRWS: withRWS,
-    mapRWS: mapRWS,
-    execRWS: execRWS,
-    evalRWS: evalRWS,
-    runRWS: runRWS,
+    modify: modify, 
+    put: put, 
+    gets: gets, 
+    get: get, 
+    state: state, 
+    censor: censor, 
+    listens: listens, 
+    tell: tell, 
+    pass: pass, 
+    listen: listen, 
+    writer: writer, 
+    reader: reader, 
+    local: local, 
+    ask: ask, 
+    withRWS: withRWS, 
+    mapRWS: mapRWS, 
+    execRWS: execRWS, 
+    evalRWS: evalRWS, 
+    runRWS: runRWS, 
     rws: rws
 };
 },{"Control.Monad.Identity":undefined,"Control.Monad.RWS.Trans":45,"Data.Monoid":82,"Data.Tuple":88,"Prelude":undefined}],47:[function(require,module,exports){
@@ -62278,16 +60054,16 @@ var reader = function (__dict_Monad_13) {
     };
 };
 module.exports = {
-    MonadReader: MonadReader,
-    reader: reader,
-    local: local,
-    ask: ask,
-    monadReaderFun: monadReaderFun,
-    monadReaderReaderT: monadReaderReaderT,
-    monadReaderErrorT: monadReaderErrorT,
-    monadReaderMaybeT: monadReaderMaybeT,
-    monadReaderWriterT: monadReaderWriterT,
-    monadReaderStateT: monadReaderStateT,
+    MonadReader: MonadReader, 
+    reader: reader, 
+    local: local, 
+    ask: ask, 
+    monadReaderFun: monadReaderFun, 
+    monadReaderReaderT: monadReaderReaderT, 
+    monadReaderErrorT: monadReaderErrorT, 
+    monadReaderMaybeT: monadReaderMaybeT, 
+    monadReaderWriterT: monadReaderWriterT, 
+    monadReaderStateT: monadReaderStateT, 
     monadReaderRWST: monadReaderRWST
 };
 },{"Control.Monad.Error.Trans":42,"Control.Monad.Maybe.Trans":44,"Control.Monad.RWS":46,"Control.Monad.Reader.Trans":48,"Control.Monad.State.Trans":50,"Control.Monad.Trans":52,"Control.Monad.Writer.Trans":53,"Prelude":undefined}],48:[function(require,module,exports){
@@ -62418,22 +60194,22 @@ var monadPlusReaderT = function (__dict_MonadPlus_1) {
     });
 };
 module.exports = {
-    ReaderT: ReaderT,
-    liftCallCCReader: liftCallCCReader,
-    liftCatchReader: liftCatchReader,
-    liftReaderT: liftReaderT,
-    mapReaderT: mapReaderT,
-    withReaderT: withReaderT,
-    runReaderT: runReaderT,
-    functorReaderT: functorReaderT,
-    applyReaderT: applyReaderT,
-    applicativeReaderT: applicativeReaderT,
-    altReaderT: altReaderT,
-    plusReaderT: plusReaderT,
-    alternativeReaderT: alternativeReaderT,
-    bindReaderT: bindReaderT,
-    monadReaderT: monadReaderT,
-    monadPlusReaderT: monadPlusReaderT,
+    ReaderT: ReaderT, 
+    liftCallCCReader: liftCallCCReader, 
+    liftCatchReader: liftCatchReader, 
+    liftReaderT: liftReaderT, 
+    mapReaderT: mapReaderT, 
+    withReaderT: withReaderT, 
+    runReaderT: runReaderT, 
+    functorReaderT: functorReaderT, 
+    applyReaderT: applyReaderT, 
+    applicativeReaderT: applicativeReaderT, 
+    altReaderT: altReaderT, 
+    plusReaderT: plusReaderT, 
+    alternativeReaderT: alternativeReaderT, 
+    bindReaderT: bindReaderT, 
+    monadReaderT: monadReaderT, 
+    monadPlusReaderT: monadPlusReaderT, 
     monadTransReaderT: monadTransReaderT
 };
 },{"Control.Alt":24,"Control.Alternative":undefined,"Control.Monad.Trans":52,"Control.MonadPlus":54,"Control.Plus":55,"Prelude":undefined}],49:[function(require,module,exports){
@@ -62537,18 +60313,18 @@ var get = function (__dict_Monad_21) {
     };
 };
 module.exports = {
-    MonadState: MonadState,
-    modify: modify,
-    put: put,
-    gets: gets,
-    get: get,
-    state: state,
-    monadStateStateT: monadStateStateT,
-    monadStateStateT1: monadStateStateT1,
-    monadStateErrorT: monadStateErrorT,
-    monadStateMaybeT: monadStateMaybeT,
-    monadStateReaderT: monadStateReaderT,
-    monadStateWriterT: monadStateWriterT,
+    MonadState: MonadState, 
+    modify: modify, 
+    put: put, 
+    gets: gets, 
+    get: get, 
+    state: state, 
+    monadStateStateT: monadStateStateT, 
+    monadStateStateT1: monadStateStateT1, 
+    monadStateErrorT: monadStateErrorT, 
+    monadStateMaybeT: monadStateMaybeT, 
+    monadStateReaderT: monadStateReaderT, 
+    monadStateWriterT: monadStateWriterT, 
     monadStateRWST: monadStateRWST
 };
 },{"Control.Monad.Error.Trans":42,"Control.Monad.Maybe.Trans":44,"Control.Monad.RWS":46,"Control.Monad.Reader.Trans":48,"Control.Monad.State.Trans":50,"Control.Monad.Trans":52,"Control.Monad.Writer.Trans":53,"Data.Tuple":88,"Prelude":undefined}],50:[function(require,module,exports){
@@ -62742,26 +60518,26 @@ var monadPlusStateT = function (__dict_MonadPlus_4) {
     });
 };
 module.exports = {
-    StateT: StateT,
-    "liftCallCCState'": liftCallCCState$prime,
-    liftCallCCState: liftCallCCState,
-    liftPassState: liftPassState,
-    liftListenState: liftListenState,
-    liftCatchState: liftCatchState,
-    withStateT: withStateT,
-    mapStateT: mapStateT,
-    execStateT: execStateT,
-    evalStateT: evalStateT,
-    runStateT: runStateT,
-    functorStateT: functorStateT,
-    applyStateT: applyStateT,
-    applicativeStateT: applicativeStateT,
-    altStateT: altStateT,
-    plusStateT: plusStateT,
-    alternativeStateT: alternativeStateT,
-    bindStateT: bindStateT,
-    monadStateT: monadStateT,
-    monadPlusStateT: monadPlusStateT,
+    StateT: StateT, 
+    "liftCallCCState'": liftCallCCState$prime, 
+    liftCallCCState: liftCallCCState, 
+    liftPassState: liftPassState, 
+    liftListenState: liftListenState, 
+    liftCatchState: liftCatchState, 
+    withStateT: withStateT, 
+    mapStateT: mapStateT, 
+    execStateT: execStateT, 
+    evalStateT: evalStateT, 
+    runStateT: runStateT, 
+    functorStateT: functorStateT, 
+    applyStateT: applyStateT, 
+    applicativeStateT: applicativeStateT, 
+    altStateT: altStateT, 
+    plusStateT: plusStateT, 
+    alternativeStateT: alternativeStateT, 
+    bindStateT: bindStateT, 
+    monadStateT: monadStateT, 
+    monadPlusStateT: monadPlusStateT, 
     monadTransStateT: monadTransStateT
 };
 },{"Control.Alt":24,"Control.Alternative":undefined,"Control.Monad.Trans":52,"Control.MonadPlus":54,"Control.Plus":55,"Data.Tuple":88,"Prelude":undefined}],51:[function(require,module,exports){
@@ -62788,10 +60564,10 @@ var evalState = function (m) {
     };
 };
 module.exports = {
-    withState: withState,
-    mapState: mapState,
-    execState: execState,
-    evalState: evalState,
+    withState: withState, 
+    mapState: mapState, 
+    execState: execState, 
+    evalState: evalState, 
     runState: runState
 };
 },{"Control.Monad.Identity":undefined,"Control.Monad.State.Trans":50,"Data.Tuple":88,"Prelude":undefined}],52:[function(require,module,exports){
@@ -62804,7 +60580,7 @@ var lift = function (dict) {
     return dict.lift;
 };
 module.exports = {
-    MonadTrans: MonadTrans,
+    MonadTrans: MonadTrans, 
     lift: lift
 };
 },{"Prelude":undefined}],53:[function(require,module,exports){
@@ -62954,20 +60730,20 @@ var monadPlusWriterT = function (__dict_Monoid_6) {
     };
 };
 module.exports = {
-    WriterT: WriterT,
-    liftCallCCWriter: liftCallCCWriter,
-    liftCatchWriter: liftCatchWriter,
-    mapWriterT: mapWriterT,
-    runWriterT: runWriterT,
-    functorWriterT: functorWriterT,
-    applyWriterT: applyWriterT,
-    applicativeWriterT: applicativeWriterT,
-    altWriterT: altWriterT,
-    plusWriterT: plusWriterT,
-    alternativeWriterT: alternativeWriterT,
-    bindWriterT: bindWriterT,
-    monadWriterT: monadWriterT,
-    monadPlusWriterT: monadPlusWriterT,
+    WriterT: WriterT, 
+    liftCallCCWriter: liftCallCCWriter, 
+    liftCatchWriter: liftCatchWriter, 
+    mapWriterT: mapWriterT, 
+    runWriterT: runWriterT, 
+    functorWriterT: functorWriterT, 
+    applyWriterT: applyWriterT, 
+    applicativeWriterT: applicativeWriterT, 
+    altWriterT: altWriterT, 
+    plusWriterT: plusWriterT, 
+    alternativeWriterT: alternativeWriterT, 
+    bindWriterT: bindWriterT, 
+    monadWriterT: monadWriterT, 
+    monadPlusWriterT: monadPlusWriterT, 
     monadTransWriterT: monadTransWriterT
 };
 },{"Control.Alt":24,"Control.Alternative":undefined,"Control.Monad.Trans":52,"Control.MonadPlus":54,"Control.Plus":55,"Data.Monoid":82,"Data.Tuple":88,"Prelude":undefined}],54:[function(require,module,exports){
@@ -62990,7 +60766,7 @@ var guard = function (__dict_MonadPlus_0) {
     };
 };
 module.exports = {
-    MonadPlus: MonadPlus,
+    MonadPlus: MonadPlus, 
     guard: guard
 };
 },{"Control.Plus":55,"Prelude":undefined}],55:[function(require,module,exports){
@@ -63004,7 +60780,7 @@ var empty = function (dict) {
     return dict.empty;
 };
 module.exports = {
-    Plus: Plus,
+    Plus: Plus, 
     empty: empty
 };
 },{"Prelude":undefined}],56:[function(require,module,exports){
@@ -63015,9 +60791,9 @@ function clearTimeout(timer){   return function(){     return window.clearTimeou
 function interval(time){                        return function(fn){                           return function(){                             return window.setInterval(function(){          fn();                                      }, time);                                  };                                         };                                         };
 function clearInterval(timer){   return function(){     return window.clearInterval(timer);   }; };
 module.exports = {
-    clearInterval: clearInterval,
-    interval: interval,
-    clearTimeout: clearTimeout,
+    clearInterval: clearInterval, 
+    interval: interval, 
+    clearTimeout: clearTimeout, 
     timeout: timeout
 };
 },{"Prelude":undefined}],57:[function(require,module,exports){
@@ -63048,8 +60824,8 @@ var $colon$eq = function (__dict_EncodeJson_0) {
     };
 };
 module.exports = {
-    "?>>=": $qmark$greater$greater$eq,
-    "~>": $tilde$greater,
+    "?>>=": $qmark$greater$greater$eq, 
+    "~>": $tilde$greater, 
     ":=": $colon$eq
 };
 },{"Data.Argonaut.Core":undefined,"Data.Argonaut.Encode":59,"Data.Either":undefined,"Data.Map":74,"Data.Maybe":76,"Data.Tuple":88,"Prelude":undefined}],58:[function(require,module,exports){
@@ -63178,21 +60954,21 @@ var arrayIndexL = function (__dict_DecodeJson_14) {
     };
 };
 module.exports = {
-    DecodeJson: DecodeJson,
-    objectFieldL: objectFieldL,
-    arrayIndexL: arrayIndexL,
-    decodeL: decodeL,
-    decodeMaybe: decodeMaybe,
-    decodeJson: decodeJson,
-    decodeJsonNull: decodeJsonNull,
-    decodeJsonBoolean: decodeJsonBoolean,
-    decodeJsonNumber: decodeJsonNumber,
-    decodeJsonString: decodeJsonString,
-    decodeJsonArray: decodeJsonArray,
-    decodeJsonJson: decodeJsonJson,
-    decodeMap: decodeMap,
-    decodeArray: decodeArray,
-    foldableMap: foldableMap,
+    DecodeJson: DecodeJson, 
+    objectFieldL: objectFieldL, 
+    arrayIndexL: arrayIndexL, 
+    decodeL: decodeL, 
+    decodeMaybe: decodeMaybe, 
+    decodeJson: decodeJson, 
+    decodeJsonNull: decodeJsonNull, 
+    decodeJsonBoolean: decodeJsonBoolean, 
+    decodeJsonNumber: decodeJsonNumber, 
+    decodeJsonString: decodeJsonString, 
+    decodeJsonArray: decodeJsonArray, 
+    decodeJsonJson: decodeJsonJson, 
+    decodeMap: decodeMap, 
+    decodeArray: decodeArray, 
+    foldableMap: foldableMap, 
     traversableMap: traversableMap
 };
 },{"Control.Lens":40,"Control.Lens.At":27,"Data.Argonaut.Core":undefined,"Data.Argonaut.Encode":59,"Data.Array":62,"Data.Either":undefined,"Data.Foldable":71,"Data.Map":74,"Data.Maybe":76,"Data.Profunctor.Choice":83,"Data.Traversable":87,"Data.Tuple":88,"Prelude":undefined}],59:[function(require,module,exports){
@@ -63241,14 +61017,14 @@ var encodeMap = function (__dict_EncodeJson_1) {
     });
 };
 module.exports = {
-    EncodeJson: EncodeJson,
-    encodeJson: encodeJson,
-    encodeJsonJNull: encodeJsonJNull,
-    encodeJsonJBoolean: encodeJsonJBoolean,
-    encodeJsonJNumber: encodeJsonJNumber,
-    encodeJsonJString: encodeJsonJString,
-    encodeJsonJson: encodeJsonJson,
-    encodeJsonArray: encodeJsonArray,
+    EncodeJson: EncodeJson, 
+    encodeJson: encodeJson, 
+    encodeJsonJNull: encodeJsonJNull, 
+    encodeJsonJBoolean: encodeJsonJBoolean, 
+    encodeJsonJNumber: encodeJsonJNumber, 
+    encodeJsonJString: encodeJsonJString, 
+    encodeJsonJson: encodeJsonJson, 
+    encodeJsonArray: encodeJsonArray, 
     encodeMap: encodeMap
 };
 },{"Data.Argonaut.Core":undefined,"Data.Array":62,"Data.Foldable":71,"Data.Map":74,"Data.Tuple":88,"Prelude":undefined}],60:[function(require,module,exports){
@@ -63330,15 +61106,15 @@ var lookAhead = function (__dict_Monad_5) {
         return function (s) {
             return Prelude[">>="](__dict_Monad_5["__superclass_Prelude.Bind_1"]({}))(_711(s))(function (_96) {
                 return Prelude.pure(__dict_Monad_5["__superclass_Prelude.Applicative_0"]({}))((function () {
-                    var _2589 = {};
-                    for (var _2590 in _96) {
-                        if (_96.hasOwnProperty(_2590)) {
-                            _2589[_2590] = _96[_2590];
+                    var _2592 = {};
+                    for (var _2593 in _96) {
+                        if (_96.hasOwnProperty(_2593)) {
+                            _2592[_2593] = _96[_2593];
                         };
                     };
-                    _2589.input = s;
-                    _2589.consumed = false;
-                    return _2589;
+                    _2592.input = s;
+                    _2592.consumed = false;
+                    return _2592;
                 })());
             });
         };
@@ -63508,7 +61284,7 @@ var jsonParser = Prelude[">>="](Text_Parsing_Parser.bindParserT(Control_Monad_Id
     });
 });
 module.exports = {
-    jsonParser: jsonParser,
+    jsonParser: jsonParser, 
     showParseError: showParseError
 };
 },{"Control.Alt":24,"Control.Alternative":undefined,"Control.Apply":25,"Control.Monad.Identity":undefined,"Data.Argonaut.Core":undefined,"Data.Array":62,"Data.Foldable":71,"Data.Map":74,"Data.String":86,"Data.Tuple":88,"Global":89,"Prelude":undefined,"Text.Parsing.Parser":undefined,"Text.Parsing.Parser.Combinators":undefined,"Text.Parsing.Parser.String":undefined}],61:[function(require,module,exports){
@@ -63519,8 +61295,8 @@ var Data_Array = require("Data.Array");
 var Data_Maybe_Unsafe = require("Data.Maybe.Unsafe");
 var tail = function (_417) {
     if (_417.length > 0) {
-        var _1456 = _417.slice(1);
-        return _1456;
+        var _1459 = _417.slice(1);
+        return _1459;
     };
     throw new Error("Failed pattern match");
 };
@@ -63530,15 +61306,15 @@ var last = function (xs) {
 var init = Prelude["<<<"](Prelude.semigroupoidArr({}))(Data_Maybe_Unsafe.fromJust)(Data_Array.init);
 var head = function (_416) {
     if (_416.length > 0) {
-        var _1459 = _416.slice(1);
+        var _1462 = _416.slice(1);
         return _416[0];
     };
     throw new Error("Failed pattern match");
 };
 module.exports = {
-    init: init,
-    last: last,
-    tail: tail,
+    init: init, 
+    last: last, 
+    tail: tail, 
     head: head
 };
 },{"Data.Array":62,"Data.Maybe.Unsafe":75,"Prelude":undefined,"Prelude.Unsafe":92}],62:[function(require,module,exports){
@@ -63581,8 +61357,8 @@ var take = function (n) {
 };
 var tail = function (_241) {
     if (_241.length > 0) {
-        var _1068 = _241.slice(1);
-        return new Data_Maybe.Just(_1068);
+        var _1071 = _241.slice(1);
+        return new Data_Maybe.Just(_1071);
     };
     return Data_Maybe.Nothing.value;
 };
@@ -63595,18 +61371,18 @@ var span = (function () {
                 var _259 = __copy__259;
                 tco: while (true) {
                     if (_259.length > 0) {
-                        var _1073 = _259.slice(1);
+                        var _1076 = _259.slice(1);
                         if (_258(_259[0])) {
                             var __tco__257 = Prelude[":"](_259[0])(_257);
                             var __tco__258 = _258;
                             _257 = __tco__257;
                             _258 = __tco__258;
-                            _259 = _1073;
+                            _259 = _1076;
                             continue tco;
                         };
                     };
                     return {
-                        init: reverse(_257),
+                        init: reverse(_257), 
                         rest: _259
                     };
                 };
@@ -63619,14 +61395,14 @@ var sortBy = function (comp) {
     return function (xs) {
         var comp$prime = function (x) {
             return function (y) {
-                var _1074 = comp(x)(y);
-                if (_1074 instanceof Prelude.GT) {
+                var _1077 = comp(x)(y);
+                if (_1077 instanceof Prelude.GT) {
                     return 1;
                 };
-                if (_1074 instanceof Prelude.EQ) {
+                if (_1077 instanceof Prelude.EQ) {
                     return 0;
                 };
-                if (_1074 instanceof Prelude.LT) {
+                if (_1077 instanceof Prelude.LT) {
                     return -1;
                 };
                 throw new Error("Failed pattern match");
@@ -63658,10 +61434,10 @@ var nubBy = function (_250) {
             return [  ];
         };
         if (_251.length > 0) {
-            var _1079 = _251.slice(1);
+            var _1082 = _251.slice(1);
             return Prelude[":"](_251[0])(nubBy(_250)(filter(function (y) {
                 return !_250(_251[0])(y);
-            })(_1079)));
+            })(_1082)));
         };
         throw new Error("Failed pattern match");
     };
@@ -63676,14 +61452,14 @@ var last = function (__copy__240) {
     var _240 = __copy__240;
     tco: while (true) {
         if (_240.length > 0) {
-            var _1082 = _240.slice(1);
-            if (_1082.length === 0) {
+            var _1085 = _240.slice(1);
+            if (_1085.length === 0) {
                 return new Data_Maybe.Just(_240[0]);
             };
         };
         if (_240.length > 0) {
-            var _1084 = _240.slice(1);
-            _240 = _1084;
+            var _1087 = _240.slice(1);
+            _240 = _1087;
             continue tco;
         };
         return Data_Maybe.Nothing.value;
@@ -63716,7 +61492,7 @@ var init = function (_242) {
 };
 var head = function (_239) {
     if (_239.length > 0) {
-        var _1091 = _239.slice(1);
+        var _1094 = _239.slice(1);
         return new Data_Maybe.Just(_239[0]);
     };
     return Data_Maybe.Nothing.value;
@@ -63733,8 +61509,8 @@ var groupBy = (function () {
                         return reverse(_254);
                     };
                     if (_256.length > 0) {
-                        var _1096 = _256.slice(1);
-                        var sp = span(_255(_256[0]))(_1096);
+                        var _1099 = _256.slice(1);
+                        var sp = span(_255(_256[0]))(_1099);
                         var __tco__254 = Prelude[":"](Prelude[":"](_256[0])(sp.init))(_254);
                         var __tco__255 = _255;
                         _254 = __tco__254;
@@ -63776,11 +61552,11 @@ var deleteBy = function (_244) {
             if (_246.length === 0) {
                 return [  ];
             };
-            var _1100 = findIndex(_244(_245))(_246);
-            if (_1100 < 0) {
+            var _1103 = findIndex(_244(_245))(_246);
+            if (_1103 < 0) {
                 return _246;
             };
-            return deleteAt(_1100)(1)(_246);
+            return deleteAt(_1103)(1)(_246);
         };
     };
 };
@@ -63802,10 +61578,10 @@ var $bslash$bslash = function (__dict_Eq_8) {
                             return [  ];
                         };
                         if (_253.length > 0) {
-                            var _1104 = _253.slice(1);
+                            var _1107 = _253.slice(1);
                             var __tco__252 = $$delete(__dict_Eq_8)(_253[0])(_252);
                             _252 = __tco__252;
-                            _253 = _1104;
+                            _253 = _1107;
                             continue tco;
                         };
                         throw new Error("Failed pattern match");
@@ -63842,56 +61618,56 @@ var monadPlusArray = function (__unused) {
     return new Control_MonadPlus.MonadPlus(alternativeArray, monadArray);
 };
 module.exports = {
-    span: span,
-    groupBy: groupBy,
-    "group'": group$prime,
-    group: group,
-    sortBy: sortBy,
-    sort: sort,
-    nubBy: nubBy,
-    nub: nub,
-    zipWith: zipWith,
-    range: range,
-    filter: filter,
-    concatMap: concatMap,
-    intersect: intersect,
-    intersectBy: intersectBy,
-    "\\\\": $bslash$bslash,
-    "delete": $$delete,
-    deleteBy: deleteBy,
-    updateAt: updateAt,
-    deleteAt: deleteAt,
-    insertAt: insertAt,
-    take: take,
-    drop: drop,
-    reverse: reverse,
-    concat: concat,
-    append: append,
-    elemLastIndex: elemLastIndex,
-    elemIndex: elemIndex,
-    findLastIndex: findLastIndex,
-    findIndex: findIndex,
-    length: length,
-    catMaybes: catMaybes,
-    mapMaybe: mapMaybe,
-    map: map,
-    "null": $$null,
-    init: init,
-    tail: tail,
-    last: last,
-    head: head,
-    singleton: singleton,
-    snoc: snoc,
-    "!!": $bang$bang,
-    functorArray: functorArray,
-    applyArray: applyArray,
-    applicativeArray: applicativeArray,
-    bindArray: bindArray,
-    monadArray: monadArray,
-    semigroupArray: semigroupArray,
-    altArray: altArray,
-    plusArray: plusArray,
-    alternativeArray: alternativeArray,
+    span: span, 
+    groupBy: groupBy, 
+    "group'": group$prime, 
+    group: group, 
+    sortBy: sortBy, 
+    sort: sort, 
+    nubBy: nubBy, 
+    nub: nub, 
+    zipWith: zipWith, 
+    range: range, 
+    filter: filter, 
+    concatMap: concatMap, 
+    intersect: intersect, 
+    intersectBy: intersectBy, 
+    "\\\\": $bslash$bslash, 
+    "delete": $$delete, 
+    deleteBy: deleteBy, 
+    updateAt: updateAt, 
+    deleteAt: deleteAt, 
+    insertAt: insertAt, 
+    take: take, 
+    drop: drop, 
+    reverse: reverse, 
+    concat: concat, 
+    append: append, 
+    elemLastIndex: elemLastIndex, 
+    elemIndex: elemIndex, 
+    findLastIndex: findLastIndex, 
+    findIndex: findIndex, 
+    length: length, 
+    catMaybes: catMaybes, 
+    mapMaybe: mapMaybe, 
+    map: map, 
+    "null": $$null, 
+    init: init, 
+    tail: tail, 
+    last: last, 
+    head: head, 
+    singleton: singleton, 
+    snoc: snoc, 
+    "!!": $bang$bang, 
+    functorArray: functorArray, 
+    applyArray: applyArray, 
+    applicativeArray: applicativeArray, 
+    bindArray: bindArray, 
+    monadArray: monadArray, 
+    semigroupArray: semigroupArray, 
+    altArray: altArray, 
+    plusArray: plusArray, 
+    alternativeArray: alternativeArray, 
     monadPlusArray: monadPlusArray
 };
 },{"Control.Alt":24,"Control.Alternative":undefined,"Control.MonadPlus":54,"Control.Plus":55,"Data.Maybe":76,"Prelude":undefined,"Prelude.Unsafe":92}],63:[function(require,module,exports){
@@ -64033,17 +61809,17 @@ var biall = function (__dict_Bifoldable_11) {
     };
 };
 module.exports = {
-    Bifoldable: Bifoldable,
-    biall: biall,
-    biany: biany,
-    bisequence_: bisequence_,
-    bifor_: bifor_,
-    bitraverse_: bitraverse_,
-    bifold: bifold,
-    bifoldMap: bifoldMap,
-    bifoldl: bifoldl,
-    bifoldr: bifoldr,
-    bifoldableTuple: bifoldableTuple,
+    Bifoldable: Bifoldable, 
+    biall: biall, 
+    biany: biany, 
+    bisequence_: bisequence_, 
+    bifor_: bifor_, 
+    bitraverse_: bitraverse_, 
+    bifold: bifold, 
+    bifoldMap: bifoldMap, 
+    bifoldl: bifoldl, 
+    bifoldr: bifoldr, 
+    bifoldableTuple: bifoldableTuple, 
     bifoldableEither: bifoldableEither
 };
 },{"Control.Apply":25,"Data.Either":undefined,"Data.Monoid.All":77,"Data.Monoid.Any":78,"Data.Tuple":88,"Prelude":undefined}],64:[function(require,module,exports){
@@ -64090,11 +61866,11 @@ var bifunctorEither = function (__unused) {
     });
 };
 module.exports = {
-    Bifunctor: Bifunctor,
-    rmap: rmap,
-    lmap: lmap,
-    bimap: bimap,
-    bifunctorEither: bifunctorEither,
+    Bifunctor: Bifunctor, 
+    rmap: rmap, 
+    lmap: lmap, 
+    bimap: bimap, 
+    bifunctorEither: bifunctorEither, 
     bifunctorTuple: bifunctorTuple
 };
 },{"Data.Either":undefined,"Data.Tuple":88,"Prelude":undefined}],65:[function(require,module,exports){
@@ -64178,11 +61954,11 @@ var bifor = function (__dict_Bitraversable_4) {
     };
 };
 module.exports = {
-    Bitraversable: Bitraversable,
-    bifor: bifor,
-    bisequence: bisequence,
-    bitraverse: bitraverse,
-    bitraversableTuple: bitraversableTuple,
+    Bitraversable: Bitraversable, 
+    bifor: bifor, 
+    bisequence: bisequence, 
+    bitraverse: bitraverse, 
+    bitraversableTuple: bitraversableTuple, 
     bitraversableEither: bitraversableEither
 };
 },{"Data.Bifoldable":63,"Data.Bifunctor":64,"Data.Either":undefined,"Data.Tuple":88,"Prelude":undefined}],66:[function(require,module,exports){
@@ -64280,18 +62056,18 @@ var applicativeConst = function (__dict_Monoid_7) {
     });
 };
 module.exports = {
-    Const: Const,
-    getConst: getConst,
-    eqConst: eqConst,
-    showConst: showConst,
-    ordConst: ordConst,
-    semigroupoidConst: semigroupoidConst,
-    semigroupConst: semigroupConst,
-    monoidConst: monoidConst,
-    functorConst: functorConst,
-    applyConst: applyConst,
-    bindConst: bindConst,
-    applicativeConst: applicativeConst,
+    Const: Const, 
+    getConst: getConst, 
+    eqConst: eqConst, 
+    showConst: showConst, 
+    ordConst: ordConst, 
+    semigroupoidConst: semigroupoidConst, 
+    semigroupConst: semigroupConst, 
+    monoidConst: monoidConst, 
+    functorConst: functorConst, 
+    applyConst: applyConst, 
+    bindConst: bindConst, 
+    applicativeConst: applicativeConst, 
     contravariantConst: contravariantConst
 };
 },{"Data.Contravariant":67,"Data.Monoid":82,"Prelude":undefined}],67:[function(require,module,exports){
@@ -64304,7 +62080,7 @@ var $greater$dollar$less = function (dict) {
     return dict[">$<"];
 };
 module.exports = {
-    Contravariant: Contravariant,
+    Contravariant: Contravariant, 
     ">$<": $greater$dollar$less
 };
 },{"Prelude":undefined}],68:[function(require,module,exports){
@@ -64347,10 +62123,10 @@ var collect = function (dict) {
     return dict.collect;
 };
 module.exports = {
-    Distributive: Distributive,
-    cotraverse: cotraverse,
-    collect: collect,
-    distribute: distribute,
+    Distributive: Distributive, 
+    cotraverse: cotraverse, 
+    collect: collect, 
+    distribute: distribute, 
     distributiveIdentity: distributiveIdentity
 };
 },{"Control.Monad.Identity":undefined,"Prelude":undefined}],69:[function(require,module,exports){
@@ -64377,10 +62153,10 @@ var succ = function (__dict_Enum_1) {
     };
 };
 module.exports = {
-    Enum: Enum,
-    pred: pred,
-    succ: succ,
-    fromEnum: fromEnum,
+    Enum: Enum, 
+    pred: pred, 
+    succ: succ, 
+    fromEnum: fromEnum, 
     toEnum: toEnum
 };
 },{"Prelude":undefined}],70:[function(require,module,exports){
@@ -64409,9 +62185,9 @@ var eqRef = function (__unused) {
     return new Prelude.Eq(liftRef(Prelude.refIneq), liftRef(Prelude.refEq));
 };
 module.exports = {
-    Ref: Ref,
-    liftRef: liftRef,
-    eqRef: eqRef,
+    Ref: Ref, 
+    liftRef: liftRef, 
+    eqRef: eqRef, 
     functorRef: functorRef
 };
 },{"Prelude":undefined}],71:[function(require,module,exports){
@@ -64635,14 +62411,14 @@ var fold = function (__dict_Foldable_18) {
 var find = function (__dict_Foldable_20) {
     return function (p) {
         return function (f) {
-            var _1554 = foldMap(__dict_Foldable_20)(Data_Monoid.monoidArray({}))(function (x) {
+            var _1557 = foldMap(__dict_Foldable_20)(Data_Monoid.monoidArray({}))(function (x) {
                 return p(x) ? [ x ] : [  ];
             })(f);
-            if (_1554.length > 0) {
-                var _1556 = _1554.slice(1);
-                return new Data_Maybe.Just(_1554[0]);
+            if (_1557.length > 0) {
+                var _1559 = _1557.slice(1);
+                return new Data_Maybe.Just(_1557[0]);
             };
-            if (_1554.length === 0) {
+            if (_1557.length === 0) {
                 return Data_Maybe.Nothing.value;
             };
             throw new Error("Failed pattern match");
@@ -64679,31 +62455,31 @@ var all = function (__dict_Foldable_27) {
     };
 };
 module.exports = {
-    Foldable: Foldable,
-    foldlArray: foldlArray,
-    foldrArray: foldrArray,
-    lookup: lookup,
-    find: find,
-    notElem: notElem,
-    elem: elem,
-    product: product,
-    sum: sum,
-    all: all,
-    any: any,
-    or: or,
-    and: and,
-    mconcat: mconcat,
-    sequence_: sequence_,
-    for_: for_,
-    traverse_: traverse_,
-    fold: fold,
-    foldMap: foldMap,
-    foldl: foldl,
-    foldr: foldr,
-    foldableArray: foldableArray,
-    foldableEither: foldableEither,
-    foldableMaybe: foldableMaybe,
-    foldableRef: foldableRef,
+    Foldable: Foldable, 
+    foldlArray: foldlArray, 
+    foldrArray: foldrArray, 
+    lookup: lookup, 
+    find: find, 
+    notElem: notElem, 
+    elem: elem, 
+    product: product, 
+    sum: sum, 
+    all: all, 
+    any: any, 
+    or: or, 
+    and: and, 
+    mconcat: mconcat, 
+    sequence_: sequence_, 
+    for_: for_, 
+    traverse_: traverse_, 
+    fold: fold, 
+    foldMap: foldMap, 
+    foldl: foldl, 
+    foldr: foldr, 
+    foldableArray: foldableArray, 
+    foldableEither: foldableEither, 
+    foldableMaybe: foldableMaybe, 
+    foldableRef: foldableRef, 
     foldableTuple: foldableTuple
 };
 },{"Control.Apply":25,"Data.Either":undefined,"Data.Eq":70,"Data.Maybe":76,"Data.Monoid":82,"Data.Monoid.First":81,"Data.Tuple":88,"Prelude":undefined}],72:[function(require,module,exports){
@@ -64779,12 +62555,12 @@ var applyForeignParser = function (__unused) {
     return new Prelude.Apply(function (_670) {
         return function (_671) {
             return new ForeignParser(function (x) {
-                var _2413 = _670.value0(x);
-                if (_2413 instanceof Data_Either.Left) {
-                    return new Data_Either.Left(_2413.value0);
+                var _2416 = _670.value0(x);
+                if (_2416 instanceof Data_Either.Left) {
+                    return new Data_Either.Left(_2416.value0);
                 };
-                if (_2413 instanceof Data_Either.Right) {
-                    return Prelude["<$>"](Data_Either.functorEither({}))(_2413.value0)(_671.value0(x));
+                if (_2416 instanceof Data_Either.Right) {
+                    return Prelude["<$>"](Data_Either.functorEither({}))(_2416.value0)(_671.value0(x));
                 };
                 throw new Error("Failed pattern match");
             });
@@ -64795,12 +62571,12 @@ var bindForeignParser = function (__unused) {
     return new Prelude.Bind(function (_668) {
         return function (_669) {
             return new ForeignParser(function (x) {
-                var _2420 = _668.value0(x);
-                if (_2420 instanceof Data_Either.Left) {
-                    return new Data_Either.Left(_2420.value0);
+                var _2423 = _668.value0(x);
+                if (_2423 instanceof Data_Either.Left) {
+                    return new Data_Either.Left(_2423.value0);
                 };
-                if (_2420 instanceof Data_Either.Right) {
-                    return parseForeign(_669(_2420.value0))(x);
+                if (_2423 instanceof Data_Either.Right) {
+                    return parseForeign(_669(_2423.value0))(x);
                 };
                 throw new Error("Failed pattern match");
             });
@@ -64813,12 +62589,12 @@ var index = function (__dict_ReadForeign_3) {
             return Data_Either.Right.create(readIndexImpl$prime(i)(x));
         }))(function (x) {
             return new ForeignParser(function (_) {
-                var _2424 = parseForeign(read(__dict_ReadForeign_3))(x);
-                if (_2424 instanceof Data_Either.Right) {
-                    return new Data_Either.Right(_2424.value0);
+                var _2427 = parseForeign(read(__dict_ReadForeign_3))(x);
+                if (_2427 instanceof Data_Either.Right) {
+                    return new Data_Either.Right(_2427.value0);
                 };
-                if (_2424 instanceof Data_Either.Left) {
-                    return Data_Either.Left.create("Error reading index '" + Prelude.show(Prelude.showNumber({}))(i) + "':\n" + _2424.value0);
+                if (_2427 instanceof Data_Either.Left) {
+                    return Data_Either.Left.create("Error reading index '" + Prelude.show(Prelude.showNumber({}))(i) + "':\n" + _2427.value0);
                 };
                 throw new Error("Failed pattern match");
             });
@@ -64836,12 +62612,12 @@ var prop = function (__dict_ReadForeign_0) {
             return Data_Either.Right.create(readPropImpl$prime(p)(x));
         }))(function (x) {
             return new ForeignParser(function (_) {
-                var _2427 = parseForeign(read(__dict_ReadForeign_0))(x);
-                if (_2427 instanceof Data_Either.Right) {
-                    return new Data_Either.Right(_2427.value0);
+                var _2430 = parseForeign(read(__dict_ReadForeign_0))(x);
+                if (_2430 instanceof Data_Either.Right) {
+                    return new Data_Either.Right(_2430.value0);
                 };
-                if (_2427 instanceof Data_Either.Left) {
-                    return Data_Either.Left.create("Error reading property '" + p + "':\n" + _2427.value0);
+                if (_2430 instanceof Data_Either.Left) {
+                    return Data_Either.Left.create("Error reading property '" + p + "':\n" + _2430.value0);
                 };
                 throw new Error("Failed pattern match");
             });
@@ -64860,12 +62636,12 @@ var readKeysImpl$prime = function (prop_1) {
 };
 var keys = function (p) {
     return new ForeignParser(function (x) {
-        var _2430 = readKeysImpl$prime(p)(x);
-        if (_2430 instanceof Data_Either.Right) {
-            return new Data_Either.Right(_2430.value0);
+        var _2433 = readKeysImpl$prime(p)(x);
+        if (_2433 instanceof Data_Either.Right) {
+            return new Data_Either.Right(_2433.value0);
         };
-        if (_2430 instanceof Data_Either.Left) {
-            return Data_Either.Left.create("Error reading object keys of '" + p + "':\n" + _2430.value0);
+        if (_2433 instanceof Data_Either.Left) {
+            return Data_Either.Left.create("Error reading object keys of '" + p + "':\n" + _2433.value0);
         };
         throw new Error("Failed pattern match");
     });
@@ -64873,12 +62649,12 @@ var keys = function (p) {
 var readArray = function (__dict_ReadForeign_1) {
     return new ReadForeign((function () {
         var arrayItem = function (_672) {
-            var _2434 = parseForeign(read(__dict_ReadForeign_1))(_672.value1);
-            if (_2434 instanceof Data_Either.Right) {
-                return new Data_Either.Right(_2434.value0);
+            var _2437 = parseForeign(read(__dict_ReadForeign_1))(_672.value1);
+            if (_2437 instanceof Data_Either.Right) {
+                return new Data_Either.Right(_2437.value0);
             };
-            if (_2434 instanceof Data_Either.Left) {
-                return Data_Either.Left.create("Error reading item at index " + Prelude.show(Prelude.showNumber({}))(_672.value0) + ":\n" + _2434.value0);
+            if (_2437 instanceof Data_Either.Left) {
+                return Data_Either.Left.create("Error reading item at index " + Prelude.show(Prelude.showNumber({}))(_672.value0) + ":\n" + _2437.value0);
             };
             throw new Error("Failed pattern match");
         };
@@ -64913,24 +62689,24 @@ var monadForeignParser = function (__unused) {
     return new Prelude.Monad(applicativeForeignParser, bindForeignParser);
 };
 module.exports = {
-    ForeignParser: ForeignParser,
-    ReadForeign: ReadForeign,
-    keys: keys,
-    index: index,
-    prop: prop,
-    read: read,
-    parseJSON: parseJSON,
-    parseForeign: parseForeign,
-    showForeign: showForeign,
-    functorForeignParser: functorForeignParser,
-    bindForeignParser: bindForeignParser,
-    applyForeignParser: applyForeignParser,
-    applicativeForeignParser: applicativeForeignParser,
-    monadForeignParser: monadForeignParser,
-    readString: readString,
-    readNumber: readNumber,
-    readBoolean: readBoolean,
-    readArray: readArray,
+    ForeignParser: ForeignParser, 
+    ReadForeign: ReadForeign, 
+    keys: keys, 
+    index: index, 
+    prop: prop, 
+    read: read, 
+    parseJSON: parseJSON, 
+    parseForeign: parseForeign, 
+    showForeign: showForeign, 
+    functorForeignParser: functorForeignParser, 
+    bindForeignParser: bindForeignParser, 
+    applyForeignParser: applyForeignParser, 
+    applicativeForeignParser: applicativeForeignParser, 
+    monadForeignParser: monadForeignParser, 
+    readString: readString, 
+    readNumber: readNumber, 
+    readBoolean: readBoolean, 
+    readArray: readArray, 
     readMaybe: readMaybe
 };
 },{"Data.Array":62,"Data.Either":undefined,"Data.Function":73,"Data.Maybe":76,"Data.Traversable":87,"Data.Tuple":88,"Prelude":undefined}],73:[function(require,module,exports){
@@ -64968,28 +62744,28 @@ var on = function (f) {
     };
 };
 module.exports = {
-    runFn10: runFn10,
-    runFn9: runFn9,
-    runFn8: runFn8,
-    runFn7: runFn7,
-    runFn6: runFn6,
-    runFn5: runFn5,
-    runFn4: runFn4,
-    runFn3: runFn3,
-    runFn2: runFn2,
-    runFn1: runFn1,
-    runFn0: runFn0,
-    mkFn10: mkFn10,
-    mkFn9: mkFn9,
-    mkFn8: mkFn8,
-    mkFn7: mkFn7,
-    mkFn6: mkFn6,
-    mkFn5: mkFn5,
-    mkFn4: mkFn4,
-    mkFn3: mkFn3,
-    mkFn2: mkFn2,
-    mkFn1: mkFn1,
-    mkFn0: mkFn0,
+    runFn10: runFn10, 
+    runFn9: runFn9, 
+    runFn8: runFn8, 
+    runFn7: runFn7, 
+    runFn6: runFn6, 
+    runFn5: runFn5, 
+    runFn4: runFn4, 
+    runFn3: runFn3, 
+    runFn2: runFn2, 
+    runFn1: runFn1, 
+    runFn0: runFn0, 
+    mkFn10: mkFn10, 
+    mkFn9: mkFn9, 
+    mkFn8: mkFn8, 
+    mkFn7: mkFn7, 
+    mkFn6: mkFn6, 
+    mkFn5: mkFn5, 
+    mkFn4: mkFn4, 
+    mkFn3: mkFn3, 
+    mkFn2: mkFn2, 
+    mkFn1: mkFn1, 
+    mkFn0: mkFn0, 
     on: on
 };
 },{"Prelude":undefined}],74:[function(require,module,exports){
@@ -65318,56 +63094,56 @@ var fromZipper = function (__copy___dict_Ord_6) {
                     return _488;
                 };
                 if (_487.length > 0) {
-                    var _1671 = _487.slice(1);
+                    var _1674 = _487.slice(1);
                     if (_487[0] instanceof TwoLeft) {
                         var __tco___dict_Ord_6 = __dict_Ord_6;
                         var __tco__488 = new Two(_488, (_487[0]).value0, (_487[0]).value1, (_487[0]).value2);
                         __dict_Ord_6 = __tco___dict_Ord_6;
-                        _487 = _1671;
+                        _487 = _1674;
                         _488 = __tco__488;
                         continue tco;
                     };
                 };
                 if (_487.length > 0) {
-                    var _1676 = _487.slice(1);
+                    var _1679 = _487.slice(1);
                     if (_487[0] instanceof TwoRight) {
                         var __tco___dict_Ord_6 = __dict_Ord_6;
                         var __tco__488 = new Two((_487[0]).value0, (_487[0]).value1, (_487[0]).value2, _488);
                         __dict_Ord_6 = __tco___dict_Ord_6;
-                        _487 = _1676;
+                        _487 = _1679;
                         _488 = __tco__488;
                         continue tco;
                     };
                 };
                 if (_487.length > 0) {
-                    var _1681 = _487.slice(1);
+                    var _1684 = _487.slice(1);
                     if (_487[0] instanceof ThreeLeft) {
                         var __tco___dict_Ord_6 = __dict_Ord_6;
                         var __tco__488 = new Three(_488, (_487[0]).value0, (_487[0]).value1, (_487[0]).value2, (_487[0]).value3, (_487[0]).value4, (_487[0]).value5);
                         __dict_Ord_6 = __tco___dict_Ord_6;
-                        _487 = _1681;
+                        _487 = _1684;
                         _488 = __tco__488;
                         continue tco;
                     };
                 };
                 if (_487.length > 0) {
-                    var _1689 = _487.slice(1);
+                    var _1692 = _487.slice(1);
                     if (_487[0] instanceof ThreeMiddle) {
                         var __tco___dict_Ord_6 = __dict_Ord_6;
                         var __tco__488 = new Three((_487[0]).value0, (_487[0]).value1, (_487[0]).value2, _488, (_487[0]).value3, (_487[0]).value4, (_487[0]).value5);
                         __dict_Ord_6 = __tco___dict_Ord_6;
-                        _487 = _1689;
+                        _487 = _1692;
                         _488 = __tco__488;
                         continue tco;
                     };
                 };
                 if (_487.length > 0) {
-                    var _1697 = _487.slice(1);
+                    var _1700 = _487.slice(1);
                     if (_487[0] instanceof ThreeRight) {
                         var __tco___dict_Ord_6 = __dict_Ord_6;
                         var __tco__488 = new Three((_487[0]).value0, (_487[0]).value1, (_487[0]).value2, (_487[0]).value3, (_487[0]).value4, (_487[0]).value5, _488);
                         __dict_Ord_6 = __tco___dict_Ord_6;
-                        _487 = _1697;
+                        _487 = _1700;
                         _488 = __tco__488;
                         continue tco;
                     };
@@ -65389,46 +63165,46 @@ var insert = function (__dict_Ord_7) {
                         return new Two(_500.value0, _500.value1, _500.value2, _500.value3);
                     };
                     if (_499.length > 0) {
-                        var _1715 = _499.slice(1);
+                        var _1718 = _499.slice(1);
                         if (_499[0] instanceof TwoLeft) {
-                            return fromZipper(__dict_Ord_8)(_1715)(new Three(_500.value0, _500.value1, _500.value2, _500.value3, (_499[0]).value0, (_499[0]).value1, (_499[0]).value2));
+                            return fromZipper(__dict_Ord_8)(_1718)(new Three(_500.value0, _500.value1, _500.value2, _500.value3, (_499[0]).value0, (_499[0]).value1, (_499[0]).value2));
                         };
                     };
                     if (_499.length > 0) {
-                        var _1724 = _499.slice(1);
+                        var _1727 = _499.slice(1);
                         if (_499[0] instanceof TwoRight) {
-                            return fromZipper(__dict_Ord_8)(_1724)(new Three((_499[0]).value0, (_499[0]).value1, (_499[0]).value2, _500.value0, _500.value1, _500.value2, _500.value3));
+                            return fromZipper(__dict_Ord_8)(_1727)(new Three((_499[0]).value0, (_499[0]).value1, (_499[0]).value2, _500.value0, _500.value1, _500.value2, _500.value3));
                         };
                     };
                     if (_499.length > 0) {
-                        var _1733 = _499.slice(1);
+                        var _1736 = _499.slice(1);
                         if (_499[0] instanceof ThreeLeft) {
                             var __tco___dict_Ord_8 = __dict_Ord_8;
                             var __tco__500 = new KickUp(new Two(_500.value0, _500.value1, _500.value2, _500.value3), (_499[0]).value0, (_499[0]).value1, new Two((_499[0]).value2, (_499[0]).value3, (_499[0]).value4, (_499[0]).value5));
                             __dict_Ord_8 = __tco___dict_Ord_8;
-                            _499 = _1733;
+                            _499 = _1736;
                             _500 = __tco__500;
                             continue tco;
                         };
                     };
                     if (_499.length > 0) {
-                        var _1745 = _499.slice(1);
+                        var _1748 = _499.slice(1);
                         if (_499[0] instanceof ThreeMiddle) {
                             var __tco___dict_Ord_8 = __dict_Ord_8;
                             var __tco__500 = new KickUp(new Two((_499[0]).value0, (_499[0]).value1, (_499[0]).value2, _500.value0), _500.value1, _500.value2, new Two(_500.value3, (_499[0]).value3, (_499[0]).value4, (_499[0]).value5));
                             __dict_Ord_8 = __tco___dict_Ord_8;
-                            _499 = _1745;
+                            _499 = _1748;
                             _500 = __tco__500;
                             continue tco;
                         };
                     };
                     if (_499.length > 0) {
-                        var _1757 = _499.slice(1);
+                        var _1760 = _499.slice(1);
                         if (_499[0] instanceof ThreeRight) {
                             var __tco___dict_Ord_8 = __dict_Ord_8;
                             var __tco__500 = new KickUp(new Two((_499[0]).value0, (_499[0]).value1, (_499[0]).value2, (_499[0]).value3), (_499[0]).value4, (_499[0]).value5, new Two(_500.value0, _500.value1, _500.value2, _500.value3));
                             __dict_Ord_8 = __tco___dict_Ord_8;
-                            _499 = _1757;
+                            _499 = _1760;
                             _500 = __tco__500;
                             continue tco;
                         };
@@ -65582,115 +63358,115 @@ var $$delete = function (__dict_Ord_15) {
                         return _505;
                     };
                     if (_504.length > 0) {
-                        var _1824 = _504.slice(1);
+                        var _1827 = _504.slice(1);
                         if (_504[0] instanceof TwoLeft && (_504[0]).value2 instanceof Leaf && _505 instanceof Leaf) {
-                            return fromZipper(__dict_Ord_16)(_1824)(new Two(Leaf.value, (_504[0]).value0, (_504[0]).value1, Leaf.value));
+                            return fromZipper(__dict_Ord_16)(_1827)(new Two(Leaf.value, (_504[0]).value0, (_504[0]).value1, Leaf.value));
                         };
                     };
                     if (_504.length > 0) {
-                        var _1829 = _504.slice(1);
+                        var _1832 = _504.slice(1);
                         if (_504[0] instanceof TwoRight && (_504[0]).value0 instanceof Leaf && _505 instanceof Leaf) {
-                            return fromZipper(__dict_Ord_16)(_1829)(new Two(Leaf.value, (_504[0]).value1, (_504[0]).value2, Leaf.value));
+                            return fromZipper(__dict_Ord_16)(_1832)(new Two(Leaf.value, (_504[0]).value1, (_504[0]).value2, Leaf.value));
                         };
                     };
                     if (_504.length > 0) {
-                        var _1834 = _504.slice(1);
+                        var _1837 = _504.slice(1);
                         if (_504[0] instanceof TwoLeft && (_504[0]).value2 instanceof Two) {
                             var __tco___dict_Ord_16 = __dict_Ord_16;
                             var __tco__505 = new Three(_505, (_504[0]).value0, (_504[0]).value1, (_504[0]).value2.value0, (_504[0]).value2.value1, (_504[0]).value2.value2, (_504[0]).value2.value3);
                             __dict_Ord_16 = __tco___dict_Ord_16;
-                            _504 = _1834;
+                            _504 = _1837;
                             _505 = __tco__505;
                             continue tco;
                         };
                     };
                     if (_504.length > 0) {
-                        var _1843 = _504.slice(1);
+                        var _1846 = _504.slice(1);
                         if (_504[0] instanceof TwoRight && (_504[0]).value0 instanceof Two) {
                             var __tco___dict_Ord_16 = __dict_Ord_16;
                             var __tco__505 = new Three((_504[0]).value0.value0, (_504[0]).value0.value1, (_504[0]).value0.value2, (_504[0]).value0.value3, (_504[0]).value1, (_504[0]).value2, _505);
                             __dict_Ord_16 = __tco___dict_Ord_16;
-                            _504 = _1843;
+                            _504 = _1846;
                             _505 = __tco__505;
                             continue tco;
                         };
                     };
                     if (_504.length > 0) {
-                        var _1852 = _504.slice(1);
+                        var _1855 = _504.slice(1);
                         if (_504[0] instanceof TwoLeft && (_504[0]).value2 instanceof Three) {
-                            return fromZipper(__dict_Ord_16)(_1852)(new Two(new Two(_505, (_504[0]).value0, (_504[0]).value1, (_504[0]).value2.value0), (_504[0]).value2.value1, (_504[0]).value2.value2, new Two((_504[0]).value2.value3, (_504[0]).value2.value4, (_504[0]).value2.value5, (_504[0]).value2.value6)));
+                            return fromZipper(__dict_Ord_16)(_1855)(new Two(new Two(_505, (_504[0]).value0, (_504[0]).value1, (_504[0]).value2.value0), (_504[0]).value2.value1, (_504[0]).value2.value2, new Two((_504[0]).value2.value3, (_504[0]).value2.value4, (_504[0]).value2.value5, (_504[0]).value2.value6)));
                         };
                     };
                     if (_504.length > 0) {
-                        var _1864 = _504.slice(1);
+                        var _1867 = _504.slice(1);
                         if (_504[0] instanceof TwoRight && (_504[0]).value0 instanceof Three) {
-                            return fromZipper(__dict_Ord_16)(_1864)(new Two(new Two((_504[0]).value0.value0, (_504[0]).value0.value1, (_504[0]).value0.value2, (_504[0]).value0.value3), (_504[0]).value0.value4, (_504[0]).value0.value5, new Two((_504[0]).value0.value6, (_504[0]).value1, (_504[0]).value2, _505)));
+                            return fromZipper(__dict_Ord_16)(_1867)(new Two(new Two((_504[0]).value0.value0, (_504[0]).value0.value1, (_504[0]).value0.value2, (_504[0]).value0.value3), (_504[0]).value0.value4, (_504[0]).value0.value5, new Two((_504[0]).value0.value6, (_504[0]).value1, (_504[0]).value2, _505)));
                         };
                     };
                     if (_504.length > 0) {
-                        var _1876 = _504.slice(1);
+                        var _1879 = _504.slice(1);
                         if (_504[0] instanceof ThreeLeft && (_504[0]).value2 instanceof Leaf && (_504[0]).value5 instanceof Leaf && _505 instanceof Leaf) {
-                            return fromZipper(__dict_Ord_16)(_1876)(new Three(Leaf.value, (_504[0]).value0, (_504[0]).value1, Leaf.value, (_504[0]).value3, (_504[0]).value4, Leaf.value));
+                            return fromZipper(__dict_Ord_16)(_1879)(new Three(Leaf.value, (_504[0]).value0, (_504[0]).value1, Leaf.value, (_504[0]).value3, (_504[0]).value4, Leaf.value));
                         };
                     };
                     if (_504.length > 0) {
-                        var _1884 = _504.slice(1);
+                        var _1887 = _504.slice(1);
                         if (_504[0] instanceof ThreeMiddle && (_504[0]).value0 instanceof Leaf && (_504[0]).value5 instanceof Leaf && _505 instanceof Leaf) {
-                            return fromZipper(__dict_Ord_16)(_1884)(new Three(Leaf.value, (_504[0]).value1, (_504[0]).value2, Leaf.value, (_504[0]).value3, (_504[0]).value4, Leaf.value));
+                            return fromZipper(__dict_Ord_16)(_1887)(new Three(Leaf.value, (_504[0]).value1, (_504[0]).value2, Leaf.value, (_504[0]).value3, (_504[0]).value4, Leaf.value));
                         };
                     };
                     if (_504.length > 0) {
-                        var _1892 = _504.slice(1);
+                        var _1895 = _504.slice(1);
                         if (_504[0] instanceof ThreeRight && (_504[0]).value0 instanceof Leaf && (_504[0]).value3 instanceof Leaf && _505 instanceof Leaf) {
-                            return fromZipper(__dict_Ord_16)(_1892)(new Three(Leaf.value, (_504[0]).value1, (_504[0]).value2, Leaf.value, (_504[0]).value4, (_504[0]).value5, Leaf.value));
+                            return fromZipper(__dict_Ord_16)(_1895)(new Three(Leaf.value, (_504[0]).value1, (_504[0]).value2, Leaf.value, (_504[0]).value4, (_504[0]).value5, Leaf.value));
                         };
                     };
                     if (_504.length > 0) {
-                        var _1900 = _504.slice(1);
+                        var _1903 = _504.slice(1);
                         if (_504[0] instanceof ThreeLeft && (_504[0]).value2 instanceof Two) {
-                            return fromZipper(__dict_Ord_16)(_1900)(new Two(new Three(_505, (_504[0]).value0, (_504[0]).value1, (_504[0]).value2.value0, (_504[0]).value2.value1, (_504[0]).value2.value2, (_504[0]).value2.value3), (_504[0]).value3, (_504[0]).value4, (_504[0]).value5));
+                            return fromZipper(__dict_Ord_16)(_1903)(new Two(new Three(_505, (_504[0]).value0, (_504[0]).value1, (_504[0]).value2.value0, (_504[0]).value2.value1, (_504[0]).value2.value2, (_504[0]).value2.value3), (_504[0]).value3, (_504[0]).value4, (_504[0]).value5));
                         };
                     };
                     if (_504.length > 0) {
-                        var _1912 = _504.slice(1);
+                        var _1915 = _504.slice(1);
                         if (_504[0] instanceof ThreeMiddle && (_504[0]).value0 instanceof Two) {
-                            return fromZipper(__dict_Ord_16)(_1912)(new Two(new Three((_504[0]).value0.value0, (_504[0]).value0.value1, (_504[0]).value0.value2, (_504[0]).value0.value3, (_504[0]).value1, (_504[0]).value2, _505), (_504[0]).value3, (_504[0]).value4, (_504[0]).value5));
+                            return fromZipper(__dict_Ord_16)(_1915)(new Two(new Three((_504[0]).value0.value0, (_504[0]).value0.value1, (_504[0]).value0.value2, (_504[0]).value0.value3, (_504[0]).value1, (_504[0]).value2, _505), (_504[0]).value3, (_504[0]).value4, (_504[0]).value5));
                         };
                     };
                     if (_504.length > 0) {
-                        var _1924 = _504.slice(1);
+                        var _1927 = _504.slice(1);
                         if (_504[0] instanceof ThreeMiddle && (_504[0]).value5 instanceof Two) {
-                            return fromZipper(__dict_Ord_16)(_1924)(new Two((_504[0]).value0, (_504[0]).value1, (_504[0]).value2, new Three(_505, (_504[0]).value3, (_504[0]).value4, (_504[0]).value5.value0, (_504[0]).value5.value1, (_504[0]).value5.value2, (_504[0]).value5.value3)));
+                            return fromZipper(__dict_Ord_16)(_1927)(new Two((_504[0]).value0, (_504[0]).value1, (_504[0]).value2, new Three(_505, (_504[0]).value3, (_504[0]).value4, (_504[0]).value5.value0, (_504[0]).value5.value1, (_504[0]).value5.value2, (_504[0]).value5.value3)));
                         };
                     };
                     if (_504.length > 0) {
-                        var _1936 = _504.slice(1);
+                        var _1939 = _504.slice(1);
                         if (_504[0] instanceof ThreeRight && (_504[0]).value3 instanceof Two) {
-                            return fromZipper(__dict_Ord_16)(_1936)(new Two((_504[0]).value0, (_504[0]).value1, (_504[0]).value2, new Three((_504[0]).value3.value0, (_504[0]).value3.value1, (_504[0]).value3.value2, (_504[0]).value3.value3, (_504[0]).value4, (_504[0]).value5, _505)));
+                            return fromZipper(__dict_Ord_16)(_1939)(new Two((_504[0]).value0, (_504[0]).value1, (_504[0]).value2, new Three((_504[0]).value3.value0, (_504[0]).value3.value1, (_504[0]).value3.value2, (_504[0]).value3.value3, (_504[0]).value4, (_504[0]).value5, _505)));
                         };
                     };
                     if (_504.length > 0) {
-                        var _1948 = _504.slice(1);
+                        var _1951 = _504.slice(1);
                         if (_504[0] instanceof ThreeLeft && (_504[0]).value2 instanceof Three) {
-                            return fromZipper(__dict_Ord_16)(_1948)(new Three(new Two(_505, (_504[0]).value0, (_504[0]).value1, (_504[0]).value2.value0), (_504[0]).value2.value1, (_504[0]).value2.value2, new Two((_504[0]).value2.value3, (_504[0]).value2.value4, (_504[0]).value2.value5, (_504[0]).value2.value6), (_504[0]).value3, (_504[0]).value4, (_504[0]).value5));
+                            return fromZipper(__dict_Ord_16)(_1951)(new Three(new Two(_505, (_504[0]).value0, (_504[0]).value1, (_504[0]).value2.value0), (_504[0]).value2.value1, (_504[0]).value2.value2, new Two((_504[0]).value2.value3, (_504[0]).value2.value4, (_504[0]).value2.value5, (_504[0]).value2.value6), (_504[0]).value3, (_504[0]).value4, (_504[0]).value5));
                         };
                     };
                     if (_504.length > 0) {
-                        var _1963 = _504.slice(1);
+                        var _1966 = _504.slice(1);
                         if (_504[0] instanceof ThreeMiddle && (_504[0]).value0 instanceof Three) {
-                            return fromZipper(__dict_Ord_16)(_1963)(new Three(new Two((_504[0]).value0.value0, (_504[0]).value0.value1, (_504[0]).value0.value2, (_504[0]).value0.value3), (_504[0]).value0.value4, (_504[0]).value0.value5, new Two((_504[0]).value0.value6, (_504[0]).value1, (_504[0]).value2, _505), (_504[0]).value3, (_504[0]).value4, (_504[0]).value5));
+                            return fromZipper(__dict_Ord_16)(_1966)(new Three(new Two((_504[0]).value0.value0, (_504[0]).value0.value1, (_504[0]).value0.value2, (_504[0]).value0.value3), (_504[0]).value0.value4, (_504[0]).value0.value5, new Two((_504[0]).value0.value6, (_504[0]).value1, (_504[0]).value2, _505), (_504[0]).value3, (_504[0]).value4, (_504[0]).value5));
                         };
                     };
                     if (_504.length > 0) {
-                        var _1978 = _504.slice(1);
+                        var _1981 = _504.slice(1);
                         if (_504[0] instanceof ThreeMiddle && (_504[0]).value5 instanceof Three) {
-                            return fromZipper(__dict_Ord_16)(_1978)(new Three((_504[0]).value0, (_504[0]).value1, (_504[0]).value2, new Two(_505, (_504[0]).value3, (_504[0]).value4, (_504[0]).value5.value0), (_504[0]).value5.value1, (_504[0]).value5.value2, new Two((_504[0]).value5.value3, (_504[0]).value5.value4, (_504[0]).value5.value5, (_504[0]).value5.value6)));
+                            return fromZipper(__dict_Ord_16)(_1981)(new Three((_504[0]).value0, (_504[0]).value1, (_504[0]).value2, new Two(_505, (_504[0]).value3, (_504[0]).value4, (_504[0]).value5.value0), (_504[0]).value5.value1, (_504[0]).value5.value2, new Two((_504[0]).value5.value3, (_504[0]).value5.value4, (_504[0]).value5.value5, (_504[0]).value5.value6)));
                         };
                     };
                     if (_504.length > 0) {
-                        var _1993 = _504.slice(1);
+                        var _1996 = _504.slice(1);
                         if (_504[0] instanceof ThreeRight && (_504[0]).value3 instanceof Three) {
-                            return fromZipper(__dict_Ord_16)(_1993)(new Three((_504[0]).value0, (_504[0]).value1, (_504[0]).value2, new Two((_504[0]).value3.value0, (_504[0]).value3.value1, (_504[0]).value3.value2, (_504[0]).value3.value3), (_504[0]).value3.value4, (_504[0]).value3.value5, new Two((_504[0]).value3.value6, (_504[0]).value4, (_504[0]).value5, _505)));
+                            return fromZipper(__dict_Ord_16)(_1996)(new Three((_504[0]).value0, (_504[0]).value1, (_504[0]).value2, new Two((_504[0]).value3.value0, (_504[0]).value3.value1, (_504[0]).value3.value2, (_504[0]).value3.value3), (_504[0]).value3.value4, (_504[0]).value3.value5, new Two((_504[0]).value3.value6, (_504[0]).value4, (_504[0]).value5, _505)));
                         };
                     };
                     throw new Error("Failed pattern match");
@@ -65741,7 +63517,7 @@ var $$delete = function (__dict_Ord_15) {
             tco: while (true) {
                 if (_506 instanceof Two && _506.value3 instanceof Leaf) {
                     return {
-                        key: _506.value1,
+                        key: _506.value1, 
                         value: _506.value2
                     };
                 };
@@ -65754,7 +63530,7 @@ var $$delete = function (__dict_Ord_15) {
                 };
                 if (_506 instanceof Three && _506.value6 instanceof Leaf) {
                     return {
-                        key: _506.value4,
+                        key: _506.value4, 
                         value: _506.value5
                     };
                 };
@@ -65888,12 +63664,12 @@ var alter = function (__dict_Ord_20) {
     return function (f) {
         return function (k) {
             return function (m) {
-                var _2134 = f(lookup(__dict_Ord_20)(k)(m));
-                if (_2134 instanceof Data_Maybe.Nothing) {
+                var _2137 = f(lookup(__dict_Ord_20)(k)(m));
+                if (_2137 instanceof Data_Maybe.Nothing) {
                     return $$delete(__dict_Ord_20)(k)(m);
                 };
-                if (_2134 instanceof Data_Maybe.Just) {
-                    return insert(__dict_Ord_20)(k)(_2134.value0)(m);
+                if (_2137 instanceof Data_Maybe.Just) {
+                    return insert(__dict_Ord_20)(k)(_2137.value0)(m);
                 };
                 throw new Error("Failed pattern match");
             };
@@ -65910,26 +63686,26 @@ var update = function (__dict_Ord_21) {
     };
 };
 module.exports = {
-    map: map,
-    unions: unions,
-    union: union,
-    values: values,
-    keys: keys,
-    update: update,
-    alter: alter,
-    member: member,
-    "delete": $$delete,
-    fromList: fromList,
-    toList: toList,
-    lookup: lookup,
-    insert: insert,
-    checkValid: checkValid,
-    singleton: singleton,
-    isEmpty: isEmpty,
-    empty: empty,
-    showTree: showTree,
-    eqMap: eqMap,
-    showMap: showMap,
+    map: map, 
+    unions: unions, 
+    union: union, 
+    values: values, 
+    keys: keys, 
+    update: update, 
+    alter: alter, 
+    member: member, 
+    "delete": $$delete, 
+    fromList: fromList, 
+    toList: toList, 
+    lookup: lookup, 
+    insert: insert, 
+    checkValid: checkValid, 
+    singleton: singleton, 
+    isEmpty: isEmpty, 
+    empty: empty, 
+    showTree: showTree, 
+    eqMap: eqMap, 
+    showMap: showMap, 
     functorMap: functorMap
 };
 },{"Data.Array":62,"Data.Foldable":71,"Data.Maybe":76,"Data.Tuple":88,"Prelude":undefined}],75:[function(require,module,exports){
@@ -66091,23 +63867,23 @@ var monadPlusMaybe = function (__unused) {
     return new Control_MonadPlus.MonadPlus(alternativeMaybe, monadMaybe);
 };
 module.exports = {
-    Nothing: Nothing,
-    Just: Just,
-    isNothing: isNothing,
-    isJust: isJust,
-    fromMaybe: fromMaybe,
-    maybe: maybe,
-    functorMaybe: functorMaybe,
-    applyMaybe: applyMaybe,
-    applicativeMaybe: applicativeMaybe,
-    altMaybe: altMaybe,
-    plusMaybe: plusMaybe,
-    alternativeMaybe: alternativeMaybe,
-    bindMaybe: bindMaybe,
-    monadMaybe: monadMaybe,
-    monadPlusMaybe: monadPlusMaybe,
-    showMaybe: showMaybe,
-    eqMaybe: eqMaybe,
+    Nothing: Nothing, 
+    Just: Just, 
+    isNothing: isNothing, 
+    isJust: isJust, 
+    fromMaybe: fromMaybe, 
+    maybe: maybe, 
+    functorMaybe: functorMaybe, 
+    applyMaybe: applyMaybe, 
+    applicativeMaybe: applicativeMaybe, 
+    altMaybe: altMaybe, 
+    plusMaybe: plusMaybe, 
+    alternativeMaybe: alternativeMaybe, 
+    bindMaybe: bindMaybe, 
+    monadMaybe: monadMaybe, 
+    monadPlusMaybe: monadPlusMaybe, 
+    showMaybe: showMaybe, 
+    eqMaybe: eqMaybe, 
     ordMaybe: ordMaybe
 };
 },{"Control.Alt":24,"Control.Alternative":undefined,"Control.MonadPlus":54,"Control.Plus":55,"Prelude":undefined}],77:[function(require,module,exports){
@@ -66149,11 +63925,11 @@ var eqAll = function (__unused) {
     });
 };
 module.exports = {
-    All: All,
-    runAll: runAll,
-    eqAll: eqAll,
-    showAll: showAll,
-    semigroupAll: semigroupAll,
+    All: All, 
+    runAll: runAll, 
+    eqAll: eqAll, 
+    showAll: showAll, 
+    semigroupAll: semigroupAll, 
     monoidAll: monoidAll
 };
 },{"Data.Monoid":82,"Prelude":undefined}],78:[function(require,module,exports){
@@ -66195,11 +63971,11 @@ var eqAny = function (__unused) {
     });
 };
 module.exports = {
-    Any: Any,
-    runAny: runAny,
-    eqAny: eqAny,
-    showAny: showAny,
-    semigroupAny: semigroupAny,
+    Any: Any, 
+    runAny: runAny, 
+    eqAny: eqAny, 
+    showAny: showAny, 
+    semigroupAny: semigroupAny, 
     monoidAny: monoidAny
 };
 },{"Data.Monoid":82,"Prelude":undefined}],79:[function(require,module,exports){
@@ -66252,12 +64028,12 @@ var ordDual = function (__dict_Ord_2) {
     });
 };
 module.exports = {
-    Dual: Dual,
-    runDual: runDual,
-    eqDual: eqDual,
-    ordDual: ordDual,
-    showDual: showDual,
-    semigroupDual: semigroupDual,
+    Dual: Dual, 
+    runDual: runDual, 
+    eqDual: eqDual, 
+    ordDual: ordDual, 
+    showDual: showDual, 
+    semigroupDual: semigroupDual, 
     monoidDual: monoidDual
 };
 },{"Data.Monoid":82,"Prelude":undefined}],80:[function(require,module,exports){
@@ -66283,9 +64059,9 @@ var monoidEndo = function (__unused) {
     return new Data_Monoid.Monoid(semigroupEndo, Prelude.id(Prelude.categoryArr({})));
 };
 module.exports = {
-    Endo: Endo,
-    runEndo: runEndo,
-    semigroupEndo: semigroupEndo,
+    Endo: Endo, 
+    runEndo: runEndo, 
+    semigroupEndo: semigroupEndo, 
     monoidEndo: monoidEndo
 };
 },{"Data.Monoid":82,"Prelude":undefined}],81:[function(require,module,exports){
@@ -66340,12 +64116,12 @@ var ordFirst = function (__dict_Ord_1) {
     });
 };
 module.exports = {
-    First: First,
-    runFirst: runFirst,
-    eqFirst: eqFirst,
-    ordFirst: ordFirst,
-    showFirst: showFirst,
-    semigroupFirst: semigroupFirst,
+    First: First, 
+    runFirst: runFirst, 
+    eqFirst: eqFirst, 
+    ordFirst: ordFirst, 
+    showFirst: showFirst, 
+    semigroupFirst: semigroupFirst, 
     monoidFirst: monoidFirst
 };
 },{"Data.Maybe":76,"Data.Monoid":82,"Prelude":undefined}],82:[function(require,module,exports){
@@ -66375,10 +64151,10 @@ var mempty = function (dict) {
     return dict.mempty;
 };
 module.exports = {
-    Monoid: Monoid,
-    mempty: mempty,
-    monoidString: monoidString,
-    monoidArray: monoidArray,
+    Monoid: Monoid, 
+    mempty: mempty, 
+    monoidString: monoidString, 
+    monoidArray: monoidArray, 
     monoidUnit: monoidUnit
 };
 },{"Data.Array":62,"Prelude":undefined}],83:[function(require,module,exports){
@@ -66413,9 +64189,9 @@ var choiceArr = function (__unused) {
     }, Prelude["<$>"](Data_Either.functorEither({})));
 };
 module.exports = {
-    Choice: Choice,
-    "right'": right$prime,
-    "left'": left$prime,
+    Choice: Choice, 
+    "right'": right$prime, 
+    "left'": left$prime, 
     choiceArr: choiceArr
 };
 },{"Data.Either":undefined,"Data.Profunctor":84,"Prelude":undefined}],84:[function(require,module,exports){
@@ -66447,10 +64223,10 @@ var rmap = function (__dict_Profunctor_1) {
     };
 };
 module.exports = {
-    Profunctor: Profunctor,
-    rmap: rmap,
-    lmap: lmap,
-    dimap: dimap,
+    Profunctor: Profunctor, 
+    rmap: rmap, 
+    lmap: lmap, 
+    dimap: dimap, 
     profunctorArr: profunctorArr
 };
 },{"Prelude":undefined}],85:[function(require,module,exports){
@@ -66534,18 +64310,18 @@ var checkValid = function (_520) {
     return Data_Map.checkValid(_520.value0);
 };
 module.exports = {
-    unions: unions,
-    union: union,
-    fromList: fromList,
-    toList: toList,
-    "delete": $$delete,
-    member: member,
-    insert: insert,
-    checkValid: checkValid,
-    singleton: singleton,
-    isEmpty: isEmpty,
-    empty: empty,
-    eqSet: eqSet,
+    unions: unions, 
+    union: union, 
+    fromList: fromList, 
+    toList: toList, 
+    "delete": $$delete, 
+    member: member, 
+    insert: insert, 
+    checkValid: checkValid, 
+    singleton: singleton, 
+    isEmpty: isEmpty, 
+    empty: empty, 
+    eqSet: eqSet, 
     showSet: showSet
 };
 },{"Data.Array":62,"Data.Foldable":71,"Data.Map":74,"Data.Tuple":88,"Prelude":undefined}],86:[function(require,module,exports){
@@ -66569,22 +64345,22 @@ function toUpper(s) {  return s.toUpperCase();};
 function trim(s) {  return s.trim();};
 function joinWith (s) {  return function (xs) {    return xs.join(s);  };};
 module.exports = {
-    joinWith: joinWith,
-    trim: trim,
-    toUpper: toUpper,
-    toLower: toLower,
-    split: split,
-    drop: drop,
-    take: take,
-    replace: replace,
-    localeCompare: localeCompare,
-    length: length,
-    "lastIndexOf'": lastIndexOf$prime,
-    lastIndexOf: lastIndexOf,
-    "indexOf'": indexOf$prime,
-    indexOf: indexOf,
-    fromCharCode: fromCharCode,
-    charCodeAt: charCodeAt,
+    joinWith: joinWith, 
+    trim: trim, 
+    toUpper: toUpper, 
+    toLower: toLower, 
+    split: split, 
+    drop: drop, 
+    take: take, 
+    replace: replace, 
+    localeCompare: localeCompare, 
+    length: length, 
+    "lastIndexOf'": lastIndexOf$prime, 
+    lastIndexOf: lastIndexOf, 
+    "indexOf'": indexOf$prime, 
+    indexOf: indexOf, 
+    fromCharCode: fromCharCode, 
+    charCodeAt: charCodeAt, 
     charAt: charAt
 };
 },{"Prelude":undefined}],87:[function(require,module,exports){
@@ -66711,8 +64487,8 @@ var traversableArray = function (__unused) {
                 return Prelude.pure(__dict_Applicative_9)([  ]);
             };
             if (_536.length > 0) {
-                var _2198 = _536.slice(1);
-                return Prelude["<*>"](__dict_Applicative_9["__superclass_Prelude.Apply_0"]({}))(Prelude["<$>"]((__dict_Applicative_9["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(Prelude[":"])(_536[0]))(sequence(traversableArray({}))(__dict_Applicative_9)(_2198));
+                var _2201 = _536.slice(1);
+                return Prelude["<*>"](__dict_Applicative_9["__superclass_Prelude.Apply_0"]({}))(Prelude["<$>"]((__dict_Applicative_9["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(Prelude[":"])(_536[0]))(sequence(traversableArray({}))(__dict_Applicative_9)(_2201));
             };
             throw new Error("Failed pattern match");
         };
@@ -66723,8 +64499,8 @@ var traversableArray = function (__unused) {
                     return Prelude.pure(__dict_Applicative_8)([  ]);
                 };
                 if (_535.length > 0) {
-                    var _2202 = _535.slice(1);
-                    return Prelude["<*>"](__dict_Applicative_8["__superclass_Prelude.Apply_0"]({}))(Prelude["<$>"]((__dict_Applicative_8["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(Prelude[":"])(_534(_535[0])))(traverse(traversableArray({}))(__dict_Applicative_8)(_534)(_2202));
+                    var _2205 = _535.slice(1);
+                    return Prelude["<*>"](__dict_Applicative_8["__superclass_Prelude.Apply_0"]({}))(Prelude["<$>"]((__dict_Applicative_8["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(Prelude[":"])(_534(_535[0])))(traverse(traversableArray({}))(__dict_Applicative_8)(_534)(_2205));
                 };
                 throw new Error("Failed pattern match");
             };
@@ -66750,15 +64526,15 @@ var $$for = function (__dict_Applicative_11) {
     };
 };
 module.exports = {
-    Traversable: Traversable,
-    zipWithA: zipWithA,
-    "for": $$for,
-    sequence: sequence,
-    traverse: traverse,
-    traversableArray: traversableArray,
-    traversableEither: traversableEither,
-    traversableRef: traversableRef,
-    traversableMaybe: traversableMaybe,
+    Traversable: Traversable, 
+    zipWithA: zipWithA, 
+    "for": $$for, 
+    sequence: sequence, 
+    traverse: traverse, 
+    traversableArray: traversableArray, 
+    traversableEither: traversableEither, 
+    traversableRef: traversableRef, 
+    traversableMaybe: traversableMaybe, 
     traversableTuple: traversableTuple
 };
 },{"Data.Array":62,"Data.Either":undefined,"Data.Eq":70,"Data.Foldable":71,"Data.Maybe":76,"Data.Tuple":88,"Prelude":undefined}],88:[function(require,module,exports){
@@ -66779,9 +64555,9 @@ Tuple.create = function (value0) {
 var zip = Data_Array.zipWith(Tuple.create);
 var unzip = function (_332) {
     if (_332.length > 0) {
-        var _1178 = _332.slice(1);
-        var _1174 = unzip(_1178);
-        return new Tuple(Prelude[":"]((_332[0]).value0)(_1174.value0), Prelude[":"]((_332[0]).value1)(_1174.value1));
+        var _1181 = _332.slice(1);
+        var _1177 = unzip(_1181);
+        return new Tuple(Prelude[":"]((_332[0]).value0)(_1177.value0), Prelude[":"]((_332[0]).value1)(_1177.value1));
     };
     if (_332.length === 0) {
         return new Tuple([  ], [  ]);
@@ -66868,11 +64644,11 @@ var ordTuple = function (__dict_Ord_2) {
             return eqTuple(__dict_Ord_2["__superclass_Prelude.Eq_0"]({}))(__dict_Ord_3["__superclass_Prelude.Eq_0"]({}));
         }, function (_337) {
             return function (_338) {
-                var _1209 = Prelude.compare(__dict_Ord_2)(_337.value0)(_338.value0);
-                if (_1209 instanceof Prelude.EQ) {
+                var _1212 = Prelude.compare(__dict_Ord_2)(_337.value0)(_338.value0);
+                if (_1212 instanceof Prelude.EQ) {
                     return Prelude.compare(__dict_Ord_3)(_337.value1)(_338.value1);
                 };
-                return _1209;
+                return _1212;
             };
         });
     };
@@ -66894,8 +64670,8 @@ var applyTuple = function (__dict_Semigroup_14) {
 var bindTuple = function (__dict_Semigroup_13) {
     return new Prelude.Bind(function (_343) {
         return function (_344) {
-            var _1222 = _344(_343.value1);
-            return new Tuple(Prelude["<>"](__dict_Semigroup_13)(_343.value0)(_1222.value0), _1222.value1);
+            var _1225 = _344(_343.value1);
+            return new Tuple(Prelude["<>"](__dict_Semigroup_13)(_343.value0)(_1225.value0), _1225.value1);
         };
     }, function (__unused) {
         return applyTuple(__dict_Semigroup_13);
@@ -66914,24 +64690,24 @@ var monadTuple = function (__dict_Monoid_4) {
     });
 };
 module.exports = {
-    Tuple: Tuple,
-    swap: swap,
-    unzip: unzip,
-    zip: zip,
-    uncurry: uncurry,
-    curry: curry,
-    snd: snd,
-    fst: fst,
-    showTuple: showTuple,
-    eqTuple: eqTuple,
-    ordTuple: ordTuple,
-    functorTuple: functorTuple,
-    applyTuple: applyTuple,
-    applicativeTuple: applicativeTuple,
-    bindTuple: bindTuple,
-    monadTuple: monadTuple,
-    lazyTuple: lazyTuple,
-    lazyLazy1Tuple: lazyLazy1Tuple,
+    Tuple: Tuple, 
+    swap: swap, 
+    unzip: unzip, 
+    zip: zip, 
+    uncurry: uncurry, 
+    curry: curry, 
+    snd: snd, 
+    fst: fst, 
+    showTuple: showTuple, 
+    eqTuple: eqTuple, 
+    ordTuple: ordTuple, 
+    functorTuple: functorTuple, 
+    applyTuple: applyTuple, 
+    applicativeTuple: applicativeTuple, 
+    bindTuple: bindTuple, 
+    monadTuple: monadTuple, 
+    lazyTuple: lazyTuple, 
+    lazyLazy1Tuple: lazyLazy1Tuple, 
     lazyLazy2Tuple: lazyLazy2Tuple
 };
 },{"Control.Lazy":26,"Data.Array":62,"Data.Monoid":82,"Prelude":undefined}],89:[function(require,module,exports){
@@ -66942,11 +64718,11 @@ var infinity = Infinity;;
 function readInt(radix) {  return function(n) {    return parseInt(n, radix);  };};
 var readFloat = parseFloat;;
 module.exports = {
-    readFloat: readFloat,
-    readInt: readInt,
-    isFinite: isFinite,
-    infinity: infinity,
-    isNaN: isNaN,
+    readFloat: readFloat, 
+    readInt: readInt, 
+    isFinite: isFinite, 
+    infinity: infinity, 
+    isNaN: isNaN, 
     nan: nan
 };
 },{"Prelude":undefined}],90:[function(require,module,exports){
@@ -67038,32 +64814,32 @@ var addListener = function (__dict_EventEmitter_9) {
     };
 };
 module.exports = {
-    Event: Event,
-    Variadic: Variadic,
-    EventEmitter: EventEmitter,
-    removeListenerEvent: removeListenerEvent,
-    newListenerEvent: newListenerEvent,
-    emit: emit,
-    setMaxListeners: setMaxListeners,
-    removeListener: removeListener,
-    removeAllListeners: removeAllListeners,
-    once: once,
-    on: on,
-    listeners: listeners,
-    addListener: addListener,
-    emitter: emitter,
-    eventEmitterEmitter: eventEmitterEmitter,
-    variadicArr: variadicArr,
-    variadicFn0: variadicFn0,
-    variadicFn1: variadicFn1,
-    variadicFn2: variadicFn2,
-    variadicFn3: variadicFn3,
-    variadicFn4: variadicFn4,
-    variadicFn5: variadicFn5,
-    variadicFn6: variadicFn6,
-    variadicFn7: variadicFn7,
-    variadicFn8: variadicFn8,
-    variadicFn9: variadicFn9,
+    Event: Event, 
+    Variadic: Variadic, 
+    EventEmitter: EventEmitter, 
+    removeListenerEvent: removeListenerEvent, 
+    newListenerEvent: newListenerEvent, 
+    emit: emit, 
+    setMaxListeners: setMaxListeners, 
+    removeListener: removeListener, 
+    removeAllListeners: removeAllListeners, 
+    once: once, 
+    on: on, 
+    listeners: listeners, 
+    addListener: addListener, 
+    emitter: emitter, 
+    eventEmitterEmitter: eventEmitterEmitter, 
+    variadicArr: variadicArr, 
+    variadicFn0: variadicFn0, 
+    variadicFn1: variadicFn1, 
+    variadicFn2: variadicFn2, 
+    variadicFn3: variadicFn3, 
+    variadicFn4: variadicFn4, 
+    variadicFn5: variadicFn5, 
+    variadicFn6: variadicFn6, 
+    variadicFn7: variadicFn7, 
+    variadicFn8: variadicFn8, 
+    variadicFn9: variadicFn9, 
     variadicFn10: variadicFn10
 };
 },{"Prelude":undefined,"events":18}],91:[function(require,module,exports){
@@ -67113,17 +64889,17 @@ var decodeJsonUUID = function (__unused) {
     });
 };
 module.exports = {
-    unparse: unparse,
-    parse: parse,
-    runUUID: runUUID,
-    v4: v4,
-    v1: v1,
-    showuuid: showuuid,
-    uuid: uuid,
-    eqUUID: eqUUID,
-    showUUID: showUUID,
-    readUUID: readUUID,
-    decodeJsonUUID: decodeJsonUUID,
+    unparse: unparse, 
+    parse: parse, 
+    runUUID: runUUID, 
+    v4: v4, 
+    v1: v1, 
+    showuuid: showuuid, 
+    uuid: uuid, 
+    eqUUID: eqUUID, 
+    showUUID: showUUID, 
+    readUUID: readUUID, 
+    decodeJsonUUID: decodeJsonUUID, 
     encodeJsonUUID: encodeJsonUUID
 };
 },{"Data.Argonaut":undefined,"Data.Argonaut.Decode":58,"Data.Argonaut.Encode":59,"Data.Either":undefined,"Data.Foreign":72,"Prelude":undefined,"node-uuid":23}],92:[function(require,module,exports){
@@ -67266,134 +65042,134 @@ var address = dom("address");
 var abbr = dom("abbr");
 var a = dom("a");
 module.exports = {
-    wbr: wbr,
-    video: video,
-    "var": $$var,
-    ul: ul,
-    u: u,
-    tspan: tspan,
-    track: track,
-    tr: tr,
-    title: title,
-    time: time,
-    thead: thead,
-    th: th,
-    tfoot: tfoot,
-    textarea: textarea,
-    text: text,
-    td: td,
-    tbody: tbody,
-    table: table,
-    svg: svg,
-    sup: sup,
-    summary: summary,
-    sub: sub,
-    style: style,
-    strong: strong,
-    stop: stop,
-    span: span,
-    source: source,
-    small: small,
-    select: select,
-    section: section,
-    script: script,
-    samp: samp,
-    s: s,
-    ruby: ruby,
-    rt: rt,
-    rp: rp,
-    rect: rect,
-    radialGradient: radialGradient,
-    q: q,
-    progress: progress,
-    pre: pre,
-    polyline: polyline,
-    polygon: polygon,
-    pattern: pattern,
-    path: path,
-    param: param,
-    p: p,
-    output: output,
-    option: option,
-    optgroup: optgroup,
-    ol: ol,
-    object: object,
-    noscript: noscript,
-    nav: nav,
-    meter: meter,
-    meta: meta,
-    menuitem: menuitem,
-    menu: menu,
-    mask: mask,
-    mark: mark,
-    map: map,
-    main: main,
-    link: link,
-    linearGradient: linearGradient,
-    line: line,
-    li: li,
-    legend: legend,
-    label: label,
-    keygen: keygen,
-    kbd: kbd,
-    ins: ins,
-    input: input,
-    img: img,
-    iframe: iframe,
-    i: i,
-    html: html,
-    hr: hr,
-    header: header,
-    head: head,
-    h6: h6,
-    h5: h5,
-    h4: h4,
-    h3: h3,
-    h2: h2,
-    h1: h1,
-    g: g,
-    form: form,
-    footer: footer,
-    figure: figure,
-    figcaption: figcaption,
-    fieldset: fieldset,
-    embed: embed,
-    em: em,
-    ellipse: ellipse,
-    dt: dt,
-    dl: dl,
-    div: div,
-    dfn: dfn,
-    details: details,
-    del: del,
-    defs: defs,
-    dd: dd,
-    datalist: datalist,
-    dataDom: dataDom,
-    colgroup: colgroup,
-    col: col,
-    code: code,
-    cite: cite,
-    circle: circle,
-    caption: caption,
-    canvas: canvas,
-    button: button,
-    br: br,
-    body: body,
-    blockquote: blockquote,
-    big: big,
-    bdo: bdo,
-    bdi: bdi,
-    base: base,
-    b: b,
-    audio: audio,
-    aside: aside,
-    article: article,
-    area: area,
-    address: address,
-    abbr: abbr,
-    a: a,
-    rawText: rawText,
+    wbr: wbr, 
+    video: video, 
+    "var": $$var, 
+    ul: ul, 
+    u: u, 
+    tspan: tspan, 
+    track: track, 
+    tr: tr, 
+    title: title, 
+    time: time, 
+    thead: thead, 
+    th: th, 
+    tfoot: tfoot, 
+    textarea: textarea, 
+    text: text, 
+    td: td, 
+    tbody: tbody, 
+    table: table, 
+    svg: svg, 
+    sup: sup, 
+    summary: summary, 
+    sub: sub, 
+    style: style, 
+    strong: strong, 
+    stop: stop, 
+    span: span, 
+    source: source, 
+    small: small, 
+    select: select, 
+    section: section, 
+    script: script, 
+    samp: samp, 
+    s: s, 
+    ruby: ruby, 
+    rt: rt, 
+    rp: rp, 
+    rect: rect, 
+    radialGradient: radialGradient, 
+    q: q, 
+    progress: progress, 
+    pre: pre, 
+    polyline: polyline, 
+    polygon: polygon, 
+    pattern: pattern, 
+    path: path, 
+    param: param, 
+    p: p, 
+    output: output, 
+    option: option, 
+    optgroup: optgroup, 
+    ol: ol, 
+    object: object, 
+    noscript: noscript, 
+    nav: nav, 
+    meter: meter, 
+    meta: meta, 
+    menuitem: menuitem, 
+    menu: menu, 
+    mask: mask, 
+    mark: mark, 
+    map: map, 
+    main: main, 
+    link: link, 
+    linearGradient: linearGradient, 
+    line: line, 
+    li: li, 
+    legend: legend, 
+    label: label, 
+    keygen: keygen, 
+    kbd: kbd, 
+    ins: ins, 
+    input: input, 
+    img: img, 
+    iframe: iframe, 
+    i: i, 
+    html: html, 
+    hr: hr, 
+    header: header, 
+    head: head, 
+    h6: h6, 
+    h5: h5, 
+    h4: h4, 
+    h3: h3, 
+    h2: h2, 
+    h1: h1, 
+    g: g, 
+    form: form, 
+    footer: footer, 
+    figure: figure, 
+    figcaption: figcaption, 
+    fieldset: fieldset, 
+    embed: embed, 
+    em: em, 
+    ellipse: ellipse, 
+    dt: dt, 
+    dl: dl, 
+    div: div, 
+    dfn: dfn, 
+    details: details, 
+    del: del, 
+    defs: defs, 
+    dd: dd, 
+    datalist: datalist, 
+    dataDom: dataDom, 
+    colgroup: colgroup, 
+    col: col, 
+    code: code, 
+    cite: cite, 
+    circle: circle, 
+    caption: caption, 
+    canvas: canvas, 
+    button: button, 
+    br: br, 
+    body: body, 
+    blockquote: blockquote, 
+    big: big, 
+    bdo: bdo, 
+    bdi: bdi, 
+    base: base, 
+    b: b, 
+    audio: audio, 
+    aside: aside, 
+    article: article, 
+    area: area, 
+    address: address, 
+    abbr: abbr, 
+    a: a, 
+    rawText: rawText, 
     dom: dom
 };
 },{"Prelude":undefined}],94:[function(require,module,exports){
@@ -67417,12 +65193,12 @@ var renderComponentById = function (component) {
     };
 };
 module.exports = {
-    renderComponentById: renderComponentById,
-    eventHandler: eventHandler,
-    renderComponent: renderComponent,
-    createClass: createClass,
-    coerceThis: coerceThis,
-    spec: spec,
+    renderComponentById: renderComponentById, 
+    eventHandler: eventHandler, 
+    renderComponent: renderComponent, 
+    createClass: createClass, 
+    coerceThis: coerceThis, 
+    spec: spec, 
     document: document
 };
 },{"Prelude":undefined}],96:[function(require,module,exports){
@@ -67435,24 +65211,24 @@ var Data_Array = require("Data.Array");
 var Data_Maybe = require("Data.Maybe");
 var SlamData_Types = require("SlamData.Types");
 var logo = React_DOM.li({})([ React_DOM.a({
-    href: "http://slamdata.com/",
-    id: "slamdata-logo",
+    href: "http://slamdata.com/", 
+    id: "slamdata-logo", 
     target: "_blank"
 })([ React_DOM.img({
-    alt: "SlamData home page",
+    alt: "SlamData home page", 
     src: "imgs/slamdata-logo.png"
 })([  ]) ]) ]);
-var intersperse = function (_49) {
-    return function (_50) {
-        if (_50.length === 0) {
+var intersperse = function (_42) {
+    return function (_43) {
+        if (_43.length === 0) {
             return [  ];
         };
-        if (_50.length === 1) {
-            return [ _50[0] ];
+        if (_43.length === 1) {
+            return [ _43[0] ];
         };
-        if (_50.length > 0) {
-            var _215 = _50.slice(1);
-            return Prelude[":"](_50[0])(Prelude[":"](_49)(intersperse(_49)(_215)));
+        if (_43.length > 0) {
+            var _212 = _43.slice(1);
+            return Prelude[":"](_43[0])(Prelude[":"](_42)(intersperse(_42)(_212)));
         };
         throw new Error("Failed pattern match");
     };
@@ -67462,46 +65238,46 @@ var divider = React_DOM.li({
 })([  ]);
 var menuSide = function (name) {
     return React.createClass((function () {
-        var _216 = {};
-        for (var _217 in React.spec) {
-            if (React.spec.hasOwnProperty(_217)) {
-                _216[_217] = React.spec[_217];
+        var _213 = {};
+        for (var _214 in React.spec) {
+            if (React.spec.hasOwnProperty(_214)) {
+                _213[_214] = React.spec[_214];
             };
         };
-        _216.displayName = "MenuSide";
-        _216.render = function ($$this) {
+        _213.displayName = "MenuSide";
+        _213.render = function ($$this) {
             return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.ul({
                 className: name
             })(Prelude["++"](Data_Array.semigroupArray({}))(intersperse(divider)($$this.props.children))($$this.props.extra)));
         };
-        return _216;
+        return _213;
     })());
 };
 var leftSide = menuSide("left");
 var rightSide = menuSide("right");
-var command = function (_48) {
-    if (_48.action instanceof Data_Maybe.Nothing) {
+var command = function (_41) {
+    if (_41.action instanceof Data_Maybe.Nothing) {
         return React_DOM.li({})([ React_DOM.a({
-            id: "menu-command-" + _48.name
-        })([ React_DOM.rawText(_48.name) ]) ]);
+            id: "menu-command-" + _41.name
+        })([ React_DOM.rawText(_41.name) ]) ]);
     };
-    if (_48.action instanceof Data_Maybe.Just) {
+    if (_41.action instanceof Data_Maybe.Just) {
         return React_DOM.li({})([ React_DOM.a({
-            id: "menu-command-" + _48.name,
-            onClick: _48.action.value0
-        })([ React_DOM.rawText(_48.name) ]) ]);
+            id: "menu-command-" + _41.name, 
+            onClick: _41.action.value0
+        })([ React_DOM.rawText(_41.name) ]) ]);
     };
     throw new Error("Failed pattern match");
 };
 var menuButton = React.createClass((function () {
-    var _224 = {};
-    for (var _225 in React.spec) {
-        if (React.spec.hasOwnProperty(_225)) {
-            _224[_225] = React.spec[_225];
+    var _221 = {};
+    for (var _222 in React.spec) {
+        if (React.spec.hasOwnProperty(_222)) {
+            _221[_222] = React.spec[_222];
         };
     };
-    _224.displayName = "MenuButton";
-    _224.render = function ($$this) {
+    _221.displayName = "MenuButton";
+    _221.render = function ($$this) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.li({
             className: "has-dropdown"
         })([ React_DOM.a({
@@ -67510,13 +65286,13 @@ var menuButton = React.createClass((function () {
             className: "dropdown"
         })(Prelude["<$>"](Data_Array.functorArray({}))(command)($$this.props.commands)) ]));
     };
-    return _224;
+    return _221;
 })());
 var editMenu = function (request) {
     return menuButton({
-        name: "Edit",
+        name: "Edit", 
         commands: [ {
-            name: "Settings",
+            name: "Settings", 
             action: Data_Maybe.Just.create(request(SlamData_Types.ShowSettings.value))
         } ]
     })([  ]);
@@ -67532,8 +65308,8 @@ var menuBar = function (request) {
 };
 var menu = function (request) {
     return React_DOM.nav({
-        className: "top-bar",
-        "data-options": "is_hover: false",
+        className: "top-bar", 
+        "data-options": "is_hover: false", 
         "data-topbar": true
     })([ menuBar(request) ]);
 };
@@ -67555,34 +65331,34 @@ var React_DOM = require("React.DOM");
 var Data_String = require("Data.String");
 var React_TreeView = require("React.TreeView");
 var Data_Function = require("Data.Function");
-var toggleTree = function (_96) {
-    return function (_97) {
-        var name = Control_Lens["^."](_96.props.files)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._fileTypeRec(Data_Const.functorConst({})))(SlamData_Lens._name(Data_Const.functorConst({}))));
-        var path = Data_Array.snoc(_96.props.path)(name + "/");
-        return _96.state.collapsed ? function __do() {
-    _96.props.request(new SlamData_Types.ReadFileSystem(path))();
-    return _96.setState({
-        collapsed: !_96.state.collapsed
+var toggleTree = function (_89) {
+    return function (_90) {
+        var name = Control_Lens["^."](_89.props.files)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._fileTypeRec(Data_Const.functorConst({})))(SlamData_Lens._name(Data_Const.functorConst({}))));
+        var path = Data_Array.snoc(_89.props.path)(name + "/");
+        return _89.state.collapsed ? function __do() {
+    _89.props.request(new SlamData_Types.ReadFileSystem(path))();
+    return _89.setState({
+        collapsed: !_89.state.collapsed
     });
-} : Prelude.pure(Control_Monad_Eff.applicativeEff({}))(_96.setState({
-    collapsed: !_96.state.collapsed
+} : Prelude.pure(Control_Monad_Eff.applicativeEff({}))(_89.setState({
+    collapsed: !_89.state.collapsed
 }));
     };
 };
 var reify = React.createClass((function () {
-    var _334 = {};
-    for (var _335 in React.spec) {
-        if (React.spec.hasOwnProperty(_335)) {
-            _334[_335] = React.spec[_335];
+    var _331 = {};
+    for (var _332 in React.spec) {
+        if (React.spec.hasOwnProperty(_332)) {
+            _331[_332] = React.spec[_332];
         };
     };
-    _334.displayName = "FileSystemTree";
-    _334.getInitialState = function (_) {
+    _331.displayName = "FileSystemTree";
+    _331.getInitialState = function (_) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
             collapsed: true
         });
     };
-    _334.render = function ($$this) {
+    _331.render = function ($$this) {
         if ($$this.props.files.type === "file" && $$this.props.files.name === "index.nb") {
             return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div({})([ React_DOM.span({
                 onClick: React.eventHandler($$this)(function (this_1) {
@@ -67600,26 +65376,26 @@ var reify = React.createClass((function () {
             var path = Data_Array.snoc($$this.props.path)(name);
             var children = Data_Array.sort(SlamData_Types_Workspace_FileSystem.ordFileType({}))(Control_Lens["^."]($$this.props.files)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._fileTypeRec(Data_Const.functorConst({})))(SlamData_Lens._children(Data_Const.functorConst({})))));
             return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_TreeView.treeView({
-                collapsed: $$this.state.collapsed,
-                defaultCollapsed: true,
+                collapsed: $$this.state.collapsed, 
+                defaultCollapsed: true, 
                 nodeLabel: React_DOM.span({
                     onClick: React.eventHandler(React.coerceThis($$this))(toggleTree)
-                })([ React_DOM.rawText(name) ]),
+                })([ React_DOM.rawText(name) ]), 
                 onClick: React.eventHandler(React.coerceThis($$this))(toggleTree)
             })(Prelude["<$>"](Data_Array.functorArray({}))(function (f) {
                 return reify({
-                    files: f,
-                    request: $$this.props.request,
+                    files: f, 
+                    request: $$this.props.request, 
                     path: path
                 })([  ]);
             })(children)));
         };
         throw new Error("Failed pattern match");
     };
-    return _334;
+    return _331;
 })());
 var fsTab = React_DOM.dl({
-    className: "tabs",
+    className: "tabs", 
     "data-tab": "true"
 })([ React_DOM.dd({
     className: "tab active"
@@ -67633,29 +65409,29 @@ var fsContent = function (files) {
         })([ React_DOM.div({
             className: "actual-content"
         })([ reify({
-            files: files,
-            request: request,
+            files: files, 
+            request: request, 
             path: [  ]
         })([  ]) ]) ]) ]);
     };
 };
 var filesystem = React.createClass((function () {
-    var _336 = {};
-    for (var _337 in React.spec) {
-        if (React.spec.hasOwnProperty(_337)) {
-            _336[_337] = React.spec[_337];
+    var _333 = {};
+    for (var _334 in React.spec) {
+        if (React.spec.hasOwnProperty(_334)) {
+            _333[_334] = React.spec[_334];
         };
     };
-    _336.displayName = "FileSystem";
-    _336.shouldComponentUpdate = function ($$this, props, _) {
+    _333.displayName = "FileSystem";
+    _333.shouldComponentUpdate = function ($$this, props, _) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(Prelude["/="](SlamData_Types_Workspace_FileSystem.eqFileType({}))($$this.props.files)(props.files));
     };
-    _336.render = function ($$this) {
+    _333.render = function ($$this) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div({
             className: "slamdata-panel"
         })([ fsTab, fsContent($$this.props.files)($$this.props.request) ]));
     };
-    return _336;
+    return _333;
 })());
 module.exports = {
     filesystem: filesystem
@@ -67667,26 +65443,26 @@ var React = require("React");
 var Control_Monad_Eff = require("Control.Monad.Eff");
 var React_DOM = require("React.DOM");
 var blockRow = React.createClass((function () {
-    var _158 = {};
-    for (var _159 in React.spec) {
-        if (React.spec.hasOwnProperty(_159)) {
-            _158[_159] = React.spec[_159];
+    var _152 = {};
+    for (var _153 in React.spec) {
+        if (React.spec.hasOwnProperty(_153)) {
+            _152[_153] = React.spec[_153];
         };
     };
-    _158.displayName = "BlockRow";
-    _158.render = function ($$this) {
+    _152.displayName = "BlockRow";
+    _152.render = function ($$this) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div({
             className: $$this.props.styles + " row"
         })((function () {
             if ($$this.props.children.length > 0) {
-                var _154 = $$this.props.children.slice(1);
-                if (_154.length > 0) {
-                    var _156 = _154.slice(1);
+                var _148 = $$this.props.children.slice(1);
+                if (_148.length > 0) {
+                    var _150 = _148.slice(1);
                     return [ React_DOM.div({
                         className: "large-1  columns"
                     })([ $$this.props.children[0] ]), React_DOM.div({
                         className: "large-11 columns right-side"
-                    })([ _154[0] ]) ];
+                    })([ _148[0] ]) ];
                 };
             };
             if ($$this.props.children.length === 1) {
@@ -67702,7 +65478,7 @@ var blockRow = React.createClass((function () {
             throw new Error("Failed pattern match");
         })()));
     };
-    return _158;
+    return _152;
 })());
 module.exports = {
     blockRow: blockRow
@@ -67751,14 +65527,14 @@ function VisualTypeTab() {
 
 };
 VisualTypeTab.value = new VisualTypeTab();
-var visualIcon = function (_106) {
-    if (_106 instanceof Graphics_C3.Bar) {
+var visualIcon = function (_99) {
+    if (_99 instanceof Graphics_C3.Bar) {
         return SlamData_Components.barChartIcon;
     };
-    if (_106 instanceof Graphics_C3.Line) {
+    if (_99 instanceof Graphics_C3.Line) {
         return SlamData_Components.lineChartIcon;
     };
-    if (_106 instanceof Graphics_C3.Pie) {
+    if (_99 instanceof Graphics_C3.Pie) {
         return SlamData_Components.pieChartIcon;
     };
     throw new Error("Failed pattern match");
@@ -67769,139 +65545,139 @@ var visual = function ($$this) {
             onClick: React.eventHandler($$this)(function (this_1) {
                 return function (_) {
                     return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState((function () {
-                        var _339 = {};
-                        for (var _340 in this_1.state) {
-                            if (this_1.state.hasOwnProperty(_340)) {
-                                _339[_340] = this_1.state[_340];
+                        var _336 = {};
+                        for (var _337 in this_1.state) {
+                            if (this_1.state.hasOwnProperty(_337)) {
+                                _336[_337] = this_1.state[_337];
                             };
                         };
-                        _339.visual = ty;
-                        return _339;
+                        _336.visual = ty;
+                        return _336;
                     })()));
                 };
-            }),
+            }), 
             className: SlamData_Helpers.activate(Graphics_C3.eqC3Type({}))(ty)($$this.state.visual)
         })([ React_DOM.a({})([ visualIcon(ty) ]), React_DOM.span({})([ React_DOM.rawText(Prelude.show(Graphics_C3.showC3Type({}))(ty)) ]) ]);
     };
 };
-var toggleTree = function (_100) {
-    return function (_101) {
-        return function (_102) {
-            var name = Control_Lens["^."](_101.props.files)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._fileTypeRec(Data_Const.functorConst({})))(SlamData_Lens._name(Data_Const.functorConst({}))));
-            var path = Data_Array.snoc(_101.props.path)(name + "/");
-            return _101.state.collapsed ? function __do() {
-    _101.props.request(_100)();
-    return _101.setState({
-        collapsed: !_101.state.collapsed
+var toggleTree = function (_93) {
+    return function (_94) {
+        return function (_95) {
+            var name = Control_Lens["^."](_94.props.files)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._fileTypeRec(Data_Const.functorConst({})))(SlamData_Lens._name(Data_Const.functorConst({}))));
+            var path = Data_Array.snoc(_94.props.path)(name + "/");
+            return _94.state.collapsed ? function __do() {
+    _94.props.request(_93)();
+    return _94.setState({
+        collapsed: !_94.state.collapsed
     });
-} : Prelude.pure(Control_Monad_Eff.applicativeEff({}))(_101.setState({
-    collapsed: !_101.state.collapsed
+} : Prelude.pure(Control_Monad_Eff.applicativeEff({}))(_94.setState({
+    collapsed: !_94.state.collapsed
 }));
         };
     };
 };
 var showVisualTab = function (__unused) {
-    return new Prelude.Show(function (_110) {
-        if (_110 instanceof FieldsTab) {
+    return new Prelude.Show(function (_103) {
+        if (_103 instanceof FieldsTab) {
             return "Fields";
         };
-        if (_110 instanceof VisualTypeTab) {
+        if (_103 instanceof VisualTypeTab) {
             return "Type";
         };
         throw new Error("Failed pattern match");
     });
 };
-var reifyField = function (_103) {
-    return function (_104) {
-        return function (_105) {
+var reifyField = function (_96) {
+    return function (_97) {
+        return function (_98) {
             return React_DOM.div({
                 className: "visual-field"
             })([ React_DOM.input({
-                onClick: React.eventHandler(_103)(function (this_1) {
+                onClick: React.eventHandler(_96)(function (this_1) {
                     return function (e) {
-                        var path$prime = Data_Array_Unsafe.tail(_104);
-                        var root = Data_Array_Unsafe.head(_104);
+                        var path$prime = Data_Array_Unsafe.tail(_97);
+                        var root = Data_Array_Unsafe.head(_97);
                         var field = root + Data_String.joinWith("/")(path$prime);
-                        var fields = SlamData_Helpers.checked(e.target) ? Data_Map.alter(Prelude.ordString({}))(Data_Maybe.maybe(Data_Maybe.Just.create(Data_Set.singleton(_105.name)))(Prelude[">>>"](Prelude.semigroupoidArr({}))(Data_Set.insert(Prelude.ordString({}))(_105.name))(Data_Maybe.Just.create)))(field)(this_1.state.fields) : Data_Map.alter(Prelude.ordString({}))(Prelude["<$>"](Data_Maybe.functorMaybe({}))(Data_Set["delete"](Prelude.ordString({}))(_105.name)))(field)(this_1.state.fields);
+                        var fields = SlamData_Helpers.checked(e.target) ? Data_Map.alter(Prelude.ordString({}))(Data_Maybe.maybe(Data_Maybe.Just.create(Data_Set.singleton(_98.name)))(Prelude[">>>"](Prelude.semigroupoidArr({}))(Data_Set.insert(Prelude.ordString({}))(_98.name))(Data_Maybe.Just.create)))(field)(this_1.state.fields) : Data_Map.alter(Prelude.ordString({}))(Prelude["<$>"](Data_Maybe.functorMaybe({}))(Data_Set["delete"](Prelude.ordString({}))(_98.name)))(field)(this_1.state.fields);
                         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState((function () {
-                            var _348 = {};
-                            for (var _349 in this_1.state) {
-                                if (this_1.state.hasOwnProperty(_349)) {
-                                    _348[_349] = this_1.state[_349];
+                            var _345 = {};
+                            for (var _346 in this_1.state) {
+                                if (this_1.state.hasOwnProperty(_346)) {
+                                    _345[_346] = this_1.state[_346];
                                 };
                             };
-                            _348.fields = fields;
-                            return _348;
+                            _345.fields = fields;
+                            return _345;
                         })()));
                     };
-                }),
+                }), 
                 type: "checkbox"
-            })([  ]), React_DOM.rawText(_105.name) ]);
+            })([  ]), React_DOM.rawText(_98.name) ]);
         };
     };
 };
 var reify = React.createClass((function () {
-    var _357 = {};
-    for (var _358 in React.spec) {
-        if (React.spec.hasOwnProperty(_358)) {
-            _357[_358] = React.spec[_358];
+    var _354 = {};
+    for (var _355 in React.spec) {
+        if (React.spec.hasOwnProperty(_355)) {
+            _354[_355] = React.spec[_355];
         };
     };
-    _357.displayName = "FieldsTree";
-    _357.getInitialState = function (_) {
+    _354.displayName = "FieldsTree";
+    _354.getInitialState = function (_) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
             collapsed: true
         });
     };
-    _357.render = function ($$this) {
+    _354.render = function ($$this) {
         var name = Control_Lens["^."]($$this.props.files)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._fileTypeRec(Data_Const.functorConst({})))(SlamData_Lens._name(Data_Const.functorConst({}))));
         var path = Data_Array.snoc($$this.props.path)(name);
         var path$prime = Data_Array.snoc($$this.props.path)(name + "/");
         var children = Data_Array.sort(SlamData_Types_Workspace_FileSystem.ordFileType({}))(Control_Lens["^."]($$this.props.files)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._fileTypeRec(Data_Const.functorConst({})))(SlamData_Lens._children(Data_Const.functorConst({})))));
         if ($$this.props.files.type === "file") {
             return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_TreeView.treeView({
-                collapsed: $$this.state.collapsed,
-                defaultCollapsed: true,
+                collapsed: $$this.state.collapsed, 
+                defaultCollapsed: true, 
                 nodeLabel: React_DOM.span({
                     onClick: React.eventHandler(React.coerceThis($$this))(toggleTree(new SlamData_Types.ReadFields(path)))
-                })([ React_DOM.rawText(name) ]),
+                })([ React_DOM.rawText(name) ]), 
                 onClick: React.eventHandler(React.coerceThis($$this))(toggleTree(new SlamData_Types.ReadFields(path)))
             })(Prelude["<$>"](Data_Array.functorArray({}))(reifyField($$this.props.visualThis)(path))(children)));
         };
         if ($$this.props.files.type === "directory") {
             return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_TreeView.treeView({
-                collapsed: $$this.state.collapsed,
-                defaultCollapsed: true,
+                collapsed: $$this.state.collapsed, 
+                defaultCollapsed: true, 
                 nodeLabel: React_DOM.span({
                     onClick: React.eventHandler(React.coerceThis($$this))(toggleTree(new SlamData_Types.ReadFileSystem(path$prime)))
-                })([ React_DOM.rawText(name) ]),
+                })([ React_DOM.rawText(name) ]), 
                 onClick: React.eventHandler(React.coerceThis($$this))(toggleTree(new SlamData_Types.ReadFileSystem(path$prime)))
             })(Prelude["<$>"](Data_Array.functorArray({}))(function (f) {
                 return reify({
-                    files: f,
-                    request: $$this.props.request,
-                    path: path,
+                    files: f, 
+                    request: $$this.props.request, 
+                    path: path, 
                     visualThis: $$this.props.visualThis
                 })([  ]);
             })(children)));
         };
         throw new Error("Failed pattern match");
     };
-    return _357;
+    return _354;
 })());
 var placeholder = React_DOM.option({
-    disabled: true,
-    selected: true,
+    disabled: true, 
+    selected: true, 
     value: ""
 })([ React_DOM.rawText("Select a field") ]);
-var optionify = function (_107) {
+var optionify = function (_100) {
     return React_DOM.optgroup({
-        label: _107.value0
+        label: _100.value0
     })(Prelude["<$>"](Data_Array.functorArray({}))(function (f) {
         return React_DOM.option({
             value: f
         })([ React_DOM.rawText(f) ]);
-    })(Data_Set.toList(_107.value1)));
+    })(Data_Set.toList(_100.value1)));
 };
 var selectFields = function ($$this) {
     return React_DOM.select({
@@ -67911,14 +65687,14 @@ var selectFields = function ($$this) {
                 var field = SlamData_Helpers.value(e.target);
                 var selected = Data_Map.alter(Prelude.ordString({}))(Data_Maybe.maybe(Data_Maybe.Just.create(Data_Set.singleton(field)))(Prelude[">>>"](Prelude.semigroupoidArr({}))(Data_Set.insert(Prelude.ordString({}))(field))(Data_Maybe.Just.create)))(path)(this_1.state.selectedFields);
                 return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState((function () {
-                    var _362 = {};
-                    for (var _363 in this_1.state) {
-                        if (this_1.state.hasOwnProperty(_363)) {
-                            _362[_363] = this_1.state[_363];
+                    var _359 = {};
+                    for (var _360 in this_1.state) {
+                        if (this_1.state.hasOwnProperty(_360)) {
+                            _359[_360] = this_1.state[_360];
                         };
                     };
-                    _362.selectedFields = selected;
-                    return _362;
+                    _359.selectedFields = selected;
+                    return _359;
                 })()));
             };
         })
@@ -67929,12 +65705,12 @@ var eqVisualTab = function (__unused) {
         return function (vt$prime) {
             return !Prelude["=="](eqVisualTab({}))(vt)(vt$prime);
         };
-    }, function (_108) {
-        return function (_109) {
-            if (_108 instanceof FieldsTab && _109 instanceof FieldsTab) {
+    }, function (_101) {
+        return function (_102) {
+            if (_101 instanceof FieldsTab && _102 instanceof FieldsTab) {
                 return true;
             };
-            if (_108 instanceof VisualTypeTab && _109 instanceof VisualTypeTab) {
+            if (_101 instanceof VisualTypeTab && _102 instanceof VisualTypeTab) {
                 return true;
             };
             return false;
@@ -67944,18 +65720,18 @@ var eqVisualTab = function (__unused) {
 var visualTab = function ($$this) {
     return function (tab) {
         return React_DOM.dd({
-            className: "tab" + SlamData_Helpers.activate(eqVisualTab({}))(tab)($$this.state.active),
+            className: "tab" + SlamData_Helpers.activate(eqVisualTab({}))(tab)($$this.state.active), 
             onClick: React.eventHandler($$this)(function (this_1) {
                 return function (_) {
                     return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState((function () {
-                        var _366 = {};
-                        for (var _367 in this_1.state) {
-                            if (this_1.state.hasOwnProperty(_367)) {
-                                _366[_367] = this_1.state[_367];
+                        var _363 = {};
+                        for (var _364 in this_1.state) {
+                            if (this_1.state.hasOwnProperty(_364)) {
+                                _363[_364] = this_1.state[_364];
                             };
                         };
-                        _366.active = tab;
-                        return _366;
+                        _363.active = tab;
+                        return _363;
                     })()));
                 };
             })
@@ -67967,14 +65743,14 @@ var visualTabs = function ($$this) {
         className: "tabs vertical"
     })(Prelude["<$>"](Data_Array.functorArray({}))(visualTab($$this))([ FieldsTab.value, VisualTypeTab.value ]));
 };
-var createData = function (_99) {
-    return Prelude["<$>"](Data_Array.functorArray({}))(function (_98) {
+var createData = function (_92) {
+    return Prelude["<$>"](Data_Array.functorArray({}))(function (_91) {
         return {
-            fields: Data_Set.toList(_98.value1),
-            path: _98.value0,
-            type: _99.visual
+            fields: Data_Set.toList(_91.value1), 
+            path: _91.value0, 
+            type: _92.visual
         };
-    })(Data_Map.toList(_99.selectedFields));
+    })(Data_Map.toList(_92.selectedFields));
 };
 var visualEditorContent = function ($$this) {
     return React_DOM.div({
@@ -67982,9 +65758,9 @@ var visualEditorContent = function ($$this) {
     })([ React_DOM.ul({
         className: "content" + SlamData_Helpers.activate(eqVisualTab({}))(FieldsTab.value)($$this.state.active)
     })([ reify({
-        files: $$this.props.files,
-        request: $$this.props.request,
-        path: [  ],
+        files: $$this.props.files, 
+        request: $$this.props.request, 
+        path: [  ], 
         visualThis: $$this
     })([  ]) ]), React_DOM.div({
         className: "content" + SlamData_Helpers.activate(eqVisualTab({}))(VisualTypeTab.value)($$this.state.active)
@@ -67993,7 +65769,7 @@ var visualEditorContent = function ($$this) {
     })(Prelude["<$>"](Data_Array.functorArray({}))(visual($$this))([ Graphics_C3.Bar.value, Graphics_C3.Line.value, Graphics_C3.Pie.value ])), selectFields($$this), selectFields($$this), selectFields($$this), React_DOM.div({
         className: "actions"
     })([ React_DOM.a({
-        className: "tiny button",
+        className: "tiny button", 
         onClick: React.eventHandler($$this)(function (this_1) {
             return function (_) {
                 return this_1.props.request(new SlamData_Types.EvalVisual(this_1.props.notebook, this_1.props.block, createData(this_1.state)));
@@ -68002,33 +65778,33 @@ var visualEditorContent = function ($$this) {
     })([ React_DOM.rawText("Create") ]) ]) ]) ]);
 };
 var visualEditor = React.createClass((function () {
-    var _374 = {};
-    for (var _375 in React.spec) {
-        if (React.spec.hasOwnProperty(_375)) {
-            _374[_375] = React.spec[_375];
+    var _371 = {};
+    for (var _372 in React.spec) {
+        if (React.spec.hasOwnProperty(_372)) {
+            _371[_372] = React.spec[_372];
         };
     };
-    _374.displayName = "VisualEditor";
-    _374.getInitialState = function (_) {
+    _371.displayName = "VisualEditor";
+    _371.getInitialState = function (_) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
-            active: FieldsTab.value,
-            fields: Data_Map.empty,
-            selectedFields: Data_Map.empty,
+            active: FieldsTab.value, 
+            fields: Data_Map.empty, 
+            selectedFields: Data_Map.empty, 
             visual: Graphics_C3.Line.value
         });
     };
-    _374.render = function ($$this) {
+    _371.render = function ($$this) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_App_Workspace_Notebook_Block_Common.blockRow({
             styles: "block-content edit-visual"
         })([ visualTabs(React.coerceThis($$this)), visualEditorContent(React.coerceThis($$this)) ]));
     };
-    return _374;
+    return _371;
 })());
 module.exports = {
-    FieldsTab: FieldsTab,
-    VisualTypeTab: VisualTypeTab,
-    visualEditor: visualEditor,
-    eqVisualTab: eqVisualTab,
+    FieldsTab: FieldsTab, 
+    VisualTypeTab: VisualTypeTab, 
+    visualEditor: visualEditor, 
+    eqVisualTab: eqVisualTab, 
     showVisualTab: showVisualTab
 };
 },{"Control.Lens":40,"Control.Monad.Eff":41,"Data.Array":62,"Data.Array.Unsafe":61,"Data.Const":66,"Data.Map":74,"Data.Maybe":76,"Data.Set":85,"Data.String":86,"Data.Tuple":88,"Graphics.C3":undefined,"Prelude":undefined,"React":95,"React.DOM":93,"React.TreeView":94,"SlamData.App.Workspace.Notebook.Block.Common":98,"SlamData.Components":107,"SlamData.Helpers":undefined,"SlamData.Lens":108,"SlamData.Types":undefined,"SlamData.Types.Workspace.FileSystem":109,"SlamData.Types.Workspace.Notebook.Block.Visual":110}],100:[function(require,module,exports){
@@ -68047,10 +65823,10 @@ var Control_Monad_Identity = require("Control.Monad.Identity");
 var Control_Monad_Eff = require("Control.Monad.Eff");
 var SlamData_Helpers = require("SlamData.Helpers");
 var SlamData_App_Workspace_Notebook_Block_Visual = require("SlamData.App.Workspace.Notebook.Block.Visual");
-var typeName = function (_111) {
+var typeName = function (_104) {
     return React_DOM.div({
         className: "block-type text-center"
-    })([ React_DOM.span({})([ React_DOM.rawText(Prelude.show(SlamData_Types_Workspace_Notebook_Block.showBlockType({}))(_111.blockType)) ]) ]);
+    })([ React_DOM.span({})([ React_DOM.rawText(Prelude.show(SlamData_Types_Workspace_Notebook_Block.showBlockType({}))(_104.blockType)) ]) ]);
 };
 var toolbar = function ($$this) {
     return React_DOM.div({
@@ -68068,7 +65844,7 @@ var evaluatedVisualBlock = function ($$this) {
     })([ React_DOM.div({
         className: "block-label"
     })([ React_DOM.rawText(blockRec.label) ]), React_DOM.div({
-        className: "evaled-block",
+        className: "evaled-block", 
         onClick: React.eventHandler($$this)(function (this_1) {
             return function (_) {
                 return this_1.props.request(new SlamData_Types.EditBlock(this_1.props.notebook, this_1.props.block));
@@ -68085,7 +65861,7 @@ var evaluatedBlock = function ($$this) {
     })([ React_DOM.div({
         className: "block-label"
     })([ React_DOM.rawText(blockRec.label) ]), React_DOM.div({
-        className: "evaled-block",
+        className: "evaled-block", 
         onClick: React.eventHandler($$this)(function (this_1) {
             return function (_) {
                 return this_1.props.request(new SlamData_Types.EditBlock(this_1.props.notebook, this_1.props.block));
@@ -68101,28 +65877,28 @@ var blockEditor = function ($$this) {
     return SlamData_App_Workspace_Notebook_Block_Common.blockRow({
         styles: "block-content"
     })([ React_DOM.div({})([ React_DOM.textarea({
-        autoFocus: "true",
-        className: "block-editor",
+        autoFocus: "true", 
+        className: "block-editor", 
         onBlur: React.eventHandler($$this)(function (this_1) {
             return function (_) {
                 var block$prime = Control_Lens[".~"](Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._blockRec(Control_Monad_Identity.functorIdentity({})))(SlamData_Lens._editContent(Control_Monad_Identity.functorIdentity({}))))(this_1.state.editContent)(this_1.props.block);
                 return this_1.props.request(new SlamData_Types.EvalBlock(this_1.props.notebook, block$prime));
             };
-        }),
+        }), 
         onChange: React.eventHandler($$this)(function (this_1) {
             return function (e) {
                 return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState((function () {
-                    var _377 = {};
-                    for (var _378 in this_1.state) {
-                        if (this_1.state.hasOwnProperty(_378)) {
-                            _377[_378] = this_1.state[_378];
+                    var _374 = {};
+                    for (var _375 in this_1.state) {
+                        if (this_1.state.hasOwnProperty(_375)) {
+                            _374[_375] = this_1.state[_375];
                         };
                     };
-                    _377.editContent = SlamData_Helpers.value(e.target);
-                    return _377;
+                    _374.editContent = SlamData_Helpers.value(e.target);
+                    return _374;
                 })()));
             };
-        }),
+        }), 
         onKeyUp: React.eventHandler($$this)(function (this_1) {
             return function (k) {
                 return k.ctrlKey && k.key === "Enter" ? (function () {
@@ -68130,53 +65906,53 @@ var blockEditor = function ($$this) {
     return this_1.props.request(new SlamData_Types.EvalBlock(this_1.props.notebook, block$prime));
 })() : Prelude.pure(Control_Monad_Eff.applicativeEff({}))(Prelude.unit);
             };
-        }),
+        }), 
         value: $$this.state.editContent
     })([  ]) ]) ]);
 };
 var blockContent = function ($$this) {
-    var _379 = Control_Lens["^."]($$this.props.block)(SlamData_Lens._blockRec(Data_Const.functorConst({})));
-    if (_379.blockMode === "Edit" && _379.blockType === "Visual") {
+    var _376 = Control_Lens["^."]($$this.props.block)(SlamData_Lens._blockRec(Data_Const.functorConst({})));
+    if (_376.blockMode === "Edit" && _376.blockType === "Visual") {
         return SlamData_App_Workspace_Notebook_Block_Visual.visualEditor({
-            block: $$this.props.block,
-            files: $$this.props.files,
-            notebook: $$this.props.notebook,
+            block: $$this.props.block, 
+            files: $$this.props.files, 
+            notebook: $$this.props.notebook, 
             request: $$this.props.request
         })([  ]);
     };
-    if (_379.blockMode === "Edit") {
+    if (_376.blockMode === "Edit") {
         return blockEditor($$this);
     };
-    if (_379.blockMode === "Eval" && _379.blockType === "Visual") {
+    if (_376.blockMode === "Eval" && _376.blockType === "Visual") {
         return evaluatedVisualBlock($$this);
     };
-    if (_379.blockMode === "Eval") {
+    if (_376.blockMode === "Eval") {
         return evaluatedBlock($$this);
     };
     throw new Error("Failed pattern match");
 };
 var block = React.createClass((function () {
-    var _386 = {};
-    for (var _387 in React.spec) {
-        if (React.spec.hasOwnProperty(_387)) {
-            _386[_387] = React.spec[_387];
+    var _383 = {};
+    for (var _384 in React.spec) {
+        if (React.spec.hasOwnProperty(_384)) {
+            _383[_384] = React.spec[_384];
         };
     };
-    _386.displayName = "Block";
-    _386.getInitialState = function ($$this) {
+    _383.displayName = "Block";
+    _383.getInitialState = function ($$this) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
-            editContent: Control_Lens["^."]($$this.props.block)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._blockRec(Data_Const.functorConst({})))(SlamData_Lens._editContent(Data_Const.functorConst({})))),
+            editContent: Control_Lens["^."]($$this.props.block)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._blockRec(Data_Const.functorConst({})))(SlamData_Lens._editContent(Data_Const.functorConst({})))), 
             evalContent: Control_Lens["^."]($$this.props.block)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._blockRec(Data_Const.functorConst({})))(SlamData_Lens._evalContent(Data_Const.functorConst({}))))
         });
     };
-    _386.render = function ($$this) {
+    _383.render = function ($$this) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div({
             className: "block"
         })([ SlamData_App_Workspace_Notebook_Block_Common.blockRow({
             styles: "block-toolbar toolbar"
         })([ typeName($$this.props.block), toolbar(React.coerceThis($$this)) ]), blockContent(React.coerceThis($$this)) ]));
     };
-    return _386;
+    return _383;
 })());
 module.exports = {
     block: block
@@ -68203,13 +65979,13 @@ var slamDataServerLocation = function ($$this) {
     return React_DOM.div({})([ React_DOM.label({
         htmlFor: "server-location"
     })([ React_DOM.rawText("Location") ]), React_DOM.input({
-        name: "server-location",
+        name: "server-location", 
         onChange: React.eventHandler($$this)(function (this_1) {
             return function (e) {
                 return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState(Control_Lens[".~"](_sdServerLocation(Control_Monad_Identity.functorIdentity({})))(SlamData_Helpers.value(e.target))(this_1.state)));
             };
-        }),
-        placeholder: "http://localhost",
+        }), 
+        placeholder: "http://localhost", 
         value: Control_Lens["^."]($$this.state)(_sdServerLocation(Data_Const.functorConst({})))
     })([  ]) ]);
 };
@@ -68220,13 +65996,13 @@ var slamDataServerPort = function ($$this) {
     return React_DOM.div({})([ React_DOM.label({
         htmlFor: "server-port"
     })([ React_DOM.rawText("Port") ]), React_DOM.input({
-        name: "server-port",
+        name: "server-port", 
         onChange: React.eventHandler($$this)(function (this_1) {
             return function (e) {
                 return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState(Control_Lens[".~"](_sdServerPort(Control_Monad_Identity.functorIdentity({})))(Global.readInt(10)(SlamData_Helpers.value(e.target)))(this_1.state)));
             };
-        }),
-        placeholder: "8080",
+        }), 
+        placeholder: "8080", 
         value: Control_Lens["^."]($$this.state)(_sdServerPort(Data_Const.functorConst({})))
     })([  ]) ]);
 };
@@ -68261,13 +66037,13 @@ var slamEngineServerPort = function ($$this) {
     return React_DOM.div({})([ React_DOM.label({
         htmlFor: "slamengine-port"
     })([ React_DOM.rawText("Port") ]), React_DOM.input({
-        name: "slamengine-port",
+        name: "slamengine-port", 
         onChange: React.eventHandler($$this)(function (this_1) {
             return function (e) {
                 return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState(Control_Lens[".~"](_seServerPort(Control_Monad_Identity.functorIdentity({})))(Global.readInt(10)(SlamData_Helpers.value(e.target)))(this_1.state)));
             };
-        }),
-        placeholder: "8080",
+        }), 
+        placeholder: "8080", 
         value: Control_Lens["^."]($$this.state)(_seServerPort(Data_Const.functorConst({})))
     })([  ]) ]);
 };
@@ -68277,21 +66053,21 @@ var slamEngineServerSettings = function ($$this) {
 var _seMountings = function (__dict_Functor_1) {
     return Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._seConfig(__dict_Functor_1))(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._seConfigRec(__dict_Functor_1))(SlamData_Lens._mountings(__dict_Functor_1)));
 };
-var slamEngineMountingPath = function (_131) {
-    return function (_132) {
+var slamEngineMountingPath = function (_124) {
+    return function (_125) {
         return React_DOM.div({})([ React_DOM.label({
             htmlFor: "mongodb-path"
         })([ React_DOM.rawText("Path") ]), React_DOM.input({
-            name: "mongodb-path",
-            onChange: React.eventHandler(_131)(function (this_1) {
+            name: "mongodb-path", 
+            onChange: React.eventHandler(_124)(function (this_1) {
                 return function (e) {
                     var path$prime = SlamData_Helpers.value(e.target);
-                    var state$prime = Control_Lens["%~"](Data_Profunctor.profunctorArr({}))(_seMountings(Control_Monad_Identity.functorIdentity({})))(Control_Lens[".."](Prelude.semigroupoidArr({}))(Control_Lens[".~"](Control_Lens.at(Control_Lens_At.atMapKVKV(Prelude.ordString({})))(_132.value0)(Control_Monad_Identity.functorIdentity({})))(Data_Maybe.Nothing.value))(Control_Lens["?~"](Control_Lens.at(Control_Lens_At.atMapKVKV(Prelude.ordString({})))(path$prime)(Control_Monad_Identity.functorIdentity({})))(_132.value1)))(this_1.state);
+                    var state$prime = Control_Lens["%~"](Data_Profunctor.profunctorArr({}))(_seMountings(Control_Monad_Identity.functorIdentity({})))(Control_Lens[".."](Prelude.semigroupoidArr({}))(Control_Lens[".~"](Control_Lens.at(Control_Lens_At.atMapKVKV(Prelude.ordString({})))(_125.value0)(Control_Monad_Identity.functorIdentity({})))(Data_Maybe.Nothing.value))(Control_Lens["?~"](Control_Lens.at(Control_Lens_At.atMapKVKV(Prelude.ordString({})))(path$prime)(Control_Monad_Identity.functorIdentity({})))(_125.value1)))(this_1.state);
                     return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState(state$prime));
                 };
-            }),
-            placeholder: "/",
-            value: _132.value0
+            }), 
+            placeholder: "/", 
+            value: _125.value0
         })([  ]) ]);
     };
 };
@@ -68302,13 +66078,13 @@ var slamEngineJavaBinary = function ($$this) {
     return React_DOM.div({})([ React_DOM.label({
         htmlFor: "java-binary"
     })([ React_DOM.rawText("Binary") ]), React_DOM.input({
-        name: "java-binary",
+        name: "java-binary", 
         onChange: React.eventHandler($$this)(function (this_1) {
             return function (e) {
                 return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState(Control_Lens[".~"](_sdJava(Control_Monad_Identity.functorIdentity({})))(SlamData_Helpers.value(e.target))(this_1.state)));
             };
-        }),
-        placeholder: "/usr/bin/java",
+        }), 
+        placeholder: "/usr/bin/java", 
         value: Control_Lens["^."]($$this.state)(_sdJava(Data_Const.functorConst({})))
     })([  ]) ]);
 };
@@ -68318,40 +66094,40 @@ var slamEngineJavaSettings = function ($$this) {
 var _mountingMongoURI = function (__dict_Functor_3) {
     return Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._mountingWrapper(__dict_Functor_3))(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._mountingRec(__dict_Functor_3))(SlamData_Lens._connectionUri(__dict_Functor_3)));
 };
-var slamEngineMountingMongoDBMongoUri = function (_133) {
-    return function (_134) {
+var slamEngineMountingMongoDBMongoUri = function (_126) {
+    return function (_127) {
         return React_DOM.div({})([ React_DOM.label({
             htmlFor: "mongodb-mongouri"
         })([ React_DOM.rawText("MongoUri") ]), React_DOM.input({
-            name: "mongodb-mongouri",
-            onChange: React.eventHandler(_133)(function (this_1) {
+            name: "mongodb-mongouri", 
+            onChange: React.eventHandler(_126)(function (this_1) {
                 return function (e) {
-                    var state$prime = Control_Lens["%~"](Data_Profunctor.profunctorArr({}))(_seMountings(Control_Monad_Identity.functorIdentity({})))(Control_Lens["%~"](Data_Profunctor.profunctorArr({}))(Control_Lens.ix(Control_Lens_At.ixedMapKVKV(Prelude.ordString({})))(_134.value0)(Control_Monad_Identity.applicativeIdentity({})))(Control_Lens[".~"](_mountingMongoURI(Control_Monad_Identity.functorIdentity({})))(SlamData_Helpers.value(e.target))))(this_1.state);
+                    var state$prime = Control_Lens["%~"](Data_Profunctor.profunctorArr({}))(_seMountings(Control_Monad_Identity.functorIdentity({})))(Control_Lens["%~"](Data_Profunctor.profunctorArr({}))(Control_Lens.ix(Control_Lens_At.ixedMapKVKV(Prelude.ordString({})))(_127.value0)(Control_Monad_Identity.applicativeIdentity({})))(Control_Lens[".~"](_mountingMongoURI(Control_Monad_Identity.functorIdentity({})))(SlamData_Helpers.value(e.target))))(this_1.state);
                     return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState(state$prime));
                 };
-            }),
-            placeholder: "mongodb://localhost:27017",
-            value: Control_Lens["^."](_134.value1)(_mountingMongoURI(Data_Const.functorConst({})))
+            }), 
+            placeholder: "mongodb://localhost:27017", 
+            value: Control_Lens["^."](_127.value1)(_mountingMongoURI(Data_Const.functorConst({})))
         })([  ]) ]);
     };
 };
 var _mountingDatabase = function (__dict_Functor_4) {
     return Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._mountingWrapper(__dict_Functor_4))(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._mountingRec(__dict_Functor_4))(SlamData_Lens._database(__dict_Functor_4)));
 };
-var slamEngineMountingMongoDBDatabse = function (_135) {
-    return function (_136) {
+var slamEngineMountingMongoDBDatabse = function (_128) {
+    return function (_129) {
         return React_DOM.div({})([ React_DOM.label({
             htmlFor: "mongodb-database"
         })([ React_DOM.rawText("Database") ]), React_DOM.input({
-            name: "mongodb-database",
-            onChange: React.eventHandler(_135)(function (this_1) {
+            name: "mongodb-database", 
+            onChange: React.eventHandler(_128)(function (this_1) {
                 return function (e) {
-                    var state$prime = Control_Lens["%~"](Data_Profunctor.profunctorArr({}))(_seMountings(Control_Monad_Identity.functorIdentity({})))(Control_Lens["%~"](Data_Profunctor.profunctorArr({}))(Control_Lens.ix(Control_Lens_At.ixedMapKVKV(Prelude.ordString({})))(_136.value0)(Control_Monad_Identity.applicativeIdentity({})))(Control_Lens[".~"](_mountingDatabase(Control_Monad_Identity.functorIdentity({})))(SlamData_Helpers.value(e.target))))(this_1.state);
+                    var state$prime = Control_Lens["%~"](Data_Profunctor.profunctorArr({}))(_seMountings(Control_Monad_Identity.functorIdentity({})))(Control_Lens["%~"](Data_Profunctor.profunctorArr({}))(Control_Lens.ix(Control_Lens_At.ixedMapKVKV(Prelude.ordString({})))(_129.value0)(Control_Monad_Identity.applicativeIdentity({})))(Control_Lens[".~"](_mountingDatabase(Control_Monad_Identity.functorIdentity({})))(SlamData_Helpers.value(e.target))))(this_1.state);
                     return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState(state$prime));
                 };
-            }),
-            placeholder: "test",
-            value: Control_Lens["^."](_136.value1)(_mountingDatabase(Data_Const.functorConst({})))
+            }), 
+            placeholder: "test", 
+            value: Control_Lens["^."](_129.value1)(_mountingDatabase(Data_Const.functorConst({})))
         })([  ]) ]);
     };
 };
@@ -68369,8 +66145,8 @@ var slamEngineMountingsSettings = function ($$this) {
     return React_DOM.fieldset({})(Prelude[":"](React_DOM.legend({})([ React_DOM.rawText("MongoDB mountings") ]))(slamEngineMountings($$this)));
 };
 module.exports = {
-    slamEngineServerSettings: slamEngineServerSettings,
-    slamEngineMountingsSettings: slamEngineMountingsSettings,
+    slamEngineServerSettings: slamEngineServerSettings, 
+    slamEngineMountingsSettings: slamEngineMountingsSettings, 
     slamEngineJavaSettings: slamEngineJavaSettings
 };
 },{"Control.Lens":40,"Control.Lens.At":27,"Control.Monad.Eff":41,"Control.Monad.Identity":undefined,"Data.Array":62,"Data.Const":66,"Data.Map":74,"Data.Maybe":76,"Data.Profunctor":84,"Data.Tuple":88,"Global":89,"Prelude":undefined,"React":95,"React.DOM":93,"SlamData.Helpers":undefined,"SlamData.Lens":108}],103:[function(require,module,exports){
@@ -68387,7 +66163,7 @@ var Control_Monad_Eff = require("Control.Monad.Eff");
 var saveConfig = function ($$this) {
     return function (tab) {
         return React_DOM.a({
-            className: "tiny button",
+            className: "tiny button", 
             onClick: React.eventHandler($$this)(function (this_1) {
                 return function (_) {
                     if (tab instanceof SlamData_Types_Workspace_Notebook_Settings.SlamEngineTab) {
@@ -68407,17 +66183,17 @@ var reifyTab = function (name) {
         return React_DOM.dd({
             className: "tab" + SlamData_Helpers.activate(SlamData_Types_Workspace_Notebook_Settings.eqSettingsTab({}))(name)($$this.state.active)
         })([ React_DOM.a({
-            id: "settings-" + Prelude.show(SlamData_Types_Workspace_Notebook_Settings.showSettingsTab({}))(name),
+            id: "settings-" + Prelude.show(SlamData_Types_Workspace_Notebook_Settings.showSettingsTab({}))(name), 
             onClick: function (_) {
                 return $$this.setState((function () {
-                    var _440 = {};
-                    for (var _441 in $$this.state) {
-                        if ($$this.state.hasOwnProperty(_441)) {
-                            _440[_441] = $$this.state[_441];
+                    var _437 = {};
+                    for (var _438 in $$this.state) {
+                        if ($$this.state.hasOwnProperty(_438)) {
+                            _437[_438] = $$this.state[_438];
                         };
                     };
-                    _440.active = name;
-                    return _440;
+                    _437.active = name;
+                    return _437;
                 })());
             }
         })([ React_DOM.rawText(Prelude.show(SlamData_Types_Workspace_Notebook_Settings.showSettingsTab({}))(name)) ]) ]);
@@ -68427,23 +66203,23 @@ var slamDataTab = reifyTab(SlamData_Types_Workspace_Notebook_Settings.SlamDataTa
 var slamEngineTab = reifyTab(SlamData_Types_Workspace_Notebook_Settings.SlamEngineTab.value);
 var tabs = function ($$this) {
     return React_DOM.div({
-        className: "small-1 columns",
+        className: "small-1 columns", 
         id: "settings-category"
     })([ React_DOM.dl({
         className: "tabs vertical"
     })([ slamEngineTab($$this), slamDataTab($$this) ]) ]);
 };
-var reifyContent = function (_137) {
-    return function (_138) {
-        if (_137 instanceof SlamData_Types_Workspace_Notebook_Settings.SlamEngineTab) {
+var reifyContent = function (_130) {
+    return function (_131) {
+        if (_130 instanceof SlamData_Types_Workspace_Notebook_Settings.SlamEngineTab) {
             return React_DOM.div({
-                className: "content" + SlamData_Helpers.activate(SlamData_Types_Workspace_Notebook_Settings.eqSettingsTab({}))(SlamData_Types_Workspace_Notebook_Settings.SlamEngineTab.value)(_138.state.active)
-            })([ React_DOM.h6({})([ React_DOM.rawText("Settings for the local instance of SlamEngine") ]), React_DOM.form({})([ SlamData_App_Workspace_Notebook_Settings_SlamEngine.slamEngineServerSettings(_138), SlamData_App_Workspace_Notebook_Settings_SlamEngine.slamEngineMountingsSettings(_138), SlamData_App_Workspace_Notebook_Settings_SlamEngine.slamEngineJavaSettings(_138), saveConfig(_138)(SlamData_Types_Workspace_Notebook_Settings.SlamEngineTab.value) ]) ]);
+                className: "content" + SlamData_Helpers.activate(SlamData_Types_Workspace_Notebook_Settings.eqSettingsTab({}))(SlamData_Types_Workspace_Notebook_Settings.SlamEngineTab.value)(_131.state.active)
+            })([ React_DOM.h6({})([ React_DOM.rawText("Settings for the local instance of SlamEngine") ]), React_DOM.form({})([ SlamData_App_Workspace_Notebook_Settings_SlamEngine.slamEngineServerSettings(_131), SlamData_App_Workspace_Notebook_Settings_SlamEngine.slamEngineMountingsSettings(_131), SlamData_App_Workspace_Notebook_Settings_SlamEngine.slamEngineJavaSettings(_131), saveConfig(_131)(SlamData_Types_Workspace_Notebook_Settings.SlamEngineTab.value) ]) ]);
         };
-        if (_137 instanceof SlamData_Types_Workspace_Notebook_Settings.SlamDataTab) {
+        if (_130 instanceof SlamData_Types_Workspace_Notebook_Settings.SlamDataTab) {
             return React_DOM.div({
-                className: "content" + SlamData_Helpers.activate(SlamData_Types_Workspace_Notebook_Settings.eqSettingsTab({}))(SlamData_Types_Workspace_Notebook_Settings.SlamDataTab.value)(_138.state.active)
-            })([ React_DOM.h6({})([ React_DOM.rawText("SlamEngine server to connect to") ]), React_DOM.form({})([ SlamData_App_Workspace_Notebook_Settings_SlamData.slamDataServerSettings(_138), saveConfig(_138)(SlamData_Types_Workspace_Notebook_Settings.SlamDataTab.value) ]) ]);
+                className: "content" + SlamData_Helpers.activate(SlamData_Types_Workspace_Notebook_Settings.eqSettingsTab({}))(SlamData_Types_Workspace_Notebook_Settings.SlamDataTab.value)(_131.state.active)
+            })([ React_DOM.h6({})([ React_DOM.rawText("SlamEngine server to connect to") ]), React_DOM.form({})([ SlamData_App_Workspace_Notebook_Settings_SlamData.slamDataServerSettings(_131), saveConfig(_131)(SlamData_Types_Workspace_Notebook_Settings.SlamDataTab.value) ]) ]);
         };
         throw new Error("Failed pattern match");
     };
@@ -68452,33 +66228,33 @@ var slamDataContent = reifyContent(SlamData_Types_Workspace_Notebook_Settings.Sl
 var slamEngineContent = reifyContent(SlamData_Types_Workspace_Notebook_Settings.SlamEngineTab.value);
 var contents = function ($$this) {
     return React_DOM.div({
-        className: "small-11 columns",
+        className: "small-11 columns", 
         id: "settings-content"
     })([ React_DOM.div({
         className: "tabs-content vertical"
     })([ slamEngineContent($$this), slamDataContent($$this) ]) ]);
 };
 var settings = React.createClass((function () {
-    var _444 = {};
-    for (var _445 in React.spec) {
-        if (React.spec.hasOwnProperty(_445)) {
-            _444[_445] = React.spec[_445];
+    var _441 = {};
+    for (var _442 in React.spec) {
+        if (React.spec.hasOwnProperty(_442)) {
+            _441[_442] = React.spec[_442];
         };
     };
-    _444.displayName = "Settings";
-    _444.getInitialState = function ($$this) {
+    _441.displayName = "Settings";
+    _441.getInitialState = function ($$this) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
-            active: SlamData_Types_Workspace_Notebook_Settings.SlamEngineTab.value,
-            sdConfig: $$this.props.state.settings.sdConfig,
+            active: SlamData_Types_Workspace_Notebook_Settings.SlamEngineTab.value, 
+            sdConfig: $$this.props.state.settings.sdConfig, 
             seConfig: $$this.props.state.settings.seConfig
         });
     };
-    _444.render = function ($$this) {
+    _441.render = function ($$this) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div({
             className: "vertical"
         })([ tabs(React.coerceThis($$this)), contents(React.coerceThis($$this)) ]));
     };
-    return _444;
+    return _441;
 })());
 module.exports = {
     settings: settings
@@ -68505,126 +66281,126 @@ var Data_Const = require("Data.Const");
 var Node_UUID = require("Node.UUID");
 var settingsTab = function ($$this) {
     return {
-        ident: $$this.state.settingsId,
-        blocks: [  ],
-        name: "Settings",
+        ident: $$this.state.settingsId, 
+        blocks: [  ], 
+        name: "Settings", 
         path: ""
     };
 };
-var renameAction = function (_147) {
-    return function (_148) {
+var renameAction = function (_140) {
+    return function (_141) {
         return React_DOM.li({})([ React_DOM.a({
-            className: "tiny secondary button has-tooltip",
-            onClick: React.eventHandler(_147)(function (this_1) {
+            className: "tiny secondary button has-tooltip", 
+            onClick: React.eventHandler(_140)(function (this_1) {
                 return function (_) {
                     return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState((function () {
-                        var _448 = {};
-                        for (var _449 in this_1.state) {
-                            if (this_1.state.hasOwnProperty(_449)) {
-                                _448[_449] = this_1.state[_449];
+                        var _445 = {};
+                        for (var _446 in this_1.state) {
+                            if (this_1.state.hasOwnProperty(_446)) {
+                                _445[_446] = this_1.state[_446];
                             };
                         };
-                        _448.renaming = new Data_Maybe.Just(_148.name);
-                        return _448;
+                        _445.renaming = new Data_Maybe.Just(_141.name);
+                        return _445;
                     })()));
                 };
-            }),
+            }), 
             title: "Rename"
         })([ SlamData_Components.renameIcon ]) ]);
     };
 };
-var reifyBlock = function (_143) {
-    return function (_144) {
-        return function (_145) {
+var reifyBlock = function (_136) {
+    return function (_137) {
+        return function (_138) {
             return SlamData_App_Workspace_Notebook_Block.block({
-                block: _145,
-                key: _145.ident,
-                notebook: _144,
-                request: _143.props.request,
-                files: _143.props.state.files
+                block: _138, 
+                key: _138.ident, 
+                notebook: _137, 
+                request: _136.props.request, 
+                files: _136.props.state.files
             })([  ]);
         };
     };
 };
-var noteBookName = function (_149) {
-    return function (_150) {
-        if (_149.state.renaming instanceof Data_Maybe.Just) {
+var noteBookName = function (_142) {
+    return function (_143) {
+        if (_142.state.renaming instanceof Data_Maybe.Just) {
             return React_DOM.input({
-                onBlur: React.eventHandler(_149)(function (this_1) {
+                onBlur: React.eventHandler(_142)(function (this_1) {
                     return function (e) {
                         return function __do() {
-                            this_1.props.request(new SlamData_Types.RenameNotebook(_150, SlamData_Helpers.value(e.target)))();
+                            this_1.props.request(new SlamData_Types.RenameNotebook(_143, SlamData_Helpers.value(e.target)))();
                             return this_1.setState((function () {
-                                var _456 = {};
-                                for (var _457 in this_1.state) {
-                                    if (this_1.state.hasOwnProperty(_457)) {
-                                        _456[_457] = this_1.state[_457];
+                                var _453 = {};
+                                for (var _454 in this_1.state) {
+                                    if (this_1.state.hasOwnProperty(_454)) {
+                                        _453[_454] = this_1.state[_454];
                                     };
                                 };
-                                _456.renaming = Data_Maybe.Nothing.value;
-                                return _456;
+                                _453.renaming = Data_Maybe.Nothing.value;
+                                return _453;
                             })());
                         };
                     };
-                }),
-                onChange: React.eventHandler(_149)(function (this_1) {
+                }), 
+                onChange: React.eventHandler(_142)(function (this_1) {
                     return function (e) {
                         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState((function () {
-                            var _458 = {};
-                            for (var _459 in this_1.state) {
-                                if (this_1.state.hasOwnProperty(_459)) {
-                                    _458[_459] = this_1.state[_459];
+                            var _455 = {};
+                            for (var _456 in this_1.state) {
+                                if (this_1.state.hasOwnProperty(_456)) {
+                                    _455[_456] = this_1.state[_456];
                                 };
                             };
-                            _458.renaming = Data_Maybe.Just.create(SlamData_Helpers.value(e.target));
-                            return _458;
+                            _455.renaming = Data_Maybe.Just.create(SlamData_Helpers.value(e.target));
+                            return _455;
                         })()));
                     };
-                }),
-                value: _149.state.renaming.value0
+                }), 
+                value: _142.state.renaming.value0
             })([  ]);
         };
-        if (_149.state.renaming instanceof Data_Maybe.Nothing) {
-            return React_DOM.rawText(_150.name);
+        if (_142.state.renaming instanceof Data_Maybe.Nothing) {
+            return React_DOM.rawText(_143.name);
         };
         throw new Error("Failed pattern match");
     };
 };
-var reifyTabs = function (_139) {
-    return function (_140) {
-        if (Prelude["=="](SlamData_Types_Workspace_Notebook.eqNotebookID({}))(_140.ident)(_139.state.settingsId)) {
+var reifyTabs = function (_132) {
+    return function (_133) {
+        if (Prelude["=="](SlamData_Types_Workspace_Notebook.eqNotebookID({}))(_133.ident)(_132.state.settingsId)) {
             return React_DOM.dd({
-                className: "tab" + SlamData_Helpers.activate(Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(new Data_Maybe.Just(_140.ident))(_139.state.active)
+                className: "tab" + SlamData_Helpers.activate(Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(new Data_Maybe.Just(_133.ident))(_132.state.active)
             })([ React_DOM.a({
-                id: "notebook-Settings",
-                onClick: React.eventHandler(_139)(function (this_1) {
+                id: "notebook-Settings", 
+                onClick: React.eventHandler(_132)(function (this_1) {
                     return function (_) {
                         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState((function () {
-                            var _463 = {};
-                            for (var _464 in this_1.state) {
-                                if (this_1.state.hasOwnProperty(_464)) {
-                                    _463[_464] = this_1.state[_464];
+                            var _460 = {};
+                            for (var _461 in this_1.state) {
+                                if (this_1.state.hasOwnProperty(_461)) {
+                                    _460[_461] = this_1.state[_461];
                                 };
                             };
-                            _463.active = new Data_Maybe.Just(_140.ident);
-                            return _463;
+                            _460.active = new Data_Maybe.Just(_133.ident);
+                            return _460;
                         })()));
                     };
                 })
-            })([ React_DOM.rawText(_140.name), React_DOM.i({
-                className: "fa fa-times",
-                onClick: React.eventHandler(_139)(function (this_1) {
+            })([ React_DOM.rawText(_133.name), React_DOM.i({
+                className: "fa fa-times", 
+                onClick: React.eventHandler(_132)(function (this_1) {
                     return function (_) {
                         return function __do() {
-                            Prelude["=="](Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(this_1.state.active)(new Data_Maybe.Just(_140.ident)) ? this_1.setState((function () {
-    var _465 = {};
-    for (var _466 in this_1.state) {
-        if (this_1.state.hasOwnProperty(_466)) {
-            _465[_466] = this_1.state[_466];
+                            Prelude["=="](Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(this_1.state.active)(new Data_Maybe.Just(_133.ident)) ? this_1.setState((function () {
+    var _462 = {};
+    for (var _463 in this_1.state) {
+        if (this_1.state.hasOwnProperty(_463)) {
+            _462[_463] = this_1.state[_463];
         };
     };
-    _465.active = Data_Maybe.Nothing.value;
-    return _465;
+    _462.active = Data_Maybe.Nothing.value;
+    return _462;
 })()) : Prelude.unit;
                             return this_1.props.request(SlamData_Types.HideSettings.value)();
                         };
@@ -68633,38 +66409,38 @@ var reifyTabs = function (_139) {
             })([  ]) ]) ]);
         };
         return React_DOM.dd({
-            className: "tab" + SlamData_Helpers.activate(Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(new Data_Maybe.Just(_140.ident))(_139.state.active)
+            className: "tab" + SlamData_Helpers.activate(Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(new Data_Maybe.Just(_133.ident))(_132.state.active)
         })([ React_DOM.a({
-            onClick: React.eventHandler(_139)(function (this_2) {
+            onClick: React.eventHandler(_132)(function (this_2) {
                 return function (_) {
                     return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_2.setState((function () {
-                        var _467 = {};
-                        for (var _468 in this_2.state) {
-                            if (this_2.state.hasOwnProperty(_468)) {
-                                _467[_468] = this_2.state[_468];
+                        var _464 = {};
+                        for (var _465 in this_2.state) {
+                            if (this_2.state.hasOwnProperty(_465)) {
+                                _464[_465] = this_2.state[_465];
                             };
                         };
-                        _467.active = new Data_Maybe.Just(_140.ident);
-                        return _467;
+                        _464.active = new Data_Maybe.Just(_133.ident);
+                        return _464;
                     })()));
                 };
             })
-        })([ noteBookName(React.coerceThis(_139))(_140), React_DOM.i({
-            className: "fa fa-times",
-            onClick: React.eventHandler(_139)(function (this_2) {
+        })([ noteBookName(React.coerceThis(_132))(_133), React_DOM.i({
+            className: "fa fa-times", 
+            onClick: React.eventHandler(_132)(function (this_2) {
                 return function (_) {
                     return function __do() {
-                        Prelude["=="](Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(this_2.state.active)(new Data_Maybe.Just(_140.ident)) ? this_2.setState((function () {
-    var _469 = {};
-    for (var _470 in this_2.state) {
-        if (this_2.state.hasOwnProperty(_470)) {
-            _469[_470] = this_2.state[_470];
+                        Prelude["=="](Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(this_2.state.active)(new Data_Maybe.Just(_133.ident)) ? this_2.setState((function () {
+    var _466 = {};
+    for (var _467 in this_2.state) {
+        if (this_2.state.hasOwnProperty(_467)) {
+            _466[_467] = this_2.state[_467];
         };
     };
-    _469.active = Data_Maybe.Nothing.value;
-    return _469;
+    _466.active = Data_Maybe.Nothing.value;
+    return _466;
 })()) : Prelude.unit;
-                        return this_2.props.request(new SlamData_Types.CloseNotebook(_140.ident))();
+                        return this_2.props.request(new SlamData_Types.CloseNotebook(_133.ident))();
                     };
                 };
             })
@@ -68682,20 +66458,20 @@ var createNotebookButton = function ($$this) {
     return React_DOM.dd({
         className: "tab"
     })([ React_DOM.div({})([ React_DOM.a({
-        id: "add-notebook",
+        id: "add-notebook", 
         onClick: React.eventHandler($$this)(function (this_1) {
             return Prelude.pure(Prelude.applicativeArr({}))(this_1.props.request(SlamData_Types.CreateNotebook.value));
         })
     })([ SlamData_Components.newNotebookIcon ]) ]) ]);
 };
-var blockIcon = function (_146) {
-    if (_146 === "Markdown") {
+var blockIcon = function (_139) {
+    if (_139 === "Markdown") {
         return SlamData_Components.markdownIcon;
     };
-    if (_146 === "SQL") {
+    if (_139 === "SQL") {
         return SlamData_Components.sqlIcon;
     };
-    if (_146 === "Visual") {
+    if (_139 === "Visual") {
         return SlamData_Components.visualIcon;
     };
     throw new Error("Failed pattern match");
@@ -68714,77 +66490,77 @@ var internalActions = function ($$this) {
         })(Prelude["<$>"](Data_Array.functorArray({}))(actions(SlamData_Components.actionButton($$this))(ident))(Prelude["<$>"](Data_Array.functorArray({}))(SlamData_Types_Workspace_Notebook_Block.BlockType.create)([ "Markdown", "SQL", "Visual" ])));
     };
 };
-var reifyContent = function (_141) {
-    return function (_142) {
-        if (Prelude["=="](SlamData_Types_Workspace_Notebook.eqNotebookID({}))(_142.ident)(_141.state.settingsId)) {
+var reifyContent = function (_134) {
+    return function (_135) {
+        if (Prelude["=="](SlamData_Types_Workspace_Notebook.eqNotebookID({}))(_135.ident)(_134.state.settingsId)) {
             return React_DOM.div({
-                className: "content" + SlamData_Helpers.activate(Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(new Data_Maybe.Just(_142.ident))(_141.state.active)
+                className: "content" + SlamData_Helpers.activate(Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(new Data_Maybe.Just(_135.ident))(_134.state.active)
             })([ SlamData_App_Workspace_Notebook_Settings.settings({
-                request: _141.props.request,
-                state: _141.props.state
+                request: _134.props.request, 
+                state: _134.props.state
             })([  ]) ]);
         };
         return React_DOM.div({
-            className: "content" + SlamData_Helpers.activate(Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(new Data_Maybe.Just(_142.ident))(_141.state.active)
+            className: "content" + SlamData_Helpers.activate(Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(new Data_Maybe.Just(_135.ident))(_134.state.active)
         })([ React_DOM.div({
             className: "toolbar button-bar"
-        })([ externalActions(_141)(_142), internalActions(_141)(_142.ident) ]), React_DOM.hr({})([  ]), React_DOM.div({
+        })([ externalActions(_134)(_135), internalActions(_134)(_135.ident) ]), React_DOM.hr({})([  ]), React_DOM.div({
             className: "actual-content"
-        })(Prelude["<$>"](Data_Array.functorArray({}))(reifyBlock(_141)(_142))(_142.blocks)) ]);
+        })(Prelude["<$>"](Data_Array.functorArray({}))(reifyBlock(_134)(_135))(_135.blocks)) ]);
     };
 };
 var notebooks = React.createClass((function () {
-    var _480 = {};
-    for (var _481 in React.spec) {
-        if (React.spec.hasOwnProperty(_481)) {
-            _480[_481] = React.spec[_481];
+    var _477 = {};
+    for (var _478 in React.spec) {
+        if (React.spec.hasOwnProperty(_478)) {
+            _477[_478] = React.spec[_478];
         };
     };
-    _480.displayName = "Notebooks";
-    _480.componentWillReceiveProps = function ($$this, props) {
+    _477.displayName = "Notebooks";
+    _477.componentWillReceiveProps = function ($$this, props) {
         return props.state.showSettings && !$$this.props.state.showSettings ? Prelude.pure(Control_Monad_Eff.applicativeEff({}))($$this.setState((function () {
-    var _474 = {};
-    for (var _475 in $$this.state) {
-        if ($$this.state.hasOwnProperty(_475)) {
-            _474[_475] = $$this.state[_475];
+    var _471 = {};
+    for (var _472 in $$this.state) {
+        if ($$this.state.hasOwnProperty(_472)) {
+            _471[_472] = $$this.state[_472];
         };
     };
-    _474.active = new Data_Maybe.Just($$this.state.settingsId);
-    return _474;
+    _471.active = new Data_Maybe.Just($$this.state.settingsId);
+    return _471;
 })())) : Data_Array.length(props.state.notebooks) > Data_Array.length($$this.props.state.notebooks) ? (function () {
     var active = Prelude["<$>"](Data_Maybe.functorMaybe({}))(Prelude.flip(Control_Lens["^."])(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._notebookRec(Data_Const.functorConst({})))(SlamData_Lens._ident(Data_Const.functorConst({})))))(Data_Array.head(Data_Array["\\\\"](SlamData_Types_Workspace_Notebook.eqNotebook({}))(props.state.notebooks)($$this.props.state.notebooks)));
     return Prelude.pure(Control_Monad_Eff.applicativeEff({}))($$this.setState((function () {
-        var _476 = {};
-        for (var _477 in $$this.state) {
-            if ($$this.state.hasOwnProperty(_477)) {
-                _476[_477] = $$this.state[_477];
+        var _473 = {};
+        for (var _474 in $$this.state) {
+            if ($$this.state.hasOwnProperty(_474)) {
+                _473[_474] = $$this.state[_474];
             };
         };
-        _476.active = active;
-        return _476;
+        _473.active = active;
+        return _473;
     })()));
 })() : Data_Array.length(props.state.notebooks) < Data_Array.length($$this.props.state.notebooks) ? (function () {
     var active = Prelude["<$>"](Data_Maybe.functorMaybe({}))(Prelude.flip(Control_Lens["^."])(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._notebookRec(Data_Const.functorConst({})))(SlamData_Lens._ident(Data_Const.functorConst({})))))(Data_Array.head(props.state.notebooks));
     return Prelude.pure(Control_Monad_Eff.applicativeEff({}))($$this.setState((function () {
-        var _478 = {};
-        for (var _479 in $$this.state) {
-            if ($$this.state.hasOwnProperty(_479)) {
-                _478[_479] = $$this.state[_479];
+        var _475 = {};
+        for (var _476 in $$this.state) {
+            if ($$this.state.hasOwnProperty(_476)) {
+                _475[_476] = $$this.state[_476];
             };
         };
-        _478.active = active;
-        return _478;
+        _475.active = active;
+        return _475;
     })()));
 })() : Prelude.pure(Control_Monad_Eff.applicativeEff({}))(Prelude.unit);
     };
-    _480.getInitialState = function ($$this) {
+    _477.getInitialState = function ($$this) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
-            settingsId: SlamData_Types_Workspace_Notebook.NotebookID.create(Node_UUID.runUUID(Node_UUID.v4)),
-            active: Data_Maybe.Nothing.value,
+            settingsId: SlamData_Types_Workspace_Notebook.NotebookID.create(Node_UUID.runUUID(Node_UUID.v4)), 
+            active: Data_Maybe.Nothing.value, 
             renaming: Data_Maybe.Nothing.value
         });
     };
-    _480.render = function ($$this) {
+    _477.render = function ($$this) {
         var settings = $$this.props.state.showSettings ? [ settingsTab($$this) ] : [  ];
         var tabs = Prelude["<$>"](Data_Array.functorArray({}))(reifyTabs(React.coerceThis($$this)))(Prelude["++"](Data_Array.semigroupArray({}))($$this.props.state.notebooks)(settings));
         var tabs$prime = Data_Array.snoc(tabs)(createNotebookButton(React.coerceThis($$this)));
@@ -68797,7 +66573,7 @@ var notebooks = React.createClass((function () {
             className: "tabs-content"
         })(content) ]));
     };
-    return _480;
+    return _477;
 })());
 module.exports = {
     notebooks: notebooks
@@ -68818,49 +66594,49 @@ var Control_Monad_Eff = require("Control.Monad.Eff");
 var Control_Reactive_Timer = require("Control.Reactive.Timer");
 var workspace$prime = function (props) {
     return React_DOM.div({
-        className: "row",
+        className: "row", 
         id: "main-row"
     })([ React_DOM.div({
-        className: "small-5 medium-3 large-2 columns",
+        className: "small-5 medium-3 large-2 columns", 
         id: "filesystem"
     })([ SlamData_App_Workspace_FileSystem.filesystem({
-        files: props.state.files,
+        files: props.state.files, 
         request: props.request
     })([  ]) ]), React_DOM.div({
-        className: "small-7 medium-9 large-10 columns",
+        className: "small-7 medium-9 large-10 columns", 
         id: "notebook"
     })([ SlamData_App_Workspace_Notebook.notebooks(props)([  ]) ]) ]);
 };
-var path = function (_151) {
-    return SlamData_Helpers.getOrElse(Data_Array.head(Prelude["<$>"](Data_Array.functorArray({}))(Data_Tuple.fst)(Data_Map.toList(_151.settings.seConfig.mountings))))(SlamData_Helpers.defaultMountPath);
+var path = function (_144) {
+    return SlamData_Helpers.getOrElse(Data_Array.head(Prelude["<$>"](Data_Array.functorArray({}))(Data_Tuple.fst)(Data_Map.toList(_144.settings.seConfig.mountings))))(SlamData_Helpers.defaultMountPath);
 };
 var workspace = React.createClass((function () {
-    var _486 = {};
-    for (var _487 in React.spec) {
-        if (React.spec.hasOwnProperty(_487)) {
-            _486[_487] = React.spec[_487];
+    var _483 = {};
+    for (var _484 in React.spec) {
+        if (React.spec.hasOwnProperty(_484)) {
+            _483[_484] = React.spec[_484];
         };
     };
-    _486.displayName = "Workspace";
-    _486.requestFS = function ($$this) {
+    _483.displayName = "Workspace";
+    _483.requestFS = function ($$this) {
         return $$this.props.request(new SlamData_Types.ReadFileSystem([ path($$this.props.state) ]));
     };
-    _486.componentDidMount = function ($$this) {
+    _483.componentDidMount = function ($$this) {
         return function __do() {
             $$this.requestFS();
             Control_Reactive_Timer.interval(5000)($$this.requestFS)();
             return Prelude.unit;
         };
     };
-    _486.render = function ($$this) {
+    _483.render = function ($$this) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div({
             id: "workspace"
         })([ workspace$prime({
-            request: $$this.props.request,
+            request: $$this.props.request, 
             state: $$this.props.state
         }) ]));
     };
-    return _486;
+    return _483;
 })());
 module.exports = {
     workspace: workspace
@@ -68874,25 +66650,25 @@ var React_DOM = require("React.DOM");
 var SlamData_App_Menu = require("SlamData.App.Menu");
 var SlamData_App_Workspace = require("SlamData.App.Workspace");
 var app = React.createClass((function () {
-    var _488 = {};
-    for (var _489 in React.spec) {
-        if (React.spec.hasOwnProperty(_489)) {
-            _488[_489] = React.spec[_489];
+    var _485 = {};
+    for (var _486 in React.spec) {
+        if (React.spec.hasOwnProperty(_486)) {
+            _485[_486] = React.spec[_486];
         };
     };
-    _488.displayName = "App";
-    _488.getInitialState = function (_) {
+    _485.displayName = "App";
+    _485.getInitialState = function (_) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
             showSettings: false
         });
     };
-    _488.render = function ($$this) {
+    _485.render = function ($$this) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div({})([ SlamData_App_Menu.menu($$this.props.request), SlamData_App_Workspace.workspace({
-            request: $$this.props.request,
+            request: $$this.props.request, 
             state: $$this.props.state
         })([  ]) ]));
     };
-    return _488;
+    return _485;
 })());
 module.exports = {
     app: app
@@ -68930,10 +66706,10 @@ var actionButton = function ($$this) {
         return function (title) {
             return function (icon_1) {
                 return React_DOM.li({})([ React_DOM.a({
-                    className: "tiny secondary button has-tooltip",
+                    className: "tiny secondary button has-tooltip", 
                     onClick: React.eventHandler($$this)(function (this_1) {
                         return Prelude.pure(Prelude.applicativeArr({}))(this_1.props.request(event));
-                    }),
+                    }), 
                     title: title
                 })([ icon_1 ]) ]);
             };
@@ -68941,25 +66717,25 @@ var actionButton = function ($$this) {
     };
 };
 module.exports = {
-    actionButton: actionButton,
-    pieChartIcon: pieChartIcon,
-    lineChartIcon: lineChartIcon,
-    barChartIcon: barChartIcon,
-    areaChartIcon: areaChartIcon,
-    loadingIcon: loadingIcon,
-    newNotebookIcon: newNotebookIcon,
-    fileIcon: fileIcon,
-    dirClosedIcon: dirClosedIcon,
-    dirOpenIcon: dirOpenIcon,
-    visualIcon: visualIcon,
-    sqlIcon: sqlIcon,
-    markdownIcon: markdownIcon,
-    publishIcon: publishIcon,
-    renameIcon: renameIcon,
-    saveIcon: saveIcon,
-    openIcon: openIcon,
-    newIcon: newIcon,
-    closeIcon: closeIcon,
+    actionButton: actionButton, 
+    pieChartIcon: pieChartIcon, 
+    lineChartIcon: lineChartIcon, 
+    barChartIcon: barChartIcon, 
+    areaChartIcon: areaChartIcon, 
+    loadingIcon: loadingIcon, 
+    newNotebookIcon: newNotebookIcon, 
+    fileIcon: fileIcon, 
+    dirClosedIcon: dirClosedIcon, 
+    dirOpenIcon: dirOpenIcon, 
+    visualIcon: visualIcon, 
+    sqlIcon: sqlIcon, 
+    markdownIcon: markdownIcon, 
+    publishIcon: publishIcon, 
+    renameIcon: renameIcon, 
+    saveIcon: saveIcon, 
+    openIcon: openIcon, 
+    newIcon: newIcon, 
+    closeIcon: closeIcon, 
     icon: icon
 };
 },{"Prelude":undefined,"React":95,"React.DOM":93}],108:[function(require,module,exports){
@@ -68975,14 +66751,14 @@ var _settings = function (__dict_Functor_0) {
         return o.settings;
     })(function (o) {
         return function (x) {
-            var _230 = {};
-            for (var _231 in o) {
-                if (o.hasOwnProperty(_231)) {
-                    _230[_231] = o[_231];
+            var _227 = {};
+            for (var _228 in o) {
+                if (o.hasOwnProperty(_228)) {
+                    _227[_228] = o[_228];
                 };
             };
-            _230.settings = x;
-            return _230;
+            _227.settings = x;
+            return _227;
         };
     })(__dict_Functor_0);
 };
@@ -68991,81 +66767,81 @@ var _server = function (__dict_Functor_1) {
         return o.server;
     })(function (o) {
         return function (x) {
-            var _232 = {};
-            for (var _233 in o) {
-                if (o.hasOwnProperty(_233)) {
-                    _232[_233] = o[_233];
+            var _229 = {};
+            for (var _230 in o) {
+                if (o.hasOwnProperty(_230)) {
+                    _229[_230] = o[_230];
                 };
             };
-            _232.server = x;
-            return _232;
+            _229.server = x;
+            return _229;
         };
     })(__dict_Functor_1);
 };
 var _seConfigServer = function (__dict_Functor_2) {
-    return function (_62) {
-        return function (_63) {
-            return Prelude["<$>"](__dict_Functor_2)(SlamData_Types.SEConfigServer.create)(_62(_63));
+    return function (_55) {
+        return function (_56) {
+            return Prelude["<$>"](__dict_Functor_2)(SlamData_Types.SEConfigServer.create)(_55(_56));
         };
     };
 };
 var _seConfigRec = function (__dict_Functor_3) {
-    return function (_56) {
-        return function (_57) {
-            return Prelude["<$>"](__dict_Functor_3)(SlamData_Types.SEConfig.create)(_56(_57));
+    return function (_49) {
+        return function (_50) {
+            return Prelude["<$>"](__dict_Functor_3)(SlamData_Types.SEConfig.create)(_49(_50));
         };
     };
 };
 var _seConfig = function (__dict_Functor_4) {
-    return function (_76) {
-        return function (_77) {
+    return function (_69) {
+        return function (_70) {
             return Prelude["<$>"](__dict_Functor_4)(function (sec$prime) {
-                var _240 = {};
-                for (var _241 in _77) {
-                    if (_77.hasOwnProperty(_241)) {
-                        _240[_241] = _77[_241];
+                var _237 = {};
+                for (var _238 in _70) {
+                    if (_70.hasOwnProperty(_238)) {
+                        _237[_238] = _70[_238];
                     };
                 };
-                _240.seConfig = sec$prime;
-                return _240;
-            })(_76(_77.seConfig));
+                _237.seConfig = sec$prime;
+                return _237;
+            })(_69(_70.seConfig));
         };
     };
 };
 var _sdConfigServer = function (__dict_Functor_5) {
-    return function (_58) {
-        return function (_59) {
-            return Prelude["<$>"](__dict_Functor_5)(SlamData_Types.SDConfigServer.create)(_58(_59));
+    return function (_51) {
+        return function (_52) {
+            return Prelude["<$>"](__dict_Functor_5)(SlamData_Types.SDConfigServer.create)(_51(_52));
         };
     };
 };
 var _sdConfigRec = function (__dict_Functor_6) {
-    return function (_54) {
-        return function (_55) {
-            return Prelude["<$>"](__dict_Functor_6)(SlamData_Types.SDConfig.create)(_54(_55));
+    return function (_47) {
+        return function (_48) {
+            return Prelude["<$>"](__dict_Functor_6)(SlamData_Types.SDConfig.create)(_47(_48));
         };
     };
 };
 var _sdConfigNodeWebkit = function (__dict_Functor_7) {
-    return function (_60) {
-        return function (_61) {
-            return Prelude["<$>"](__dict_Functor_7)(SlamData_Types.SDConfigNodeWebkit.create)(_60(_61));
+    return function (_53) {
+        return function (_54) {
+            return Prelude["<$>"](__dict_Functor_7)(SlamData_Types.SDConfigNodeWebkit.create)(_53(_54));
         };
     };
 };
 var _sdConfig = function (__dict_Functor_8) {
-    return function (_74) {
-        return function (_75) {
+    return function (_67) {
+        return function (_68) {
             return Prelude["<$>"](__dict_Functor_8)(function (sdc$prime) {
-                var _251 = {};
-                for (var _252 in _75) {
-                    if (_75.hasOwnProperty(_252)) {
-                        _251[_252] = _75[_252];
+                var _248 = {};
+                for (var _249 in _68) {
+                    if (_68.hasOwnProperty(_249)) {
+                        _248[_249] = _68[_249];
                     };
                 };
-                _251.sdConfig = sdc$prime;
-                return _251;
-            })(_74(_75.sdConfig));
+                _248.sdConfig = sdc$prime;
+                return _248;
+            })(_67(_68.sdConfig));
         };
     };
 };
@@ -69074,21 +66850,21 @@ var _port = function (__dict_Functor_9) {
         return o.port;
     })(function (o) {
         return function (x) {
-            var _254 = {};
-            for (var _255 in o) {
-                if (o.hasOwnProperty(_255)) {
-                    _254[_255] = o[_255];
+            var _251 = {};
+            for (var _252 in o) {
+                if (o.hasOwnProperty(_252)) {
+                    _251[_252] = o[_252];
                 };
             };
-            _254.port = x;
-            return _254;
+            _251.port = x;
+            return _251;
         };
     })(__dict_Functor_9);
 };
 var _notebookRec = function (__dict_Functor_10) {
-    return function (_70) {
-        return function (_71) {
-            return Prelude["<$>"](__dict_Functor_10)(SlamData_Types_Workspace_Notebook.Notebook.create)(_70(_71));
+    return function (_63) {
+        return function (_64) {
+            return Prelude["<$>"](__dict_Functor_10)(SlamData_Types_Workspace_Notebook.Notebook.create)(_63(_64));
         };
     };
 };
@@ -69097,30 +66873,30 @@ var _nodeWebkit = function (__dict_Functor_11) {
         return o.nodeWebkit;
     })(function (o) {
         return function (x) {
-            var _258 = {};
-            for (var _259 in o) {
-                if (o.hasOwnProperty(_259)) {
-                    _258[_259] = o[_259];
+            var _255 = {};
+            for (var _256 in o) {
+                if (o.hasOwnProperty(_256)) {
+                    _255[_256] = o[_256];
                 };
             };
-            _258.nodeWebkit = x;
-            return _258;
+            _255.nodeWebkit = x;
+            return _255;
         };
     })(__dict_Functor_11);
 };
 var _name = function (__dict_Functor_12) {
-    return function (_92) {
-        return function (_93) {
+    return function (_85) {
+        return function (_86) {
             return Prelude["<$>"](__dict_Functor_12)(function (i$prime) {
-                var _262 = {};
-                for (var _263 in _93) {
-                    if (_93.hasOwnProperty(_263)) {
-                        _262[_263] = _93[_263];
+                var _259 = {};
+                for (var _260 in _86) {
+                    if (_86.hasOwnProperty(_260)) {
+                        _259[_260] = _86[_260];
                     };
                 };
-                _262.name = i$prime;
-                return _262;
-            })(_92(_93.name));
+                _259.name = i$prime;
+                return _259;
+            })(_85(_86.name));
         };
     };
 };
@@ -69129,28 +66905,28 @@ var _mountings = function (__dict_Functor_13) {
         return o.mountings;
     })(function (o) {
         return function (x) {
-            var _265 = {};
-            for (var _266 in o) {
-                if (o.hasOwnProperty(_266)) {
-                    _265[_266] = o[_266];
+            var _262 = {};
+            for (var _263 in o) {
+                if (o.hasOwnProperty(_263)) {
+                    _262[_263] = o[_263];
                 };
             };
-            _265.mountings = x;
-            return _265;
+            _262.mountings = x;
+            return _262;
         };
     })(__dict_Functor_13);
 };
 var _mountingWrapper = function (__dict_Functor_14) {
-    return function (_64) {
-        return function (_65) {
-            return Prelude["<$>"](__dict_Functor_14)(SlamData_Types.MountMongo.create)(_64(_65.value0));
+    return function (_57) {
+        return function (_58) {
+            return Prelude["<$>"](__dict_Functor_14)(SlamData_Types.MountMongo.create)(_57(_58.value0));
         };
     };
 };
 var _mountingRec = function (__dict_Functor_15) {
-    return function (_66) {
-        return function (_67) {
-            return Prelude["<$>"](__dict_Functor_15)(SlamData_Types.MountingWrapper.create)(_66(_67));
+    return function (_59) {
+        return function (_60) {
+            return Prelude["<$>"](__dict_Functor_15)(SlamData_Types.MountingWrapper.create)(_59(_60));
         };
     };
 };
@@ -69159,14 +66935,14 @@ var _location = function (__dict_Functor_16) {
         return o.location;
     })(function (o) {
         return function (x) {
-            var _272 = {};
-            for (var _273 in o) {
-                if (o.hasOwnProperty(_273)) {
-                    _272[_273] = o[_273];
+            var _269 = {};
+            for (var _270 in o) {
+                if (o.hasOwnProperty(_270)) {
+                    _269[_270] = o[_270];
                 };
             };
-            _272.location = x;
-            return _272;
+            _269.location = x;
+            return _269;
         };
     })(__dict_Functor_16);
 };
@@ -69175,85 +66951,85 @@ var _java = function (__dict_Functor_17) {
         return o.java;
     })(function (o) {
         return function (x) {
-            var _274 = {};
-            for (var _275 in o) {
-                if (o.hasOwnProperty(_275)) {
-                    _274[_275] = o[_275];
+            var _271 = {};
+            for (var _272 in o) {
+                if (o.hasOwnProperty(_272)) {
+                    _271[_272] = o[_272];
                 };
             };
-            _274.java = x;
-            return _274;
+            _271.java = x;
+            return _271;
         };
     })(__dict_Functor_17);
 };
 var _ident = function (__dict_Functor_18) {
-    return function (_78) {
-        return function (_79) {
+    return function (_71) {
+        return function (_72) {
             return Prelude["<$>"](__dict_Functor_18)(function (i$prime) {
-                var _278 = {};
-                for (var _279 in _79) {
-                    if (_79.hasOwnProperty(_279)) {
-                        _278[_279] = _79[_279];
+                var _275 = {};
+                for (var _276 in _72) {
+                    if (_72.hasOwnProperty(_276)) {
+                        _275[_276] = _72[_276];
                     };
                 };
-                _278.ident = i$prime;
-                return _278;
-            })(_78(_79.ident));
+                _275.ident = i$prime;
+                return _275;
+            })(_71(_72.ident));
         };
     };
 };
 var _files = function (__dict_Functor_19) {
-    return function (_94) {
-        return function (_95) {
+    return function (_87) {
+        return function (_88) {
             return Prelude["<$>"](__dict_Functor_19)(function (i$prime) {
-                var _283 = {};
-                for (var _284 in _95) {
-                    if (_95.hasOwnProperty(_284)) {
-                        _283[_284] = _95[_284];
+                var _280 = {};
+                for (var _281 in _88) {
+                    if (_88.hasOwnProperty(_281)) {
+                        _280[_281] = _88[_281];
                     };
                 };
-                _283.files = i$prime;
-                return _283;
-            })(_94(_95.files));
+                _280.files = i$prime;
+                return _280;
+            })(_87(_88.files));
         };
     };
 };
 var _fileTypeRec = function (__dict_Functor_20) {
-    return function (_68) {
-        return function (_69) {
-            return Prelude["<$>"](__dict_Functor_20)(SlamData_Types_Workspace_FileSystem.FileType.create)(_68(_69));
+    return function (_61) {
+        return function (_62) {
+            return Prelude["<$>"](__dict_Functor_20)(SlamData_Types_Workspace_FileSystem.FileType.create)(_61(_62));
         };
     };
 };
 var _evalContent = function (__dict_Functor_21) {
-    return function (_88) {
-        return function (_89) {
+    return function (_81) {
+        return function (_82) {
             return Prelude["<$>"](__dict_Functor_21)(function (i$prime) {
-                var _290 = {};
-                for (var _291 in _89) {
-                    if (_89.hasOwnProperty(_291)) {
-                        _290[_291] = _89[_291];
+                var _287 = {};
+                for (var _288 in _82) {
+                    if (_82.hasOwnProperty(_288)) {
+                        _287[_288] = _82[_288];
                     };
                 };
-                _290.evalContent = i$prime;
-                return _290;
-            })(_88(_89.evalContent));
+                _287.evalContent = i$prime;
+                return _287;
+            })(_81(_82.evalContent));
         };
     };
 };
 var _editContent = function (__dict_Functor_22) {
-    return function (_86) {
-        return function (_87) {
+    return function (_79) {
+        return function (_80) {
             return Prelude["<$>"](__dict_Functor_22)(function (i$prime) {
-                var _295 = {};
-                for (var _296 in _87) {
-                    if (_87.hasOwnProperty(_296)) {
-                        _295[_296] = _87[_296];
+                var _292 = {};
+                for (var _293 in _80) {
+                    if (_80.hasOwnProperty(_293)) {
+                        _292[_293] = _80[_293];
                     };
                 };
-                _295.editContent = i$prime;
-                return _295;
-            })(_86(_87.editContent));
+                _292.editContent = i$prime;
+                return _292;
+            })(_79(_80.editContent));
         };
     };
 };
@@ -69262,30 +67038,30 @@ var _database = function (__dict_Functor_23) {
         return o.database;
     })(function (o) {
         return function (x) {
-            var _298 = {};
-            for (var _299 in o) {
-                if (o.hasOwnProperty(_299)) {
-                    _298[_299] = o[_299];
+            var _295 = {};
+            for (var _296 in o) {
+                if (o.hasOwnProperty(_296)) {
+                    _295[_296] = o[_296];
                 };
             };
-            _298.database = x;
-            return _298;
+            _295.database = x;
+            return _295;
         };
     })(__dict_Functor_23);
 };
 var _content = function (__dict_Functor_24) {
-    return function (_80) {
-        return function (_81) {
+    return function (_73) {
+        return function (_74) {
             return Prelude["<$>"](__dict_Functor_24)(function (i$prime) {
-                var _302 = {};
-                for (var _303 in _81) {
-                    if (_81.hasOwnProperty(_303)) {
-                        _302[_303] = _81[_303];
+                var _299 = {};
+                for (var _300 in _74) {
+                    if (_74.hasOwnProperty(_300)) {
+                        _299[_300] = _74[_300];
                     };
                 };
-                _302.content = i$prime;
-                return _302;
-            })(_80(_81.content));
+                _299.content = i$prime;
+                return _299;
+            })(_73(_74.content));
         };
     };
 };
@@ -69294,102 +67070,102 @@ var _connectionUri = function (__dict_Functor_25) {
         return o.connectionUri;
     })(function (o) {
         return function (x) {
-            var _305 = {};
-            for (var _306 in o) {
-                if (o.hasOwnProperty(_306)) {
-                    _305[_306] = o[_306];
+            var _302 = {};
+            for (var _303 in o) {
+                if (o.hasOwnProperty(_303)) {
+                    _302[_303] = o[_303];
                 };
             };
-            _305.connectionUri = x;
-            return _305;
+            _302.connectionUri = x;
+            return _302;
         };
     })(__dict_Functor_25);
 };
 var _children = function (__dict_Functor_26) {
-    return function (_90) {
-        return function (_91) {
+    return function (_83) {
+        return function (_84) {
             return Prelude["<$>"](__dict_Functor_26)(function (i$prime) {
-                var _309 = {};
-                for (var _310 in _91) {
-                    if (_91.hasOwnProperty(_310)) {
-                        _309[_310] = _91[_310];
+                var _306 = {};
+                for (var _307 in _84) {
+                    if (_84.hasOwnProperty(_307)) {
+                        _306[_307] = _84[_307];
                     };
                 };
-                _309.children = i$prime;
-                return _309;
-            })(_90(_91.children));
+                _306.children = i$prime;
+                return _306;
+            })(_83(_84.children));
         };
     };
 };
 var _blockType = function (__dict_Functor_27) {
-    return function (_84) {
-        return function (_85) {
+    return function (_77) {
+        return function (_78) {
             return Prelude["<$>"](__dict_Functor_27)(function (i$prime) {
-                var _314 = {};
-                for (var _315 in _85) {
-                    if (_85.hasOwnProperty(_315)) {
-                        _314[_315] = _85[_315];
+                var _311 = {};
+                for (var _312 in _78) {
+                    if (_78.hasOwnProperty(_312)) {
+                        _311[_312] = _78[_312];
                     };
                 };
-                _314.blockType = i$prime;
-                return _314;
-            })(_84(_85.blockType));
+                _311.blockType = i$prime;
+                return _311;
+            })(_77(_78.blockType));
         };
     };
 };
 var _blockRec = function (__dict_Functor_28) {
-    return function (_72) {
-        return function (_73) {
-            return Prelude["<$>"](__dict_Functor_28)(SlamData_Types_Workspace_Notebook_Block.Block.create)(_72(_73));
+    return function (_65) {
+        return function (_66) {
+            return Prelude["<$>"](__dict_Functor_28)(SlamData_Types_Workspace_Notebook_Block.Block.create)(_65(_66));
         };
     };
 };
 var _blockMode = function (__dict_Functor_29) {
-    return function (_82) {
-        return function (_83) {
+    return function (_75) {
+        return function (_76) {
             return Prelude["<$>"](__dict_Functor_29)(function (i$prime) {
-                var _321 = {};
-                for (var _322 in _83) {
-                    if (_83.hasOwnProperty(_322)) {
-                        _321[_322] = _83[_322];
+                var _318 = {};
+                for (var _319 in _76) {
+                    if (_76.hasOwnProperty(_319)) {
+                        _318[_319] = _76[_319];
                     };
                 };
-                _321.blockMode = i$prime;
-                return _321;
-            })(_82(_83.blockMode));
+                _318.blockMode = i$prime;
+                return _318;
+            })(_75(_76.blockMode));
         };
     };
 };
 module.exports = {
-    _files: _files,
-    _name: _name,
-    _children: _children,
-    _evalContent: _evalContent,
-    _editContent: _editContent,
-    _blockType: _blockType,
-    _blockMode: _blockMode,
-    _content: _content,
-    _ident: _ident,
-    _settings: _settings,
-    _database: _database,
-    _connectionUri: _connectionUri,
-    _mountings: _mountings,
-    _java: _java,
-    _nodeWebkit: _nodeWebkit,
-    _port: _port,
-    _location: _location,
-    _server: _server,
-    _seConfig: _seConfig,
-    _sdConfig: _sdConfig,
-    _blockRec: _blockRec,
-    _notebookRec: _notebookRec,
-    _fileTypeRec: _fileTypeRec,
-    _mountingRec: _mountingRec,
-    _mountingWrapper: _mountingWrapper,
-    _seConfigServer: _seConfigServer,
-    _sdConfigNodeWebkit: _sdConfigNodeWebkit,
-    _sdConfigServer: _sdConfigServer,
-    _seConfigRec: _seConfigRec,
+    _files: _files, 
+    _name: _name, 
+    _children: _children, 
+    _evalContent: _evalContent, 
+    _editContent: _editContent, 
+    _blockType: _blockType, 
+    _blockMode: _blockMode, 
+    _content: _content, 
+    _ident: _ident, 
+    _settings: _settings, 
+    _database: _database, 
+    _connectionUri: _connectionUri, 
+    _mountings: _mountings, 
+    _java: _java, 
+    _nodeWebkit: _nodeWebkit, 
+    _port: _port, 
+    _location: _location, 
+    _server: _server, 
+    _seConfig: _seConfig, 
+    _sdConfig: _sdConfig, 
+    _blockRec: _blockRec, 
+    _notebookRec: _notebookRec, 
+    _fileTypeRec: _fileTypeRec, 
+    _mountingRec: _mountingRec, 
+    _mountingWrapper: _mountingWrapper, 
+    _seConfigServer: _seConfigServer, 
+    _sdConfigNodeWebkit: _sdConfigNodeWebkit, 
+    _sdConfigServer: _sdConfigServer, 
+    _seConfigRec: _seConfigRec, 
     _sdConfigRec: _sdConfigRec
 };
 },{"Control.Lens":40,"Prelude":undefined,"SlamData.Types":undefined,"SlamData.Types.Workspace.FileSystem":109,"SlamData.Types.Workspace.Notebook":112,"SlamData.Types.Workspace.Notebook.Block":undefined}],109:[function(require,module,exports){
@@ -69434,8 +67210,8 @@ var decodeFileType = function (__unused) {
                 return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("type")(obj))("type"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonString({}))))(function (_102) {
                     return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("children")(obj))("children"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeArray(decodeFileType({})))))(function (_101) {
                         return Prelude.pure(Data_Either.applicativeEither({}))({
-                            name: _103,
-                            type: _102,
+                            name: _103, 
+                            type: _102, 
                             children: _101
                         });
                     });
@@ -69456,11 +67232,11 @@ var decodeFileTypes = function (__unused) {
     });
 };
 module.exports = {
-    FileTypes: FileTypes,
-    FileType: FileType,
-    eqFileType: eqFileType,
-    ordFileType: ordFileType,
-    decodeFileType: decodeFileType,
+    FileTypes: FileTypes, 
+    FileType: FileType, 
+    eqFileType: eqFileType, 
+    ordFileType: ordFileType, 
+    decodeFileType: decodeFileType, 
     decodeFileTypes: decodeFileTypes
 };
 },{"Data.Argonaut":undefined,"Data.Argonaut.Decode":58,"Data.Either":undefined,"Data.Map":74,"Prelude":undefined}],110:[function(require,module,exports){
@@ -69486,11 +67262,11 @@ function SlamEngineTab() {
 };
 SlamEngineTab.value = new SlamEngineTab();
 var showSettingsTab = function (__unused) {
-    return new Prelude.Show(function (_130) {
-        if (_130 instanceof SlamDataTab) {
+    return new Prelude.Show(function (_123) {
+        if (_123 instanceof SlamDataTab) {
             return "SlamData";
         };
-        if (_130 instanceof SlamEngineTab) {
+        if (_123 instanceof SlamEngineTab) {
             return "SlamEngine";
         };
         throw new Error("Failed pattern match");
@@ -69501,12 +67277,12 @@ var eqSettingsTab = function (__unused) {
         return function (st$prime) {
             return !Prelude["=="](eqSettingsTab({}))(st)(st$prime);
         };
-    }, function (_128) {
-        return function (_129) {
-            if (_128 instanceof SlamDataTab && _129 instanceof SlamDataTab) {
+    }, function (_121) {
+        return function (_122) {
+            if (_121 instanceof SlamDataTab && _122 instanceof SlamDataTab) {
                 return true;
             };
-            if (_128 instanceof SlamEngineTab && _129 instanceof SlamEngineTab) {
+            if (_121 instanceof SlamEngineTab && _122 instanceof SlamEngineTab) {
                 return true;
             };
             return false;
@@ -69514,9 +67290,9 @@ var eqSettingsTab = function (__unused) {
     });
 };
 module.exports = {
-    SlamDataTab: SlamDataTab,
-    SlamEngineTab: SlamEngineTab,
-    eqSettingsTab: eqSettingsTab,
+    SlamDataTab: SlamDataTab, 
+    SlamEngineTab: SlamEngineTab, 
+    eqSettingsTab: eqSettingsTab, 
     showSettingsTab: showSettingsTab
 };
 },{"Prelude":undefined}],112:[function(require,module,exports){
@@ -69544,9 +67320,9 @@ var eqNotebookID = function (__unused) {
         return function (i$prime) {
             return !Prelude["=="](eqNotebookID({}))(i)(i$prime);
         };
-    }, function (_35) {
-        return function (_36) {
-            return Prelude["=="](Node_UUID.eqUUID({}))(_35)(_36);
+    }, function (_730) {
+        return function (_731) {
+            return Prelude["=="](Node_UUID.eqUUID({}))(_730)(_731);
         };
     });
 };
@@ -69555,20 +67331,20 @@ var eqNotebook = function (__unused) {
         return function (nb$prime) {
             return !Prelude["=="](eqNotebook({}))(nb)(nb$prime);
         };
-    }, function (_37) {
-        return function (_38) {
-            return Prelude["=="](eqNotebookID({}))(_37.ident)(_38.ident) && Prelude["=="](Prelude.eqArray(SlamData_Types_Workspace_Notebook_Block.eqBlock({})))(_37.blocks)(_38.blocks);
+    }, function (_732) {
+        return function (_733) {
+            return Prelude["=="](eqNotebookID({}))(_732.ident)(_733.ident) && Prelude["=="](Prelude.eqArray(SlamData_Types_Workspace_Notebook_Block.eqBlock({})))(_732.blocks)(_733.blocks);
         };
     });
 };
 var encodeJsonNotebookID = function (__unused) {
-    return new Data_Argonaut_Encode.EncodeJson(function (_40) {
-        return Data_Argonaut.encodeJson(Node_UUID.encodeJsonUUID({}))(_40);
+    return new Data_Argonaut_Encode.EncodeJson(function (_735) {
+        return Data_Argonaut.encodeJson(Node_UUID.encodeJsonUUID({}))(_735);
     });
 };
 var encodeJsonNotebook = function (__unused) {
-    return new Data_Argonaut_Encode.EncodeJson(function (_39) {
-        return Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("ident")(Data_Argonaut.encodeJson(encodeJsonNotebookID({}))(_39.ident)))(Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("blocks")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonArray(SlamData_Types_Workspace_Notebook_Block.encodeJsonBlock({})))(_39.blocks)))(Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("name")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJString({}))(_39.name)))(Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("path")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJString({}))(_39.path)))(Data_Argonaut.jsonEmptyObject))));
+    return new Data_Argonaut_Encode.EncodeJson(function (_734) {
+        return Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("ident")(Data_Argonaut.encodeJson(encodeJsonNotebookID({}))(_734.ident)))(Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("blocks")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonArray(SlamData_Types_Workspace_Notebook_Block.encodeJsonBlock({})))(_734.blocks)))(Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("name")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJString({}))(_734.name)))(Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("path")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJString({}))(_734.path)))(Data_Argonaut.jsonEmptyObject))));
     });
 };
 var decodeNotebookID = function (__unused) {
@@ -69579,15 +67355,15 @@ var decodeNotebookID = function (__unused) {
 var decodeNotebook = function (__unused) {
     return new Data_Argonaut_Decode.DecodeJson(function (json) {
         return Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Argonaut.toObject(json))("Notebook"))(function (obj) {
-            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("ident")(obj))("ident"))(Data_Argonaut.decodeJson(decodeNotebookID({}))))(function (_9) {
-                return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("blocks")(obj))("blocks"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeArray(SlamData_Types_Workspace_Notebook_Block.decodeJsonBlock({})))))(function (_8) {
-                    return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("name")(obj))("name"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonString({}))))(function (_7) {
-                        return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("path")(obj))("path"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonString({}))))(function (_6) {
+            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("ident")(obj))("ident"))(Data_Argonaut.decodeJson(decodeNotebookID({}))))(function (_114) {
+                return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("blocks")(obj))("blocks"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeArray(SlamData_Types_Workspace_Notebook_Block.decodeJsonBlock({})))))(function (_113) {
+                    return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("name")(obj))("name"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonString({}))))(function (_112) {
+                        return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("path")(obj))("path"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonString({}))))(function (_111) {
                             return Prelude.pure(Data_Either.applicativeEither({}))({
-                                ident: _9,
-                                blocks: _8,
-                                name: _7,
-                                path: _6
+                                ident: _114, 
+                                blocks: _113, 
+                                name: _112, 
+                                path: _111
                             });
                         });
                     });
@@ -69597,13 +67373,13 @@ var decodeNotebook = function (__unused) {
     });
 };
 module.exports = {
-    Notebook: Notebook,
-    NotebookID: NotebookID,
-    eqNotebookID: eqNotebookID,
-    eqNotebook: eqNotebook,
-    decodeNotebook: decodeNotebook,
-    decodeNotebookID: decodeNotebookID,
-    encodeJsonNotebook: encodeJsonNotebook,
+    Notebook: Notebook, 
+    NotebookID: NotebookID, 
+    eqNotebookID: eqNotebookID, 
+    eqNotebook: eqNotebook, 
+    decodeNotebook: decodeNotebook, 
+    decodeNotebookID: decodeNotebookID, 
+    encodeJsonNotebook: encodeJsonNotebook, 
     encodeJsonNotebookID: encodeJsonNotebookID
 };
 },{"Data.Argonaut":undefined,"Data.Argonaut.Decode":58,"Data.Argonaut.Encode":59,"Data.Either":undefined,"Data.Map":74,"Node.UUID":91,"Prelude":undefined,"SlamData.Types.Workspace.Notebook.Block":undefined}],"Control.Alternative":[function(require,module,exports){
@@ -69632,8 +67408,8 @@ var some = function (__dict_Alternative_2) {
     };
 };
 module.exports = {
-    Alternative: Alternative,
-    many: many,
+    Alternative: Alternative, 
+    many: many, 
     some: some
 };
 },{"Control.Alt":24,"Control.Lazy":26,"Prelude":undefined}],"Control.Monad.Identity":[function(require,module,exports){
@@ -69675,12 +67451,12 @@ var monadIdentity = function (__unused) {
     return new Prelude.Monad(applicativeIdentity, bindIdentity);
 };
 module.exports = {
-    Identity: Identity,
-    runIdentity: runIdentity,
-    functorIdentity: functorIdentity,
-    applyIdentity: applyIdentity,
-    applicativeIdentity: applicativeIdentity,
-    bindIdentity: bindIdentity,
+    Identity: Identity, 
+    runIdentity: runIdentity, 
+    functorIdentity: functorIdentity, 
+    applyIdentity: applyIdentity, 
+    applicativeIdentity: applicativeIdentity, 
+    bindIdentity: bindIdentity, 
     monadIdentity: monadIdentity
 };
 },{"Prelude":undefined}],"Data.Argonaut.Core":[function(require,module,exports){
@@ -69939,61 +67715,61 @@ var arrayL = function (__dict_Applicative_16) {
     };
 };
 module.exports = {
-    JsonNull: JsonNull,
-    JsonBoolean: JsonBoolean,
-    JsonNumber: JsonNumber,
-    JsonString: JsonString,
-    JsonArray: JsonArray,
-    JsonObject: JsonObject,
-    jsonObjectL: jsonObjectL,
-    jsonArrayL: jsonArrayL,
-    jsonStringL: jsonStringL,
-    jsonNumberL: jsonNumberL,
-    jsonBooleanL: jsonBooleanL,
-    jsonNullL: jsonNullL,
-    objectL: objectL,
-    arrayL: arrayL,
-    stringL: stringL,
-    numberL: numberL,
-    booleanL: booleanL,
-    nullL: nullL,
-    jsonSingletonObject: jsonSingletonObject,
-    jsonSingletonArray: jsonSingletonArray,
-    jsonEmptyObject: jsonEmptyObject,
-    jsonEmptyArray: jsonEmptyArray,
-    jsonEmptyString: jsonEmptyString,
-    jsonNull: jsonNull,
-    jsonZero: jsonZero,
-    jsonFalse: jsonFalse,
-    jsonTrue: jsonTrue,
-    fromObject: fromObject,
-    fromArray: fromArray,
-    fromString: fromString,
-    fromNumber: fromNumber,
-    fromBoolean: fromBoolean,
-    fromNull: fromNull,
-    toObject: toObject,
-    toArray: toArray,
-    toString: toString,
-    toNumber: toNumber,
-    toBoolean: toBoolean,
-    toNull: toNull,
-    toJsonType: toJsonType,
-    isObject: isObject,
-    isArray: isArray,
-    isString: isString,
-    isNumber: isNumber,
-    isBoolean: isBoolean,
-    isNull: isNull,
-    isJsonType: isJsonType,
-    verbJsonType: verbJsonType,
-    foldJsonObject: foldJsonObject,
-    foldJsonArray: foldJsonArray,
-    foldJsonString: foldJsonString,
-    foldJsonNumber: foldJsonNumber,
-    foldJsonBoolean: foldJsonBoolean,
-    foldJsonNull: foldJsonNull,
-    foldJson: foldJson,
+    JsonNull: JsonNull, 
+    JsonBoolean: JsonBoolean, 
+    JsonNumber: JsonNumber, 
+    JsonString: JsonString, 
+    JsonArray: JsonArray, 
+    JsonObject: JsonObject, 
+    jsonObjectL: jsonObjectL, 
+    jsonArrayL: jsonArrayL, 
+    jsonStringL: jsonStringL, 
+    jsonNumberL: jsonNumberL, 
+    jsonBooleanL: jsonBooleanL, 
+    jsonNullL: jsonNullL, 
+    objectL: objectL, 
+    arrayL: arrayL, 
+    stringL: stringL, 
+    numberL: numberL, 
+    booleanL: booleanL, 
+    nullL: nullL, 
+    jsonSingletonObject: jsonSingletonObject, 
+    jsonSingletonArray: jsonSingletonArray, 
+    jsonEmptyObject: jsonEmptyObject, 
+    jsonEmptyArray: jsonEmptyArray, 
+    jsonEmptyString: jsonEmptyString, 
+    jsonNull: jsonNull, 
+    jsonZero: jsonZero, 
+    jsonFalse: jsonFalse, 
+    jsonTrue: jsonTrue, 
+    fromObject: fromObject, 
+    fromArray: fromArray, 
+    fromString: fromString, 
+    fromNumber: fromNumber, 
+    fromBoolean: fromBoolean, 
+    fromNull: fromNull, 
+    toObject: toObject, 
+    toArray: toArray, 
+    toString: toString, 
+    toNumber: toNumber, 
+    toBoolean: toBoolean, 
+    toNull: toNull, 
+    toJsonType: toJsonType, 
+    isObject: isObject, 
+    isArray: isArray, 
+    isString: isString, 
+    isNumber: isNumber, 
+    isBoolean: isBoolean, 
+    isNull: isNull, 
+    isJsonType: isJsonType, 
+    verbJsonType: verbJsonType, 
+    foldJsonObject: foldJsonObject, 
+    foldJsonArray: foldJsonArray, 
+    foldJsonString: foldJsonString, 
+    foldJsonNumber: foldJsonNumber, 
+    foldJsonBoolean: foldJsonBoolean, 
+    foldJsonNull: foldJsonNull, 
+    foldJson: foldJson, 
     eqJson: eqJson
 };
 },{"Control.Lens":40,"Data.Map":74,"Data.Maybe":76,"Data.Profunctor.Choice":83,"Prelude":undefined}],"Data.Argonaut.Printer":[function(require,module,exports){
@@ -70029,13 +67805,13 @@ var stringifyArray = function (_622) {
         return "[]";
     };
     if (_622.length > 0) {
-        var _2330 = _622.slice(1);
+        var _2333 = _622.slice(1);
         var withComma = function (x_1) {
             return function (acc) {
                 return ", " + stringify(x_1) + acc;
             };
         };
-        return "[" + stringify(_622[0]) + Data_Foldable.foldr(Data_Foldable.foldableArray({}))(withComma)("]")(_2330);
+        return "[" + stringify(_622[0]) + Data_Foldable.foldr(Data_Foldable.foldableArray({}))(withComma)("]")(_2333);
     };
     throw new Error("Failed pattern match");
 };
@@ -70048,10 +67824,10 @@ var stringifyObject = function (objMap) {
             return ", " + one(x) + acc;
         };
     };
-    var _2334 = Data_Map.toList(objMap);
-    if (_2334.length > 0) {
-        var _2336 = _2334.slice(1);
-        return "{" + one(_2334[0]) + Data_Foldable.foldr(Data_Foldable.foldableArray({}))(withComma)("}")(_2336);
+    var _2337 = Data_Map.toList(objMap);
+    if (_2337.length > 0) {
+        var _2339 = _2337.slice(1);
+        return "{" + one(_2337[0]) + Data_Foldable.foldr(Data_Foldable.foldableArray({}))(withComma)("}")(_2339);
     };
     return "{}";
 };
@@ -70065,9 +67841,9 @@ var showJson = function (__unused) {
     return new Prelude.Show(printJson(printerJNull({})));
 };
 module.exports = {
-    Printer: Printer,
-    printJson: printJson,
-    printerJNull: printerJNull,
+    Printer: Printer, 
+    printJson: printJson, 
+    printerJNull: printerJNull, 
     showJson: showJson
 };
 },{"Data.Argonaut.Core":undefined,"Data.Foldable":71,"Data.Map":74,"Data.Tuple":88,"Prelude":undefined}],"Data.Argonaut":[function(require,module,exports){
@@ -70137,62 +67913,62 @@ var booleanL = Data_Argonaut_Core.booleanL;
 var arrayL = Data_Argonaut_Core.arrayL;
 var arrayIndexL = Data_Argonaut_Decode.arrayIndexL;
 module.exports = {
-    printJson: printJson,
-    jsonParser: jsonParser,
-    encodeJson: encodeJson,
-    objectFieldL: objectFieldL,
-    arrayIndexL: arrayIndexL,
-    decodeL: decodeL,
-    decodeMaybe: decodeMaybe,
-    decodeJson: decodeJson,
-    jsonObjectL: jsonObjectL,
-    jsonArrayL: jsonArrayL,
-    jsonStringL: jsonStringL,
-    jsonNumberL: jsonNumberL,
-    jsonBooleanL: jsonBooleanL,
-    jsonNullL: jsonNullL,
-    objectL: objectL,
-    arrayL: arrayL,
-    stringL: stringL,
-    numberL: numberL,
-    booleanL: booleanL,
-    nullL: nullL,
-    jsonSingletonObject: jsonSingletonObject,
-    jsonSingletonArray: jsonSingletonArray,
-    jsonEmptyObject: jsonEmptyObject,
-    jsonEmptyArray: jsonEmptyArray,
-    jsonEmptyString: jsonEmptyString,
-    jsonNull: jsonNull,
-    jsonZero: jsonZero,
-    jsonFalse: jsonFalse,
-    jsonTrue: jsonTrue,
-    fromObject: fromObject,
-    fromArray: fromArray,
-    fromString: fromString,
-    fromNumber: fromNumber,
-    fromBoolean: fromBoolean,
-    fromNull: fromNull,
-    toObject: toObject,
-    toArray: toArray,
-    toString: toString,
-    toNumber: toNumber,
-    toBoolean: toBoolean,
-    toNull: toNull,
-    isObject: isObject,
-    isArray: isArray,
-    isString: isString,
-    isNumber: isNumber,
-    isBoolean: isBoolean,
-    isNull: isNull,
-    foldJsonObject: foldJsonObject,
-    foldJsonArray: foldJsonArray,
-    foldJsonString: foldJsonString,
-    foldJsonNumber: foldJsonNumber,
-    foldJsonBoolean: foldJsonBoolean,
-    foldJsonNull: foldJsonNull,
-    foldJson: foldJson,
-    "?>>=": $qmark$greater$greater$eq,
-    "~>": $tilde$greater,
+    printJson: printJson, 
+    jsonParser: jsonParser, 
+    encodeJson: encodeJson, 
+    objectFieldL: objectFieldL, 
+    arrayIndexL: arrayIndexL, 
+    decodeL: decodeL, 
+    decodeMaybe: decodeMaybe, 
+    decodeJson: decodeJson, 
+    jsonObjectL: jsonObjectL, 
+    jsonArrayL: jsonArrayL, 
+    jsonStringL: jsonStringL, 
+    jsonNumberL: jsonNumberL, 
+    jsonBooleanL: jsonBooleanL, 
+    jsonNullL: jsonNullL, 
+    objectL: objectL, 
+    arrayL: arrayL, 
+    stringL: stringL, 
+    numberL: numberL, 
+    booleanL: booleanL, 
+    nullL: nullL, 
+    jsonSingletonObject: jsonSingletonObject, 
+    jsonSingletonArray: jsonSingletonArray, 
+    jsonEmptyObject: jsonEmptyObject, 
+    jsonEmptyArray: jsonEmptyArray, 
+    jsonEmptyString: jsonEmptyString, 
+    jsonNull: jsonNull, 
+    jsonZero: jsonZero, 
+    jsonFalse: jsonFalse, 
+    jsonTrue: jsonTrue, 
+    fromObject: fromObject, 
+    fromArray: fromArray, 
+    fromString: fromString, 
+    fromNumber: fromNumber, 
+    fromBoolean: fromBoolean, 
+    fromNull: fromNull, 
+    toObject: toObject, 
+    toArray: toArray, 
+    toString: toString, 
+    toNumber: toNumber, 
+    toBoolean: toBoolean, 
+    toNull: toNull, 
+    isObject: isObject, 
+    isArray: isArray, 
+    isString: isString, 
+    isNumber: isNumber, 
+    isBoolean: isBoolean, 
+    isNull: isNull, 
+    foldJsonObject: foldJsonObject, 
+    foldJsonArray: foldJsonArray, 
+    foldJsonString: foldJsonString, 
+    foldJsonNumber: foldJsonNumber, 
+    foldJsonBoolean: foldJsonBoolean, 
+    foldJsonNull: foldJsonNull, 
+    foldJson: foldJson, 
+    "?>>=": $qmark$greater$greater$eq, 
+    "~>": $tilde$greater, 
     ":=": $colon$eq
 };
 },{"Data.Argonaut.Combinators":57,"Data.Argonaut.Core":undefined,"Data.Argonaut.Decode":58,"Data.Argonaut.Encode":59,"Data.Argonaut.Parser":60,"Data.Argonaut.Printer":undefined,"Prelude":undefined}],"Data.Either":[function(require,module,exports){
@@ -70324,18 +68100,18 @@ var monadEither = function (__unused) {
     return new Prelude.Monad(applicativeEither, bindEither);
 };
 module.exports = {
-    Left: Left,
-    Right: Right,
-    isRight: isRight,
-    isLeft: isLeft,
-    either: either,
-    functorEither: functorEither,
-    applyEither: applyEither,
-    applicativeEither: applicativeEither,
-    bindEither: bindEither,
-    monadEither: monadEither,
-    showEither: showEither,
-    eqEither: eqEither,
+    Left: Left, 
+    Right: Right, 
+    isRight: isRight, 
+    isLeft: isLeft, 
+    either: either, 
+    functorEither: functorEither, 
+    applyEither: applyEither, 
+    applicativeEither: applicativeEither, 
+    bindEither: bindEither, 
+    monadEither: monadEither, 
+    showEither: showEither, 
+    eqEither: eqEither, 
     ordEither: ordEither
 };
 },{"Prelude":undefined}],"Graphics.C3":[function(require,module,exports){
@@ -70395,9 +68171,9 @@ var showC3Type = function (__unused) {
 };
 var showC3Type_ = Prelude.show(showC3Type({}));
 var options = {
-    bindto: "",
-    c3Data: [  ],
-    xAxis: xAxis("")([  ]),
+    bindto: "", 
+    c3Data: [  ], 
+    xAxis: xAxis("")([  ]), 
     yAxis: yAxis("")([  ])
 };
 var eqC3Type = function (__unused) {
@@ -70421,8 +68197,8 @@ var eqC3Type = function (__unused) {
     });
 };
 var c3Data = {
-    c3Type: Bar.value,
-    name: "",
+    c3Type: Bar.value, 
+    name: "", 
     values: [  ]
 };
 var axisName = function (_191) {
@@ -70432,15 +68208,15 @@ var axisData = function (_192) {
     return _192.value2;
 };
 module.exports = {
-    Bar: Bar,
-    Line: Line,
-    Pie: Pie,
-    yAxis: yAxis,
-    xAxis: xAxis,
-    options: options,
-    c3Data: c3Data,
-    generate: generate,
-    showC3Type: showC3Type,
+    Bar: Bar, 
+    Line: Line, 
+    Pie: Pie, 
+    yAxis: yAxis, 
+    xAxis: xAxis, 
+    options: options, 
+    c3Data: c3Data, 
+    generate: generate, 
+    showC3Type: showC3Type, 
     eqC3Type: eqC3Type
 };
 },{"Prelude":undefined}],"Prelude":[function(require,module,exports){
@@ -70817,8 +68593,8 @@ var compare = function (dict) {
 var $less = function (__dict_Ord_10) {
     return function (a1) {
         return function (a2) {
-            var _872 = compare(__dict_Ord_10)(a1)(a2);
-            if (_872 instanceof LT) {
+            var _875 = compare(__dict_Ord_10)(a1)(a2);
+            if (_875 instanceof LT) {
                 return true;
             };
             return false;
@@ -70828,8 +68604,8 @@ var $less = function (__dict_Ord_10) {
 var $less$eq = function (__dict_Ord_11) {
     return function (a1) {
         return function (a2) {
-            var _873 = compare(__dict_Ord_11)(a1)(a2);
-            if (_873 instanceof GT) {
+            var _876 = compare(__dict_Ord_11)(a1)(a2);
+            if (_876 instanceof GT) {
                 return false;
             };
             return true;
@@ -70839,8 +68615,8 @@ var $less$eq = function (__dict_Ord_11) {
 var $greater = function (__dict_Ord_12) {
     return function (a1) {
         return function (a2) {
-            var _874 = compare(__dict_Ord_12)(a1)(a2);
-            if (_874 instanceof GT) {
+            var _877 = compare(__dict_Ord_12)(a1)(a2);
+            if (_877 instanceof GT) {
                 return true;
             };
             return false;
@@ -70850,8 +68626,8 @@ var $greater = function (__dict_Ord_12) {
 var $greater$eq = function (__dict_Ord_13) {
     return function (a1) {
         return function (a2) {
-            var _875 = compare(__dict_Ord_13)(a1)(a2);
-            if (_875 instanceof LT) {
+            var _878 = compare(__dict_Ord_13)(a1)(a2);
+            if (_878 instanceof LT) {
                 return false;
             };
             return true;
@@ -70892,14 +68668,14 @@ var ordArray = function (__dict_Ord_9) {
                 return GT.value;
             };
             if (_144.length > 0) {
-                var _882 = _144.slice(1);
+                var _885 = _144.slice(1);
                 if (_145.length > 0) {
-                    var _880 = _145.slice(1);
-                    var _878 = compare(__dict_Ord_9)(_144[0])(_145[0]);
-                    if (_878 instanceof EQ) {
-                        return compare(ordArray(__dict_Ord_9))(_882)(_880);
+                    var _883 = _145.slice(1);
+                    var _881 = compare(__dict_Ord_9)(_144[0])(_145[0]);
+                    if (_881 instanceof EQ) {
+                        return compare(ordArray(__dict_Ord_9))(_885)(_883);
                     };
-                    return _878;
+                    return _881;
                 };
             };
             throw new Error("Failed pattern match");
@@ -70970,101 +68746,101 @@ var ap = function (__dict_Monad_14) {
     };
 };
 module.exports = {
-    Unit: Unit,
-    LT: LT,
-    GT: GT,
-    EQ: EQ,
-    Semigroup: Semigroup,
-    BoolLike: BoolLike,
-    Bits: Bits,
-    Ord: Ord,
-    Eq: Eq,
-    Num: Num,
-    Monad: Monad,
-    Bind: Bind,
-    Applicative: Applicative,
-    Apply: Apply,
-    Functor: Functor,
-    Show: Show,
-    Category: Category,
-    Semigroupoid: Semigroupoid,
-    unit: unit,
-    "++": $plus$plus,
-    "<>": $less$greater,
-    not: not,
-    "||": $bar$bar,
-    "&&": $amp$amp,
-    complement: complement,
-    zshr: zshr,
-    shr: shr,
-    shl: shl,
-    "^": $up,
-    "|": $bar,
-    "&": $amp,
-    ">=": $greater$eq,
-    "<=": $less$eq,
-    ">": $greater,
-    "<": $less,
-    compare: compare,
-    refIneq: refIneq,
-    refEq: refEq,
-    "/=": $div$eq,
-    "==": $eq$eq,
-    negate: negate,
-    "%": $percent,
-    "/": $div,
-    "*": $times,
-    "-": $minus,
-    "+": $plus,
-    ap: ap,
-    liftM1: liftM1,
-    "return": $$return,
-    ">>=": $greater$greater$eq,
-    liftA1: liftA1,
-    pure: pure,
-    "<*>": $less$times$greater,
-    "void": $$void,
-    "<$>": $less$dollar$greater,
-    show: show,
-    cons: cons,
-    ":": $colon,
-    "#": $hash,
-    "$": $dollar,
-    id: id,
-    ">>>": $greater$greater$greater,
-    "<<<": $less$less$less,
-    asTypeOf: asTypeOf,
-    "const": $$const,
-    flip: flip,
-    semigroupoidArr: semigroupoidArr,
-    categoryArr: categoryArr,
-    showUnit: showUnit,
-    showString: showString,
-    showBoolean: showBoolean,
-    showNumber: showNumber,
-    showArray: showArray,
-    functorArr: functorArr,
-    applyArr: applyArr,
-    applicativeArr: applicativeArr,
-    bindArr: bindArr,
-    monadArr: monadArr,
-    numNumber: numNumber,
-    eqUnit: eqUnit,
-    eqString: eqString,
-    eqNumber: eqNumber,
-    eqBoolean: eqBoolean,
-    eqArray: eqArray,
-    eqOrdering: eqOrdering,
-    showOrdering: showOrdering,
-    ordUnit: ordUnit,
-    ordBoolean: ordBoolean,
-    ordNumber: ordNumber,
-    ordString: ordString,
-    ordArray: ordArray,
-    bitsNumber: bitsNumber,
-    boolLikeBoolean: boolLikeBoolean,
-    semigroupUnit: semigroupUnit,
-    semigroupString: semigroupString,
+    Unit: Unit, 
+    LT: LT, 
+    GT: GT, 
+    EQ: EQ, 
+    Semigroup: Semigroup, 
+    BoolLike: BoolLike, 
+    Bits: Bits, 
+    Ord: Ord, 
+    Eq: Eq, 
+    Num: Num, 
+    Monad: Monad, 
+    Bind: Bind, 
+    Applicative: Applicative, 
+    Apply: Apply, 
+    Functor: Functor, 
+    Show: Show, 
+    Category: Category, 
+    Semigroupoid: Semigroupoid, 
+    unit: unit, 
+    "++": $plus$plus, 
+    "<>": $less$greater, 
+    not: not, 
+    "||": $bar$bar, 
+    "&&": $amp$amp, 
+    complement: complement, 
+    zshr: zshr, 
+    shr: shr, 
+    shl: shl, 
+    "^": $up, 
+    "|": $bar, 
+    "&": $amp, 
+    ">=": $greater$eq, 
+    "<=": $less$eq, 
+    ">": $greater, 
+    "<": $less, 
+    compare: compare, 
+    refIneq: refIneq, 
+    refEq: refEq, 
+    "/=": $div$eq, 
+    "==": $eq$eq, 
+    negate: negate, 
+    "%": $percent, 
+    "/": $div, 
+    "*": $times, 
+    "-": $minus, 
+    "+": $plus, 
+    ap: ap, 
+    liftM1: liftM1, 
+    "return": $$return, 
+    ">>=": $greater$greater$eq, 
+    liftA1: liftA1, 
+    pure: pure, 
+    "<*>": $less$times$greater, 
+    "void": $$void, 
+    "<$>": $less$dollar$greater, 
+    show: show, 
+    cons: cons, 
+    ":": $colon, 
+    "#": $hash, 
+    "$": $dollar, 
+    id: id, 
+    ">>>": $greater$greater$greater, 
+    "<<<": $less$less$less, 
+    asTypeOf: asTypeOf, 
+    "const": $$const, 
+    flip: flip, 
+    semigroupoidArr: semigroupoidArr, 
+    categoryArr: categoryArr, 
+    showUnit: showUnit, 
+    showString: showString, 
+    showBoolean: showBoolean, 
+    showNumber: showNumber, 
+    showArray: showArray, 
+    functorArr: functorArr, 
+    applyArr: applyArr, 
+    applicativeArr: applicativeArr, 
+    bindArr: bindArr, 
+    monadArr: monadArr, 
+    numNumber: numNumber, 
+    eqUnit: eqUnit, 
+    eqString: eqString, 
+    eqNumber: eqNumber, 
+    eqBoolean: eqBoolean, 
+    eqArray: eqArray, 
+    eqOrdering: eqOrdering, 
+    showOrdering: showOrdering, 
+    ordUnit: ordUnit, 
+    ordBoolean: ordBoolean, 
+    ordNumber: ordNumber, 
+    ordString: ordString, 
+    ordArray: ordArray, 
+    bitsNumber: bitsNumber, 
+    boolLikeBoolean: boolLikeBoolean, 
+    semigroupUnit: semigroupUnit, 
+    semigroupString: semigroupString, 
     semigroupArr: semigroupArr
 };
 },{}],"SlamData.Helpers":[function(require,module,exports){
@@ -71077,8 +68853,8 @@ var Data_Map = require("Data.Map");
 function checked(el) {  return el.checked;};
 function selectedOptgroup(el) {  return el.selectedOptions[0].parentNode.label;};
 function value(el) {  return el.value;};
-var serverURI = function (_53) {
-    return _53.server.location + ":" + Prelude.show(Prelude.showNumber({}))(_53.server.port);
+var serverURI = function (_46) {
+    return _46.server.location + ":" + Prelude.show(Prelude.showNumber({}))(_46.server.port);
 };
 var getOrElse = Prelude.flip(Data_Maybe.fromMaybe);
 var endsWith = function (str) {
@@ -71091,9 +68867,9 @@ var defaultServerLocation = "http://localhost";
 var defaultServerURI = defaultServerLocation + ":" + Prelude.show(Prelude.showNumber({}))(defaultServerPort);
 var defaultSDConfig = {
     server: {
-        location: defaultServerLocation,
+        location: defaultServerLocation, 
         port: defaultServerPort
-    },
+    }, 
     nodeWebkit: {
         java: "java"
     }
@@ -71104,16 +68880,16 @@ var defaultMongoDatabase = "test";
 var defaultSEConfig = {
     server: {
         port: defaultServerPort
-    },
+    }, 
     mountings: Data_Map.singleton(defaultMountPath)(SlamData_Types.MountMongo.create({
-        connectionUri: defaultMongoURI,
+        connectionUri: defaultMongoURI, 
         database: defaultMongoDatabase
     }))
 };
 var activate = function (__dict_Eq_0) {
-    return function (_51) {
-        return function (_52) {
-            if (Prelude["=="](__dict_Eq_0)(_51)(_52)) {
+    return function (_44) {
+        return function (_45) {
+            if (Prelude["=="](__dict_Eq_0)(_44)(_45)) {
                 return " active";
             };
             return "";
@@ -71121,138 +68897,138 @@ var activate = function (__dict_Eq_0) {
     };
 };
 module.exports = {
-    value: value,
-    selectedOptgroup: selectedOptgroup,
-    checked: checked,
-    serverURI: serverURI,
-    defaultSEConfig: defaultSEConfig,
-    defaultSDConfig: defaultSDConfig,
-    defaultServerURI: defaultServerURI,
-    defaultMongoDatabase: defaultMongoDatabase,
-    defaultMongoURI: defaultMongoURI,
-    defaultMountPath: defaultMountPath,
-    defaultServerPort: defaultServerPort,
-    defaultServerLocation: defaultServerLocation,
-    activate: activate,
-    endsWith: endsWith,
+    value: value, 
+    selectedOptgroup: selectedOptgroup, 
+    checked: checked, 
+    serverURI: serverURI, 
+    defaultSEConfig: defaultSEConfig, 
+    defaultSDConfig: defaultSDConfig, 
+    defaultServerURI: defaultServerURI, 
+    defaultMongoDatabase: defaultMongoDatabase, 
+    defaultMongoURI: defaultMongoURI, 
+    defaultMountPath: defaultMountPath, 
+    defaultServerPort: defaultServerPort, 
+    defaultServerLocation: defaultServerLocation, 
+    activate: activate, 
+    endsWith: endsWith, 
     getOrElse: getOrElse
 };
 },{"Data.Map":74,"Data.Maybe":76,"Data.String":86,"Prelude":undefined,"SlamData.Types":undefined}],"SlamData.Types.JS":[function(require,module,exports){
 "use strict";
 var Prelude = require("Prelude");
 var SlamData_Types = require("SlamData.Types");
-var isShowSettings = function (_121) {
-    if (_121 instanceof SlamData_Types.ShowSettings) {
+var isShowSettings = function (_114) {
+    if (_114 instanceof SlamData_Types.ShowSettings) {
         return true;
     };
     return false;
 };
-var isSaveSEConfig = function (_113) {
-    if (_113 instanceof SlamData_Types.SaveSEConfig) {
+var isSaveSEConfig = function (_106) {
+    if (_106 instanceof SlamData_Types.SaveSEConfig) {
         return true;
     };
     return false;
 };
-var isSaveSDConfig = function (_112) {
-    if (_112 instanceof SlamData_Types.SaveSDConfig) {
+var isSaveSDConfig = function (_105) {
+    if (_105 instanceof SlamData_Types.SaveSDConfig) {
         return true;
     };
     return false;
 };
-var isSaveNotebook = function (_118) {
-    if (_118 instanceof SlamData_Types.SaveNotebook) {
+var isSaveNotebook = function (_111) {
+    if (_111 instanceof SlamData_Types.SaveNotebook) {
         return true;
     };
     return false;
 };
-var isRenameNotebook = function (_120) {
-    if (_120 instanceof SlamData_Types.RenameNotebook) {
+var isRenameNotebook = function (_113) {
+    if (_113 instanceof SlamData_Types.RenameNotebook) {
         return true;
     };
     return false;
 };
-var isReadFileSystem = function (_114) {
-    if (_114 instanceof SlamData_Types.ReadFileSystem) {
+var isReadFileSystem = function (_107) {
+    if (_107 instanceof SlamData_Types.ReadFileSystem) {
         return true;
     };
     return false;
 };
-var isReadFields = function (_115) {
-    if (_115 instanceof SlamData_Types.ReadFields) {
+var isReadFields = function (_108) {
+    if (_108 instanceof SlamData_Types.ReadFields) {
         return true;
     };
     return false;
 };
-var isOpenNotebook = function (_119) {
-    if (_119 instanceof SlamData_Types.OpenNotebook) {
+var isOpenNotebook = function (_112) {
+    if (_112 instanceof SlamData_Types.OpenNotebook) {
         return true;
     };
     return false;
 };
-var isHideSettings = function (_122) {
-    if (_122 instanceof SlamData_Types.HideSettings) {
+var isHideSettings = function (_115) {
+    if (_115 instanceof SlamData_Types.HideSettings) {
         return true;
     };
     return false;
 };
-var isEvalVisual = function (_127) {
-    if (_127 instanceof SlamData_Types.EvalVisual) {
+var isEvalVisual = function (_120) {
+    if (_120 instanceof SlamData_Types.EvalVisual) {
         return true;
     };
     return false;
 };
-var isEvalBlock = function (_126) {
-    if (_126 instanceof SlamData_Types.EvalBlock) {
+var isEvalBlock = function (_119) {
+    if (_119 instanceof SlamData_Types.EvalBlock) {
         return true;
     };
     return false;
 };
-var isEditBlock = function (_125) {
-    if (_125 instanceof SlamData_Types.EditBlock) {
+var isEditBlock = function (_118) {
+    if (_118 instanceof SlamData_Types.EditBlock) {
         return true;
     };
     return false;
 };
-var isDeleteBlock = function (_124) {
-    if (_124 instanceof SlamData_Types.DeleteBlock) {
+var isDeleteBlock = function (_117) {
+    if (_117 instanceof SlamData_Types.DeleteBlock) {
         return true;
     };
     return false;
 };
-var isCreateNotebook = function (_116) {
-    if (_116 instanceof SlamData_Types.CreateNotebook) {
+var isCreateNotebook = function (_109) {
+    if (_109 instanceof SlamData_Types.CreateNotebook) {
         return true;
     };
     return false;
 };
-var isCreateBlock = function (_123) {
-    if (_123 instanceof SlamData_Types.CreateBlock) {
+var isCreateBlock = function (_116) {
+    if (_116 instanceof SlamData_Types.CreateBlock) {
         return true;
     };
     return false;
 };
-var isCloseNotebook = function (_117) {
-    if (_117 instanceof SlamData_Types.CloseNotebook) {
+var isCloseNotebook = function (_110) {
+    if (_110 instanceof SlamData_Types.CloseNotebook) {
         return true;
     };
     return false;
 };
 module.exports = {
-    isEvalVisual: isEvalVisual,
-    isEvalBlock: isEvalBlock,
-    isEditBlock: isEditBlock,
-    isDeleteBlock: isDeleteBlock,
-    isCreateBlock: isCreateBlock,
-    isHideSettings: isHideSettings,
-    isShowSettings: isShowSettings,
-    isRenameNotebook: isRenameNotebook,
-    isOpenNotebook: isOpenNotebook,
-    isSaveNotebook: isSaveNotebook,
-    isCloseNotebook: isCloseNotebook,
-    isCreateNotebook: isCreateNotebook,
-    isReadFields: isReadFields,
-    isReadFileSystem: isReadFileSystem,
-    isSaveSEConfig: isSaveSEConfig,
+    isEvalVisual: isEvalVisual, 
+    isEvalBlock: isEvalBlock, 
+    isEditBlock: isEditBlock, 
+    isDeleteBlock: isDeleteBlock, 
+    isCreateBlock: isCreateBlock, 
+    isHideSettings: isHideSettings, 
+    isShowSettings: isShowSettings, 
+    isRenameNotebook: isRenameNotebook, 
+    isOpenNotebook: isOpenNotebook, 
+    isSaveNotebook: isSaveNotebook, 
+    isCloseNotebook: isCloseNotebook, 
+    isCreateNotebook: isCreateNotebook, 
+    isReadFields: isReadFields, 
+    isReadFileSystem: isReadFileSystem, 
+    isSaveSEConfig: isSaveSEConfig, 
     isSaveSDConfig: isSaveSDConfig
 };
 },{"Prelude":undefined,"SlamData.Types":undefined}],"SlamData.Types.Workspace.Notebook.Block":[function(require,module,exports){
@@ -71286,18 +69062,18 @@ var Block = {
     }
 };
 var showBlockType = function (__unused) {
-    return new Prelude.Show(function (_28) {
-        return _28;
+    return new Prelude.Show(function (_723) {
+        return _723;
     });
 };
 var showBlockMode = function (__unused) {
-    return new Prelude.Show(function (_31) {
-        return _31;
+    return new Prelude.Show(function (_726) {
+        return _726;
     });
 };
 var showBlockID = function (__unused) {
-    return new Prelude.Show(function (_32) {
-        return Prelude.show(Node_UUID.showUUID({}))(_32);
+    return new Prelude.Show(function (_727) {
+        return Prelude.show(Node_UUID.showUUID({}))(_727);
     });
 };
 var eqBlockType = function (__unused) {
@@ -71305,9 +69081,9 @@ var eqBlockType = function (__unused) {
         return function (bt$prime) {
             return !Prelude["=="](eqBlockType({}))(bt)(bt$prime);
         };
-    }, function (_26) {
-        return function (_27) {
-            return _26 === _27;
+    }, function (_721) {
+        return function (_722) {
+            return _721 === _722;
         };
     });
 };
@@ -71316,9 +69092,9 @@ var eqBlockMode = function (__unused) {
         return function (bm$prime) {
             return !Prelude["=="](eqBlockMode({}))(bm)(bm$prime);
         };
-    }, function (_29) {
-        return function (_30) {
-            return _29 === _30;
+    }, function (_724) {
+        return function (_725) {
+            return _724 === _725;
         };
     });
 };
@@ -71327,9 +69103,9 @@ var eqBlockID = function (__unused) {
         return function (i$prime) {
             return !Prelude["=="](eqBlockID({}))(i)(i$prime);
         };
-    }, function (_24) {
-        return function (_25) {
-            return Prelude["=="](Node_UUID.eqUUID({}))(_24)(_25);
+    }, function (_719) {
+        return function (_720) {
+            return Prelude["=="](Node_UUID.eqUUID({}))(_719)(_720);
         };
     });
 };
@@ -71338,9 +69114,9 @@ var eqBlock = function (__unused) {
         return function (b$prime) {
             return !Prelude["=="](eqBlock({}))(b)(b$prime);
         };
-    }, function (_22) {
-        return function (_23) {
-            return Prelude["=="](eqBlockID({}))(_22.ident)(_23.ident) && Prelude["=="](eqBlockType({}))(_22.blockType)(_23.blockType) && Prelude["=="](eqBlockMode({}))(_22.blockMode)(_23.blockMode) && _22.editContent === _23.editContent && _22.evalContent === _23.evalContent;
+    }, function (_717) {
+        return function (_718) {
+            return Prelude["=="](eqBlockID({}))(_717.ident)(_718.ident) && Prelude["=="](eqBlockType({}))(_717.blockType)(_718.blockType) && Prelude["=="](eqBlockMode({}))(_717.blockMode)(_718.blockMode) && _717.editContent === _718.editContent && _717.evalContent === _718.evalContent;
         };
     });
 };
@@ -71355,13 +69131,13 @@ var encodeJsonBlockMode = function (__unused) {
     });
 };
 var encodeJsonBlockID = function (__unused) {
-    return new Data_Argonaut_Encode.EncodeJson(function (_34) {
-        return Data_Argonaut.encodeJson(Node_UUID.encodeJsonUUID({}))(_34);
+    return new Data_Argonaut_Encode.EncodeJson(function (_729) {
+        return Data_Argonaut.encodeJson(Node_UUID.encodeJsonUUID({}))(_729);
     });
 };
 var encodeJsonBlock = function (__unused) {
-    return new Data_Argonaut_Encode.EncodeJson(function (_33) {
-        return Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("ident")(Data_Argonaut.encodeJson(encodeJsonBlockID({}))(_33.ident)))(Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("blockType")(Data_Argonaut.encodeJson(encodeJsonBlockType({}))(_33.blockType)))(Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("blockMode")(Data_Argonaut.encodeJson(encodeJsonBlockMode({}))(_33.blockMode)))(Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("editContent")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJString({}))(_33.editContent)))(Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("evalContent")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJString({}))(_33.evalContent)))(Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("label")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJString({}))(_33.label)))(Data_Argonaut.jsonEmptyObject))))));
+    return new Data_Argonaut_Encode.EncodeJson(function (_728) {
+        return Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("ident")(Data_Argonaut.encodeJson(encodeJsonBlockID({}))(_728.ident)))(Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("blockType")(Data_Argonaut.encodeJson(encodeJsonBlockType({}))(_728.blockType)))(Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("blockMode")(Data_Argonaut.encodeJson(encodeJsonBlockMode({}))(_728.blockMode)))(Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("editContent")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJString({}))(_728.editContent)))(Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("evalContent")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJString({}))(_728.evalContent)))(Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("label")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJString({}))(_728.label)))(Data_Argonaut.jsonEmptyObject))))));
     });
 };
 var showBlock = function (__unused) {
@@ -71409,19 +69185,19 @@ var decodeJsonBlockID = function (__unused) {
 var decodeJsonBlock = function (__unused) {
     return new Data_Argonaut_Decode.DecodeJson(function (json) {
         return Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Argonaut.toObject(json))("Block"))(function (obj) {
-            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("ident")(obj))("ident"))(Data_Argonaut.decodeJson(decodeJsonBlockID({}))))(function (_5) {
-                return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("blockMode")(obj))("blockMode"))(Data_Argonaut.decodeJson(decodeJsonBlockMode({}))))(function (_4) {
-                    return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("blockType")(obj))("blockType"))(Data_Argonaut.decodeJson(decodeJsonBlockType({}))))(function (_3) {
-                        return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("editContent")(obj))("editContent"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonString({}))))(function (_2) {
-                            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("evalContent")(obj))("evalContent"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonString({}))))(function (_1) {
-                                return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("label")(obj))("label"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonString({}))))(function (_0) {
+            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("ident")(obj))("ident"))(Data_Argonaut.decodeJson(decodeJsonBlockID({}))))(function (_110) {
+                return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("blockMode")(obj))("blockMode"))(Data_Argonaut.decodeJson(decodeJsonBlockMode({}))))(function (_109) {
+                    return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("blockType")(obj))("blockType"))(Data_Argonaut.decodeJson(decodeJsonBlockType({}))))(function (_108) {
+                        return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("editContent")(obj))("editContent"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonString({}))))(function (_107) {
+                            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("evalContent")(obj))("evalContent"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonString({}))))(function (_106) {
+                                return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("label")(obj))("label"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonString({}))))(function (_105) {
                                     return Prelude.pure(Data_Either.applicativeEither({}))({
-                                        ident: _5,
-                                        blockMode: _4,
-                                        blockType: _3,
-                                        editContent: _2,
-                                        evalContent: _1,
-                                        label: _0
+                                        ident: _110, 
+                                        blockMode: _109, 
+                                        blockType: _108, 
+                                        editContent: _107, 
+                                        evalContent: _106, 
+                                        label: _105
                                     });
                                 });
                             });
@@ -71433,25 +69209,25 @@ var decodeJsonBlock = function (__unused) {
     });
 };
 module.exports = {
-    BlockMode: BlockMode,
-    BlockType: BlockType,
-    Block: Block,
-    BlockID: BlockID,
-    eqBlock: eqBlock,
-    eqBlockID: eqBlockID,
-    eqBlockType: eqBlockType,
-    showBlockType: showBlockType,
-    eqBlockMode: eqBlockMode,
-    showBlockMode: showBlockMode,
-    showBlockID: showBlockID,
-    showBlock: showBlock,
-    decodeJsonBlock: decodeJsonBlock,
-    decodeJsonBlockID: decodeJsonBlockID,
-    decodeJsonBlockType: decodeJsonBlockType,
-    decodeJsonBlockMode: decodeJsonBlockMode,
-    encodeJsonBlock: encodeJsonBlock,
-    encodeJsonBlockID: encodeJsonBlockID,
-    encodeJsonBlockType: encodeJsonBlockType,
+    BlockMode: BlockMode, 
+    BlockType: BlockType, 
+    Block: Block, 
+    BlockID: BlockID, 
+    eqBlock: eqBlock, 
+    eqBlockID: eqBlockID, 
+    eqBlockType: eqBlockType, 
+    showBlockType: showBlockType, 
+    eqBlockMode: eqBlockMode, 
+    showBlockMode: showBlockMode, 
+    showBlockID: showBlockID, 
+    showBlock: showBlock, 
+    decodeJsonBlock: decodeJsonBlock, 
+    decodeJsonBlockID: decodeJsonBlockID, 
+    decodeJsonBlockType: decodeJsonBlockType, 
+    decodeJsonBlockMode: decodeJsonBlockMode, 
+    encodeJsonBlock: encodeJsonBlock, 
+    encodeJsonBlockID: encodeJsonBlockID, 
+    encodeJsonBlockType: encodeJsonBlockType, 
     encodeJsonBlockMode: encodeJsonBlockMode
 };
 },{"Data.Argonaut":undefined,"Data.Argonaut.Decode":58,"Data.Argonaut.Encode":59,"Data.Argonaut.Printer":undefined,"Data.Either":undefined,"Data.Map":74,"Node.UUID":91,"Prelude":undefined}],"SlamData.Types":[function(require,module,exports){
@@ -71619,46 +69395,46 @@ var SlamDataEvent = {
 var responseEvent = "response";
 var requestEvent = "request";
 var encodeSEConfigServer = function (__unused) {
-    return new Data_Argonaut_Encode.EncodeJson(function (_45) {
-        return Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("port")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJNumber({}))(_45.port)))(Data_Argonaut.jsonEmptyObject);
+    return new Data_Argonaut_Encode.EncodeJson(function (_38) {
+        return Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("port")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJNumber({}))(_38.port)))(Data_Argonaut.jsonEmptyObject);
     });
 };
 var encodeSDConfigServer = function (__unused) {
-    return new Data_Argonaut_Encode.EncodeJson(function (_42) {
-        return Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("location")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJString({}))(_42.location)))(Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("port")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJNumber({}))(_42.port)))(Data_Argonaut.jsonEmptyObject));
+    return new Data_Argonaut_Encode.EncodeJson(function (_35) {
+        return Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("location")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJString({}))(_35.location)))(Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("port")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJNumber({}))(_35.port)))(Data_Argonaut.jsonEmptyObject));
     });
 };
 var encodeSDConfigNodeWebkit = function (__unused) {
-    return new Data_Argonaut_Encode.EncodeJson(function (_43) {
-        return Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("java")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJString({}))(_43.java)))(Data_Argonaut.jsonEmptyObject);
+    return new Data_Argonaut_Encode.EncodeJson(function (_36) {
+        return Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("java")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJString({}))(_36.java)))(Data_Argonaut.jsonEmptyObject);
     });
 };
 var encodeSDConfig = function (__unused) {
-    return new Data_Argonaut_Encode.EncodeJson(function (_41) {
-        return Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("server")(Data_Argonaut.encodeJson(encodeSDConfigServer({}))(_41.server)))(Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("nodeWebkit")(Data_Argonaut.encodeJson(encodeSDConfigNodeWebkit({}))(_41.nodeWebkit)))(Data_Argonaut.jsonEmptyObject));
+    return new Data_Argonaut_Encode.EncodeJson(function (_34) {
+        return Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("server")(Data_Argonaut.encodeJson(encodeSDConfigServer({}))(_34.server)))(Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("nodeWebkit")(Data_Argonaut.encodeJson(encodeSDConfigNodeWebkit({}))(_34.nodeWebkit)))(Data_Argonaut.jsonEmptyObject));
     });
 };
 var encodeMountingRec = function (__unused) {
-    return new Data_Argonaut_Encode.EncodeJson(function (_47) {
-        return Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("connectionUri")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJString({}))(_47.connectionUri)))(Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("database")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJString({}))(_47.database)))(Data_Argonaut.jsonEmptyObject));
+    return new Data_Argonaut_Encode.EncodeJson(function (_40) {
+        return Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("connectionUri")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJString({}))(_40.connectionUri)))(Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("database")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJString({}))(_40.database)))(Data_Argonaut.jsonEmptyObject));
     });
 };
 var encodeMounting = function (__unused) {
-    return new Data_Argonaut_Encode.EncodeJson(function (_46) {
-        return Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("mongodb")(Data_Argonaut.encodeJson(encodeMountingRec({}))(_46.value0)))(Data_Argonaut.jsonEmptyObject);
+    return new Data_Argonaut_Encode.EncodeJson(function (_39) {
+        return Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("mongodb")(Data_Argonaut.encodeJson(encodeMountingRec({}))(_39.value0)))(Data_Argonaut.jsonEmptyObject);
     });
 };
 var encodeSEConfig = function (__unused) {
-    return new Data_Argonaut_Encode.EncodeJson(function (_44) {
-        return Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("server")(Data_Argonaut.encodeJson(encodeSEConfigServer({}))(_44.server)))(Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("mountings")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeMap(encodeMounting({})))(_44.mountings)))(Data_Argonaut.jsonEmptyObject));
+    return new Data_Argonaut_Encode.EncodeJson(function (_37) {
+        return Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("server")(Data_Argonaut.encodeJson(encodeSEConfigServer({}))(_37.server)))(Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("mountings")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeMap(encodeMounting({})))(_37.mountings)))(Data_Argonaut.jsonEmptyObject));
     });
 };
 var decodeSEConfigServer = function (__unused) {
     return new Data_Argonaut_Decode.DecodeJson(function (json) {
         return Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Argonaut.toObject(json))("SEConfigServer"))(function (obj) {
-            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("port")(obj))("port"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonNumber({}))))(function (_18) {
+            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("port")(obj))("port"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonNumber({}))))(function (_8) {
                 return Prelude.pure(Data_Either.applicativeEither({}))({
-                    port: _18
+                    port: _8
                 });
             });
         });
@@ -71667,11 +69443,11 @@ var decodeSEConfigServer = function (__unused) {
 var decodeSDConfigServer = function (__unused) {
     return new Data_Argonaut_Decode.DecodeJson(function (json) {
         return Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Argonaut.toObject(json))("SDConfigServer"))(function (obj) {
-            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("location")(obj))("location"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonString({}))))(function (_13) {
-                return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("port")(obj))("port"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonNumber({}))))(function (_12) {
+            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("location")(obj))("location"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonString({}))))(function (_3) {
+                return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("port")(obj))("port"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonNumber({}))))(function (_2) {
                     return Prelude.pure(Data_Either.applicativeEither({}))({
-                        location: _13,
-                        port: _12
+                        location: _3, 
+                        port: _2
                     });
                 });
             });
@@ -71681,9 +69457,9 @@ var decodeSDConfigServer = function (__unused) {
 var decodeSDConfigNodeWebkit = function (__unused) {
     return new Data_Argonaut_Decode.DecodeJson(function (json) {
         return Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Argonaut.toObject(json))("SDConfigNodeWebkit"))(function (obj) {
-            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("java")(obj))("java"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonString({}))))(function (_14) {
+            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("java")(obj))("java"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonString({}))))(function (_4) {
                 return Prelude.pure(Data_Either.applicativeEither({}))({
-                    java: _14
+                    java: _4
                 });
             });
         });
@@ -71692,11 +69468,11 @@ var decodeSDConfigNodeWebkit = function (__unused) {
 var decodeSDConfig = function (__unused) {
     return new Data_Argonaut_Decode.DecodeJson(function (json) {
         return Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Argonaut.toObject(json))("SDConfig"))(function (obj) {
-            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("server")(obj))("server"))(Data_Argonaut.decodeJson(decodeSDConfigServer({}))))(function (_11) {
-                return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("nodeWebkit")(obj))("nodeWebkit"))(Data_Argonaut.decodeJson(decodeSDConfigNodeWebkit({}))))(function (_10) {
+            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("server")(obj))("server"))(Data_Argonaut.decodeJson(decodeSDConfigServer({}))))(function (_1) {
+                return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("nodeWebkit")(obj))("nodeWebkit"))(Data_Argonaut.decodeJson(decodeSDConfigNodeWebkit({}))))(function (_0) {
                     return Prelude.pure(Data_Either.applicativeEither({}))({
-                        server: _11,
-                        nodeWebkit: _10
+                        server: _1, 
+                        nodeWebkit: _0
                     });
                 });
             });
@@ -71706,11 +69482,11 @@ var decodeSDConfig = function (__unused) {
 var decodeMountingRec = function (__unused) {
     return new Data_Argonaut_Decode.DecodeJson(function (json) {
         return Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Argonaut.toObject(json))("MountingWrapper"))(function (obj) {
-            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("connectionUri")(obj))("connectionUri"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonString({}))))(function (_21) {
-                return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("database")(obj))("database"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonString({}))))(function (_20) {
+            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("connectionUri")(obj))("connectionUri"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonString({}))))(function (_11) {
+                return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("database")(obj))("database"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonString({}))))(function (_10) {
                     return Prelude.pure(Data_Either.applicativeEither({}))({
-                        connectionUri: _21,
-                        database: _20
+                        connectionUri: _11, 
+                        database: _10
                     });
                 });
             });
@@ -71720,8 +69496,8 @@ var decodeMountingRec = function (__unused) {
 var decodeMounting = function (__unused) {
     return new Data_Argonaut_Decode.DecodeJson(function (json) {
         return Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Argonaut.toObject(json))("MountMongo"))(function (obj) {
-            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("mongodb")(obj))("mongodb"))(Data_Argonaut.decodeJson(decodeMountingRec({}))))(function (_19) {
-                return Prelude.pure(Data_Either.applicativeEither({}))(new MountMongo(_19));
+            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("mongodb")(obj))("mongodb"))(Data_Argonaut.decodeJson(decodeMountingRec({}))))(function (_9) {
+                return Prelude.pure(Data_Either.applicativeEither({}))(new MountMongo(_9));
             });
         });
     });
@@ -71729,12 +69505,12 @@ var decodeMounting = function (__unused) {
 var decodeSEConfig = function (__unused) {
     return new Data_Argonaut_Decode.DecodeJson(function (json) {
         return Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Argonaut.toObject(json))("SEConfig"))(function (obj) {
-            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("server")(obj))("server"))(Data_Argonaut.decodeJson(decodeSEConfigServer({}))))(function (_17) {
-                return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("mountings")(obj))("mountings"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeMap(Data_Argonaut_Decode.decodeJsonJson({})))))(function (_16) {
-                    return Prelude[">>="](Data_Either.bindEither({}))(Data_Traversable.traverse(Data_Argonaut_Decode.traversableMap(Prelude.ordString({})))(Data_Either.applicativeEither({}))(Data_Argonaut.decodeJson(decodeMounting({})))(_16))(function (_15) {
+            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("server")(obj))("server"))(Data_Argonaut.decodeJson(decodeSEConfigServer({}))))(function (_7) {
+                return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("mountings")(obj))("mountings"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeMap(Data_Argonaut_Decode.decodeJsonJson({})))))(function (_6) {
+                    return Prelude[">>="](Data_Either.bindEither({}))(Data_Traversable.traverse(Data_Argonaut_Decode.traversableMap(Prelude.ordString({})))(Data_Either.applicativeEither({}))(Data_Argonaut.decodeJson(decodeMounting({})))(_6))(function (_5) {
                         return Prelude.pure(Data_Either.applicativeEither({}))({
-                            server: _17,
-                            mountings: _15
+                            server: _7, 
+                            mountings: _5
                         });
                     });
                 });
@@ -71743,45 +69519,45 @@ var decodeSEConfig = function (__unused) {
     });
 };
 module.exports = {
-    SaveSDConfig: SaveSDConfig,
-    SaveSEConfig: SaveSEConfig,
-    ReadFileSystem: ReadFileSystem,
-    ReadFields: ReadFields,
-    CreateNotebook: CreateNotebook,
-    CloseNotebook: CloseNotebook,
-    OpenNotebook: OpenNotebook,
-    RenameNotebook: RenameNotebook,
-    SaveNotebook: SaveNotebook,
-    ShowSettings: ShowSettings,
-    HideSettings: HideSettings,
-    CreateBlock: CreateBlock,
-    DeleteBlock: DeleteBlock,
-    EditBlock: EditBlock,
-    EvalBlock: EvalBlock,
-    EvalVisual: EvalVisual,
-    SlamDataEvent: SlamDataEvent,
-    MountingWrapper: MountingWrapper,
-    MountMongo: MountMongo,
-    SEConfigServer: SEConfigServer,
-    SEConfig: SEConfig,
-    SDConfigNodeWebkit: SDConfigNodeWebkit,
-    SDConfigServer: SDConfigServer,
-    SDConfig: SDConfig,
-    responseEvent: responseEvent,
-    requestEvent: requestEvent,
-    encodeSDConfig: encodeSDConfig,
-    encodeSDConfigServer: encodeSDConfigServer,
-    encodeSDConfigNodeWebkit: encodeSDConfigNodeWebkit,
-    decodeSDConfig: decodeSDConfig,
-    decodeSDConfigServer: decodeSDConfigServer,
-    decodeSDConfigNodeWebkit: decodeSDConfigNodeWebkit,
-    encodeSEConfig: encodeSEConfig,
-    encodeSEConfigServer: encodeSEConfigServer,
-    encodeMounting: encodeMounting,
-    encodeMountingRec: encodeMountingRec,
-    decodeSEConfig: decodeSEConfig,
-    decodeSEConfigServer: decodeSEConfigServer,
-    decodeMounting: decodeMounting,
+    SaveSDConfig: SaveSDConfig, 
+    SaveSEConfig: SaveSEConfig, 
+    ReadFileSystem: ReadFileSystem, 
+    ReadFields: ReadFields, 
+    CreateNotebook: CreateNotebook, 
+    CloseNotebook: CloseNotebook, 
+    OpenNotebook: OpenNotebook, 
+    RenameNotebook: RenameNotebook, 
+    SaveNotebook: SaveNotebook, 
+    ShowSettings: ShowSettings, 
+    HideSettings: HideSettings, 
+    CreateBlock: CreateBlock, 
+    DeleteBlock: DeleteBlock, 
+    EditBlock: EditBlock, 
+    EvalBlock: EvalBlock, 
+    EvalVisual: EvalVisual, 
+    SlamDataEvent: SlamDataEvent, 
+    MountingWrapper: MountingWrapper, 
+    MountMongo: MountMongo, 
+    SEConfigServer: SEConfigServer, 
+    SEConfig: SEConfig, 
+    SDConfigNodeWebkit: SDConfigNodeWebkit, 
+    SDConfigServer: SDConfigServer, 
+    SDConfig: SDConfig, 
+    responseEvent: responseEvent, 
+    requestEvent: requestEvent, 
+    encodeSDConfig: encodeSDConfig, 
+    encodeSDConfigServer: encodeSDConfigServer, 
+    encodeSDConfigNodeWebkit: encodeSDConfigNodeWebkit, 
+    decodeSDConfig: decodeSDConfig, 
+    decodeSDConfigServer: decodeSDConfigServer, 
+    decodeSDConfigNodeWebkit: decodeSDConfigNodeWebkit, 
+    encodeSEConfig: encodeSEConfig, 
+    encodeSEConfigServer: encodeSEConfigServer, 
+    encodeMounting: encodeMounting, 
+    encodeMountingRec: encodeMountingRec, 
+    decodeSEConfig: decodeSEConfig, 
+    decodeSEConfigServer: decodeSEConfigServer, 
+    decodeMounting: decodeMounting, 
     decodeMountingRec: decodeMountingRec
 };
 },{"Data.Argonaut":undefined,"Data.Argonaut.Decode":58,"Data.Argonaut.Encode":59,"Data.Either":undefined,"Data.Map":74,"Data.Traversable":87,"Node.Events":90,"Prelude":undefined}],"SlamData":[function(require,module,exports){
@@ -71797,7 +69573,7 @@ var request = function (emitter) {
         return function (ty) {
             return function __do() {
                 Node_Events.emit(Node_Events.eventEmitterEmitter({}))(SlamData_Types.requestEvent)({
-                    state: state,
+                    state: state, 
                     event: ty
                 })(emitter)();
                 return Prelude.unit;
@@ -71809,12 +69585,12 @@ var slamData = function (emitter) {
     return function (state) {
         return function __do() {
             React.renderComponentById(SlamData_App.app({
-                request: request(emitter)(state),
+                request: request(emitter)(state), 
                 state: state
             })([  ]))("content")();
             Node_Events.on(Node_Events.eventEmitterEmitter({}))(Node_Events.variadicArr({}))(SlamData_Types.responseEvent)(function (state_1) {
                 return React.renderComponentById(SlamData_App.app({
-                    request: request(emitter)(state_1),
+                    request: request(emitter)(state_1), 
                     state: state_1
                 })([  ]))("content");
             })(emitter)();
@@ -71846,8 +69622,8 @@ var $$try = function (__dict_Functor_1) {
             return function (_701) {
                 if (_701.result instanceof Data_Either.Left) {
                     return {
-                        input: _700,
-                        result: _701.result,
+                        input: _700, 
+                        result: _701.result, 
                         consumed: false
                     };
                 };
@@ -71951,8 +69727,8 @@ var choice = function (__dict_Monad_12) {
             return _699[0];
         };
         if (_699.length > 0) {
-            var _2535 = _699.slice(1);
-            return Control_Alt["<|>"](Text_Parsing_Parser.altParserT(__dict_Monad_12))(_699[0])(choice(__dict_Monad_12)(_2535));
+            var _2538 = _699.slice(1);
+            return Control_Alt["<|>"](Text_Parsing_Parser.altParserT(__dict_Monad_12))(_699[0])(choice(__dict_Monad_12)(_2538));
         };
         throw new Error("Failed pattern match");
     };
@@ -72035,24 +69811,24 @@ var between = function (__dict_Monad_19) {
     };
 };
 module.exports = {
-    choice: choice,
-    "chainr1'": chainr1$prime,
-    chainr1: chainr1,
-    "chainl1'": chainl1$prime,
-    chainl1: chainl1,
-    chainl: chainl,
-    chainr: chainr,
-    endBy: endBy,
-    endBy1: endBy1,
-    sepEndBy1: sepEndBy1,
-    sepEndBy: sepEndBy,
-    sepBy1: sepBy1,
-    sepBy: sepBy,
-    "try": $$try,
-    optionMaybe: optionMaybe,
-    optional: optional,
-    option: option,
-    between: between,
+    choice: choice, 
+    "chainr1'": chainr1$prime, 
+    chainr1: chainr1, 
+    "chainl1'": chainl1$prime, 
+    chainl1: chainl1, 
+    chainl: chainl, 
+    chainr: chainr, 
+    endBy: endBy, 
+    endBy1: endBy1, 
+    sepEndBy1: sepEndBy1, 
+    sepEndBy: sepEndBy, 
+    sepBy1: sepBy1, 
+    sepBy: sepBy, 
+    "try": $$try, 
+    optionMaybe: optionMaybe, 
+    optional: optional, 
+    option: option, 
+    between: between, 
     "<?>": $less$qmark$greater
 };
 },{"Control.Alt":24,"Control.Alternative":undefined,"Data.Either":undefined,"Data.Maybe":76,"Prelude":undefined,"Text.Parsing.Parser":undefined}],"Text.Parsing.Parser.String":[function(require,module,exports){
@@ -72071,17 +69847,17 @@ var string = function (__dict_Monad_0) {
     return function (s) {
         return Text_Parsing_Parser.ParserT.create(function (s$prime) {
             return Prelude["return"](__dict_Monad_0)((function () {
-                var _2574 = Data_String.indexOf(s)(s$prime);
-                if (_2574 === 0) {
+                var _2577 = Data_String.indexOf(s)(s$prime);
+                if (_2577 === 0) {
                     return {
-                        consumed: true,
-                        input: Data_String.drop(Data_String.length(s))(s$prime),
+                        consumed: true, 
+                        input: Data_String.drop(Data_String.length(s))(s$prime), 
                         result: new Data_Either.Right(s)
                     };
                 };
                 return {
-                    consumed: false,
-                    input: s$prime,
+                    consumed: false, 
+                    input: s$prime, 
                     result: new Data_Either.Left(Control_Monad_Error.strMsg(Text_Parsing_Parser.errorParseError({}))("Expected " + Prelude.show(Prelude.showString({}))(s)))
                 };
             })());
@@ -72098,14 +69874,14 @@ var eof = function (__dict_Monad_2) {
         return Prelude["return"](__dict_Monad_2)((function () {
             if (s === "") {
                 return {
-                    consumed: false,
-                    input: s,
+                    consumed: false, 
+                    input: s, 
                     result: new Data_Either.Right({})
                 };
             };
             return {
-                consumed: false,
-                input: s,
+                consumed: false, 
+                input: s, 
                 result: new Data_Either.Left(Control_Monad_Error.strMsg(Text_Parsing_Parser.errorParseError({}))("Expected EOF"))
             };
         })());
@@ -72116,14 +69892,14 @@ var $$char = function (__dict_Monad_3) {
         return Prelude["return"](__dict_Monad_3)((function () {
             if (s$prime === "") {
                 return {
-                    consumed: false,
-                    input: s$prime,
+                    consumed: false, 
+                    input: s$prime, 
                     result: new Data_Either.Left(Control_Monad_Error.strMsg(Text_Parsing_Parser.errorParseError({}))("Unexpected EOF"))
                 };
             };
             return {
-                consumed: true,
-                input: Data_String.drop(1)(s$prime),
+                consumed: true, 
+                input: Data_String.drop(1)(s$prime), 
                 result: new Data_Either.Right(Data_String.charAt(0)(s$prime))
             };
         })());
@@ -72137,10 +69913,10 @@ var satisfy = function (__dict_Monad_4) {
     };
 };
 module.exports = {
-    whiteSpace: whiteSpace,
-    satisfy: satisfy,
-    "char": $$char,
-    string: string,
+    whiteSpace: whiteSpace, 
+    satisfy: satisfy, 
+    "char": $$char, 
+    string: string, 
     eof: eof
 };
 },{"Control.Alt":24,"Control.Alternative":undefined,"Control.Monad.Error":43,"Data.Either":undefined,"Data.Foldable":71,"Data.Monoid":82,"Data.String":86,"Prelude":undefined,"Text.Parsing.Parser":undefined,"Text.Parsing.Parser.Combinators":undefined}],"Text.Parsing.Parser":[function(require,module,exports){
@@ -72189,8 +69965,8 @@ var monadTransParserT = function (__unused) {
             return ParserT.create(function (s) {
                 return Prelude["<$>"](((__dict_Monad_1["__superclass_Prelude.Applicative_0"]({}))["__superclass_Prelude.Apply_0"]({}))["__superclass_Prelude.Functor_0"]({}))(function (a) {
                     return {
-                        input: s,
-                        consumed: false,
+                        input: s, 
+                        consumed: false, 
                         result: new Data_Either.Right(a)
                     };
                 })(m);
@@ -72202,11 +69978,11 @@ var monadStateParserT = function (__dict_Monad_2) {
     return new Control_Monad_State_Class.MonadState(function (f) {
         return ParserT.create(function (s) {
             return Prelude["return"](__dict_Monad_2)((function () {
-                var _2514 = f(s);
+                var _2517 = f(s);
                 return {
-                    input: _2514.value1,
-                    consumed: false,
-                    result: new Data_Either.Right(_2514.value0)
+                    input: _2517.value1, 
+                    consumed: false, 
+                    result: new Data_Either.Right(_2517.value0)
                 };
             })());
         });
@@ -72224,8 +70000,8 @@ var functorParserT = function (__dict_Functor_5) {
         return function (p) {
             var f$prime = function (o) {
                 return {
-                    input: o.input,
-                    result: Prelude["<$>"](Data_Either.functorEither({}))(f)(o.result),
+                    input: o.input, 
+                    result: Prelude["<$>"](Data_Either.functorEither({}))(f)(o.result), 
                     consumed: o.consumed
                 };
             };
@@ -72239,8 +70015,8 @@ var fail = function (__dict_Monad_6) {
     return function (message) {
         return ParserT.create(function (s) {
             return Prelude["return"](__dict_Monad_6)({
-                input: s,
-                consumed: false,
+                input: s, 
+                consumed: false, 
                 result: new Data_Either.Left(new ParseError({
                     message: message
                 }))
@@ -72260,8 +70036,8 @@ var errorParseError = function (__unused) {
 var consume = function (__dict_Monad_8) {
     return ParserT.create(function (s) {
         return Prelude["return"](__dict_Monad_8)({
-            consumed: true,
-            input: s,
+            consumed: true, 
+            input: s, 
             result: new Data_Either.Right(Prelude.unit)
         });
     });
@@ -72272,8 +70048,8 @@ var applicativeParserT = function (__dict_Monad_11) {
     }, function (a) {
         return ParserT.create(function (s) {
             return Prelude.pure(__dict_Monad_11["__superclass_Prelude.Applicative_0"]({}))({
-                input: s,
-                result: new Data_Either.Right(a),
+                input: s, 
+                result: new Data_Either.Right(a), 
                 consumed: false
             });
         });
@@ -72297,8 +70073,8 @@ var bindParserT = function (__dict_Monad_9) {
             var updateConsumedFlag = function (c) {
                 return function (o) {
                     return {
-                        input: o.input,
-                        consumed: c || o.consumed,
+                        input: o.input, 
+                        consumed: c || o.consumed, 
                         result: o.result
                     };
                 };
@@ -72307,8 +70083,8 @@ var bindParserT = function (__dict_Monad_9) {
                 return Prelude[">>="](__dict_Monad_9["__superclass_Prelude.Bind_1"]({}))(unParserT(p)(s))(function (o) {
                     if (o.result instanceof Data_Either.Left) {
                         return Prelude["return"](__dict_Monad_9)({
-                            input: o.input,
-                            result: new Data_Either.Left(o.result.value0),
+                            input: o.input, 
+                            result: new Data_Either.Left(o.result.value0), 
                             consumed: o.consumed
                         });
                     };
@@ -72359,25 +70135,25 @@ var monadPlusParserT = function (__dict_Monad_3) {
     });
 };
 module.exports = {
-    ParserT: ParserT,
-    ParseError: ParseError,
-    fail: fail,
-    consume: consume,
-    runParser: runParser,
-    runParserT: runParserT,
-    unParserT: unParserT,
-    errorParseError: errorParseError,
-    functorParserT: functorParserT,
-    applyParserT: applyParserT,
-    applicativeParserT: applicativeParserT,
-    altParserT: altParserT,
-    plusParserT: plusParserT,
-    alternativeParserT: alternativeParserT,
-    bindParserT: bindParserT,
-    monadParserT: monadParserT,
-    monadPlusParserT: monadPlusParserT,
-    monadTransParserT: monadTransParserT,
-    monadStateParserT: monadStateParserT,
+    ParserT: ParserT, 
+    ParseError: ParseError, 
+    fail: fail, 
+    consume: consume, 
+    runParser: runParser, 
+    runParserT: runParserT, 
+    unParserT: unParserT, 
+    errorParseError: errorParseError, 
+    functorParserT: functorParserT, 
+    applyParserT: applyParserT, 
+    applicativeParserT: applicativeParserT, 
+    altParserT: altParserT, 
+    plusParserT: plusParserT, 
+    alternativeParserT: alternativeParserT, 
+    bindParserT: bindParserT, 
+    monadParserT: monadParserT, 
+    monadPlusParserT: monadPlusParserT, 
+    monadTransParserT: monadTransParserT, 
+    monadStateParserT: monadStateParserT, 
     lazy1ParserT: lazy1ParserT
 };
 },{"Control.Alt":24,"Control.Alternative":undefined,"Control.Lazy":26,"Control.Monad.Error":43,"Control.Monad.Identity":undefined,"Control.Monad.State.Class":49,"Control.Monad.Trans":52,"Control.MonadPlus":54,"Control.Plus":55,"Data.Either":undefined,"Data.Tuple":88,"Prelude":undefined}]},{},[1]);
