@@ -134,7 +134,7 @@ module SlamData.App.Workspace.Notebook.Block.Visual
         []
       ]
     , D.div {className: "content" ++ activate VisualTypeTab this.state.active}
-      [ D.ul {className: "chart-type small-block-grid-5"}
+      [ D.ul {className: "chart-type inline-list"}
         (visual this <$> [Bar, Line, Pie])
       , selectFields this
       , selectFields this

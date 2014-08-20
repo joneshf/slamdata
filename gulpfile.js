@@ -3,7 +3,6 @@
 var gulp = require('gulp')
   , bower = require('gulp-bower')
   , browserify = require('browserify')
-  , compass = require('gulp-compass')
   , concat = require('gulp-concat')
   , connect = require('gulp-connect')
   , es = require('event-stream')
@@ -14,6 +13,7 @@ var gulp = require('gulp')
   , purescript = require('gulp-purescript')
   , rimraf = require('rimraf')
   , runSequence = require('run-sequence')
+  , sass = require('gulp-sass')
   , sourceStream = require('vinyl-source-stream')
   , spawn = require('child_process').spawn
   , taskListing = require('gulp-task-listing')
@@ -179,11 +179,7 @@ function concatCss(target) {
     return function() {
         var fa = gulp.src(paths.concat.css);
         var styles = gulp.src(paths.style)
-            .pipe(compass({
-                import_path: '.',
-                project: __dirname,
-                sass: 'style'
-            }));
+            .pipe(sass());
 
         return es.concat(fa, styles)
             .pipe(concat(options.build.css))
@@ -286,11 +282,7 @@ gulp.task('connect', function() {
 
 gulp.task('sass', ['clean-sass'], function() {
     return gulp.src(paths.style)
-        .pipe(compass({
-            import_path: '.',
-            project: __dirname,
-            sass: 'style'
-        }))
+        .pipe(sass())
         .pipe(gulp.dest(paths.css))
         .pipe(connect.reload());
 });
