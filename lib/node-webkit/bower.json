@@ -15,7 +15,7 @@
     "tests"
   ],
   "dependencies": {
-    "slamdata": "joneshf/slamdata#new-react",
+    "slamdata": "slamdata/slamdata",
     "purescript-node-webkit": "~0.0.3",
     "purescript-node-events": "~0.0.6",
     "purescript-node-child-process": "~0.0.1",

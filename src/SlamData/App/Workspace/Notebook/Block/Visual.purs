@@ -11,6 +11,7 @@ module SlamData.App.Workspace.Notebook.Block.Visual
 
   import Data.Array (snoc, sort)
   import Data.Array.Unsafe (head, tail)
+  import Data.Function (mkFn2)
   import Data.Maybe (maybe, Maybe(..))
   import Data.String (charAt, joinWith, length)
   import Data.Tuple (Tuple(..))

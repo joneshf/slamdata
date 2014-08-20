@@ -12,6 +12,7 @@ var qs = require('querystring')
   , index = './index.html'
   , defaultURL = index + '?' + search
   , screenshotDir = 'test/screenshots'
+  , actions = require('../actions')
   ;
 
 var contentSelector = '#notebook .tabs-content .content'
@@ -29,75 +30,17 @@ function onlyAddButton(test) {
     test.assertDoesntExist(contentSelector, 'There is no notebook content');
 };
 
-function addBlock(blockType, test) {
-    var count = casper.evaluate(function(block) {
-        return { block: __utils__.findAll(block).length
-               }
-    }, blockSelector);
-    casper.click(contentSelector + ' ' + '.toolbar [title="' + blockType + '"]');
-    // Make sure we added exactly one markdown block.
-    test.assertExists(blockSelector, 'Added a block');
-    test.assertElementCount(blockSelector, count.block + 1);
-    test.assertSelectorHasText(blockTypeSelector, blockType, 'Block is titled ' + blockType);
-};
-
 function addMultipleNotebooks(test) {
-    addNotebook(test);
-    addNotebook(test);
-    addNotebook(test);
-};
-
-function addNotebook(test) {
-    var count = casper.evaluate(function(tabs, content) {
-        return { tabs: __utils__.findAll(tabs).length
-               , content: __utils__.findAll(content).length
-               }
-    }, tabSelector, contentSelector);
-    casper.click('#add-notebook');
-    // Make sure we added exactly one notebook.
-    test.assertElementCount(tabSelector, count.tabs + 1);
-    // Make sure we the notebook has an empty content.
-    test.assertExists(contentSelector, 'The notebook has content');
-    test.assertElementCount(contentSelector, count.content + 1);
-    // Make sure there aren't any blocks in a new notebook.
-    test.assertDoesntExist(blockSelector, 'There are no blocks');
-};
-
-function removeBlock(test) {
-    var count = casper.evaluate(function(block) {
-        return { block: __utils__.findAll(block).length
-               }
-    }, blockSelector);
-    casper.click(blockButtonBarSelector + ' ' + '[title="Close"]');
-    // Make sure the block was removed.
-    test.assertDoesntExist(blockSelector, 'Removed a block');
-    test.assertElementCount(blockSelector, count.block - 1);
+    actions.addNotebook(test);
+    actions.addNotebook(test);
+    actions.addNotebook(test);
 };
 
 function removeMultipleNotebooks(test) {
-    removeNotebook(test);
-    removeNotebook(test);
-    removeNotebook(test);
+    actions.removeNotebook(test);
+    actions.removeNotebook(test);
+    actions.removeNotebook(test);
 };
-
-function removeNotebook(test) {
-    var count = casper.evaluate(function(tabs, content) {
-        return { tabs: __utils__.findAll(tabs).length
-               , content: __utils__.findAll(content).length
-               }
-    }, tabSelector, contentSelector);
-    casper.click(tabSelector + ' ' + '> a i')
-    // Make sure we removed exactly one notebook.
-    test.assertElementCount(tabSelector, count.tabs - 1);
-    test.assertElementCount(contentSelector, count.content - 1);
-}
-
-function selectNotebook(n, test) {
-    var nthTab = tabSelector + ':nth-of-type(' + n + ')';
-    casper.click(nthTab + ' a');
-    var className = casper.getElementAttribute(nthTab, 'class');
-    test.assertMatch(className, /active/, 'Selected notebook ' + n)
-}
 
 casper.test.setUp(function(done) {
     casper.start(defaultURL, function() {
@@ -121,8 +64,8 @@ casper.test.begin('SlamData layout is proper', 1, function(test) {
 casper.test.begin('Basic Notebook Functionality', 15, function(test) {
     casper.start(defaultURL).then(function() {
         onlyAddButton(test);
-        addNotebook(test);
-        addBlock('Markdown', test);
+        actions.addNotebook(test);
+        actions.addBlock('Markdown', test);
     }).then(function() {
         // Give it some markdown.
         casper.sendKeys(blockSelector + ' ' + 'textarea', '#wat', {keepFocus: true});
@@ -134,8 +77,8 @@ casper.test.begin('Basic Notebook Functionality', 15, function(test) {
         casper.sendKeys(blockSelector + ' ' + 'textarea', '## wat ');
         casper.capture(screenshotDir + '/evaled_markdown_blur.png');
     }).then(function() {
-        removeBlock(test);
-        removeNotebook(test);
+        actions.removeBlock(test);
+        actions.removeNotebook(test);
         onlyAddButton(test);
     }).run(function() {
         test.done();
@@ -147,10 +90,10 @@ casper.test.begin('Multiple notebooks', 26, function(test) {
         onlyAddButton(test);
     }).then(function() {
         addMultipleNotebooks(test);
-        selectNotebook(2, test);
-        selectNotebook(1, test);
-        selectNotebook(3, test);
-        selectNotebook(1, test);
+        actions.selectNotebook(2, test);
+        actions.selectNotebook(1, test);
+        actions.selectNotebook(3, test);
+        actions.selectNotebook(1, test);
         removeMultipleNotebooks(test);
     }).then(function() {
         onlyAddButton(test);

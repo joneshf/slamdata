@@ -44,8 +44,6 @@ module SlamData.App.Workspace.FileSystem
   filesystem :: forall eff. ComponentClass (FileSystemProps eff) FileSystemState
   filesystem = createClass spec
     { displayName = "FileSystem"
-    , shouldComponentUpdate = mkFn3 \this props _ -> pure $
-      this.props.files /= props.files
     , render = \this -> pure $ D.div {className: "slamdata-panel"}
       [fsTab, fsContent this.props.files this.props.request]
     }
