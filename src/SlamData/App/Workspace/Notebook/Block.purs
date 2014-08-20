@@ -57,10 +57,6 @@ module SlamData.App.Workspace.Notebook.Block
   block :: forall eff. ComponentClass (BlockProps eff) BlockState
   block = createClass spec
     { displayName = "Block"
-    -- , shouldComponentUpdate = mkFn3 \this props state -> pure $
-    --   this.state.editContent /= state.editContent ||
-    --   this.state.evalContent /= state.evalContent ||
-    --   this.props.block /= props.block
     , getInitialState = \this -> pure
       { editContent: this.props.block^._blockRec.._editContent
       , evalContent: this.props.block^._blockRec.._evalContent
