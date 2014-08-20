@@ -52,8 +52,6 @@ var paths = {
         css: [ 'bower_components/c3/c3.css'
              , 'bower_components/entypo/font/entypo.css'
              , 'bower_components/fontawesome/css/font-awesome.css'
-             , 'bower_components/foundation/css/foundation.css'
-             , 'bower_components/foundation/css/normalize.css'
              , 'bower_components/react-treeview/react-treeview.css'
              ],
         entypo: [ 'bower_components/entypo/font/entypo.eot'
