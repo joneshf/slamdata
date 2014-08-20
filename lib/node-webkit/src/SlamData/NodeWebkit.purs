@@ -13,7 +13,7 @@ module SlamData.NodeWebkit where
 
   import Control.Alt ((<|>))
   import Control.Apply ((*>))
-  import Control.Lens ((^.), (..), (.~))
+  import Control.Lens ((^.), (..), (.~), (~))
   import Control.Monad.Eff (Eff(..))
   import Control.Monad.Identity (Identity())
   import Control.Monad.Cont.Trans (runContT)
@@ -23,7 +23,7 @@ module SlamData.NodeWebkit where
   import Data.Argonaut (decodeMaybe, encodeJson, jsonParser, printJson)
   import Data.Argonaut.Decode (DecodeJson)
   import Data.Argonaut.Encode (EncodeJson)
-  import Data.Array (filter, head, last, length, snoc)
+  import Data.Array (filter, head, last, length, nubBy, snoc)
   import Data.Either (either, Either(..))
   import Data.Function (mkFn0, mkFn1, mkFn3, runFn1, Fn1())
   import Data.Maybe (Maybe(..))
@@ -43,7 +43,7 @@ module SlamData.NodeWebkit where
   import Node.Encoding (Encoding(UTF8))
   import Node.Events (emit, emitter, on, Event(..), EventEff(), EventEmitter)
   import Node.FS.Sync (writeTextFile)
-  import Node.Path (join, FilePath())
+  import Node.Path (basename, join, FilePath())
   import Node.UUID (runUUID, v4)
   import Node.Webkit
     ( closeWindow
@@ -306,6 +306,7 @@ module SlamData.NodeWebkit where
       OpenNotebook path -> do
         let dataUrl = serverURI state.settings.sdConfig ++ "/data/fs"
         let url = dataUrl ++ (path </> "index.nb")
+        let name = basename path
         X.get X.defaultAjaxOptions
           {onLoad = \res -> do
             revisions <- trim >>> split "\n" <$> X.getResponseText res
@@ -313,12 +314,30 @@ module SlamData.NodeWebkit where
               Nothing -> pure unit
               Just revision -> do
                 i <- NotebookID <$> v4
-                let default = {ident: i, blocks: [], name: "Untitled", path: path}
-                let notebook' = Notebook $ jsonParse default revision
+                let default = {ident: i, blocks: [], name: name, path: path}
+                let nb = jsonParse default revision
+                let notebook' = Notebook nb{name = name}
                 let notebooks' = state.notebooks `snoc` notebook'
-                e # emit responseEvent state{notebooks = notebooks'}
+                let notebooks'' = nubBy uniqueNotebooks notebooks'
+                e # emit responseEvent state{notebooks = notebooks''}
                 pure unit
           } url {}
+        pure unit
+      RenameNotebook (Notebook n) path -> do
+        let dataUrl = serverURI state.settings.sdConfig ++ "/data/fs"
+        let url = dataUrl </> n.path </> n.name </> "index.nb"
+        let base = basename path
+        let fs = mount state.settings.seConfig
+        X.ajax X.defaultAjaxOptions
+          { method = "MOVE"
+          , url = url
+          , headers = ["Destination" ~ (fs </> path </> "index.nb")]
+          , onLoad = \_ -> do
+            let notebook' = Notebook n{name = base}
+            let notebooks' = replaceNotebook notebook' <$> state.notebooks
+            e # emit responseEvent state{notebooks = notebooks'}
+            pure unit
+          } {} XT.NoBody
         pure unit
       _ -> (e # emit responseEvent state) *> pure unit)
 
@@ -331,6 +350,14 @@ module SlamData.NodeWebkit where
                , settings: {sdConfig: sdConfig, seConfig: seConfig}
                , showSettings: false
                }
+
+  uniqueNotebooks :: Notebook -> Notebook -> Boolean
+  uniqueNotebooks (Notebook nb) (Notebook nb') = nb.ident == nb'.ident
+
+  replaceNotebook :: Notebook -> Notebook -> Notebook
+  replaceNotebook n@(Notebook nb) (Notebook nb')
+    | nb.ident == nb'.ident = n
+  replaceNotebook _ n = n
 
   countOut :: NotebookRec -> Number
   countOut {blocks = bs} = length $ filter go bs

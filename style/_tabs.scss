@@ -16,8 +16,6 @@
             text-align: center;
             width: 18px;
             &:hover {
-                @extend .label.alert;
-                @extend .label.round;
                 background-color: $slamdata-orange;
             }
         }

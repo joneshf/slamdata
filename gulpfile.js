@@ -63,9 +63,7 @@ var paths = {
         js: [ 'bower_components/jquery/dist/jquery.js'
             , 'bower_components/c3/c3.js'
             , 'bower_components/d3/d3.js'
-            , 'bower_components/fastclick/lib/fastclick.js'
             , 'bower_components/foundation/js/foundation.js'
-            , 'bower_components/modernizr/modernizr.js'
             , 'bower_components/node-uuid/uuid.js'
             , 'bower_components/oboe/dist/oboe-browser.js'
             , 'bower_components/react/react-with-addons.js'
@@ -326,8 +324,8 @@ gulp.task('build-browser', sequence( 'bower-browser'
                                      , 'imgs-browser'
                                      ]
                                    ));
-gulp.task('build-node-webkit', sequence(/* 'bower-node-webkit'
-                                       ,*/ 'compile-node-webkit'
+gulp.task('build-node-webkit', sequence( 'bower-node-webkit'
+                                       , 'compile-node-webkit'
                                        , [ 'concat-css-node-webkit'
                                          , 'concat-js-node-webkit'
                                          , 'copy-node-webkit'
@@ -358,8 +356,8 @@ gulp.task('test-casperjs', function(done) {
 });
 
 // Main tasks.
-gulp.task('build', sequence( ['clean-build', 'browserify']
-                           , ['build-browser', 'build-node-webkit']
+gulp.task('build', sequence( ['clean-build', 'browserify', 'sass']
+                           , [/*'build-browser',*/ 'build-node-webkit']
                            ));
 gulp.task('default', sequence(['browserify', 'sass']));
 gulp.task('dist', sequence(['build', 'clean-dist'], 'dist-node-webkit'));
