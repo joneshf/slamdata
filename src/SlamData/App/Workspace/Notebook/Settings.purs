@@ -4,12 +4,14 @@ module SlamData.App.Workspace.Notebook.Settings (settings) where
   import React.Types (Component(), ComponentClass(), ReactThis())
 
   import SlamData.App.Workspace.Notebook.Settings.SlamData
-    (slamDataServerSettings)
+    ( slamDataJavaSettings
+    , slamDataServerSettings
+    )
   import SlamData.App.Workspace.Notebook.Settings.SlamEngine
-    ( slamEngineJavaSettings
-    , slamEngineMountingsSettings
+    ( slamEngineMountingsSettings
     , slamEngineServerSettings
     )
+  import SlamData.Components (actionButton, saveIcon)
   import SlamData.Helpers (activate)
   import SlamData.Types (SlamDataEventTy(..))
   import SlamData.Types.Workspace.Notebook.Settings
@@ -28,9 +30,23 @@ module SlamData.App.Workspace.Notebook.Settings (settings) where
       , sdConfig: this.props.state.settings.sdConfig
       , seConfig: this.props.state.settings.seConfig
       }
-    , render = \this -> pure $ D.div {className: "vertical"}
-      [tabs $ coerceThis this, contents $ coerceThis this]
+    , render = \this -> pure $ D.div {id: "settings"}
+      [ D.div {className: "toolbar button-bar"}
+        [externalActions $ coerceThis this]
+      , D.div {className: "vertical"}
+        [tabs $ coerceThis this, contents $ coerceThis this]
+      ]
     }
+
+  externalActions :: forall fields eff state
+                  .  ReactThis fields (SettingsProps eff) SettingsState
+                  -> Component
+  externalActions this@{state = {active = SlamDataTab}} =
+    D.ul {className: "button-group"}
+      [actionButton this (SaveSDConfig this.state.sdConfig) "Save" saveIcon]
+  externalActions this@{state = {active = SlamEngineTab}} =
+    D.ul {className: "button-group"}
+      [actionButton this (SaveSEConfig this.state.seConfig) "Save" saveIcon]
 
   tabs :: forall fields eff state
        .  ReactThis fields (SettingsProps eff) SettingsState
@@ -90,8 +106,6 @@ module SlamData.App.Workspace.Notebook.Settings (settings) where
       , D.form {}
         [ slamEngineServerSettings this
         , slamEngineMountingsSettings this
-        , slamEngineJavaSettings this
-        , saveConfig this SlamEngineTab
         ]
       ]
   reifyContent SlamDataTab this =
@@ -99,18 +113,6 @@ module SlamData.App.Workspace.Notebook.Settings (settings) where
       [ D.h6 {} [D.rawText "SlamEngine server to connect to"]
       , D.form {}
         [ slamDataServerSettings this
-        , saveConfig this SlamDataTab
+        , slamDataJavaSettings this
         ]
       ]
-
-  saveConfig :: forall fields eff state
-             .  ReactThis fields (SettingsProps eff) SettingsState
-             -> SettingsTab
-             -> Component
-  saveConfig this tab =
-    D.a { className: "tiny button"
-        , onClick: eventHandler this \this _ -> case tab of
-          SlamEngineTab -> this.props.request $ SaveSEConfig this.state.seConfig
-          SlamDataTab   -> this.props.request $ SaveSDConfig this.state.sdConfig
-        }
-      [D.rawText "Save"]

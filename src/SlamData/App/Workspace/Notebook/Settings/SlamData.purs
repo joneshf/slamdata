@@ -1,5 +1,7 @@
 module SlamData.App.Workspace.Notebook.Settings.SlamData
-  (slamDataServerSettings) where
+  ( slamDataJavaSettings
+  , slamDataServerSettings
+  ) where
 
   import Control.Lens ((.~), (^.), (..), LensP())
 
@@ -10,9 +12,12 @@ module SlamData.App.Workspace.Notebook.Settings.SlamData
 
   import SlamData.Helpers (value)
   import SlamData.Lens
-    ( _location
+    ( _java
+    , _location
+    , _nodeWebkit
     , _port
     , _sdConfig
+    , _sdConfigNodeWebkit
     , _sdConfigRec
     , _sdConfigServer
     , _server
@@ -64,6 +69,32 @@ module SlamData.App.Workspace.Notebook.Settings.SlamData
               }
       []
     ]
+  -- Java Fields
+
+  slamDataJavaSettings :: forall fields eff state
+                         .  ReactThis fields (SettingsProps eff) SettingsState
+                         -> Component
+  slamDataJavaSettings this = D.fieldset {}
+    [ D.legend {} [D.rawText "Java"]
+    , slamDataJavaBinary this
+    ]
+
+  slamDataJavaBinary :: forall fields eff state
+                       .  ReactThis fields (SettingsProps eff) SettingsState
+                       -> Component
+  slamDataJavaBinary this = D.div {}
+    [ D.label {htmlFor: "java-binary"} [D.rawText "Binary"]
+    , D.input { name: "java-binary"
+              , onChange: eventHandler this \this e -> pure $
+                this.setState (this.state # _sdJava .~ value e.target)
+              , placeholder: "/usr/bin/java"
+              , value: this.state^._sdJava
+              }
+      []
+    ]
+
+  _sdJava :: forall r. LensP {sdConfig :: SDConfig | r} String
+  _sdJava = _sdConfig.._sdConfigRec.._nodeWebkit.._sdConfigNodeWebkit.._java
 
   _sdServer :: forall r. LensP {sdConfig :: SDConfig | r} SDConfigServerRec
   _sdServer = _sdConfig.._sdConfigRec.._server.._sdConfigServer
@@ -73,4 +104,3 @@ module SlamData.App.Workspace.Notebook.Settings.SlamData
 
   _sdServerPort :: forall r. LensP {sdConfig :: SDConfig | r} Number
   _sdServerPort = _sdServer.._port
-
