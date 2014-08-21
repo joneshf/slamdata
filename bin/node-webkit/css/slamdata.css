@@ -7078,6 +7078,16 @@ ul.chart-type ~ select, ul.chart-type ~ .actions {
   margin-left: 5px;
   max-width: 300px; }
 
+#settings .toolbar {
+  padding-bottom: 10px; }
+
+#settings-category {
+  border-top: 1px solid #d3d3d3; }
+
+#settings-content {
+  border: 1px solid #d3d3d3;
+  border-right: none; }
+
 .tabs .tab a {
   border: 1px solid #d3d3d3; }
 .tabs:not(.vertical) .tab a {
@@ -7152,13 +7162,6 @@ ul.chart-type ~ select, ul.chart-type ~ .actions {
     padding: 10px; }
   .tabs.vertical .tab:not(.active) a {
     border-right: none; }
-
-#settings-category {
-  border-top: 1px solid #d3d3d3; }
-
-#settings-content {
-  border: 1px solid #d3d3d3;
-  border-right: none; }
 
 .tabs-content.vertical {
   border: none;
