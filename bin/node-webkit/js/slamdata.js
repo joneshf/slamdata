@@ -66115,14 +66115,14 @@ var reifyTab = function (name) {
             id: "settings-" + Prelude.show(SlamData_Types_Workspace_Notebook_Settings.showSettingsTab({}))(name), 
             onClick: function (_) {
                 return $$this.setState((function () {
-                    var _16 = {};
-                    for (var _17 in $$this.state) {
-                        if ($$this.state.hasOwnProperty(_17)) {
-                            _16[_17] = $$this.state[_17];
+                    var _34 = {};
+                    for (var _35 in $$this.state) {
+                        if ($$this.state.hasOwnProperty(_35)) {
+                            _34[_35] = $$this.state[_35];
                         };
                     };
-                    _16.active = name;
-                    return _16;
+                    _34.active = name;
+                    return _34;
                 })());
             }
         })([ React_DOM.rawText(Prelude.show(SlamData_Types_Workspace_Notebook_Settings.showSettingsTab({}))(name)) ]) ]);
@@ -66138,33 +66138,33 @@ var tabs = function ($$this) {
         className: "tabs vertical"
     })([ slamEngineTab($$this), slamDataTab($$this) ]) ]);
 };
-var reifyContent = function (_1) {
-    return function (_2) {
-        if (_1 instanceof SlamData_Types_Workspace_Notebook_Settings.SlamEngineTab) {
+var reifyContent = function (_7) {
+    return function (_8) {
+        if (_7 instanceof SlamData_Types_Workspace_Notebook_Settings.SlamEngineTab) {
             return React_DOM.div({
-                className: "content" + SlamData_Helpers.activate(SlamData_Types_Workspace_Notebook_Settings.eqSettingsTab({}))(SlamData_Types_Workspace_Notebook_Settings.SlamEngineTab.value)(_2.state.active)
-            })([ React_DOM.h6({})([ React_DOM.rawText("Settings for the local instance of SlamEngine") ]), React_DOM.form({})([ SlamData_App_Workspace_Notebook_Settings_SlamEngine.slamEngineServerSettings(_2), SlamData_App_Workspace_Notebook_Settings_SlamEngine.slamEngineMountingsSettings(_2) ]) ]);
+                className: "content" + SlamData_Helpers.activate(SlamData_Types_Workspace_Notebook_Settings.eqSettingsTab({}))(SlamData_Types_Workspace_Notebook_Settings.SlamEngineTab.value)(_8.state.active)
+            })([ React_DOM.h6({})([ React_DOM.rawText("Settings for the local instance of SlamEngine") ]), React_DOM.form({})([ SlamData_App_Workspace_Notebook_Settings_SlamEngine.slamEngineServerSettings(_8), SlamData_App_Workspace_Notebook_Settings_SlamEngine.slamEngineMountingsSettings(_8) ]) ]);
         };
-        if (_1 instanceof SlamData_Types_Workspace_Notebook_Settings.SlamDataTab) {
+        if (_7 instanceof SlamData_Types_Workspace_Notebook_Settings.SlamDataTab) {
             return React_DOM.div({
-                className: "content" + SlamData_Helpers.activate(SlamData_Types_Workspace_Notebook_Settings.eqSettingsTab({}))(SlamData_Types_Workspace_Notebook_Settings.SlamDataTab.value)(_2.state.active)
-            })([ React_DOM.h6({})([ React_DOM.rawText("SlamEngine server to connect to") ]), React_DOM.form({})([ SlamData_App_Workspace_Notebook_Settings_SlamData.slamDataServerSettings(_2), SlamData_App_Workspace_Notebook_Settings_SlamData.slamDataJavaSettings(_2) ]) ]);
+                className: "content" + SlamData_Helpers.activate(SlamData_Types_Workspace_Notebook_Settings.eqSettingsTab({}))(SlamData_Types_Workspace_Notebook_Settings.SlamDataTab.value)(_8.state.active)
+            })([ React_DOM.h6({})([ React_DOM.rawText("SlamEngine server to connect to") ]), React_DOM.form({})([ SlamData_App_Workspace_Notebook_Settings_SlamData.slamDataServerSettings(_8), SlamData_App_Workspace_Notebook_Settings_SlamData.slamDataJavaSettings(_8) ]) ]);
         };
         throw new Error("Failed pattern match");
     };
 };
 var slamDataContent = reifyContent(SlamData_Types_Workspace_Notebook_Settings.SlamDataTab.value);
 var slamEngineContent = reifyContent(SlamData_Types_Workspace_Notebook_Settings.SlamEngineTab.value);
-var externalActions = function (_0) {
-    if (_0.state.active instanceof SlamData_Types_Workspace_Notebook_Settings.SlamDataTab) {
+var externalActions = function (_6) {
+    if (_6.state.active instanceof SlamData_Types_Workspace_Notebook_Settings.SlamDataTab) {
         return React_DOM.ul({
             className: "button-group"
-        })([ SlamData_Components.actionButton(_0)(new SlamData_Types.SaveSDConfig(_0.state.sdConfig))("Save")(SlamData_Components.saveIcon) ]);
+        })([ SlamData_Components.actionButton(_6)(new SlamData_Types.SaveSDConfig(_6.state.sdConfig))("Save")(SlamData_Components.saveIcon) ]);
     };
-    if (_0.state.active instanceof SlamData_Types_Workspace_Notebook_Settings.SlamEngineTab) {
+    if (_6.state.active instanceof SlamData_Types_Workspace_Notebook_Settings.SlamEngineTab) {
         return React_DOM.ul({
             className: "button-group"
-        })([ SlamData_Components.actionButton(_0)(new SlamData_Types.SaveSEConfig(_0.state.seConfig))("Save")(SlamData_Components.saveIcon) ]);
+        })([ SlamData_Components.actionButton(_6)(new SlamData_Types.SaveSEConfig(_6.state.seConfig))("Save")(SlamData_Components.saveIcon) ]);
     };
     throw new Error("Failed pattern match");
 };
@@ -66177,21 +66177,21 @@ var contents = function ($$this) {
     })([ slamEngineContent($$this), slamDataContent($$this) ]) ]);
 };
 var settings = React.createClass((function () {
-    var _25 = {};
-    for (var _26 in React.spec) {
-        if (React.spec.hasOwnProperty(_26)) {
-            _25[_26] = React.spec[_26];
+    var _43 = {};
+    for (var _44 in React.spec) {
+        if (React.spec.hasOwnProperty(_44)) {
+            _43[_44] = React.spec[_44];
         };
     };
-    _25.displayName = "Settings";
-    _25.getInitialState = function ($$this) {
+    _43.displayName = "Settings";
+    _43.getInitialState = function ($$this) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
             active: SlamData_Types_Workspace_Notebook_Settings.SlamEngineTab.value, 
             sdConfig: $$this.props.state.settings.sdConfig, 
             seConfig: $$this.props.state.settings.seConfig
         });
     };
-    _25.render = function ($$this) {
+    _43.render = function ($$this) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div({
             id: "settings"
         })([ React_DOM.div({
@@ -66200,7 +66200,7 @@ var settings = React.createClass((function () {
             className: "vertical"
         })([ tabs(React.coerceThis($$this)), contents(React.coerceThis($$this)) ]) ]));
     };
-    return _25;
+    return _43;
 })());
 module.exports = {
     settings: settings
@@ -66233,21 +66233,21 @@ var settingsTab = function ($$this) {
         path: ""
     };
 };
-var renameAction = function (_11) {
-    return function (_12) {
+var renameAction = function (_17) {
+    return function (_18) {
         return React_DOM.li({})([ React_DOM.a({
             className: "tiny secondary button has-tooltip", 
-            onClick: React.eventHandler(_11)(function (this_1) {
+            onClick: React.eventHandler(_17)(function (this_1) {
                 return function (_) {
                     return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState((function () {
-                        var _29 = {};
-                        for (var _30 in this_1.state) {
-                            if (this_1.state.hasOwnProperty(_30)) {
-                                _29[_30] = this_1.state[_30];
+                        var _47 = {};
+                        for (var _48 in this_1.state) {
+                            if (this_1.state.hasOwnProperty(_48)) {
+                                _47[_48] = this_1.state[_48];
                             };
                         };
-                        _29.renaming = new Data_Maybe.Just(_12.name);
-                        return _29;
+                        _47.renaming = new Data_Maybe.Just(_18.name);
+                        return _47;
                     })()));
                 };
             }), 
@@ -66255,98 +66255,98 @@ var renameAction = function (_11) {
         })([ SlamData_Components.renameIcon ]) ]);
     };
 };
-var reifyBlock = function (_7) {
-    return function (_8) {
-        return function (_9) {
+var reifyBlock = function (_13) {
+    return function (_14) {
+        return function (_15) {
             return SlamData_App_Workspace_Notebook_Block.block({
-                block: _9, 
-                key: _9.ident, 
-                notebook: _8, 
-                request: _7.props.request, 
-                files: _7.props.state.files
+                block: _15, 
+                key: _15.ident, 
+                notebook: _14, 
+                request: _13.props.request, 
+                files: _13.props.state.files
             })([  ]);
         };
     };
 };
-var noteBookName = function (_13) {
-    return function (_14) {
-        if (_13.state.renaming instanceof Data_Maybe.Just) {
+var noteBookName = function (_19) {
+    return function (_20) {
+        if (_19.state.renaming instanceof Data_Maybe.Just) {
             return React_DOM.input({
-                onBlur: React.eventHandler(_13)(function (this_1) {
+                onBlur: React.eventHandler(_19)(function (this_1) {
                     return function (e) {
                         return function __do() {
-                            this_1.props.request(new SlamData_Types.RenameNotebook(_14, SlamData_Helpers.value(e.target)))();
+                            this_1.props.request(new SlamData_Types.RenameNotebook(_20, SlamData_Helpers.value(e.target)))();
                             return this_1.setState((function () {
-                                var _37 = {};
-                                for (var _38 in this_1.state) {
-                                    if (this_1.state.hasOwnProperty(_38)) {
-                                        _37[_38] = this_1.state[_38];
+                                var _55 = {};
+                                for (var _56 in this_1.state) {
+                                    if (this_1.state.hasOwnProperty(_56)) {
+                                        _55[_56] = this_1.state[_56];
                                     };
                                 };
-                                _37.renaming = Data_Maybe.Nothing.value;
-                                return _37;
+                                _55.renaming = Data_Maybe.Nothing.value;
+                                return _55;
                             })());
                         };
                     };
                 }), 
-                onChange: React.eventHandler(_13)(function (this_1) {
+                onChange: React.eventHandler(_19)(function (this_1) {
                     return function (e) {
                         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState((function () {
-                            var _39 = {};
-                            for (var _40 in this_1.state) {
-                                if (this_1.state.hasOwnProperty(_40)) {
-                                    _39[_40] = this_1.state[_40];
+                            var _57 = {};
+                            for (var _58 in this_1.state) {
+                                if (this_1.state.hasOwnProperty(_58)) {
+                                    _57[_58] = this_1.state[_58];
                                 };
                             };
-                            _39.renaming = Data_Maybe.Just.create(SlamData_Helpers.value(e.target));
-                            return _39;
+                            _57.renaming = Data_Maybe.Just.create(SlamData_Helpers.value(e.target));
+                            return _57;
                         })()));
                     };
                 }), 
-                value: _13.state.renaming.value0
+                value: _19.state.renaming.value0
             })([  ]);
         };
-        if (_13.state.renaming instanceof Data_Maybe.Nothing) {
-            return React_DOM.rawText(_14.name);
+        if (_19.state.renaming instanceof Data_Maybe.Nothing) {
+            return React_DOM.rawText(_20.name);
         };
         throw new Error("Failed pattern match");
     };
 };
-var reifyTabs = function (_3) {
-    return function (_4) {
-        if (Prelude["=="](SlamData_Types_Workspace_Notebook.eqNotebookID({}))(_4.ident)(_3.state.settingsId)) {
+var reifyTabs = function (_9) {
+    return function (_10) {
+        if (Prelude["=="](SlamData_Types_Workspace_Notebook.eqNotebookID({}))(_10.ident)(_9.state.settingsId)) {
             return React_DOM.dd({
-                className: "tab" + SlamData_Helpers.activate(Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(new Data_Maybe.Just(_4.ident))(_3.state.active)
+                className: "tab" + SlamData_Helpers.activate(Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(new Data_Maybe.Just(_10.ident))(_9.state.active)
             })([ React_DOM.a({
                 id: "notebook-Settings", 
-                onClick: React.eventHandler(_3)(function (this_1) {
+                onClick: React.eventHandler(_9)(function (this_1) {
                     return function (_) {
                         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState((function () {
-                            var _44 = {};
-                            for (var _45 in this_1.state) {
-                                if (this_1.state.hasOwnProperty(_45)) {
-                                    _44[_45] = this_1.state[_45];
+                            var _62 = {};
+                            for (var _63 in this_1.state) {
+                                if (this_1.state.hasOwnProperty(_63)) {
+                                    _62[_63] = this_1.state[_63];
                                 };
                             };
-                            _44.active = new Data_Maybe.Just(_4.ident);
-                            return _44;
+                            _62.active = new Data_Maybe.Just(_10.ident);
+                            return _62;
                         })()));
                     };
                 })
-            })([ React_DOM.rawText(_4.name), React_DOM.i({
+            })([ React_DOM.rawText(_10.name), React_DOM.i({
                 className: "fa fa-times", 
-                onClick: React.eventHandler(_3)(function (this_1) {
+                onClick: React.eventHandler(_9)(function (this_1) {
                     return function (_) {
                         return function __do() {
-                            Prelude["=="](Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(this_1.state.active)(new Data_Maybe.Just(_4.ident)) ? this_1.setState((function () {
-    var _46 = {};
-    for (var _47 in this_1.state) {
-        if (this_1.state.hasOwnProperty(_47)) {
-            _46[_47] = this_1.state[_47];
+                            Prelude["=="](Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(this_1.state.active)(new Data_Maybe.Just(_10.ident)) ? this_1.setState((function () {
+    var _64 = {};
+    for (var _65 in this_1.state) {
+        if (this_1.state.hasOwnProperty(_65)) {
+            _64[_65] = this_1.state[_65];
         };
     };
-    _46.active = Data_Maybe.Nothing.value;
-    return _46;
+    _64.active = Data_Maybe.Nothing.value;
+    return _64;
 })()) : Prelude.unit;
                             return this_1.props.request(SlamData_Types.HideSettings.value)();
                         };
@@ -66355,38 +66355,38 @@ var reifyTabs = function (_3) {
             })([  ]) ]) ]);
         };
         return React_DOM.dd({
-            className: "tab" + SlamData_Helpers.activate(Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(new Data_Maybe.Just(_4.ident))(_3.state.active)
+            className: "tab" + SlamData_Helpers.activate(Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(new Data_Maybe.Just(_10.ident))(_9.state.active)
         })([ React_DOM.a({
-            onClick: React.eventHandler(_3)(function (this_2) {
+            onClick: React.eventHandler(_9)(function (this_2) {
                 return function (_) {
                     return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_2.setState((function () {
-                        var _48 = {};
-                        for (var _49 in this_2.state) {
-                            if (this_2.state.hasOwnProperty(_49)) {
-                                _48[_49] = this_2.state[_49];
+                        var _66 = {};
+                        for (var _67 in this_2.state) {
+                            if (this_2.state.hasOwnProperty(_67)) {
+                                _66[_67] = this_2.state[_67];
                             };
                         };
-                        _48.active = new Data_Maybe.Just(_4.ident);
-                        return _48;
+                        _66.active = new Data_Maybe.Just(_10.ident);
+                        return _66;
                     })()));
                 };
             })
-        })([ noteBookName(React.coerceThis(_3))(_4), React_DOM.i({
+        })([ noteBookName(React.coerceThis(_9))(_10), React_DOM.i({
             className: "fa fa-times", 
-            onClick: React.eventHandler(_3)(function (this_2) {
+            onClick: React.eventHandler(_9)(function (this_2) {
                 return function (_) {
                     return function __do() {
-                        Prelude["=="](Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(this_2.state.active)(new Data_Maybe.Just(_4.ident)) ? this_2.setState((function () {
-    var _50 = {};
-    for (var _51 in this_2.state) {
-        if (this_2.state.hasOwnProperty(_51)) {
-            _50[_51] = this_2.state[_51];
+                        Prelude["=="](Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(this_2.state.active)(new Data_Maybe.Just(_10.ident)) ? this_2.setState((function () {
+    var _68 = {};
+    for (var _69 in this_2.state) {
+        if (this_2.state.hasOwnProperty(_69)) {
+            _68[_69] = this_2.state[_69];
         };
     };
-    _50.active = Data_Maybe.Nothing.value;
-    return _50;
+    _68.active = Data_Maybe.Nothing.value;
+    return _68;
 })()) : Prelude.unit;
-                        return this_2.props.request(new SlamData_Types.CloseNotebook(_4.ident))();
+                        return this_2.props.request(new SlamData_Types.CloseNotebook(_10.ident))();
                     };
                 };
             })
@@ -66410,14 +66410,14 @@ var createNotebookButton = function ($$this) {
         })
     })([ SlamData_Components.newNotebookIcon ]) ]) ]);
 };
-var blockIcon = function (_10) {
-    if (_10 === "Markdown") {
+var blockIcon = function (_16) {
+    if (_16 === "Markdown") {
         return SlamData_Components.markdownIcon;
     };
-    if (_10 === "SQL") {
+    if (_16 === "SQL") {
         return SlamData_Components.sqlIcon;
     };
-    if (_10 === "Visual") {
+    if (_16 === "Visual") {
         return SlamData_Components.visualIcon;
     };
     throw new Error("Failed pattern match");
@@ -66436,77 +66436,77 @@ var internalActions = function ($$this) {
         })(Prelude["<$>"](Data_Array.functorArray({}))(actions(SlamData_Components.actionButton($$this))(ident))(Prelude["<$>"](Data_Array.functorArray({}))(SlamData_Types_Workspace_Notebook_Block.BlockType.create)([ "Markdown", "SQL", "Visual" ])));
     };
 };
-var reifyContent = function (_5) {
-    return function (_6) {
-        if (Prelude["=="](SlamData_Types_Workspace_Notebook.eqNotebookID({}))(_6.ident)(_5.state.settingsId)) {
+var reifyContent = function (_11) {
+    return function (_12) {
+        if (Prelude["=="](SlamData_Types_Workspace_Notebook.eqNotebookID({}))(_12.ident)(_11.state.settingsId)) {
             return React_DOM.div({
-                className: "content" + SlamData_Helpers.activate(Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(new Data_Maybe.Just(_6.ident))(_5.state.active)
+                className: "content" + SlamData_Helpers.activate(Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(new Data_Maybe.Just(_12.ident))(_11.state.active)
             })([ SlamData_App_Workspace_Notebook_Settings.settings({
-                request: _5.props.request, 
-                state: _5.props.state
+                request: _11.props.request, 
+                state: _11.props.state
             })([  ]) ]);
         };
         return React_DOM.div({
-            className: "content" + SlamData_Helpers.activate(Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(new Data_Maybe.Just(_6.ident))(_5.state.active)
+            className: "content" + SlamData_Helpers.activate(Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(new Data_Maybe.Just(_12.ident))(_11.state.active)
         })([ React_DOM.div({
             className: "toolbar button-bar"
-        })([ externalActions(_5)(_6), internalActions(_5)(_6.ident) ]), React_DOM.hr({})([  ]), React_DOM.div({
+        })([ externalActions(_11)(_12), internalActions(_11)(_12.ident) ]), React_DOM.hr({})([  ]), React_DOM.div({
             className: "actual-content"
-        })(Prelude["<$>"](Data_Array.functorArray({}))(reifyBlock(_5)(_6))(_6.blocks)) ]);
+        })(Prelude["<$>"](Data_Array.functorArray({}))(reifyBlock(_11)(_12))(_12.blocks)) ]);
     };
 };
 var notebooks = React.createClass((function () {
-    var _61 = {};
-    for (var _62 in React.spec) {
-        if (React.spec.hasOwnProperty(_62)) {
-            _61[_62] = React.spec[_62];
+    var _79 = {};
+    for (var _80 in React.spec) {
+        if (React.spec.hasOwnProperty(_80)) {
+            _79[_80] = React.spec[_80];
         };
     };
-    _61.displayName = "Notebooks";
-    _61.componentWillReceiveProps = function ($$this, props) {
+    _79.displayName = "Notebooks";
+    _79.componentWillReceiveProps = function ($$this, props) {
         return props.state.showSettings && !$$this.props.state.showSettings ? Prelude.pure(Control_Monad_Eff.applicativeEff({}))($$this.setState((function () {
-    var _55 = {};
-    for (var _56 in $$this.state) {
-        if ($$this.state.hasOwnProperty(_56)) {
-            _55[_56] = $$this.state[_56];
+    var _73 = {};
+    for (var _74 in $$this.state) {
+        if ($$this.state.hasOwnProperty(_74)) {
+            _73[_74] = $$this.state[_74];
         };
     };
-    _55.active = new Data_Maybe.Just($$this.state.settingsId);
-    return _55;
+    _73.active = new Data_Maybe.Just($$this.state.settingsId);
+    return _73;
 })())) : Data_Array.length(props.state.notebooks) > Data_Array.length($$this.props.state.notebooks) ? (function () {
     var active = Prelude["<$>"](Data_Maybe.functorMaybe({}))(Prelude.flip(Control_Lens["^."])(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._notebookRec(Data_Const.functorConst({})))(SlamData_Lens._ident(Data_Const.functorConst({})))))(Data_Array.head(Data_Array["\\\\"](SlamData_Types_Workspace_Notebook.eqNotebook({}))(props.state.notebooks)($$this.props.state.notebooks)));
     return Prelude.pure(Control_Monad_Eff.applicativeEff({}))($$this.setState((function () {
-        var _57 = {};
-        for (var _58 in $$this.state) {
-            if ($$this.state.hasOwnProperty(_58)) {
-                _57[_58] = $$this.state[_58];
+        var _75 = {};
+        for (var _76 in $$this.state) {
+            if ($$this.state.hasOwnProperty(_76)) {
+                _75[_76] = $$this.state[_76];
             };
         };
-        _57.active = active;
-        return _57;
+        _75.active = active;
+        return _75;
     })()));
 })() : Data_Array.length(props.state.notebooks) < Data_Array.length($$this.props.state.notebooks) ? (function () {
     var active = Prelude["<$>"](Data_Maybe.functorMaybe({}))(Prelude.flip(Control_Lens["^."])(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._notebookRec(Data_Const.functorConst({})))(SlamData_Lens._ident(Data_Const.functorConst({})))))(Data_Array.head(props.state.notebooks));
     return Prelude.pure(Control_Monad_Eff.applicativeEff({}))($$this.setState((function () {
-        var _59 = {};
-        for (var _60 in $$this.state) {
-            if ($$this.state.hasOwnProperty(_60)) {
-                _59[_60] = $$this.state[_60];
+        var _77 = {};
+        for (var _78 in $$this.state) {
+            if ($$this.state.hasOwnProperty(_78)) {
+                _77[_78] = $$this.state[_78];
             };
         };
-        _59.active = active;
-        return _59;
+        _77.active = active;
+        return _77;
     })()));
 })() : Prelude.pure(Control_Monad_Eff.applicativeEff({}))(Prelude.unit);
     };
-    _61.getInitialState = function ($$this) {
+    _79.getInitialState = function ($$this) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
             settingsId: SlamData_Types_Workspace_Notebook.NotebookID.create(Node_UUID.runUUID(Node_UUID.v4)), 
             active: Data_Maybe.Nothing.value, 
             renaming: Data_Maybe.Nothing.value
         });
     };
-    _61.render = function ($$this) {
+    _79.render = function ($$this) {
         var settings = $$this.props.state.showSettings ? [ settingsTab($$this) ] : [  ];
         var tabs = Prelude["<$>"](Data_Array.functorArray({}))(reifyTabs(React.coerceThis($$this)))(Prelude["++"](Data_Array.semigroupArray({}))($$this.props.state.notebooks)(settings));
         var tabs$prime = Data_Array.snoc(tabs)(createNotebookButton(React.coerceThis($$this)));
@@ -66519,7 +66519,7 @@ var notebooks = React.createClass((function () {
             className: "tabs-content"
         })(content) ]));
     };
-    return _61;
+    return _79;
 })());
 module.exports = {
     notebooks: notebooks
@@ -66553,28 +66553,28 @@ var workspace$prime = function (props) {
         id: "notebook"
     })([ SlamData_App_Workspace_Notebook.notebooks(props)([  ]) ]) ]);
 };
-var path = function (_15) {
-    return SlamData_Helpers.getOrElse(Data_Array.head(Prelude["<$>"](Data_Array.functorArray({}))(Data_Tuple.fst)(Data_Map.toList(_15.settings.seConfig.mountings))))(SlamData_Helpers.defaultMountPath);
+var path = function (_21) {
+    return SlamData_Helpers.getOrElse(Data_Array.head(Prelude["<$>"](Data_Array.functorArray({}))(Data_Tuple.fst)(Data_Map.toList(_21.settings.seConfig.mountings))))(SlamData_Helpers.defaultMountPath);
 };
 var workspace = React.createClass((function () {
-    var _67 = {};
-    for (var _68 in React.spec) {
-        if (React.spec.hasOwnProperty(_68)) {
-            _67[_68] = React.spec[_68];
+    var _85 = {};
+    for (var _86 in React.spec) {
+        if (React.spec.hasOwnProperty(_86)) {
+            _85[_86] = React.spec[_86];
         };
     };
-    _67.displayName = "Workspace";
-    _67.requestFS = function ($$this) {
+    _85.displayName = "Workspace";
+    _85.requestFS = function ($$this) {
         return $$this.props.request(new SlamData_Types.ReadFileSystem([ path($$this.props.state) ]));
     };
-    _67.componentDidMount = function ($$this) {
+    _85.componentDidMount = function ($$this) {
         return function __do() {
             $$this.requestFS();
             Control_Reactive_Timer.interval(5000)($$this.requestFS)();
             return Prelude.unit;
         };
     };
-    _67.render = function ($$this) {
+    _85.render = function ($$this) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div({
             id: "workspace"
         })([ workspace$prime({
@@ -66582,7 +66582,7 @@ var workspace = React.createClass((function () {
             state: $$this.props.state
         }) ]));
     };
-    return _67;
+    return _85;
 })());
 module.exports = {
     workspace: workspace
@@ -66596,25 +66596,25 @@ var React_DOM = require("React.DOM");
 var SlamData_App_Menu = require("SlamData.App.Menu");
 var SlamData_App_Workspace = require("SlamData.App.Workspace");
 var app = React.createClass((function () {
-    var _69 = {};
-    for (var _70 in React.spec) {
-        if (React.spec.hasOwnProperty(_70)) {
-            _69[_70] = React.spec[_70];
+    var _87 = {};
+    for (var _88 in React.spec) {
+        if (React.spec.hasOwnProperty(_88)) {
+            _87[_88] = React.spec[_88];
         };
     };
-    _69.displayName = "App";
-    _69.getInitialState = function (_) {
+    _87.displayName = "App";
+    _87.getInitialState = function (_) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
             showSettings: false
         });
     };
-    _69.render = function ($$this) {
+    _87.render = function ($$this) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div({})([ SlamData_App_Menu.menu($$this.props.request), SlamData_App_Workspace.workspace({
             request: $$this.props.request, 
             state: $$this.props.state
         })([  ]) ]));
     };
-    return _69;
+    return _87;
 })());
 module.exports = {
     app: app
