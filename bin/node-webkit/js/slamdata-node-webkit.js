@@ -17435,7 +17435,7 @@ PS.SlamData_App_Workspace_Notebook_Block_Visual = (function () {
         })([  ]) ]), React_DOM.div({
             className: "content" + SlamData_Helpers.activate(eqVisualTab({}))(VisualTypeTab.value)($$this.state.active)
         })([ React_DOM.ul({
-            className: "chart-type small-block-grid-5"
+            className: "chart-type inline-list"
         })(Prelude["<$>"](Data_Array.functorArray({}))(visual($$this))([ Graphics_C3.Bar.value, Graphics_C3.Line.value, Graphics_C3.Pie.value ])), selectFields($$this), selectFields($$this), selectFields($$this), React_DOM.div({
             className: "actions"
         })([ React_DOM.a({
