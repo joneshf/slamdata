@@ -90,6 +90,14 @@ var paths = {
                  ]
         },
         'node-webkit': {
+            dist: { linux: 'dist/SlamData/linux64/jre'
+                  , osx: 'dist/SlamData/osx/SlamData.app/Contents/Resources/jre'
+                  , win: 'dist/SlamData/win/jre'
+                  },
+            jre: { linux: 'lib/node-webkit/bower_components/jre-linux-x64/java-linux-x64/**/*'
+                 , osx: 'lib/node-webkit/bower_components/jre-osx/java-osx/**/*'
+                 , win: 'lib/node-webkit/bower_components/jre-windows-x64/java-windows/**/*'
+                 },
             js: 'lib/node-webkit/js',
             src: [ 'lib/node-webkit/src/**/*.purs'
                  , 'lib/node-webkit/bower_components/slamdata/src/**/*.purs'
@@ -215,6 +223,13 @@ function imgs(target) {
     }
 };
 
+function jre (platform) {
+    return function() {
+        return gulp.src(paths.lib['node-webkit'].jre[platform])
+            .pipe(gulp.dest(paths.lib['node-webkit'].dist[platform]));
+    }
+}
+
 function sequence () {
     var args = [].slice.call(arguments);
     return function(done) {
@@ -279,6 +294,11 @@ gulp.task('compile-node-webkit', compileLib('node-webkit'));
 gulp.task('connect', function() {
     return connect.server(options.connect);
 });
+
+gulp.task('jre-linux', jre('linux'));
+gulp.task('jre-osx', jre('osx'));
+gulp.task('jre-win', jre('win'));
+gulp.task('jre', ['jre-linux', 'jre-osx', 'jre-win']);
 
 gulp.task('sass', ['clean-sass'], function() {
     return gulp.src(paths.style)
@@ -352,7 +372,7 @@ gulp.task('build', sequence( ['clean-build', 'browserify', 'sass']
                            , [/*'build-browser',*/ 'build-node-webkit']
                            ));
 gulp.task('default', sequence(['browserify', 'sass']));
-gulp.task('dist', sequence(['build', 'clean-dist'], 'dist-node-webkit'));
+gulp.task('dist', sequence(['build', 'clean-dist'], 'dist-node-webkit', 'jre'));
 gulp.task('test', sequence('build', ['test-casperjs']));
 gulp.task('watch', ['connect'], function() {
     gulp.watch(paths.src, ['browserify']);
