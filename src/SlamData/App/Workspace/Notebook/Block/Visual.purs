@@ -11,6 +11,7 @@ module SlamData.App.Workspace.Notebook.Block.Visual
 
   import Data.Array (snoc, sort)
   import Data.Array.Unsafe (head, tail)
+  import Data.Function (mkFn2)
   import Data.Maybe (maybe, Maybe(..))
   import Data.String (charAt, joinWith, length)
   import Data.Tuple (Tuple(..))
@@ -133,7 +134,7 @@ module SlamData.App.Workspace.Notebook.Block.Visual
         []
       ]
     , D.div {className: "content" ++ activate VisualTypeTab this.state.active}
-      [ D.ul {className: "chart-type small-block-grid-5"}
+      [ D.ul {className: "chart-type inline-list"}
         (visual this <$> [Bar, Line, Pie])
       , selectFields this
       , selectFields this

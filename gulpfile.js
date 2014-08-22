@@ -3,7 +3,6 @@
 var gulp = require('gulp')
   , bower = require('gulp-bower')
   , browserify = require('browserify')
-  , compass = require('gulp-compass')
   , concat = require('gulp-concat')
   , connect = require('gulp-connect')
   , es = require('event-stream')
@@ -14,6 +13,7 @@ var gulp = require('gulp')
   , purescript = require('gulp-purescript')
   , rimraf = require('rimraf')
   , runSequence = require('run-sequence')
+  , sass = require('gulp-sass')
   , sourceStream = require('vinyl-source-stream')
   , spawn = require('child_process').spawn
   , taskListing = require('gulp-task-listing')
@@ -63,9 +63,7 @@ var paths = {
         js: [ 'bower_components/jquery/dist/jquery.js'
             , 'bower_components/c3/c3.js'
             , 'bower_components/d3/d3.js'
-            , 'bower_components/fastclick/lib/fastclick.js'
             , 'bower_components/foundation/js/foundation.js'
-            , 'bower_components/modernizr/modernizr.js'
             , 'bower_components/node-uuid/uuid.js'
             , 'bower_components/oboe/dist/oboe-browser.js'
             , 'bower_components/react/react-with-addons.js'
@@ -93,6 +91,14 @@ var paths = {
                  ]
         },
         'node-webkit': {
+            dist: { linux: 'dist/SlamData/linux64/jre'
+                  , osx: 'dist/SlamData/osx/SlamData.app/Contents/Resources/jre'
+                  , win: 'dist/SlamData/win/jre'
+                  },
+            jre: { linux: 'lib/node-webkit/bower_components/jre-linux-x64/java-linux-x64/**/*'
+                 , osx: 'lib/node-webkit/bower_components/jre-osx/java-osx/**/*'
+                 , win: 'lib/node-webkit/bower_components/jre-windows-x64/java-windows/**/*'
+                 },
             js: 'lib/node-webkit/js',
             src: [ 'lib/node-webkit/src/**/*.purs'
                  , 'lib/node-webkit/bower_components/slamdata/src/**/*.purs'
@@ -182,11 +188,7 @@ function concatCss(target) {
     return function() {
         var fa = gulp.src(paths.concat.css);
         var styles = gulp.src(paths.style)
-            .pipe(compass({
-                import_path: '.',
-                project: __dirname,
-                sass: 'style'
-            }));
+            .pipe(sass());
 
         return es.concat(fa, styles)
             .pipe(concat(options.build.css))
@@ -221,6 +223,13 @@ function imgs(target) {
             .pipe(gulp.dest(paths.build[target].imgs));
     }
 };
+
+function jre (platform) {
+    return function() {
+        return gulp.src(paths.lib['node-webkit'].jre[platform])
+            .pipe(gulp.dest(paths.lib['node-webkit'].dist[platform]));
+    }
+}
 
 function sequence () {
     var args = [].slice.call(arguments);
@@ -287,13 +296,14 @@ gulp.task('connect', function() {
     return connect.server(options.connect);
 });
 
+gulp.task('jre-linux', jre('linux'));
+gulp.task('jre-osx', jre('osx'));
+gulp.task('jre-win', jre('win'));
+gulp.task('jre', ['jre-linux', 'jre-osx', 'jre-win']);
+
 gulp.task('sass', ['clean-sass'], function() {
     return gulp.src(paths.style)
-        .pipe(compass({
-            import_path: '.',
-            project: __dirname,
-            sass: 'style'
-        }))
+        .pipe(sass())
         .pipe(gulp.dest(paths.css))
         .pipe(connect.reload());
 });
@@ -327,8 +337,8 @@ gulp.task('build-browser', sequence( 'bower-browser'
                                      , 'imgs-browser'
                                      ]
                                    ));
-gulp.task('build-node-webkit', sequence(/* 'bower-node-webkit'
-                                       ,*/ 'compile-node-webkit'
+gulp.task('build-node-webkit', sequence( 'bower-node-webkit'
+                                       , 'compile-node-webkit'
                                        , [ 'concat-css-node-webkit'
                                          , 'concat-js-node-webkit'
                                          , 'copy-node-webkit'
@@ -352,16 +362,18 @@ gulp.task('dist-node-webkit', function() {
 });
 
 gulp.task('test-casperjs', function(done) {
-    spawn('./node_modules/.bin/casperjs', ['test', 'test/'], {stdio: 'inherit'})
-        .on('close', done);
+    spawn( './node_modules/.bin/casperjs'
+         , ['test', 'test/tests']
+         , {stdio: 'inherit'}
+         ).on('close', done);
 });
 
 // Main tasks.
-gulp.task('build', sequence( ['clean-build', 'browserify']
-                           , ['build-browser', 'build-node-webkit']
+gulp.task('build', sequence( ['clean-build', 'browserify', 'sass']
+                           , [/*'build-browser',*/ 'build-node-webkit']
                            ));
 gulp.task('default', sequence(['browserify', 'sass']));
-gulp.task('dist', sequence(['build', 'clean-dist'], 'dist-node-webkit'));
+gulp.task('dist', sequence(['build', 'clean-dist'], 'dist-node-webkit', 'jre'));
 gulp.task('test', sequence('build', ['test-casperjs']));
 gulp.task('watch', ['connect'], function() {
     gulp.watch(paths.src, ['browserify']);

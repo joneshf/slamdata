@@ -21,6 +21,7 @@ $slamdata-orange: rgb(255, 128, 0);
 // Import our stuff.
 @import "filesystem.scss";
 @import "notebook.scss";
+@import "notebook/settings.scss";
 @import "tabs.scss";
 
 html, body {
