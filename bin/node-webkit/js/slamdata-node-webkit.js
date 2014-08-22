@@ -19316,6 +19316,7 @@ PS.SlamData_NodeWebKit = (function () {
                                                         _3208[_3209] = Network_XHR.defaultAjaxOptions[_3209];
                                                     };
                                                 };
+                                                _3208.headers = [ Control_Lens["~"]("Content-Type")("text/plain") ];
                                                 _3208.onLoad = function (res_1) {
                                                     return function __do() {
                                                         var _137 = Network_XHR.getResponseText(res_1)();
@@ -19359,7 +19360,7 @@ PS.SlamData_NodeWebKit = (function () {
                                     return _3210;
                                 })())(queryUrl)({
                                     out: out
-                                })(new Network_XHR_Types.UrlEncoded(_883.event.value1.editContent))();
+                                })(new Network_XHR_Types.Multipart(_883.event.value1.editContent))();
                                 return Prelude.unit;
                             };
                         };
