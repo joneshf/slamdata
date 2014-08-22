@@ -65295,19 +65295,19 @@ var toggleTree = function (_0) {
     };
 };
 var reify = React.createClass((function () {
-    var _13 = {};
-    for (var _14 in React.spec) {
-        if (React.spec.hasOwnProperty(_14)) {
-            _13[_14] = React.spec[_14];
+    var _48 = {};
+    for (var _49 in React.spec) {
+        if (React.spec.hasOwnProperty(_49)) {
+            _48[_49] = React.spec[_49];
         };
     };
-    _13.displayName = "FileSystemTree";
-    _13.getInitialState = function (_) {
+    _48.displayName = "FileSystemTree";
+    _48.getInitialState = function (_) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
             collapsed: true
         });
     };
-    _13.render = function ($$this) {
+    _48.render = function ($$this) {
         if ($$this.props.files.type === "file" && $$this.props.files.name === "index.nb") {
             return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div({})([ React_DOM.span({
                 onClick: React.eventHandler($$this)(function (this_1) {
@@ -65341,7 +65341,7 @@ var reify = React.createClass((function () {
         };
         throw new Error("Failed pattern match");
     };
-    return _13;
+    return _48;
 })());
 var fsTab = React_DOM.dl({
     className: "tabs", 
@@ -65365,19 +65365,19 @@ var fsContent = function (files) {
     };
 };
 var filesystem = React.createClass((function () {
-    var _15 = {};
-    for (var _16 in React.spec) {
-        if (React.spec.hasOwnProperty(_16)) {
-            _15[_16] = React.spec[_16];
+    var _50 = {};
+    for (var _51 in React.spec) {
+        if (React.spec.hasOwnProperty(_51)) {
+            _50[_51] = React.spec[_51];
         };
     };
-    _15.displayName = "FileSystem";
-    _15.render = function ($$this) {
+    _50.displayName = "FileSystem";
+    _50.render = function ($$this) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div({
             className: "slamdata-panel"
         })([ fsTab, fsContent($$this.props.files)($$this.props.request) ]));
     };
-    return _15;
+    return _50;
 })());
 module.exports = {
     filesystem: filesystem
@@ -65473,14 +65473,14 @@ function VisualTypeTab() {
 
 };
 VisualTypeTab.value = new VisualTypeTab();
-var visualIcon = function (_801) {
-    if (_801 instanceof Graphics_C3.Bar) {
+var visualIcon = function (_10) {
+    if (_10 instanceof Graphics_C3.Bar) {
         return SlamData_Components.barChartIcon;
     };
-    if (_801 instanceof Graphics_C3.Line) {
+    if (_10 instanceof Graphics_C3.Line) {
         return SlamData_Components.lineChartIcon;
     };
-    if (_801 instanceof Graphics_C3.Pie) {
+    if (_10 instanceof Graphics_C3.Pie) {
         return SlamData_Components.pieChartIcon;
     };
     throw new Error("Failed pattern match");
@@ -65490,115 +65490,115 @@ var visual = function ($$this) {
         return React_DOM.li({
             onClick: React.eventHandler($$this)(function (this_1) {
                 return function (_) {
-                    return Prelude.pure(Control_Monad_Eff.applicativeEff())(this_1.setState((function () {
-                        var _2815 = {};
-                        for (var _2816 in this_1.state) {
-                            if (this_1.state.hasOwnProperty(_2816)) {
-                                _2815[_2816] = this_1.state[_2816];
+                    return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState((function () {
+                        var _53 = {};
+                        for (var _54 in this_1.state) {
+                            if (this_1.state.hasOwnProperty(_54)) {
+                                _53[_54] = this_1.state[_54];
                             };
                         };
-                        _2815.visual = ty;
-                        return _2815;
+                        _53.visual = ty;
+                        return _53;
                     })()));
                 };
             }), 
-            className: SlamData_Helpers.activate(Graphics_C3.eqC3Type())(ty)($$this.state.visual)
-        })([ React_DOM.a({})([ visualIcon(ty) ]), React_DOM.span({})([ React_DOM.rawText(Prelude.show(Graphics_C3.showC3Type())(ty)) ]) ]);
+            className: SlamData_Helpers.activate(Graphics_C3.eqC3Type({}))(ty)($$this.state.visual)
+        })([ React_DOM.a({})([ visualIcon(ty) ]), React_DOM.span({})([ React_DOM.rawText(Prelude.show(Graphics_C3.showC3Type({}))(ty)) ]) ]);
     };
 };
-var toggleTree = function (_795) {
-    return function (_796) {
-        return function (_797) {
-            var name = Control_Lens["^."](_796.props.files)(Control_Lens[".."](Prelude.semigroupoidArr())(SlamData_Lens._fileTypeRec(Data_Const.functorConst()))(SlamData_Lens._name(Data_Const.functorConst())));
-            var path = Data_Array.snoc(_796.props.path)(name + "/");
-            return _796.state.collapsed ? function __do() {
-    _796.props.request(_795)();
-    return _796.setState({
-        collapsed: !_796.state.collapsed
+var toggleTree = function (_4) {
+    return function (_5) {
+        return function (_6) {
+            var name = Control_Lens["^."](_5.props.files)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._fileTypeRec(Data_Const.functorConst({})))(SlamData_Lens._name(Data_Const.functorConst({}))));
+            var path = Data_Array.snoc(_5.props.path)(name + "/");
+            return _5.state.collapsed ? function __do() {
+    _5.props.request(_4)();
+    return _5.setState({
+        collapsed: !_5.state.collapsed
     });
-} : Prelude.pure(Control_Monad_Eff.applicativeEff())(_796.setState({
-    collapsed: !_796.state.collapsed
+} : Prelude.pure(Control_Monad_Eff.applicativeEff({}))(_5.setState({
+    collapsed: !_5.state.collapsed
 }));
         };
     };
 };
-var showVisualTab = function () {
-    return new Prelude.Show(function (_805) {
-        if (_805 instanceof FieldsTab) {
+var showVisualTab = function (__unused) {
+    return new Prelude.Show(function (_14) {
+        if (_14 instanceof FieldsTab) {
             return "Fields";
         };
-        if (_805 instanceof VisualTypeTab) {
+        if (_14 instanceof VisualTypeTab) {
             return "Type";
         };
         throw new Error("Failed pattern match");
     });
 };
-var reifyField = function (_798) {
-    return function (_799) {
-        return function (_800) {
+var reifyField = function (_7) {
+    return function (_8) {
+        return function (_9) {
             return React_DOM.div({
                 className: "visual-field"
             })([ React_DOM.input({
-                onClick: React.eventHandler(_798)(function (this_1) {
+                onClick: React.eventHandler(_7)(function (this_1) {
                     return function (e) {
-                        var path$prime = Data_Array_Unsafe.tail(_799);
-                        var root = Data_Array_Unsafe.head(_799);
+                        var path$prime = Data_Array_Unsafe.tail(_8);
+                        var root = Data_Array_Unsafe.head(_8);
                         var field = root + Data_String.joinWith("/")(path$prime);
-                        var fields = SlamData_Helpers.checked(e.target) ? Data_Map.alter(Prelude.ordString())(Data_Maybe.maybe(Data_Maybe.Just.create(Data_Set.singleton(_800.name)))(Prelude[">>>"](Prelude.semigroupoidArr())(Data_Set.insert(Prelude.ordString())(_800.name))(Data_Maybe.Just.create)))(field)(this_1.state.fields) : Data_Map.alter(Prelude.ordString())(Prelude["<$>"](Data_Maybe.functorMaybe())(Data_Set["delete"](Prelude.ordString())(_800.name)))(field)(this_1.state.fields);
-                        return Prelude.pure(Control_Monad_Eff.applicativeEff())(this_1.setState((function () {
-                            var _2824 = {};
-                            for (var _2825 in this_1.state) {
-                                if (this_1.state.hasOwnProperty(_2825)) {
-                                    _2824[_2825] = this_1.state[_2825];
+                        var fields = SlamData_Helpers.checked(e.target) ? Data_Map.alter(Prelude.ordString({}))(Data_Maybe.maybe(Data_Maybe.Just.create(Data_Set.singleton(_9.name)))(Prelude[">>>"](Prelude.semigroupoidArr({}))(Data_Set.insert(Prelude.ordString({}))(_9.name))(Data_Maybe.Just.create)))(field)(this_1.state.fields) : Data_Map.alter(Prelude.ordString({}))(Prelude["<$>"](Data_Maybe.functorMaybe({}))(Data_Set["delete"](Prelude.ordString({}))(_9.name)))(field)(this_1.state.fields);
+                        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState((function () {
+                            var _62 = {};
+                            for (var _63 in this_1.state) {
+                                if (this_1.state.hasOwnProperty(_63)) {
+                                    _62[_63] = this_1.state[_63];
                                 };
                             };
-                            _2824.fields = fields;
-                            return _2824;
+                            _62.fields = fields;
+                            return _62;
                         })()));
                     };
                 }), 
                 type: "checkbox"
-            })([  ]), React_DOM.rawText(_800.name) ]);
+            })([  ]), React_DOM.rawText(_9.name) ]);
         };
     };
 };
 var reify = React.createClass((function () {
-    var _2833 = {};
-    for (var _2834 in React.spec) {
-        if (React.spec.hasOwnProperty(_2834)) {
-            _2833[_2834] = React.spec[_2834];
+    var _71 = {};
+    for (var _72 in React.spec) {
+        if (React.spec.hasOwnProperty(_72)) {
+            _71[_72] = React.spec[_72];
         };
     };
-    _2833.displayName = "FieldsTree";
-    _2833.getInitialState = function (_) {
-        return Prelude.pure(Control_Monad_Eff.applicativeEff())({
+    _71.displayName = "FieldsTree";
+    _71.getInitialState = function (_) {
+        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
             collapsed: true
         });
     };
-    _2833.render = function ($$this) {
-        var name = Control_Lens["^."]($$this.props.files)(Control_Lens[".."](Prelude.semigroupoidArr())(SlamData_Lens._fileTypeRec(Data_Const.functorConst()))(SlamData_Lens._name(Data_Const.functorConst())));
+    _71.render = function ($$this) {
+        var name = Control_Lens["^."]($$this.props.files)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._fileTypeRec(Data_Const.functorConst({})))(SlamData_Lens._name(Data_Const.functorConst({}))));
         var path = Data_Array.snoc($$this.props.path)(name);
         var path$prime = Data_Array.snoc($$this.props.path)(name + "/");
-        var children = Data_Array.sort(SlamData_Types_Workspace_FileSystem.ordFileType())(Control_Lens["^."]($$this.props.files)(Control_Lens[".."](Prelude.semigroupoidArr())(SlamData_Lens._fileTypeRec(Data_Const.functorConst()))(SlamData_Lens._children(Data_Const.functorConst()))));
+        var children = Data_Array.sort(SlamData_Types_Workspace_FileSystem.ordFileType({}))(Control_Lens["^."]($$this.props.files)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._fileTypeRec(Data_Const.functorConst({})))(SlamData_Lens._children(Data_Const.functorConst({})))));
         if ($$this.props.files.type === "file") {
-            return Prelude.pure(Control_Monad_Eff.applicativeEff())(React_TreeView.treeView({
+            return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_TreeView.treeView({
                 collapsed: $$this.state.collapsed, 
                 defaultCollapsed: true, 
                 nodeLabel: React_DOM.span({
                     onClick: React.eventHandler(React.coerceThis($$this))(toggleTree(new SlamData_Types.ReadFields(path)))
                 })([ React_DOM.rawText(name) ]), 
                 onClick: React.eventHandler(React.coerceThis($$this))(toggleTree(new SlamData_Types.ReadFields(path)))
-            })(Prelude["<$>"](Data_Array.functorArray())(reifyField($$this.props.visualThis)(path))(children)));
+            })(Prelude["<$>"](Data_Array.functorArray({}))(reifyField($$this.props.visualThis)(path))(children)));
         };
         if ($$this.props.files.type === "directory") {
-            return Prelude.pure(Control_Monad_Eff.applicativeEff())(React_TreeView.treeView({
+            return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_TreeView.treeView({
                 collapsed: $$this.state.collapsed, 
                 defaultCollapsed: true, 
                 nodeLabel: React_DOM.span({
                     onClick: React.eventHandler(React.coerceThis($$this))(toggleTree(new SlamData_Types.ReadFileSystem(path$prime)))
                 })([ React_DOM.rawText(name) ]), 
                 onClick: React.eventHandler(React.coerceThis($$this))(toggleTree(new SlamData_Types.ReadFileSystem(path$prime)))
-            })(Prelude["<$>"](Data_Array.functorArray())(function (f) {
+            })(Prelude["<$>"](Data_Array.functorArray({}))(function (f) {
                 return reify({
                     files: f, 
                     request: $$this.props.request, 
@@ -65609,21 +65609,21 @@ var reify = React.createClass((function () {
         };
         throw new Error("Failed pattern match");
     };
-    return _2833;
+    return _71;
 })());
 var placeholder = React_DOM.option({
     disabled: true, 
     selected: true, 
     value: ""
 })([ React_DOM.rawText("Select a field") ]);
-var optionify = function (_802) {
+var optionify = function (_11) {
     return React_DOM.optgroup({
-        label: _802.value0
-    })(Prelude["<$>"](Data_Array.functorArray())(function (f) {
+        label: _11.value0
+    })(Prelude["<$>"](Data_Array.functorArray({}))(function (f) {
         return React_DOM.option({
             value: f
         })([ React_DOM.rawText(f) ]);
-    })(Data_Set.toList(_802.value1)));
+    })(Data_Set.toList(_11.value1)));
 };
 var selectFields = function ($$this) {
     return React_DOM.select({
@@ -65631,32 +65631,32 @@ var selectFields = function ($$this) {
             return function (e) {
                 var path = SlamData_Helpers.selectedOptgroup(e.target);
                 var field = SlamData_Helpers.value(e.target);
-                var selected = Data_Map.alter(Prelude.ordString())(Data_Maybe.maybe(Data_Maybe.Just.create(Data_Set.singleton(field)))(Prelude[">>>"](Prelude.semigroupoidArr())(Data_Set.insert(Prelude.ordString())(field))(Data_Maybe.Just.create)))(path)(this_1.state.selectedFields);
-                return Prelude.pure(Control_Monad_Eff.applicativeEff())(this_1.setState((function () {
-                    var _2838 = {};
-                    for (var _2839 in this_1.state) {
-                        if (this_1.state.hasOwnProperty(_2839)) {
-                            _2838[_2839] = this_1.state[_2839];
+                var selected = Data_Map.alter(Prelude.ordString({}))(Data_Maybe.maybe(Data_Maybe.Just.create(Data_Set.singleton(field)))(Prelude[">>>"](Prelude.semigroupoidArr({}))(Data_Set.insert(Prelude.ordString({}))(field))(Data_Maybe.Just.create)))(path)(this_1.state.selectedFields);
+                return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState((function () {
+                    var _76 = {};
+                    for (var _77 in this_1.state) {
+                        if (this_1.state.hasOwnProperty(_77)) {
+                            _76[_77] = this_1.state[_77];
                         };
                     };
-                    _2838.selectedFields = selected;
-                    return _2838;
+                    _76.selectedFields = selected;
+                    return _76;
                 })()));
             };
         })
-    })(Prelude[":"](placeholder)(Prelude["<$>"](Data_Array.functorArray())(optionify)(Data_Map.toList($$this.state.fields))));
+    })(Prelude[":"](placeholder)(Prelude["<$>"](Data_Array.functorArray({}))(optionify)(Data_Map.toList($$this.state.fields))));
 };
-var eqVisualTab = function () {
+var eqVisualTab = function (__unused) {
     return new Prelude.Eq(function (vt) {
         return function (vt$prime) {
-            return !Prelude["=="](eqVisualTab())(vt)(vt$prime);
+            return !Prelude["=="](eqVisualTab({}))(vt)(vt$prime);
         };
-    }, function (_803) {
-        return function (_804) {
-            if (_803 instanceof FieldsTab && _804 instanceof FieldsTab) {
+    }, function (_12) {
+        return function (_13) {
+            if (_12 instanceof FieldsTab && _13 instanceof FieldsTab) {
                 return true;
             };
-            if (_803 instanceof VisualTypeTab && _804 instanceof VisualTypeTab) {
+            if (_12 instanceof VisualTypeTab && _13 instanceof VisualTypeTab) {
                 return true;
             };
             return false;
@@ -65666,53 +65666,53 @@ var eqVisualTab = function () {
 var visualTab = function ($$this) {
     return function (tab) {
         return React_DOM.dd({
-            className: "tab" + SlamData_Helpers.activate(eqVisualTab())(tab)($$this.state.active), 
+            className: "tab" + SlamData_Helpers.activate(eqVisualTab({}))(tab)($$this.state.active), 
             onClick: React.eventHandler($$this)(function (this_1) {
                 return function (_) {
-                    return Prelude.pure(Control_Monad_Eff.applicativeEff())(this_1.setState((function () {
-                        var _2842 = {};
-                        for (var _2843 in this_1.state) {
-                            if (this_1.state.hasOwnProperty(_2843)) {
-                                _2842[_2843] = this_1.state[_2843];
+                    return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState((function () {
+                        var _80 = {};
+                        for (var _81 in this_1.state) {
+                            if (this_1.state.hasOwnProperty(_81)) {
+                                _80[_81] = this_1.state[_81];
                             };
                         };
-                        _2842.active = tab;
-                        return _2842;
+                        _80.active = tab;
+                        return _80;
                     })()));
                 };
             })
-        })([ React_DOM.a({})([ React_DOM.rawText(Prelude.show(showVisualTab())(tab)) ]) ]);
+        })([ React_DOM.a({})([ React_DOM.rawText(Prelude.show(showVisualTab({}))(tab)) ]) ]);
     };
 };
 var visualTabs = function ($$this) {
     return React_DOM.dl({
         className: "tabs vertical"
-    })(Prelude["<$>"](Data_Array.functorArray())(visualTab($$this))([ FieldsTab.value, VisualTypeTab.value ]));
+    })(Prelude["<$>"](Data_Array.functorArray({}))(visualTab($$this))([ FieldsTab.value, VisualTypeTab.value ]));
 };
-var createData = function (_794) {
-    return Prelude["<$>"](Data_Array.functorArray())(function (_793) {
+var createData = function (_3) {
+    return Prelude["<$>"](Data_Array.functorArray({}))(function (_2) {
         return {
-            fields: Data_Set.toList(_793.value1), 
-            path: _793.value0, 
-            type: _794.visual
+            fields: Data_Set.toList(_2.value1), 
+            path: _2.value0, 
+            type: _3.visual
         };
-    })(Data_Map.toList(_794.selectedFields));
+    })(Data_Map.toList(_3.selectedFields));
 };
 var visualEditorContent = function ($$this) {
     return React_DOM.div({
         className: "tabs-content vertical"
     })([ React_DOM.ul({
-        className: "content" + SlamData_Helpers.activate(eqVisualTab())(FieldsTab.value)($$this.state.active)
+        className: "content" + SlamData_Helpers.activate(eqVisualTab({}))(FieldsTab.value)($$this.state.active)
     })([ reify({
         files: $$this.props.files, 
         request: $$this.props.request, 
         path: [  ], 
         visualThis: $$this
     })([  ]) ]), React_DOM.div({
-        className: "content" + SlamData_Helpers.activate(eqVisualTab())(VisualTypeTab.value)($$this.state.active)
+        className: "content" + SlamData_Helpers.activate(eqVisualTab({}))(VisualTypeTab.value)($$this.state.active)
     })([ React_DOM.ul({
         className: "chart-type inline-list"
-    })(Prelude["<$>"](Data_Array.functorArray())(visual($$this))([ Graphics_C3.Bar.value, Graphics_C3.Line.value, Graphics_C3.Pie.value ])), selectFields($$this), selectFields($$this), selectFields($$this), React_DOM.div({
+    })(Prelude["<$>"](Data_Array.functorArray({}))(visual($$this))([ Graphics_C3.Bar.value, Graphics_C3.Line.value, Graphics_C3.Pie.value ])), selectFields($$this), selectFields($$this), selectFields($$this), React_DOM.div({
         className: "actions"
     })([ React_DOM.a({
         className: "tiny button", 
@@ -65724,27 +65724,27 @@ var visualEditorContent = function ($$this) {
     })([ React_DOM.rawText("Create") ]) ]) ]) ]);
 };
 var visualEditor = React.createClass((function () {
-    var _2850 = {};
-    for (var _2851 in React.spec) {
-        if (React.spec.hasOwnProperty(_2851)) {
-            _2850[_2851] = React.spec[_2851];
+    var _88 = {};
+    for (var _89 in React.spec) {
+        if (React.spec.hasOwnProperty(_89)) {
+            _88[_89] = React.spec[_89];
         };
     };
-    _2850.displayName = "VisualEditor";
-    _2850.getInitialState = function (_) {
-        return Prelude.pure(Control_Monad_Eff.applicativeEff())({
+    _88.displayName = "VisualEditor";
+    _88.getInitialState = function (_) {
+        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
             active: FieldsTab.value, 
             fields: Data_Map.empty, 
             selectedFields: Data_Map.empty, 
             visual: Graphics_C3.Line.value
         });
     };
-    _2850.render = function ($$this) {
-        return Prelude.pure(Control_Monad_Eff.applicativeEff())(SlamData_App_Workspace_Notebook_Block_Common.blockRow({
+    _88.render = function ($$this) {
+        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_App_Workspace_Notebook_Block_Common.blockRow({
             styles: "block-content edit-visual"
         })([ visualTabs(React.coerceThis($$this)), visualEditorContent(React.coerceThis($$this)) ]));
     };
-    return _2850;
+    return _88;
 })());
 module.exports = {
     FieldsTab: FieldsTab, 
@@ -65769,10 +65769,10 @@ var Control_Monad_Identity = require("Control.Monad.Identity");
 var Control_Monad_Eff = require("Control.Monad.Eff");
 var SlamData_Helpers = require("SlamData.Helpers");
 var SlamData_App_Workspace_Notebook_Block_Visual = require("SlamData.App.Workspace.Notebook.Block.Visual");
-var typeName = function (_806) {
+var typeName = function (_15) {
     return React_DOM.div({
         className: "block-type text-center"
-    })([ React_DOM.span({})([ React_DOM.rawText(Prelude.show(SlamData_Types_Workspace_Notebook_Block.showBlockType())(_806.blockType)) ]) ]);
+    })([ React_DOM.span({})([ React_DOM.rawText(Prelude.show(SlamData_Types_Workspace_Notebook_Block.showBlockType({}))(_15.blockType)) ]) ]);
 };
 var toolbar = function ($$this) {
     return React_DOM.div({
@@ -65781,12 +65781,12 @@ var toolbar = function ($$this) {
         className: "left button-group"
     })([  ]), React_DOM.ul({
         className: "right button-group"
-    })([ SlamData_Components.actionButton($$this)(new SlamData_Types.DeleteBlock(Control_Lens["^."]($$this.props.notebook)(Control_Lens[".."](Prelude.semigroupoidArr())(SlamData_Lens._notebookRec(Data_Const.functorConst()))(SlamData_Lens._ident(Data_Const.functorConst()))), Control_Lens["^."]($$this.props.block)(Control_Lens[".."](Prelude.semigroupoidArr())(SlamData_Lens._blockRec(Data_Const.functorConst()))(SlamData_Lens._ident(Data_Const.functorConst())))))("Close")(SlamData_Components.closeIcon) ]) ]);
+    })([ SlamData_Components.actionButton($$this)(new SlamData_Types.DeleteBlock(Control_Lens["^."]($$this.props.notebook)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._notebookRec(Data_Const.functorConst({})))(SlamData_Lens._ident(Data_Const.functorConst({})))), Control_Lens["^."]($$this.props.block)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._blockRec(Data_Const.functorConst({})))(SlamData_Lens._ident(Data_Const.functorConst({}))))))("Close")(SlamData_Components.closeIcon) ]) ]);
 };
 var evaluatedVisualBlock = function ($$this) {
-    var blockRec = Control_Lens["^."]($$this.props.block)(SlamData_Lens._blockRec(Data_Const.functorConst()));
+    var blockRec = Control_Lens["^."]($$this.props.block)(SlamData_Lens._blockRec(Data_Const.functorConst({})));
     return SlamData_App_Workspace_Notebook_Block_Common.blockRow({
-        styles: "block-content block-" + Prelude.show(SlamData_Types_Workspace_Notebook_Block.showBlockType())(blockRec.blockType)
+        styles: "block-content block-" + Prelude.show(SlamData_Types_Workspace_Notebook_Block.showBlockType({}))(blockRec.blockType)
     })([ React_DOM.div({
         className: "block-label"
     })([ React_DOM.rawText(blockRec.label) ]), React_DOM.div({
@@ -65797,13 +65797,13 @@ var evaluatedVisualBlock = function ($$this) {
             };
         })
     })([ React_DOM.div({
-        id: Control_Lens["^."]($$this.props.block)(Control_Lens[".."](Prelude.semigroupoidArr())(SlamData_Lens._blockRec(Data_Const.functorConst()))(SlamData_Lens._evalContent(Data_Const.functorConst())))
+        id: Control_Lens["^."]($$this.props.block)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._blockRec(Data_Const.functorConst({})))(SlamData_Lens._evalContent(Data_Const.functorConst({}))))
     })([  ]) ]) ]);
 };
 var evaluatedBlock = function ($$this) {
-    var blockRec = Control_Lens["^."]($$this.props.block)(SlamData_Lens._blockRec(Data_Const.functorConst()));
+    var blockRec = Control_Lens["^."]($$this.props.block)(SlamData_Lens._blockRec(Data_Const.functorConst({})));
     return SlamData_App_Workspace_Notebook_Block_Common.blockRow({
-        styles: "block-content block-" + Prelude.show(SlamData_Types_Workspace_Notebook_Block.showBlockType())(blockRec.blockType)
+        styles: "block-content block-" + Prelude.show(SlamData_Types_Workspace_Notebook_Block.showBlockType({}))(blockRec.blockType)
     })([ React_DOM.div({
         className: "block-label"
     })([ React_DOM.rawText(blockRec.label) ]), React_DOM.div({
@@ -65827,38 +65827,38 @@ var blockEditor = function ($$this) {
         className: "block-editor", 
         onBlur: React.eventHandler($$this)(function (this_1) {
             return function (_) {
-                var block$prime = Control_Lens[".~"](Control_Lens[".."](Prelude.semigroupoidArr())(SlamData_Lens._blockRec(Control_Monad_Identity.functorIdentity()))(SlamData_Lens._editContent(Control_Monad_Identity.functorIdentity())))(this_1.state.editContent)(this_1.props.block);
+                var block$prime = Control_Lens[".~"](Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._blockRec(Control_Monad_Identity.functorIdentity({})))(SlamData_Lens._editContent(Control_Monad_Identity.functorIdentity({}))))(this_1.state.editContent)(this_1.props.block);
                 return this_1.props.request(new SlamData_Types.EvalBlock(this_1.props.notebook, block$prime));
             };
         }), 
         onChange: React.eventHandler($$this)(function (this_1) {
             return function (e) {
-                return Prelude.pure(Control_Monad_Eff.applicativeEff())(this_1.setState((function () {
-                    var _2853 = {};
-                    for (var _2854 in this_1.state) {
-                        if (this_1.state.hasOwnProperty(_2854)) {
-                            _2853[_2854] = this_1.state[_2854];
+                return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState((function () {
+                    var _91 = {};
+                    for (var _92 in this_1.state) {
+                        if (this_1.state.hasOwnProperty(_92)) {
+                            _91[_92] = this_1.state[_92];
                         };
                     };
-                    _2853.editContent = SlamData_Helpers.value(e.target);
-                    return _2853;
+                    _91.editContent = SlamData_Helpers.value(e.target);
+                    return _91;
                 })()));
             };
         }), 
         onKeyUp: React.eventHandler($$this)(function (this_1) {
             return function (k) {
                 return k.ctrlKey && k.key === "Enter" ? (function () {
-    var block$prime = Control_Lens[".~"](Control_Lens[".."](Prelude.semigroupoidArr())(SlamData_Lens._blockRec(Control_Monad_Identity.functorIdentity()))(SlamData_Lens._editContent(Control_Monad_Identity.functorIdentity())))(this_1.state.editContent)(this_1.props.block);
+    var block$prime = Control_Lens[".~"](Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._blockRec(Control_Monad_Identity.functorIdentity({})))(SlamData_Lens._editContent(Control_Monad_Identity.functorIdentity({}))))(this_1.state.editContent)(this_1.props.block);
     return this_1.props.request(new SlamData_Types.EvalBlock(this_1.props.notebook, block$prime));
-})() : Prelude.pure(Control_Monad_Eff.applicativeEff())(Prelude.unit);
+})() : Prelude.pure(Control_Monad_Eff.applicativeEff({}))(Prelude.unit);
             };
         }), 
         value: $$this.state.editContent
     })([  ]) ]) ]);
 };
 var blockContent = function ($$this) {
-    var _2855 = Control_Lens["^."]($$this.props.block)(SlamData_Lens._blockRec(Data_Const.functorConst()));
-    if (_2855.blockMode === "Edit" && _2855.blockType === "Visual") {
+    var _93 = Control_Lens["^."]($$this.props.block)(SlamData_Lens._blockRec(Data_Const.functorConst({})));
+    if (_93.blockMode === "Edit" && _93.blockType === "Visual") {
         return SlamData_App_Workspace_Notebook_Block_Visual.visualEditor({
             block: $$this.props.block, 
             files: $$this.props.files, 
@@ -65866,39 +65866,39 @@ var blockContent = function ($$this) {
             request: $$this.props.request
         })([  ]);
     };
-    if (_2855.blockMode === "Edit") {
+    if (_93.blockMode === "Edit") {
         return blockEditor($$this);
     };
-    if (_2855.blockMode === "Eval" && _2855.blockType === "Visual") {
+    if (_93.blockMode === "Eval" && _93.blockType === "Visual") {
         return evaluatedVisualBlock($$this);
     };
-    if (_2855.blockMode === "Eval") {
+    if (_93.blockMode === "Eval") {
         return evaluatedBlock($$this);
     };
     throw new Error("Failed pattern match");
 };
 var block = React.createClass((function () {
-    var _2862 = {};
-    for (var _2863 in React.spec) {
-        if (React.spec.hasOwnProperty(_2863)) {
-            _2862[_2863] = React.spec[_2863];
+    var _100 = {};
+    for (var _101 in React.spec) {
+        if (React.spec.hasOwnProperty(_101)) {
+            _100[_101] = React.spec[_101];
         };
     };
-    _2862.displayName = "Block";
-    _2862.getInitialState = function ($$this) {
-        return Prelude.pure(Control_Monad_Eff.applicativeEff())({
-            editContent: Control_Lens["^."]($$this.props.block)(Control_Lens[".."](Prelude.semigroupoidArr())(SlamData_Lens._blockRec(Data_Const.functorConst()))(SlamData_Lens._editContent(Data_Const.functorConst()))), 
-            evalContent: Control_Lens["^."]($$this.props.block)(Control_Lens[".."](Prelude.semigroupoidArr())(SlamData_Lens._blockRec(Data_Const.functorConst()))(SlamData_Lens._evalContent(Data_Const.functorConst())))
+    _100.displayName = "Block";
+    _100.getInitialState = function ($$this) {
+        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
+            editContent: Control_Lens["^."]($$this.props.block)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._blockRec(Data_Const.functorConst({})))(SlamData_Lens._editContent(Data_Const.functorConst({})))), 
+            evalContent: Control_Lens["^."]($$this.props.block)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._blockRec(Data_Const.functorConst({})))(SlamData_Lens._evalContent(Data_Const.functorConst({}))))
         });
     };
-    _2862.render = function ($$this) {
-        return Prelude.pure(Control_Monad_Eff.applicativeEff())(React_DOM.div({
+    _100.render = function ($$this) {
+        return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div({
             className: "block"
         })([ SlamData_App_Workspace_Notebook_Block_Common.blockRow({
             styles: "block-toolbar toolbar"
         })([ typeName($$this.props.block), toolbar(React.coerceThis($$this)) ]), blockContent(React.coerceThis($$this)) ]));
     };
-    return _2862;
+    return _100;
 })());
 module.exports = {
     block: block
@@ -66020,61 +66020,61 @@ var slamEngineServerSettings = function ($$this) {
 var _seMountings = function (__dict_Functor_1) {
     return Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._seConfig(__dict_Functor_1))(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._seConfigRec(__dict_Functor_1))(SlamData_Lens._mountings(__dict_Functor_1)));
 };
-var slamEngineMountingPath = function (_0) {
-    return function (_1) {
+var slamEngineMountingPath = function (_16) {
+    return function (_17) {
         return React_DOM.div({})([ React_DOM.label({
             htmlFor: "mongodb-path"
         })([ React_DOM.rawText("Path") ]), React_DOM.input({
             name: "mongodb-path", 
-            onChange: React.eventHandler(_0)(function (this_1) {
+            onChange: React.eventHandler(_16)(function (this_1) {
                 return function (e) {
                     var path$prime = SlamData_Helpers.value(e.target);
-                    var state$prime = Control_Lens["%~"](Data_Profunctor.profunctorArr({}))(_seMountings(Control_Monad_Identity.functorIdentity({})))(Control_Lens[".."](Prelude.semigroupoidArr({}))(Control_Lens[".~"](Control_Lens.at(Control_Lens_At.atMapKVKV(Prelude.ordString({})))(_1.value0)(Control_Monad_Identity.functorIdentity({})))(Data_Maybe.Nothing.value))(Control_Lens["?~"](Control_Lens.at(Control_Lens_At.atMapKVKV(Prelude.ordString({})))(path$prime)(Control_Monad_Identity.functorIdentity({})))(_1.value1)))(this_1.state);
+                    var state$prime = Control_Lens["%~"](Data_Profunctor.profunctorArr({}))(_seMountings(Control_Monad_Identity.functorIdentity({})))(Control_Lens[".."](Prelude.semigroupoidArr({}))(Control_Lens[".~"](Control_Lens.at(Control_Lens_At.atMapKVKV(Prelude.ordString({})))(_17.value0)(Control_Monad_Identity.functorIdentity({})))(Data_Maybe.Nothing.value))(Control_Lens["?~"](Control_Lens.at(Control_Lens_At.atMapKVKV(Prelude.ordString({})))(path$prime)(Control_Monad_Identity.functorIdentity({})))(_17.value1)))(this_1.state);
                     return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState(state$prime));
                 };
             }), 
             placeholder: "/", 
-            value: _1.value0
+            value: _17.value0
         })([  ]) ]);
     };
 };
 var _mountingMongoURI = function (__dict_Functor_2) {
     return Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._mountingWrapper(__dict_Functor_2))(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._mountingRec(__dict_Functor_2))(SlamData_Lens._connectionUri(__dict_Functor_2)));
 };
-var slamEngineMountingMongoDBMongoUri = function (_2) {
-    return function (_3) {
+var slamEngineMountingMongoDBMongoUri = function (_18) {
+    return function (_19) {
         return React_DOM.div({})([ React_DOM.label({
             htmlFor: "mongodb-mongouri"
         })([ React_DOM.rawText("MongoUri") ]), React_DOM.input({
             name: "mongodb-mongouri", 
-            onChange: React.eventHandler(_2)(function (this_1) {
+            onChange: React.eventHandler(_18)(function (this_1) {
                 return function (e) {
-                    var state$prime = Control_Lens["%~"](Data_Profunctor.profunctorArr({}))(_seMountings(Control_Monad_Identity.functorIdentity({})))(Control_Lens["%~"](Data_Profunctor.profunctorArr({}))(Control_Lens.ix(Control_Lens_At.ixedMapKVKV(Prelude.ordString({})))(_3.value0)(Control_Monad_Identity.applicativeIdentity({})))(Control_Lens[".~"](_mountingMongoURI(Control_Monad_Identity.functorIdentity({})))(SlamData_Helpers.value(e.target))))(this_1.state);
+                    var state$prime = Control_Lens["%~"](Data_Profunctor.profunctorArr({}))(_seMountings(Control_Monad_Identity.functorIdentity({})))(Control_Lens["%~"](Data_Profunctor.profunctorArr({}))(Control_Lens.ix(Control_Lens_At.ixedMapKVKV(Prelude.ordString({})))(_19.value0)(Control_Monad_Identity.applicativeIdentity({})))(Control_Lens[".~"](_mountingMongoURI(Control_Monad_Identity.functorIdentity({})))(SlamData_Helpers.value(e.target))))(this_1.state);
                     return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState(state$prime));
                 };
             }), 
             placeholder: "mongodb://localhost:27017", 
-            value: Control_Lens["^."](_3.value1)(_mountingMongoURI(Data_Const.functorConst({})))
+            value: Control_Lens["^."](_19.value1)(_mountingMongoURI(Data_Const.functorConst({})))
         })([  ]) ]);
     };
 };
 var _mountingDatabase = function (__dict_Functor_3) {
     return Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._mountingWrapper(__dict_Functor_3))(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._mountingRec(__dict_Functor_3))(SlamData_Lens._database(__dict_Functor_3)));
 };
-var slamEngineMountingMongoDBDatabse = function (_4) {
-    return function (_5) {
+var slamEngineMountingMongoDBDatabse = function (_20) {
+    return function (_21) {
         return React_DOM.div({})([ React_DOM.label({
             htmlFor: "mongodb-database"
         })([ React_DOM.rawText("Database") ]), React_DOM.input({
             name: "mongodb-database", 
-            onChange: React.eventHandler(_4)(function (this_1) {
+            onChange: React.eventHandler(_20)(function (this_1) {
                 return function (e) {
-                    var state$prime = Control_Lens["%~"](Data_Profunctor.profunctorArr({}))(_seMountings(Control_Monad_Identity.functorIdentity({})))(Control_Lens["%~"](Data_Profunctor.profunctorArr({}))(Control_Lens.ix(Control_Lens_At.ixedMapKVKV(Prelude.ordString({})))(_5.value0)(Control_Monad_Identity.applicativeIdentity({})))(Control_Lens[".~"](_mountingDatabase(Control_Monad_Identity.functorIdentity({})))(SlamData_Helpers.value(e.target))))(this_1.state);
+                    var state$prime = Control_Lens["%~"](Data_Profunctor.profunctorArr({}))(_seMountings(Control_Monad_Identity.functorIdentity({})))(Control_Lens["%~"](Data_Profunctor.profunctorArr({}))(Control_Lens.ix(Control_Lens_At.ixedMapKVKV(Prelude.ordString({})))(_21.value0)(Control_Monad_Identity.applicativeIdentity({})))(Control_Lens[".~"](_mountingDatabase(Control_Monad_Identity.functorIdentity({})))(SlamData_Helpers.value(e.target))))(this_1.state);
                     return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState(state$prime));
                 };
             }), 
             placeholder: "test", 
-            value: Control_Lens["^."](_5.value1)(_mountingDatabase(Data_Const.functorConst({})))
+            value: Control_Lens["^."](_21.value1)(_mountingDatabase(Data_Const.functorConst({})))
         })([  ]) ]);
     };
 };
@@ -66115,14 +66115,14 @@ var reifyTab = function (name) {
             id: "settings-" + Prelude.show(SlamData_Types_Workspace_Notebook_Settings.showSettingsTab({}))(name), 
             onClick: function (_) {
                 return $$this.setState((function () {
-                    var _16 = {};
-                    for (var _17 in $$this.state) {
-                        if ($$this.state.hasOwnProperty(_17)) {
-                            _16[_17] = $$this.state[_17];
+                    var _114 = {};
+                    for (var _115 in $$this.state) {
+                        if ($$this.state.hasOwnProperty(_115)) {
+                            _114[_115] = $$this.state[_115];
                         };
                     };
-                    _16.active = name;
-                    return _16;
+                    _114.active = name;
+                    return _114;
                 })());
             }
         })([ React_DOM.rawText(Prelude.show(SlamData_Types_Workspace_Notebook_Settings.showSettingsTab({}))(name)) ]) ]);
@@ -66138,33 +66138,33 @@ var tabs = function ($$this) {
         className: "tabs vertical"
     })([ slamEngineTab($$this), slamDataTab($$this) ]) ]);
 };
-var reifyContent = function (_1) {
-    return function (_2) {
-        if (_1 instanceof SlamData_Types_Workspace_Notebook_Settings.SlamEngineTab) {
+var reifyContent = function (_23) {
+    return function (_24) {
+        if (_23 instanceof SlamData_Types_Workspace_Notebook_Settings.SlamEngineTab) {
             return React_DOM.div({
-                className: "content" + SlamData_Helpers.activate(SlamData_Types_Workspace_Notebook_Settings.eqSettingsTab({}))(SlamData_Types_Workspace_Notebook_Settings.SlamEngineTab.value)(_2.state.active)
-            })([ React_DOM.h6({})([ React_DOM.rawText("Settings for the local instance of SlamEngine") ]), React_DOM.form({})([ SlamData_App_Workspace_Notebook_Settings_SlamEngine.slamEngineServerSettings(_2), SlamData_App_Workspace_Notebook_Settings_SlamEngine.slamEngineMountingsSettings(_2) ]) ]);
+                className: "content" + SlamData_Helpers.activate(SlamData_Types_Workspace_Notebook_Settings.eqSettingsTab({}))(SlamData_Types_Workspace_Notebook_Settings.SlamEngineTab.value)(_24.state.active)
+            })([ React_DOM.h6({})([ React_DOM.rawText("Settings for the local instance of SlamEngine") ]), React_DOM.form({})([ SlamData_App_Workspace_Notebook_Settings_SlamEngine.slamEngineServerSettings(_24), SlamData_App_Workspace_Notebook_Settings_SlamEngine.slamEngineMountingsSettings(_24) ]) ]);
         };
-        if (_1 instanceof SlamData_Types_Workspace_Notebook_Settings.SlamDataTab) {
+        if (_23 instanceof SlamData_Types_Workspace_Notebook_Settings.SlamDataTab) {
             return React_DOM.div({
-                className: "content" + SlamData_Helpers.activate(SlamData_Types_Workspace_Notebook_Settings.eqSettingsTab({}))(SlamData_Types_Workspace_Notebook_Settings.SlamDataTab.value)(_2.state.active)
-            })([ React_DOM.h6({})([ React_DOM.rawText("SlamEngine server to connect to") ]), React_DOM.form({})([ SlamData_App_Workspace_Notebook_Settings_SlamData.slamDataServerSettings(_2), SlamData_App_Workspace_Notebook_Settings_SlamData.slamDataJavaSettings(_2) ]) ]);
+                className: "content" + SlamData_Helpers.activate(SlamData_Types_Workspace_Notebook_Settings.eqSettingsTab({}))(SlamData_Types_Workspace_Notebook_Settings.SlamDataTab.value)(_24.state.active)
+            })([ React_DOM.h6({})([ React_DOM.rawText("SlamEngine server to connect to") ]), React_DOM.form({})([ SlamData_App_Workspace_Notebook_Settings_SlamData.slamDataServerSettings(_24), SlamData_App_Workspace_Notebook_Settings_SlamData.slamDataJavaSettings(_24) ]) ]);
         };
         throw new Error("Failed pattern match");
     };
 };
 var slamDataContent = reifyContent(SlamData_Types_Workspace_Notebook_Settings.SlamDataTab.value);
 var slamEngineContent = reifyContent(SlamData_Types_Workspace_Notebook_Settings.SlamEngineTab.value);
-var externalActions = function (_0) {
-    if (_0.state.active instanceof SlamData_Types_Workspace_Notebook_Settings.SlamDataTab) {
+var externalActions = function (_22) {
+    if (_22.state.active instanceof SlamData_Types_Workspace_Notebook_Settings.SlamDataTab) {
         return React_DOM.ul({
             className: "button-group"
-        })([ SlamData_Components.actionButton(_0)(new SlamData_Types.SaveSDConfig(_0.state.sdConfig))("Save")(SlamData_Components.saveIcon) ]);
+        })([ SlamData_Components.actionButton(_22)(new SlamData_Types.SaveSDConfig(_22.state.sdConfig))("Save")(SlamData_Components.saveIcon) ]);
     };
-    if (_0.state.active instanceof SlamData_Types_Workspace_Notebook_Settings.SlamEngineTab) {
+    if (_22.state.active instanceof SlamData_Types_Workspace_Notebook_Settings.SlamEngineTab) {
         return React_DOM.ul({
             className: "button-group"
-        })([ SlamData_Components.actionButton(_0)(new SlamData_Types.SaveSEConfig(_0.state.seConfig))("Save")(SlamData_Components.saveIcon) ]);
+        })([ SlamData_Components.actionButton(_22)(new SlamData_Types.SaveSEConfig(_22.state.seConfig))("Save")(SlamData_Components.saveIcon) ]);
     };
     throw new Error("Failed pattern match");
 };
@@ -66177,21 +66177,21 @@ var contents = function ($$this) {
     })([ slamEngineContent($$this), slamDataContent($$this) ]) ]);
 };
 var settings = React.createClass((function () {
-    var _25 = {};
-    for (var _26 in React.spec) {
-        if (React.spec.hasOwnProperty(_26)) {
-            _25[_26] = React.spec[_26];
+    var _123 = {};
+    for (var _124 in React.spec) {
+        if (React.spec.hasOwnProperty(_124)) {
+            _123[_124] = React.spec[_124];
         };
     };
-    _25.displayName = "Settings";
-    _25.getInitialState = function ($$this) {
+    _123.displayName = "Settings";
+    _123.getInitialState = function ($$this) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
             active: SlamData_Types_Workspace_Notebook_Settings.SlamEngineTab.value, 
             sdConfig: $$this.props.state.settings.sdConfig, 
             seConfig: $$this.props.state.settings.seConfig
         });
     };
-    _25.render = function ($$this) {
+    _123.render = function ($$this) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div({
             id: "settings"
         })([ React_DOM.div({
@@ -66200,7 +66200,7 @@ var settings = React.createClass((function () {
             className: "vertical"
         })([ tabs(React.coerceThis($$this)), contents(React.coerceThis($$this)) ]) ]));
     };
-    return _25;
+    return _123;
 })());
 module.exports = {
     settings: settings
@@ -66233,21 +66233,21 @@ var settingsTab = function ($$this) {
         path: ""
     };
 };
-var renameAction = function (_11) {
-    return function (_12) {
+var renameAction = function (_33) {
+    return function (_34) {
         return React_DOM.li({})([ React_DOM.a({
             className: "tiny secondary button has-tooltip", 
-            onClick: React.eventHandler(_11)(function (this_1) {
+            onClick: React.eventHandler(_33)(function (this_1) {
                 return function (_) {
                     return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState((function () {
-                        var _29 = {};
-                        for (var _30 in this_1.state) {
-                            if (this_1.state.hasOwnProperty(_30)) {
-                                _29[_30] = this_1.state[_30];
+                        var _127 = {};
+                        for (var _128 in this_1.state) {
+                            if (this_1.state.hasOwnProperty(_128)) {
+                                _127[_128] = this_1.state[_128];
                             };
                         };
-                        _29.renaming = new Data_Maybe.Just(_12.name);
-                        return _29;
+                        _127.renaming = new Data_Maybe.Just(_34.name);
+                        return _127;
                     })()));
                 };
             }), 
@@ -66255,98 +66255,98 @@ var renameAction = function (_11) {
         })([ SlamData_Components.renameIcon ]) ]);
     };
 };
-var reifyBlock = function (_7) {
-    return function (_8) {
-        return function (_9) {
+var reifyBlock = function (_29) {
+    return function (_30) {
+        return function (_31) {
             return SlamData_App_Workspace_Notebook_Block.block({
-                block: _9, 
-                key: _9.ident, 
-                notebook: _8, 
-                request: _7.props.request, 
-                files: _7.props.state.files
+                block: _31, 
+                key: _31.ident, 
+                notebook: _30, 
+                request: _29.props.request, 
+                files: _29.props.state.files
             })([  ]);
         };
     };
 };
-var noteBookName = function (_13) {
-    return function (_14) {
-        if (_13.state.renaming instanceof Data_Maybe.Just) {
+var noteBookName = function (_35) {
+    return function (_36) {
+        if (_35.state.renaming instanceof Data_Maybe.Just) {
             return React_DOM.input({
-                onBlur: React.eventHandler(_13)(function (this_1) {
+                onBlur: React.eventHandler(_35)(function (this_1) {
                     return function (e) {
                         return function __do() {
-                            this_1.props.request(new SlamData_Types.RenameNotebook(_14, SlamData_Helpers.value(e.target)))();
+                            this_1.props.request(new SlamData_Types.RenameNotebook(_36, SlamData_Helpers.value(e.target)))();
                             return this_1.setState((function () {
-                                var _37 = {};
-                                for (var _38 in this_1.state) {
-                                    if (this_1.state.hasOwnProperty(_38)) {
-                                        _37[_38] = this_1.state[_38];
+                                var _135 = {};
+                                for (var _136 in this_1.state) {
+                                    if (this_1.state.hasOwnProperty(_136)) {
+                                        _135[_136] = this_1.state[_136];
                                     };
                                 };
-                                _37.renaming = Data_Maybe.Nothing.value;
-                                return _37;
+                                _135.renaming = Data_Maybe.Nothing.value;
+                                return _135;
                             })());
                         };
                     };
                 }), 
-                onChange: React.eventHandler(_13)(function (this_1) {
+                onChange: React.eventHandler(_35)(function (this_1) {
                     return function (e) {
                         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState((function () {
-                            var _39 = {};
-                            for (var _40 in this_1.state) {
-                                if (this_1.state.hasOwnProperty(_40)) {
-                                    _39[_40] = this_1.state[_40];
+                            var _137 = {};
+                            for (var _138 in this_1.state) {
+                                if (this_1.state.hasOwnProperty(_138)) {
+                                    _137[_138] = this_1.state[_138];
                                 };
                             };
-                            _39.renaming = Data_Maybe.Just.create(SlamData_Helpers.value(e.target));
-                            return _39;
+                            _137.renaming = Data_Maybe.Just.create(SlamData_Helpers.value(e.target));
+                            return _137;
                         })()));
                     };
                 }), 
-                value: _13.state.renaming.value0
+                value: _35.state.renaming.value0
             })([  ]);
         };
-        if (_13.state.renaming instanceof Data_Maybe.Nothing) {
-            return React_DOM.rawText(_14.name);
+        if (_35.state.renaming instanceof Data_Maybe.Nothing) {
+            return React_DOM.rawText(_36.name);
         };
         throw new Error("Failed pattern match");
     };
 };
-var reifyTabs = function (_3) {
-    return function (_4) {
-        if (Prelude["=="](SlamData_Types_Workspace_Notebook.eqNotebookID({}))(_4.ident)(_3.state.settingsId)) {
+var reifyTabs = function (_25) {
+    return function (_26) {
+        if (Prelude["=="](SlamData_Types_Workspace_Notebook.eqNotebookID({}))(_26.ident)(_25.state.settingsId)) {
             return React_DOM.dd({
-                className: "tab" + SlamData_Helpers.activate(Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(new Data_Maybe.Just(_4.ident))(_3.state.active)
+                className: "tab" + SlamData_Helpers.activate(Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(new Data_Maybe.Just(_26.ident))(_25.state.active)
             })([ React_DOM.a({
                 id: "notebook-Settings", 
-                onClick: React.eventHandler(_3)(function (this_1) {
+                onClick: React.eventHandler(_25)(function (this_1) {
                     return function (_) {
                         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState((function () {
-                            var _44 = {};
-                            for (var _45 in this_1.state) {
-                                if (this_1.state.hasOwnProperty(_45)) {
-                                    _44[_45] = this_1.state[_45];
+                            var _142 = {};
+                            for (var _143 in this_1.state) {
+                                if (this_1.state.hasOwnProperty(_143)) {
+                                    _142[_143] = this_1.state[_143];
                                 };
                             };
-                            _44.active = new Data_Maybe.Just(_4.ident);
-                            return _44;
+                            _142.active = new Data_Maybe.Just(_26.ident);
+                            return _142;
                         })()));
                     };
                 })
-            })([ React_DOM.rawText(_4.name), React_DOM.i({
+            })([ React_DOM.rawText(_26.name), React_DOM.i({
                 className: "fa fa-times", 
-                onClick: React.eventHandler(_3)(function (this_1) {
+                onClick: React.eventHandler(_25)(function (this_1) {
                     return function (_) {
                         return function __do() {
-                            Prelude["=="](Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(this_1.state.active)(new Data_Maybe.Just(_4.ident)) ? this_1.setState((function () {
-    var _46 = {};
-    for (var _47 in this_1.state) {
-        if (this_1.state.hasOwnProperty(_47)) {
-            _46[_47] = this_1.state[_47];
+                            Prelude["=="](Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(this_1.state.active)(new Data_Maybe.Just(_26.ident)) ? this_1.setState((function () {
+    var _144 = {};
+    for (var _145 in this_1.state) {
+        if (this_1.state.hasOwnProperty(_145)) {
+            _144[_145] = this_1.state[_145];
         };
     };
-    _46.active = Data_Maybe.Nothing.value;
-    return _46;
+    _144.active = Data_Maybe.Nothing.value;
+    return _144;
 })()) : Prelude.unit;
                             return this_1.props.request(SlamData_Types.HideSettings.value)();
                         };
@@ -66355,38 +66355,38 @@ var reifyTabs = function (_3) {
             })([  ]) ]) ]);
         };
         return React_DOM.dd({
-            className: "tab" + SlamData_Helpers.activate(Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(new Data_Maybe.Just(_4.ident))(_3.state.active)
+            className: "tab" + SlamData_Helpers.activate(Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(new Data_Maybe.Just(_26.ident))(_25.state.active)
         })([ React_DOM.a({
-            onClick: React.eventHandler(_3)(function (this_2) {
+            onClick: React.eventHandler(_25)(function (this_2) {
                 return function (_) {
                     return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_2.setState((function () {
-                        var _48 = {};
-                        for (var _49 in this_2.state) {
-                            if (this_2.state.hasOwnProperty(_49)) {
-                                _48[_49] = this_2.state[_49];
+                        var _146 = {};
+                        for (var _147 in this_2.state) {
+                            if (this_2.state.hasOwnProperty(_147)) {
+                                _146[_147] = this_2.state[_147];
                             };
                         };
-                        _48.active = new Data_Maybe.Just(_4.ident);
-                        return _48;
+                        _146.active = new Data_Maybe.Just(_26.ident);
+                        return _146;
                     })()));
                 };
             })
-        })([ noteBookName(React.coerceThis(_3))(_4), React_DOM.i({
+        })([ noteBookName(React.coerceThis(_25))(_26), React_DOM.i({
             className: "fa fa-times", 
-            onClick: React.eventHandler(_3)(function (this_2) {
+            onClick: React.eventHandler(_25)(function (this_2) {
                 return function (_) {
                     return function __do() {
-                        Prelude["=="](Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(this_2.state.active)(new Data_Maybe.Just(_4.ident)) ? this_2.setState((function () {
-    var _50 = {};
-    for (var _51 in this_2.state) {
-        if (this_2.state.hasOwnProperty(_51)) {
-            _50[_51] = this_2.state[_51];
+                        Prelude["=="](Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(this_2.state.active)(new Data_Maybe.Just(_26.ident)) ? this_2.setState((function () {
+    var _148 = {};
+    for (var _149 in this_2.state) {
+        if (this_2.state.hasOwnProperty(_149)) {
+            _148[_149] = this_2.state[_149];
         };
     };
-    _50.active = Data_Maybe.Nothing.value;
-    return _50;
+    _148.active = Data_Maybe.Nothing.value;
+    return _148;
 })()) : Prelude.unit;
-                        return this_2.props.request(new SlamData_Types.CloseNotebook(_4.ident))();
+                        return this_2.props.request(new SlamData_Types.CloseNotebook(_26.ident))();
                     };
                 };
             })
@@ -66410,14 +66410,14 @@ var createNotebookButton = function ($$this) {
         })
     })([ SlamData_Components.newNotebookIcon ]) ]) ]);
 };
-var blockIcon = function (_10) {
-    if (_10 === "Markdown") {
+var blockIcon = function (_32) {
+    if (_32 === "Markdown") {
         return SlamData_Components.markdownIcon;
     };
-    if (_10 === "SQL") {
+    if (_32 === "SQL") {
         return SlamData_Components.sqlIcon;
     };
-    if (_10 === "Visual") {
+    if (_32 === "Visual") {
         return SlamData_Components.visualIcon;
     };
     throw new Error("Failed pattern match");
@@ -66436,77 +66436,77 @@ var internalActions = function ($$this) {
         })(Prelude["<$>"](Data_Array.functorArray({}))(actions(SlamData_Components.actionButton($$this))(ident))(Prelude["<$>"](Data_Array.functorArray({}))(SlamData_Types_Workspace_Notebook_Block.BlockType.create)([ "Markdown", "SQL", "Visual" ])));
     };
 };
-var reifyContent = function (_5) {
-    return function (_6) {
-        if (Prelude["=="](SlamData_Types_Workspace_Notebook.eqNotebookID({}))(_6.ident)(_5.state.settingsId)) {
+var reifyContent = function (_27) {
+    return function (_28) {
+        if (Prelude["=="](SlamData_Types_Workspace_Notebook.eqNotebookID({}))(_28.ident)(_27.state.settingsId)) {
             return React_DOM.div({
-                className: "content" + SlamData_Helpers.activate(Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(new Data_Maybe.Just(_6.ident))(_5.state.active)
+                className: "content" + SlamData_Helpers.activate(Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(new Data_Maybe.Just(_28.ident))(_27.state.active)
             })([ SlamData_App_Workspace_Notebook_Settings.settings({
-                request: _5.props.request, 
-                state: _5.props.state
+                request: _27.props.request, 
+                state: _27.props.state
             })([  ]) ]);
         };
         return React_DOM.div({
-            className: "content" + SlamData_Helpers.activate(Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(new Data_Maybe.Just(_6.ident))(_5.state.active)
+            className: "content" + SlamData_Helpers.activate(Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(new Data_Maybe.Just(_28.ident))(_27.state.active)
         })([ React_DOM.div({
             className: "toolbar button-bar"
-        })([ externalActions(_5)(_6), internalActions(_5)(_6.ident) ]), React_DOM.hr({})([  ]), React_DOM.div({
+        })([ externalActions(_27)(_28), internalActions(_27)(_28.ident) ]), React_DOM.hr({})([  ]), React_DOM.div({
             className: "actual-content"
-        })(Prelude["<$>"](Data_Array.functorArray({}))(reifyBlock(_5)(_6))(_6.blocks)) ]);
+        })(Prelude["<$>"](Data_Array.functorArray({}))(reifyBlock(_27)(_28))(_28.blocks)) ]);
     };
 };
 var notebooks = React.createClass((function () {
-    var _61 = {};
-    for (var _62 in React.spec) {
-        if (React.spec.hasOwnProperty(_62)) {
-            _61[_62] = React.spec[_62];
+    var _159 = {};
+    for (var _160 in React.spec) {
+        if (React.spec.hasOwnProperty(_160)) {
+            _159[_160] = React.spec[_160];
         };
     };
-    _61.displayName = "Notebooks";
-    _61.componentWillReceiveProps = function ($$this, props) {
+    _159.displayName = "Notebooks";
+    _159.componentWillReceiveProps = function ($$this, props) {
         return props.state.showSettings && !$$this.props.state.showSettings ? Prelude.pure(Control_Monad_Eff.applicativeEff({}))($$this.setState((function () {
-    var _55 = {};
-    for (var _56 in $$this.state) {
-        if ($$this.state.hasOwnProperty(_56)) {
-            _55[_56] = $$this.state[_56];
+    var _153 = {};
+    for (var _154 in $$this.state) {
+        if ($$this.state.hasOwnProperty(_154)) {
+            _153[_154] = $$this.state[_154];
         };
     };
-    _55.active = new Data_Maybe.Just($$this.state.settingsId);
-    return _55;
+    _153.active = new Data_Maybe.Just($$this.state.settingsId);
+    return _153;
 })())) : Data_Array.length(props.state.notebooks) > Data_Array.length($$this.props.state.notebooks) ? (function () {
     var active = Prelude["<$>"](Data_Maybe.functorMaybe({}))(Prelude.flip(Control_Lens["^."])(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._notebookRec(Data_Const.functorConst({})))(SlamData_Lens._ident(Data_Const.functorConst({})))))(Data_Array.head(Data_Array["\\\\"](SlamData_Types_Workspace_Notebook.eqNotebook({}))(props.state.notebooks)($$this.props.state.notebooks)));
     return Prelude.pure(Control_Monad_Eff.applicativeEff({}))($$this.setState((function () {
-        var _57 = {};
-        for (var _58 in $$this.state) {
-            if ($$this.state.hasOwnProperty(_58)) {
-                _57[_58] = $$this.state[_58];
+        var _155 = {};
+        for (var _156 in $$this.state) {
+            if ($$this.state.hasOwnProperty(_156)) {
+                _155[_156] = $$this.state[_156];
             };
         };
-        _57.active = active;
-        return _57;
+        _155.active = active;
+        return _155;
     })()));
 })() : Data_Array.length(props.state.notebooks) < Data_Array.length($$this.props.state.notebooks) ? (function () {
     var active = Prelude["<$>"](Data_Maybe.functorMaybe({}))(Prelude.flip(Control_Lens["^."])(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._notebookRec(Data_Const.functorConst({})))(SlamData_Lens._ident(Data_Const.functorConst({})))))(Data_Array.head(props.state.notebooks));
     return Prelude.pure(Control_Monad_Eff.applicativeEff({}))($$this.setState((function () {
-        var _59 = {};
-        for (var _60 in $$this.state) {
-            if ($$this.state.hasOwnProperty(_60)) {
-                _59[_60] = $$this.state[_60];
+        var _157 = {};
+        for (var _158 in $$this.state) {
+            if ($$this.state.hasOwnProperty(_158)) {
+                _157[_158] = $$this.state[_158];
             };
         };
-        _59.active = active;
-        return _59;
+        _157.active = active;
+        return _157;
     })()));
 })() : Prelude.pure(Control_Monad_Eff.applicativeEff({}))(Prelude.unit);
     };
-    _61.getInitialState = function ($$this) {
+    _159.getInitialState = function ($$this) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
             settingsId: SlamData_Types_Workspace_Notebook.NotebookID.create(Node_UUID.runUUID(Node_UUID.v4)), 
             active: Data_Maybe.Nothing.value, 
             renaming: Data_Maybe.Nothing.value
         });
     };
-    _61.render = function ($$this) {
+    _159.render = function ($$this) {
         var settings = $$this.props.state.showSettings ? [ settingsTab($$this) ] : [  ];
         var tabs = Prelude["<$>"](Data_Array.functorArray({}))(reifyTabs(React.coerceThis($$this)))(Prelude["++"](Data_Array.semigroupArray({}))($$this.props.state.notebooks)(settings));
         var tabs$prime = Data_Array.snoc(tabs)(createNotebookButton(React.coerceThis($$this)));
@@ -66519,7 +66519,7 @@ var notebooks = React.createClass((function () {
             className: "tabs-content"
         })(content) ]));
     };
-    return _61;
+    return _159;
 })());
 module.exports = {
     notebooks: notebooks
@@ -66553,28 +66553,28 @@ var workspace$prime = function (props) {
         id: "notebook"
     })([ SlamData_App_Workspace_Notebook.notebooks(props)([  ]) ]) ]);
 };
-var path = function (_15) {
-    return SlamData_Helpers.getOrElse(Data_Array.head(Prelude["<$>"](Data_Array.functorArray({}))(Data_Tuple.fst)(Data_Map.toList(_15.settings.seConfig.mountings))))(SlamData_Helpers.defaultMountPath);
+var path = function (_37) {
+    return SlamData_Helpers.getOrElse(Data_Array.head(Prelude["<$>"](Data_Array.functorArray({}))(Data_Tuple.fst)(Data_Map.toList(_37.settings.seConfig.mountings))))(SlamData_Helpers.defaultMountPath);
 };
 var workspace = React.createClass((function () {
-    var _67 = {};
-    for (var _68 in React.spec) {
-        if (React.spec.hasOwnProperty(_68)) {
-            _67[_68] = React.spec[_68];
+    var _165 = {};
+    for (var _166 in React.spec) {
+        if (React.spec.hasOwnProperty(_166)) {
+            _165[_166] = React.spec[_166];
         };
     };
-    _67.displayName = "Workspace";
-    _67.requestFS = function ($$this) {
+    _165.displayName = "Workspace";
+    _165.requestFS = function ($$this) {
         return $$this.props.request(new SlamData_Types.ReadFileSystem([ path($$this.props.state) ]));
     };
-    _67.componentDidMount = function ($$this) {
+    _165.componentDidMount = function ($$this) {
         return function __do() {
             $$this.requestFS();
             Control_Reactive_Timer.interval(5000)($$this.requestFS)();
             return Prelude.unit;
         };
     };
-    _67.render = function ($$this) {
+    _165.render = function ($$this) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div({
             id: "workspace"
         })([ workspace$prime({
@@ -66582,7 +66582,7 @@ var workspace = React.createClass((function () {
             state: $$this.props.state
         }) ]));
     };
-    return _67;
+    return _165;
 })());
 module.exports = {
     workspace: workspace
@@ -66596,25 +66596,25 @@ var React_DOM = require("React.DOM");
 var SlamData_App_Menu = require("SlamData.App.Menu");
 var SlamData_App_Workspace = require("SlamData.App.Workspace");
 var app = React.createClass((function () {
-    var _69 = {};
-    for (var _70 in React.spec) {
-        if (React.spec.hasOwnProperty(_70)) {
-            _69[_70] = React.spec[_70];
+    var _167 = {};
+    for (var _168 in React.spec) {
+        if (React.spec.hasOwnProperty(_168)) {
+            _167[_168] = React.spec[_168];
         };
     };
-    _69.displayName = "App";
-    _69.getInitialState = function (_) {
+    _167.displayName = "App";
+    _167.getInitialState = function (_) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
             showSettings: false
         });
     };
-    _69.render = function ($$this) {
+    _167.render = function ($$this) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div({})([ SlamData_App_Menu.menu($$this.props.request), SlamData_App_Workspace.workspace({
             request: $$this.props.request, 
             state: $$this.props.state
         })([  ]) ]));
     };
-    return _69;
+    return _167;
 })());
 module.exports = {
     app: app

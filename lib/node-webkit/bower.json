@@ -15,8 +15,8 @@
     "tests"
   ],
   "dependencies": {
-    "slamdata": "../../",
-    "purescript-node-webkit": "~0.0.4",
+    "slamdata": "slamdata/slamdata",
+    "purescript-node-webkit": "~0.1.0",
     "purescript-node-events": "~0.0.6",
     "purescript-node-child-process": "~0.0.1",
     "purescript-xhr": "~0.2.0",

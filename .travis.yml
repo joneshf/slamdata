@@ -7,3 +7,6 @@ install:
   - gem install compass
 script:
   - npm test
+cache:
+  directories:
+    - $HOME/.cabal

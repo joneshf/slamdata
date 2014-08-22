@@ -13,3 +13,4 @@ test/screenshots
 .sublime-gulp.cache
 sublime-gulp.log
 output
+*.orig

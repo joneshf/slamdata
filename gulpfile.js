@@ -76,7 +76,8 @@ var paths = {
         browser: [ 'lib/browser/index.html'
                  , 'lib/browser/js/**/*'
                  ],
-        'node-webkit': [ 'lib/node-webkit/index.html'
+        'node-webkit': [ 'lib/node-webkit/css/**/*'
+                       , 'lib/node-webkit/index.html'
                        , 'lib/node-webkit/js/**/*'
                        , 'lib/node-webkit/package.json'
                        ]
@@ -142,7 +143,7 @@ var options = {
             output: 'slamdata-browser.js'
         },
         'node-webkit': {
-            main: 'SlamData.NodeWebkit',
+            main: 'SlamData.NodeWebKit',
             output: 'slamdata-node-webkit.js'
         }
     }
