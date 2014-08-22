@@ -143,7 +143,7 @@ var options = {
             output: 'slamdata-browser.js'
         },
         'node-webkit': {
-            main: 'SlamData.NodeWebkit',
+            main: 'SlamData.NodeWebKit',
             output: 'slamdata-node-webkit.js'
         }
     }
