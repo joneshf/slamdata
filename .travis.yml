@@ -9,3 +9,6 @@ install:
 script:
   - java -jar bower_components/slamengine_2.10-0.1-SNAPSHOT-one-jar.jar/index.jar &
   - npm test
+cache:
+  directories:
+    - $HOME/.cabal

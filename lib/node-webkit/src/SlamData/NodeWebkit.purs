@@ -1,4 +1,4 @@
-module SlamData.NodeWebkit where
+module SlamData.NodeWebKit where
 
   -- |  This is the Node-Webkit runner for SlamData.
   --    You will need to have the SlamData lib available (ps or js + externs).
@@ -45,15 +45,34 @@ module SlamData.NodeWebkit where
   import Node.FS.Sync (writeTextFile)
   import Node.Path (basename, join, FilePath())
   import Node.UUID (runUUID, v4)
-  import Node.Webkit
+  import Node.WebKit
+    ( nwShell
+    , openExternal
+    )
+  import Node.WebKit.Menu
+    ( append
+    , createMacBuiltin
+    , defaultMacOptions
+    , nwMenu
+    , nwWindowMenu
+    , setWindowMenu
+    )
+  import Node.WebKit.MenuItem
+    ( defaultMenuItemOptions
+    , nwMenuItem
+    , onClick
+    )
+  import Node.WebKit.Types
+    ( nwMenuItemModCmd
+    , nwMenuItemModCtrl
+    )
+  import Node.WebKit.Window
     ( closeWindow
     , get
     , ignore
-    , nwShell
     , nwWindow
     , onClose
     , onNewWinPolicy
-    , openExternal
     )
 
   import Showdown (makeHtml)
@@ -187,8 +206,27 @@ module SlamData.NodeWebkit where
     -- Cleanup after ourselves.
     win # onClose (mkFn0 \_ -> do
       pure $ runFn1 se.kill sigterm
-      closeWindow win
+      closeWindow true win
       pure unit)
+
+    -- Make the menubar.
+    -- We only need to make a File menu for linux/win.
+    menu <- if platform == "darwin" then
+        nwWindowMenu >>= createMacBuiltin "SlamData" defaultMacOptions
+      else do
+        quitItem <- nwMenuItem defaultMenuItemOptions
+          { label = "Quit"
+          , click = closeWindow false win
+          , key = "Q"
+          , modifiers = nwMenuItemModCtrl
+          }
+        fileMenuItems <- nwMenu >>= append quitItem
+        fileMenu <- nwMenuItem defaultMenuItemOptions
+          { label = "File"
+          , submenu = Just fileMenuItems
+          }
+        nwWindowMenu >>= append fileMenu
+    setWindowMenu menu win
 
     -- Make an emitter.
     e <- emitter
