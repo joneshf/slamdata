@@ -40,6 +40,7 @@ module SlamData.NodeWebKit where
 
   import Node.ChildProcess (defaultSpawnOptions, spawn, ChildProcess(..), Stream())
   import Node.ChildProcess.Signal (sigterm)
+  import Node.Domain (create, run)
   import Node.Encoding (Encoding(UTF8))
   import Node.Events (emit, emitter, on, Event(..), EventEff(), EventEmitter)
   import Node.FS.Sync (writeTextFile)
@@ -187,207 +188,213 @@ module SlamData.NodeWebKit where
     (fst <$> head (M.toList m)) `getOrElse` defaultMountPath
 
   main = do
-    let sdConfig = parseConfig sdConfigFile `getOrElse` defaultSDConfig
-    let seConfig = parseConfig seConfigFile `getOrElse` defaultSEConfig
-    let java = sdConfig^._sdConfigRec.._nodeWebkit.._sdConfigNodeWebkit.._java
+    domain <- create
+    -- We're just logging to the console,
+    -- but we should actually send these errors somewhere.
+    -- Either user facing, or back to us to aggregate/deal with.
+    domain # on (Event "error") (\err -> trace $ "stderr: " ++ err.message)
+    domain # run do
+      let sdConfig = parseConfig sdConfigFile `getOrElse` defaultSDConfig
+      let seConfig = parseConfig seConfigFile `getOrElse` defaultSEConfig
+      let java = sdConfig^._sdConfigRec.._nodeWebkit.._sdConfigNodeWebkit.._java
 
-    -- Start up SlamEngine.
-    ChildProcess se <- spawn java ["-jar", seJar, seConfigFile] defaultSpawnOptions
-    -- Log out things.
-    se.stdout # onData (mkFn1 \msg -> trace $ "stdout: " ++ msg)
-    se.stderr # onData (mkFn1 \msg -> trace $ "stderr: " ++ msg)
+      -- Start up SlamEngine.
+      ChildProcess se <- spawn "java" ["-jar", seJar, seConfigFile] defaultSpawnOptions
+      -- Log out things.
+      se.stdout # onData (mkFn1 \msg -> trace $ "stdout: " ++ msg)
+      se.stderr # onData (mkFn1 \msg -> trace $ "stderr: " ++ msg)
 
-    win <- nwWindow >>= get
-    -- Open links in the user's default method, e.g. in the browser.
-    win # onNewWinPolicy (mkFn3 \_ url policy -> do
-      nwShell >>= openExternal url
-      ignore policy)
+      win <- nwWindow >>= get
+      -- Open links in the user's default method, e.g. in the browser.
+      win # onNewWinPolicy (mkFn3 \_ url policy -> do
+        nwShell >>= openExternal url
+        ignore policy)
 
-    -- Cleanup after ourselves.
-    win # onClose (mkFn0 \_ -> do
-      pure $ runFn1 se.kill sigterm
-      closeWindow true win
-      pure unit)
+      -- Cleanup after ourselves.
+      win # onClose (mkFn0 \_ -> do
+        pure $ runFn1 se.kill sigterm
+        closeWindow true win
+        pure unit)
 
-    -- Make the menubar.
-    -- We only need to make a File menu for linux/win.
-    menu <- if platform == "darwin" then
-        nwWindowMenu >>= createMacBuiltin "SlamData" defaultMacOptions
-      else do
-        quitItem <- nwMenuItem defaultMenuItemOptions
-          { label = "Quit"
-          , click = closeWindow false win
-          , key = "Q"
-          , modifiers = nwMenuItemModCtrl
-          }
-        fileMenuItems <- nwMenu >>= append quitItem
-        fileMenu <- nwMenuItem defaultMenuItemOptions
-          { label = "File"
-          , submenu = Just fileMenuItems
-          }
-        nwWindowMenu >>= append fileMenu
-    setWindowMenu menu win
+      -- Make the menubar.
+      -- We only need to make a File menu for linux/win.
+      menu <- if platform == "darwin" then
+          nwWindowMenu >>= createMacBuiltin "SlamData" defaultMacOptions
+        else do
+          quitItem <- nwMenuItem defaultMenuItemOptions
+            { label = "Quit"
+            , click = closeWindow false win
+            , key = "Q"
+            , modifiers = nwMenuItemModCtrl
+            }
+          fileMenuItems <- nwMenu >>= append quitItem
+          fileMenu <- nwMenuItem defaultMenuItemOptions
+            { label = "File"
+            , submenu = Just fileMenuItems
+            }
+          nwWindowMenu >>= append fileMenu
+      setWindowMenu menu win
 
-    -- Make an emitter.
-    e <- emitter
-    let respond d = e # emit responseEvent d
-    e # on requestEvent (\{event = event, state = state} -> case event of
-      SaveSDConfig sdC ->
-        writeTextFile UTF8 sdConfigFile (showConfig sdC)
-      SaveSEConfig seC ->
-        writeTextFile UTF8 seConfigFile (showConfig seC)
-      ReadFileSystem paths -> do
-        let path = join paths
-        let fs = serverURI state.settings.sdConfig ++ "/metadata/fs" ++ path
-        o <- oboeGet fs
-        done o (\json ->
-          let children = (unsafeCoerceJSON json).children
-              files' = insertChildren paths [state.files] children
-          in e # emit responseEvent state{files = files'})
-        pure unit
-      ReadFields paths -> do
-        let path = join paths
-        let fs = serverURI state.settings.sdConfig ++ "/data/fs" ++ path ++ "?limit=1"
-        o <- oboeGet fs
-        done o (\json ->
-          let fields = objectKeys $ unsafeCoerceJSON json
-              files' = insertFields paths [state.files] fields
-          in e # emit responseEvent state{files = files'})
-        pure unit
-      CreateNotebook -> do
-        ident <- NotebookID <$> v4
-        let name = "Untitled" ++ show (length state.notebooks + 1)
-        let path = mount state.settings.seConfig
-        let notebook = Notebook {ident: ident, blocks: [], name: name, path: path}
-        e # emit responseEvent state{notebooks = state.notebooks `snoc` notebook}
-        pure unit
-      CloseNotebook ident -> do
-        let notebooks' = filter (\(Notebook n) -> n.ident /= ident) state.notebooks
-        e # emit responseEvent state{notebooks = notebooks'}
-        pure unit
-      ShowSettings -> do
-        e # emit responseEvent state{showSettings = true}
-        pure unit
-      HideSettings -> do
-        e # emit responseEvent state{showSettings = false}
-        pure unit
-      CreateBlock ident ty -> do
-        ident' <- BlockID <$> v4
-        let block = Block { ident: ident'
-                          , blockType: ty
-                          , blockMode: BlockMode "Edit"
-                          , editContent: ""
-                          , evalContent: ""
-                          , label: ""
-                          }
-        let notebooks' = createBlock ident block <$> state.notebooks
-        e # emit responseEvent state{notebooks = notebooks'}
-        pure unit
-      DeleteBlock nID bID -> do
-        let notebooks' = deleteBlock nID bID <$> state.notebooks
-        e # emit responseEvent state{notebooks = notebooks'}
-        pure unit
-      EditBlock (Notebook n) (Block b) -> do
-        let block' = Block b{blockMode = BlockMode "Edit"}
-        let notebooks' = updateBlock n.ident block' <$> state.notebooks
-        e # emit responseEvent state{notebooks = notebooks'}
-        pure unit
-      EvalBlock (Notebook n) (Block b@{blockType = BlockType "Markdown"}) -> do
-        let block' = Block b{ evalContent = makeHtml b.editContent
-                            , blockMode = BlockMode "Eval"
+      -- Make an emitter.
+      e <- emitter
+      let respond d = e # emit responseEvent d
+      e # on requestEvent (\{event = event, state = state} -> case event of
+        SaveSDConfig sdC ->
+          writeTextFile UTF8 sdConfigFile (showConfig sdC)
+        SaveSEConfig seC ->
+          writeTextFile UTF8 seConfigFile (showConfig seC)
+        ReadFileSystem paths -> do
+          let path = join paths
+          let fs = serverURI state.settings.sdConfig ++ "/metadata/fs" ++ path
+          o <- oboeGet fs
+          done o (\json ->
+            let children = (unsafeCoerceJSON json).children
+                files' = insertChildren paths [state.files] children
+            in e # emit responseEvent state{files = files'})
+          pure unit
+        ReadFields paths -> do
+          let path = join paths
+          let fs = serverURI state.settings.sdConfig ++ "/data/fs" ++ path ++ "?limit=1"
+          o <- oboeGet fs
+          done o (\json ->
+            let fields = objectKeys $ unsafeCoerceJSON json
+                files' = insertFields paths [state.files] fields
+            in e # emit responseEvent state{files = files'})
+          pure unit
+        CreateNotebook -> do
+          ident <- NotebookID <$> v4
+          let name = "Untitled" ++ show (length state.notebooks + 1)
+          let path = mount state.settings.seConfig
+          let notebook = Notebook {ident: ident, blocks: [], name: name, path: path}
+          e # emit responseEvent state{notebooks = state.notebooks `snoc` notebook}
+          pure unit
+        CloseNotebook ident -> do
+          let notebooks' = filter (\(Notebook n) -> n.ident /= ident) state.notebooks
+          e # emit responseEvent state{notebooks = notebooks'}
+          pure unit
+        ShowSettings -> do
+          e # emit responseEvent state{showSettings = true}
+          pure unit
+        HideSettings -> do
+          e # emit responseEvent state{showSettings = false}
+          pure unit
+        CreateBlock ident ty -> do
+          ident' <- BlockID <$> v4
+          let block = Block { ident: ident'
+                            , blockType: ty
+                            , blockMode: BlockMode "Edit"
+                            , editContent: ""
+                            , evalContent: ""
+                            , label: ""
                             }
-        let notebooks' = updateBlock n.ident block' <$> state.notebooks
-        e # emit responseEvent state{notebooks = notebooks'}
-        pure unit
-      EvalBlock (Notebook n) (Block b@{blockType = BlockType "SQL"}) -> do
-        let blockName = "out" ++ show (countOut n)
-        let queryUrl = serverURI state.settings.sdConfig ++ "/query/fs" ++ n.path
-        let dataUrl = serverURI state.settings.sdConfig ++ "/data/fs"
-        let out = n.name ++ "/" ++ blockName ++ ".json"
-        X.post X.defaultAjaxOptions
-          { onReadyStateChange = X.onDone \res -> do
-            out' <- jsonParse {out: ""} <$> X.getResponseText res
-            X.get X.defaultAjaxOptions
-              {onLoad = \res -> do
-                content <- X.getResponseText res
-                let block'' = Block b{ blockMode = BlockMode "Eval"
-                                     , evalContent = content
-                                     , label = blockName
-                                     }
-                let notebooks' = updateBlock n.ident block'' <$> state.notebooks
-                e # emit responseEvent state{notebooks = notebooks'}
-                pure unit
-              } (dataUrl ++ out'.out) {limit: 20}
-            pure unit
-          } queryUrl {out: out} (XT.UrlEncoded b.editContent)
-        pure unit
-      EvalVisual (Notebook n) (Block b@{blockType = BlockType "Visual"}) ds -> do
-        let selector = "chart-" ++ show b.ident
-        let dataUrl = serverURI state.settings.sdConfig ++ "/data/fs"
-        let block' = Block b{ blockMode = BlockMode "Eval"
-                            , evalContent = selector
-                            }
-        let notebooks' = updateBlock n.ident block' <$> state.notebooks
-        e # emit responseEvent state{notebooks = notebooks'}
-        -- Give it a small amount of time to create the selector.
-        timeout 1000 $ createVisual showVisualType dataUrl selector ds
-        pure unit
-      SaveNotebook (Notebook n) -> do
-        let dataUrl = serverURI state.settings.sdConfig ++ "/data/fs"
-        let url = dataUrl ++ n.path ++ n.name ++ "/index.nb"
-        let n' = deleteID n
-        X.post X.defaultAjaxOptions
-          { onReadyStateChange = X.onDone \_ ->
-            (e # emit responseEvent state) *> pure unit
-          } url {} (XT.UrlEncoded $ jsonStringify n')
-        pure unit
-      OpenNotebook path -> do
-        let dataUrl = serverURI state.settings.sdConfig ++ "/data/fs"
-        let url = dataUrl ++ (path </> "index.nb")
-        let name = basename path
-        X.get X.defaultAjaxOptions
-          {onLoad = \res -> do
-            revisions <- trim >>> split "\n" <$> X.getResponseText res
-            case last revisions of
-              Nothing -> pure unit
-              Just revision -> do
-                i <- NotebookID <$> v4
-                let default = {ident: i, blocks: [], name: name, path: path}
-                let nb = jsonParse default revision
-                let notebook' = Notebook nb{name = name}
-                let notebooks' = state.notebooks `snoc` notebook'
-                let notebooks'' = nubBy uniqueNotebooks notebooks'
-                e # emit responseEvent state{notebooks = notebooks''}
-                pure unit
-          } url {}
-        pure unit
-      RenameNotebook (Notebook n) path -> do
-        let dataUrl = serverURI state.settings.sdConfig ++ "/data/fs"
-        let url = dataUrl </> n.path </> n.name </> "index.nb"
-        let base = basename path
-        let fs = mount state.settings.seConfig
-        X.ajax X.defaultAjaxOptions
-          { method = "MOVE"
-          , url = url
-          , headers = ["Destination" ~ (fs </> path </> "index.nb")]
-          , onLoad = \_ -> do
-            let notebook' = Notebook n{name = base}
-            let notebooks' = replaceNotebook notebook' <$> state.notebooks
-            e # emit responseEvent state{notebooks = notebooks'}
-            pure unit
-          } {} XT.NoBody
-        pure unit
-      _ -> (e # emit responseEvent state) *> pure unit)
+          let notebooks' = createBlock ident block <$> state.notebooks
+          e # emit responseEvent state{notebooks = notebooks'}
+          pure unit
+        DeleteBlock nID bID -> do
+          let notebooks' = deleteBlock nID bID <$> state.notebooks
+          e # emit responseEvent state{notebooks = notebooks'}
+          pure unit
+        EditBlock (Notebook n) (Block b) -> do
+          let block' = Block b{blockMode = BlockMode "Edit"}
+          let notebooks' = updateBlock n.ident block' <$> state.notebooks
+          e # emit responseEvent state{notebooks = notebooks'}
+          pure unit
+        EvalBlock (Notebook n) (Block b@{blockType = BlockType "Markdown"}) -> do
+          let block' = Block b{ evalContent = makeHtml b.editContent
+                              , blockMode = BlockMode "Eval"
+                              }
+          let notebooks' = updateBlock n.ident block' <$> state.notebooks
+          e # emit responseEvent state{notebooks = notebooks'}
+          pure unit
+        EvalBlock (Notebook n) (Block b@{blockType = BlockType "SQL"}) -> do
+          let blockName = "out" ++ show (countOut n)
+          let queryUrl = serverURI state.settings.sdConfig ++ "/query/fs" ++ n.path
+          let dataUrl = serverURI state.settings.sdConfig ++ "/data/fs"
+          let out = n.name ++ "/" ++ blockName ++ ".json"
+          X.post X.defaultAjaxOptions
+            { onReadyStateChange = X.onDone \res -> do
+              out' <- jsonParse {out: ""} <$> X.getResponseText res
+              X.get X.defaultAjaxOptions
+                {onLoad = \res -> do
+                  content <- X.getResponseText res
+                  let block'' = Block b{ blockMode = BlockMode "Eval"
+                                       , evalContent = content
+                                       , label = blockName
+                                       }
+                  let notebooks' = updateBlock n.ident block'' <$> state.notebooks
+                  e # emit responseEvent state{notebooks = notebooks'}
+                  pure unit
+                } (dataUrl ++ out'.out) {limit: 20}
+              pure unit
+            } queryUrl {out: out} (XT.UrlEncoded b.editContent)
+          pure unit
+        EvalVisual (Notebook n) (Block b@{blockType = BlockType "Visual"}) ds -> do
+          let selector = "chart-" ++ show b.ident
+          let dataUrl = serverURI state.settings.sdConfig ++ "/data/fs"
+          let block' = Block b{ blockMode = BlockMode "Eval"
+                              , evalContent = selector
+                              }
+          let notebooks' = updateBlock n.ident block' <$> state.notebooks
+          e # emit responseEvent state{notebooks = notebooks'}
+          -- Give it a small amount of time to create the selector.
+          timeout 1000 $ createVisual showVisualType dataUrl selector ds
+          pure unit
+        SaveNotebook (Notebook n) -> do
+          let dataUrl = serverURI state.settings.sdConfig ++ "/data/fs"
+          let url = dataUrl ++ n.path ++ n.name ++ "/index.nb"
+          let n' = deleteID n
+          X.post X.defaultAjaxOptions
+            { onReadyStateChange = X.onDone \_ ->
+              (e # emit responseEvent state) *> pure unit
+            } url {} (XT.UrlEncoded $ jsonStringify n')
+          pure unit
+        OpenNotebook path -> do
+          let dataUrl = serverURI state.settings.sdConfig ++ "/data/fs"
+          let url = dataUrl ++ (path </> "index.nb")
+          let name = basename path
+          X.get X.defaultAjaxOptions
+            {onLoad = \res -> do
+              revisions <- trim >>> split "\n" <$> X.getResponseText res
+              case last revisions of
+                Nothing -> pure unit
+                Just revision -> do
+                  i <- NotebookID <$> v4
+                  let default = {ident: i, blocks: [], name: name, path: path}
+                  let nb = jsonParse default revision
+                  let notebook' = Notebook nb{name = name}
+                  let notebooks' = state.notebooks `snoc` notebook'
+                  let notebooks'' = nubBy uniqueNotebooks notebooks'
+                  e # emit responseEvent state{notebooks = notebooks''}
+                  pure unit
+            } url {}
+          pure unit
+        RenameNotebook (Notebook n) path -> do
+          let dataUrl = serverURI state.settings.sdConfig ++ "/data/fs"
+          let url = dataUrl </> n.path </> n.name </> "index.nb"
+          let base = basename path
+          let fs = mount state.settings.seConfig
+          X.ajax X.defaultAjaxOptions
+            { method = "MOVE"
+            , url = url
+            , headers = ["Destination" ~ (fs </> path </> "index.nb")]
+            , onLoad = \_ -> do
+              let notebook' = Notebook n{name = base}
+              let notebooks' = replaceNotebook notebook' <$> state.notebooks
+              e # emit responseEvent state{notebooks = notebooks'}
+              pure unit
+            } {} XT.NoBody
+          pure unit
+        _ -> (e # emit responseEvent state) *> pure unit)
 
-    -- Start up SlamData.
-    slamData e { files: FileType { name: mount seConfig
-                                 , "type": "directory"
-                                 , children: []
-                                 }
-               , notebooks: []
-               , settings: {sdConfig: sdConfig, seConfig: seConfig}
-               , showSettings: false
-               }
+      -- Start up SlamData.
+      slamData e { files: FileType { name: mount seConfig
+                                   , "type": "directory"
+                                   , children: []
+                                   }
+                 , notebooks: []
+                 , settings: {sdConfig: sdConfig, seConfig: seConfig}
+                 , showSettings: false
+                 }
 
   uniqueNotebooks :: Notebook -> Notebook -> Boolean
   uniqueNotebooks (Notebook nb) (Notebook nb') = nb.ident == nb'.ident
