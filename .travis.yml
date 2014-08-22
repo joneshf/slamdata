@@ -7,5 +7,5 @@ install:
   - gem install compass
   - bower install https://github.com/joneshf/slamengine/releases/download/releases%2Fbeta-1/slamengine_2.10-0.1-SNAPSHOT-one-jar.jar.zip
 script:
-  - java -jar bower_components/slamengine_2.10-0.1-SNAPSHOT-one-jar.jar/index.jar
+  - java -jar bower_components/slamengine_2.10-0.1-SNAPSHOT-one-jar.jar/index.jar &
   - npm test
