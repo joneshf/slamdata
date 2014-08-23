@@ -24,6 +24,7 @@
     "purescript-c3": "~0.1.0",
     "jre-linux-x64": "http://installbuilder.bitrock.com/java/jre1.7.0_67-linux-x64.zip",
     "jre-osx": "http://installbuilder.bitrock.com/java/jre1.7.0_67-osx.zip",
-    "jre-windows-x64": "http://installbuilder.bitrock.com/java/jre1.7.0_67-windows-x64.zip"
+    "jre-windows-x64": "http://installbuilder.bitrock.com/java/jre1.7.0_67-windows-x64.zip",
+    "purescript-node-domain": "~0.0.1"
   }
 }
