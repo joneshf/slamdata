@@ -150,12 +150,6 @@
                 };
                 xhr.open('GET', url);
                 xhr.send(null);
-                // oboe(url).start(function(status, headers) {
-                //     console.log(JSON.stringify(headers, null, 4));
-                // }).done(function(data) {
-                //     newState.notebooks.push(data);
-                //     respond(newState);
-                // });
             } else if (jsTypes.isSaveNotebook(newEvent)) {
                 var notebook = newEvent.value0;
                 var url = helpers.serverURI(newState.settings.sdConfig) + '/data/fs' + notebook.path + notebook.name + '/index.nb';
@@ -247,7 +241,7 @@
                 } else if ('SQL' === (block.blockType)) {
                     var baseUrl = helpers.serverURI(state.settings.sdConfig);
                     var sqlBlocks = notebook.blocks.filter(function(b) {
-                        return 'SQL' === (b.blockType);
+                        return 'SQL' === b.blockType && 'Eval' === b.blockMode;
                     });
                     var blockname = 'out' + sqlBlocks.length;
                     var url = baseUrl + '/query/fs' + notebook.path + '?out=' +
@@ -277,6 +271,7 @@
                             respond(newState);
                         };
                         xhr.open('GET', baseUrl + '/data/fs' + out + '?limit=20');
+                        xhr.setRequestHeader('Content-Type', 'text/plain')
                         xhr.send(null);
                     });
                 }
