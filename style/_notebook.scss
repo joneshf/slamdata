@@ -107,27 +107,34 @@ ul.chart-type {
 }
 
 .create-block-button {
+    color: darken($slamdata-border-color, 20%);
+    position: relative;
+    &:hover {
+        color: darken($slamdata-border-color, 50%);
+    }
     .button-group {
         background: white;
         border: 1px solid $slamdata-border-color;
-        margin-left: 10px;
-        padding: 10px;
+        padding: 5px;
         position: absolute;
         z-index: 10;
+        li {
+            line-height: 1;
+        }
         a {
             margin: 0;
         }
         &:before {
-            @include css-triangle(7px, $slamdata-border-color, bottom);
+            @include css-triangle(6px, $slamdata-border-color, bottom);
             position: absolute;
-            top: -14px;
+            top: -12px;
             left: 0px;
             z-index: 90;
         }
         &:after {
-            @include css-triangle(6px, white, bottom);
+            @include css-triangle(5px, white, bottom);
             position: absolute;
-            top: -12px;
+            top: -10px;
             left: 1px;
             z-index: 100;
         }

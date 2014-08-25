@@ -91,12 +91,13 @@ module SlamData.Components where
           , onClick: eventHandler this \this _ -> pure $
             this.setState this.state{dropdown = not this.state.dropdown :: Boolean}
           }
-        if this.state.dropdown then
-          [ createBlockIcon
-          , internalActions (coerceThis this) this.props.ident this.props.index
-          ]
-        else
-          [createBlockIcon]
+        [D.div {} if this.state.dropdown then
+            [ createBlockIcon
+            , internalActions (coerceThis this) this.props.ident this.props.index
+            ]
+          else
+            [createBlockIcon]
+        ]
     }
 
   internalActions :: forall eff fields
