@@ -99,13 +99,6 @@ module SlamData.App.Workspace.Notebook.Block
       ]
     ]
 
-  publishedContent :: forall eff fields
-                   .  ReactThis fields (BlockProps eff) BlockState
-                   -> Component
-  publishedContent this = case this.props.block^._blockRec.._blockType of
-    BlockType "Visual" -> evaluatedVisualBlock this
-    _                  -> evaluatedBlock this
-
   blockContent :: forall eff fields
                .  ReactThis fields (BlockProps eff) BlockState
                -> Component
@@ -116,9 +109,8 @@ module SlamData.App.Workspace.Notebook.Block
                    , notebook: this.props.notebook
                    , request: this.props.request
                    } []
-    {blockMode = BlockMode "Edit"}                     -> blockEditor this
-    {blockMode = BlockMode "Eval", blockType = BlockType "Visual"} -> evaluatedVisualBlock this
-    {blockMode = BlockMode "Eval"}                     -> evaluatedBlock this
+    {blockMode = BlockMode "Edit"} -> blockEditor this
+    {blockMode = BlockMode "Eval"} -> evaluatedBlock this
 
   blockEditor :: forall eff fields
               .  ReactThis fields (BlockProps eff) BlockState
@@ -179,19 +171,3 @@ module SlamData.App.Workspace.Notebook.Block
     _                  ->
       D.span {dangerouslySetInnerHTML: {__html: this.props.block^._blockRec.._evalContent}}
         []
-
-  evaluatedVisualBlock :: forall eff fields
-                       .  ReactThis fields (BlockProps eff) BlockState
-                       -> Component
-  evaluatedVisualBlock this = let blockRec = this.props.block^._blockRec in
-    blockRow {styles: "block-content block-" ++ show blockRec.blockType}
-      [ D.div {className: "block-label"}
-        [D.rawText blockRec.label]
-      , D.div { className: "evaled-block"
-              , onClick: eventHandler this \this _ -> this.props.request $
-                 EditBlock this.props.notebook this.props.block
-              }
-        [D.div {id: this.props.block^._blockRec.._evalContent}
-          []
-        ]
-      ]

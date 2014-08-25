@@ -191,8 +191,12 @@ module SlamData.App.Workspace.Notebook
   externalActions this nb = D.ul {className: "button-group"}
     [ actionButton this (SaveNotebook nb) "Save" saveIcon
     , renameAction this nb
-    , actionButton this (TogglePublish nb) "Publish" publishIcon
+    , actionButton this (TogglePublish nb) (publishTitle nb) publishIcon
     ]
+
+  publishTitle :: Notebook -> String
+  publishTitle (Notebook {published = true}) = "Unpublish"
+  publishTitle _                             = "Publish"
 
   internalActions :: forall eff fields
                   .  ReactThis fields (NotebookProps eff) NotebookState
