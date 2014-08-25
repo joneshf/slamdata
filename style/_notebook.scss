@@ -105,3 +105,31 @@ ul.chart-type {
         max-width: 300px;
     }
 }
+
+.create-block-button {
+    .button-group {
+        background: white;
+        border: 1px solid $slamdata-border-color;
+        margin-left: 10px;
+        padding: 10px;
+        position: absolute;
+        z-index: 10;
+        a {
+            margin: 0;
+        }
+        &:before {
+            @include css-triangle(7px, $slamdata-border-color, bottom);
+            position: absolute;
+            top: -14px;
+            left: 0px;
+            z-index: 90;
+        }
+        &:after {
+            @include css-triangle(6px, white, bottom);
+            position: absolute;
+            top: -12px;
+            left: 1px;
+            z-index: 100;
+        }
+    }
+}

@@ -87,8 +87,10 @@ module SlamData.Components where
     { displayName = "CreateBlockButton"
     , getInitialState = \_ -> pure {dropdown: false}
     , render = \this -> pure $
-      D.a {onClick: eventHandler this \this _ -> pure $
-            this.setState this.state{dropdown = not this.state.dropdown :: Boolean}}
+      D.a { className: "create-block-button"
+          , onClick: eventHandler this \this _ -> pure $
+            this.setState this.state{dropdown = not this.state.dropdown :: Boolean}
+          }
         if this.state.dropdown then
           [ createBlockIcon
           , internalActions (coerceThis this) this.props.ident this.props.index
