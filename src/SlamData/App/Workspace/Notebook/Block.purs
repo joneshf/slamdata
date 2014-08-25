@@ -27,10 +27,11 @@ module SlamData.App.Workspace.Notebook.Block
     , _evalContent
     , _ident
     , _notebookRec
+    , _published
     )
   import SlamData.Types (SlamDataEventTy(..), SlamDataRequest())
   import SlamData.Types.Workspace.FileSystem (FileType())
-  import SlamData.Types.Workspace.Notebook (Notebook())
+  import SlamData.Types.Workspace.Notebook (Notebook(..))
   import SlamData.Types.Workspace.Notebook.Block
     ( Block(..)
     , BlockID()
@@ -61,14 +62,22 @@ module SlamData.App.Workspace.Notebook.Block
       { editContent: this.props.block^._blockRec.._editContent
       , evalContent: this.props.block^._blockRec.._evalContent
       }
-    , render = \this -> pure $ D.div {className: "block"}
+    , render = \this -> pure $
+      D.div {className: "block" ++ publish this.props.notebook}
       [ blockRow {styles: "block-toolbar toolbar"}
         [ typeName this.props.block
         , toolbar $ coerceThis this
         ]
-      , blockContent $ coerceThis this
+      , if this.props.notebook^._notebookRec.._published then
+          evaluatedBlock $ coerceThis this
+        else
+          blockContent $ coerceThis this
       ]
     }
+
+  publish :: Notebook -> String
+  publish (Notebook {published = true}) = " published"
+  publish _                             = ""
 
   typeName :: Block -> Component
   typeName (Block b) = D.div {className: "block-type text-center"}
@@ -89,6 +98,13 @@ module SlamData.App.Workspace.Notebook.Block
         closeIcon
       ]
     ]
+
+  publishedContent :: forall eff fields
+                   .  ReactThis fields (BlockProps eff) BlockState
+                   -> Component
+  publishedContent this = case this.props.block^._blockRec.._blockType of
+    BlockType "Visual" -> evaluatedVisualBlock this
+    _                  -> evaluatedBlock this
 
   blockContent :: forall eff fields
                .  ReactThis fields (BlockProps eff) BlockState
@@ -138,14 +154,31 @@ module SlamData.App.Workspace.Notebook.Block
     blockRow {styles: "block-content block-" ++ show blockRec.blockType}
       [ D.div {className: "block-label"}
         [D.rawText blockRec.label]
-      , D.div { className: "evaled-block"
-             , onClick: eventHandler this \this _ -> this.props.request $
-                EditBlock this.props.notebook this.props.block
-             }
-        [D.span {dangerouslySetInnerHTML: {__html: blockRec.evalContent}}
-          []
-        ]
+      , evaluatedBlock' this
       ]
+
+  evaluatedBlock' :: forall eff fields
+                  .  ReactThis fields (BlockProps eff) BlockState
+                  -> Component
+  evaluatedBlock' this = if this.props.notebook^._notebookRec.._published then
+      D.div {className: "published-block"}
+        [evaluatedBlockContent this]
+    else D.div { className: "evaled-block"
+               , onClick: eventHandler this \this _ -> this.props.request $
+                  EditBlock this.props.notebook this.props.block
+               }
+      [evaluatedBlockContent this]
+
+  evaluatedBlockContent :: forall eff fields
+                        .  ReactThis fields (BlockProps eff) BlockState
+                        -> Component
+  evaluatedBlockContent this = case this.props.block^._blockRec.._blockType of
+    BlockType "Visual" ->
+      D.div {id: this.props.block^._blockRec.._evalContent}
+        []
+    _                  ->
+      D.span {dangerouslySetInnerHTML: {__html: this.props.block^._blockRec.._evalContent}}
+        []
 
   evaluatedVisualBlock :: forall eff fields
                        .  ReactThis fields (BlockProps eff) BlockState
@@ -155,9 +188,9 @@ module SlamData.App.Workspace.Notebook.Block
       [ D.div {className: "block-label"}
         [D.rawText blockRec.label]
       , D.div { className: "evaled-block"
-             , onClick: eventHandler this \this _ -> this.props.request $
-                EditBlock this.props.notebook this.props.block
-             }
+              , onClick: eventHandler this \this _ -> this.props.request $
+                 EditBlock this.props.notebook this.props.block
+              }
         [D.div {id: this.props.block^._blockRec.._evalContent}
           []
         ]

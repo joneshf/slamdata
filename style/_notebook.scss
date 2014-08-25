@@ -5,6 +5,16 @@
     }
 }
 
+.block.published {
+    border: none;
+    .block-toolbar {
+        display: none;
+    }
+    .block-content .right-side {
+        border: none;
+    }
+}
+
 .block-toolbar {
     div {
         height: 100%;
