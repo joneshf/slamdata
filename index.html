@@ -187,9 +187,11 @@
                     editContent: '',
                     evalContent: ''
                 };
+                var ident = newEvent.value0;
+                var index = newEvent.value2;
                 newState.notebooks = newState.notebooks.map(function(nb) {
-                    if (nb.ident === newEvent.value0) {
-                        nb.blocks.push(newBlock);
+                    if (nb.ident === ident) {
+                        nb.blocks.splice(index, 0, newBlock);
                     }
                     return nb;
                 });

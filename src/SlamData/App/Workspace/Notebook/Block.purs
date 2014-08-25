@@ -17,7 +17,7 @@ module SlamData.App.Workspace.Notebook.Block
     , blockRow
     )
   import SlamData.App.Workspace.Notebook.Block.Visual (visualEditor)
-  import SlamData.Components (actionButton, closeIcon)
+  import SlamData.Components (actionButton, closeIcon, createBlockButton)
   import SlamData.Helpers (value)
   import SlamData.Lens
     ( _blockMode
@@ -48,6 +48,7 @@ module SlamData.App.Workspace.Notebook.Block
     , key        :: BlockID
     , notebook   :: Notebook
     , request    :: SlamDataRequest eff
+    , index      :: Number
     }
   type BlockState =
     { editContent :: String
@@ -61,12 +62,15 @@ module SlamData.App.Workspace.Notebook.Block
       { editContent: this.props.block^._blockRec.._editContent
       , evalContent: this.props.block^._blockRec.._evalContent
       }
-    , render = \this -> pure $ D.div {className: "block"}
-      [ blockRow {styles: "block-toolbar toolbar"}
-        [ typeName this.props.block
-        , toolbar $ coerceThis this
+    , render = \this -> pure $ D.div {}
+      [ D.div {className: "block"}
+        [ blockRow {styles: "block-toolbar toolbar"}
+          [ typeName this.props.block
+          , toolbar $ coerceThis this
+          ]
+        , blockContent $ coerceThis this
         ]
-      , blockContent $ coerceThis this
+      , createBlockButton' $ coerceThis this
       ]
     }
 
@@ -89,6 +93,16 @@ module SlamData.App.Workspace.Notebook.Block
         closeIcon
       ]
     ]
+
+  createBlockButton' :: forall eff fields
+                     .  ReactThis fields (BlockProps eff) BlockState
+                     -> Component
+  createBlockButton' {props = p} =
+    createBlockButton { request: p.request
+                      , ident: p.notebook^._notebookRec.._ident
+                      , index: p.index
+                      }
+      []
 
   blockContent :: forall eff fields
                .  ReactThis fields (BlockProps eff) BlockState

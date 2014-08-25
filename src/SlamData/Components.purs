@@ -1,9 +1,11 @@
 module SlamData.Components where
 
-  import React (eventHandler)
-  import React.Types (Component(), ReactThis())
+  import React (coerceThis, createClass, eventHandler, spec)
+  import React.Types (Component(), ComponentClass(), ReactThis())
 
-  import SlamData.Types (SlamDataEventTy(), SlamDataRequest())
+  import SlamData.Types (SlamDataEventTy(..), SlamDataRequest())
+  import SlamData.Types.Workspace.Notebook (NotebookID())
+  import SlamData.Types.Workspace.Notebook.Block (BlockType(..))
 
   import qualified React.DOM as D
 
@@ -26,6 +28,8 @@ module SlamData.Components where
   renameIcon      = icon "fa fa-language"
   publishIcon     :: FontAwesome
   publishIcon     = icon "fa fa-book"
+  createBlockIcon :: FontAwesome
+  createBlockIcon = icon "fa fa-plus-square-o"
   -- Blocks
   markdownIcon    :: FontAwesome
   markdownIcon    = icon "fa fa-file-text"
@@ -68,3 +72,48 @@ module SlamData.Components where
          }
       [icon]
     ]
+
+  type CreateBlockProps eff =
+    { request :: SlamDataRequest eff
+    , ident   :: NotebookID
+    , index   :: Number
+    }
+  type CreateBlockState =
+    { dropdown :: Boolean
+    }
+
+  createBlockButton :: forall eff. ComponentClass (CreateBlockProps eff) CreateBlockState
+  createBlockButton = createClass spec
+    { displayName = "CreateBlockButton"
+    , getInitialState = \_ -> pure {dropdown: false}
+    , render = \this -> pure $
+      D.a {onClick: eventHandler this \this _ -> pure $
+            this.setState this.state{dropdown = not this.state.dropdown :: Boolean}}
+        if this.state.dropdown then
+          [ createBlockIcon
+          , internalActions (coerceThis this) this.props.ident this.props.index
+          ]
+        else
+          [createBlockIcon]
+    }
+
+  internalActions :: forall eff fields
+                  .  ReactThis fields (CreateBlockProps eff) CreateBlockState
+                  -> NotebookID
+                  -> Number
+                  -> Component
+  internalActions this ident index = D.ul {className: "button-group"}
+    (actions (actionButton this) ident index <$> (BlockType <$> ["Markdown", "SQL", "Visual"]))
+
+  actions :: (SlamDataEventTy -> String -> Component -> Component)
+          -> NotebookID
+          -> Number
+          -> BlockType
+          -> Component
+  actions f ident index ty =
+    f (CreateBlock ident ty index) (show ty) (blockIcon ty)
+
+  blockIcon :: BlockType -> Component
+  blockIcon (BlockType "Markdown") = markdownIcon
+  blockIcon (BlockType "SQL")      = sqlIcon
+  blockIcon (BlockType "Visual")   = visualIcon
