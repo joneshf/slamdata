@@ -100,6 +100,7 @@ module SlamData.Types where
                        | OpenNotebook FilePath
                        | RenameNotebook Notebook FilePath
                        | SaveNotebook Notebook
+                       | TogglePublish Notebook
                        | ShowSettings
                        | HideSettings
                        | CreateBlock NotebookID BlockType

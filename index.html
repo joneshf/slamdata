@@ -161,6 +161,19 @@
                 }).done(function() {
                     respond(newState);
                 });
+            } else if (jsTypes.isTogglePublish(newEvent)) {
+                var notebook = newEvent.value0;
+                var url = helpers.serverURI(newState.settings.sdConfig) + '/data/fs' + notebook.path + notebook.name + '/index.nb';
+                delete notebook._id;
+                notebook.published = !notebook.published;
+                newState.notebooks = newState.notebooks.map(function(nb) {
+                    if (nb.ident === notebook.ident) {
+                        return notebook;
+                    } else {
+                        return nb;
+                    }
+                })
+                respond(newState);
             } else if (jsTypes.isRenameNotebook(newEvent)) {
                 var notebook = newEvent.value0;
                 var dest = newEvent.value1;

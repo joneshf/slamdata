@@ -5,6 +5,20 @@
     }
 }
 
+.block.published {
+    border: none;
+    .block-toolbar {
+        display: none;
+    }
+    .block-content .right-side {
+        border: none;
+    }
+    .block-SQL .published-block span {
+        font-family: monospace;
+        font-size: 10pt;
+    }
+}
+
 .block-toolbar {
     div {
         height: 100%;

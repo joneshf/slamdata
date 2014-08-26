@@ -32,6 +32,9 @@ module SlamData.Types.JS where
   isRenameNotebook :: SlamDataEventTy -> Boolean
   isRenameNotebook (RenameNotebook _ _) = true
   isRenameNotebook _                    = false
+  isTogglePublish :: SlamDataEventTy -> Boolean
+  isTogglePublish (TogglePublish _) = true
+  isTogglePublish _                 = false
   isShowSettings :: SlamDataEventTy -> Boolean
   isShowSettings ShowSettings = true
   isShowSettings _            = false
