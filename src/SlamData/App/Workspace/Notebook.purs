@@ -7,7 +7,7 @@ module SlamData.App.Workspace.Notebook
   import Control.Lens ((^.), (..))
   import Control.Reactive.Timer (Timer())
 
-  import Data.Array ((\\), head, length, null, snoc)
+  import Data.Array ((\\), head, length, null, range, snoc, zipWith)
   import Data.Function (mkFn2, mkFn3)
   import Data.Maybe (Maybe(..))
 
@@ -22,14 +22,11 @@ module SlamData.App.Workspace.Notebook
   import SlamData.App.Workspace.Notebook.Block (block)
   import SlamData.Components
     ( actionButton
-    , closeIcon
+    , createBlockButton
     , newNotebookIcon
-    , markdownIcon
     , publishIcon
     , renameIcon
     , saveIcon
-    , sqlIcon
-    , visualIcon
     )
   import SlamData.Helpers (activate, value)
   import SlamData.Lens (_ident, _name, _notebookRec)
@@ -162,25 +159,42 @@ module SlamData.App.Workspace.Notebook
   reifyContent this nb@(Notebook nb') =
     D.div {className: "content" ++ activate (Just nb'.ident) this.state.active}
       [ D.div {className: "toolbar button-bar"}
-        [ externalActions this nb
-        , internalActions this nb'.ident
-        ]
+        [externalActions this nb]
       , D.hr {} []
       , D.div {className: "actual-content"}
-        (reifyBlock this nb <$> nb'.blocks)
+        (createBlockButton' this nb : reifyBlocks this nb)
       ]
+
+  createBlockButton' :: forall fields eff
+                     .  ReactThis fields (NotebookProps eff) NotebookState
+                     -> Notebook
+                     -> Component
+  createBlockButton' {props = {request = request}} (Notebook {ident = ident}) =
+    createBlockButton {request: request, ident: ident, index: 0} []
+
+  zipWithIndex :: forall a b. (Number -> a -> b) -> [a] -> [b]
+  zipWithIndex f xs = zipWith f (range 1 (length xs)) xs
+
+  reifyBlocks :: forall fields eff
+              .  ReactThis fields (NotebookProps eff) NotebookState
+              -> Notebook
+              -> [Component]
+  reifyBlocks this nb@(Notebook {blocks = blocks}) =
+    zipWithIndex (reifyBlock this nb) blocks
 
   reifyBlock :: forall fields eff
              .  ReactThis fields (NotebookProps eff) NotebookState
              -> Notebook
+             -> Number
              -> Block
              -> Component
-  reifyBlock this nb b@(Block b') =
+  reifyBlock this nb index b@(Block b') =
     block { block: b
           , key: b'.ident
           , notebook: nb
           , request: this.props.request
           , files: this.props.state.files
+          , index: index
           }
       []
 
@@ -197,24 +211,6 @@ module SlamData.App.Workspace.Notebook
   publishTitle :: Notebook -> String
   publishTitle (Notebook {published = true}) = "Unpublish"
   publishTitle _                             = "Publish"
-
-  internalActions :: forall eff fields
-                  .  ReactThis fields (NotebookProps eff) NotebookState
-                  -> NotebookID
-                  -> Component
-  internalActions this ident = D.ul {className: "button-group"}
-    (actions (actionButton this) ident <$> (BlockType <$> ["Markdown", "SQL", "Visual"]))
-
-  actions :: (SlamDataEventTy -> String -> Component -> Component)
-          -> NotebookID
-          -> BlockType
-          -> Component
-  actions f ident ty = f (CreateBlock ident ty) (show ty) (blockIcon ty)
-
-  blockIcon :: BlockType -> Component
-  blockIcon (BlockType "Markdown") = markdownIcon
-  blockIcon (BlockType "SQL")      = sqlIcon
-  blockIcon (BlockType "Visual")   = visualIcon
 
   renameAction :: forall eff fields
                .  ReactThis fields (NotebookProps eff) NotebookState

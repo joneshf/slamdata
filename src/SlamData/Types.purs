@@ -103,7 +103,7 @@ module SlamData.Types where
                        | TogglePublish Notebook
                        | ShowSettings
                        | HideSettings
-                       | CreateBlock NotebookID BlockType
+                       | CreateBlock NotebookID BlockType Number
                        | DeleteBlock NotebookID BlockID
                        | EditBlock Notebook Block
                        | EvalBlock Notebook Block
