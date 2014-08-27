@@ -21,6 +21,14 @@
         font-family: monospace;
         font-size: 10pt;
     }
+    .block-content {
+        .large-1 {
+            display: none;
+        }
+        .large-11 {
+            width: 100%;
+        }
+    }
 }
 
 .block-toolbar {
