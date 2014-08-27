@@ -32,6 +32,9 @@ module SlamData.Types.JS where
   isRenameNotebook :: SlamDataEventTy -> Boolean
   isRenameNotebook (RenameNotebook _ _) = true
   isRenameNotebook _                    = false
+  isTogglePublish :: SlamDataEventTy -> Boolean
+  isTogglePublish (TogglePublish _) = true
+  isTogglePublish _                 = false
   isShowSettings :: SlamDataEventTy -> Boolean
   isShowSettings ShowSettings = true
   isShowSettings _            = false
@@ -39,8 +42,8 @@ module SlamData.Types.JS where
   isHideSettings HideSettings = true
   isHideSettings _            = false
   isCreateBlock :: SlamDataEventTy -> Boolean
-  isCreateBlock (CreateBlock _ _) = true
-  isCreateBlock _                 = false
+  isCreateBlock (CreateBlock _ _ _) = true
+  isCreateBlock _                   = false
   isDeleteBlock :: SlamDataEventTy -> Boolean
   isDeleteBlock (DeleteBlock _ _) = true
   isDeleteBlock _                 = false
@@ -53,13 +56,3 @@ module SlamData.Types.JS where
   isEvalVisual :: SlamDataEventTy -> Boolean
   isEvalVisual (EvalVisual _ _ _) = true
   isEvalVisual _                  = false
-
-  -- isMarkdown :: BlockType -> Boolean
-  -- isMarkdown Markdown = true
-  -- isMarkdown _        = false
-  -- isSQL :: BlockType -> Boolean
-  -- isSQL SQL = true
-  -- isSQL _   = false
-  -- isVisual :: BlockType -> Boolean
-  -- isVisual Visual = true
-  -- isVisual _      = false

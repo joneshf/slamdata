@@ -6989,6 +6989,16 @@ th.hide-for-touch {
   .block .right-side {
     border-left: 1px solid #d3d3d3; }
 
+.block.published {
+  border: none; }
+  .block.published .block-toolbar {
+    display: none; }
+  .block.published .block-content .right-side {
+    border: none; }
+  .block.published .block-SQL .published-block span {
+    font-family: monospace;
+    font-size: 10pt; }
+
 .block-toolbar div {
   height: 100%; }
 .block-toolbar.row {
@@ -7077,6 +7087,46 @@ ul.chart-type ~ select, ul.chart-type ~ .actions {
   display: block;
   margin-left: 5px;
   max-width: 300px; }
+
+.create-block-button {
+  color: #a0a0a0;
+  position: relative; }
+  .create-block-button:hover {
+    color: #535353; }
+  .create-block-button .button-group {
+    background: white;
+    border: 1px solid #d3d3d3;
+    padding: 5px;
+    position: absolute;
+    z-index: 10; }
+    .create-block-button .button-group li {
+      line-height: 1; }
+    .create-block-button .button-group a {
+      margin: 0; }
+    .create-block-button .button-group:before {
+      content: "";
+      display: block;
+      width: 0;
+      height: 0;
+      border: inset 6px;
+      border-color: transparent transparent #d3d3d3 transparent;
+      border-bottom-style: solid;
+      position: absolute;
+      top: -12px;
+      left: 0px;
+      z-index: 90; }
+    .create-block-button .button-group:after {
+      content: "";
+      display: block;
+      width: 0;
+      height: 0;
+      border: inset 5px;
+      border-color: transparent transparent white transparent;
+      border-bottom-style: solid;
+      position: absolute;
+      top: -10px;
+      left: 1px;
+      z-index: 100; }
 
 #settings .toolbar {
   padding-bottom: 10px; }

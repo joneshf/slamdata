@@ -5,6 +5,20 @@
     }
 }
 
+.block.published {
+    border: none;
+    .block-toolbar {
+        display: none;
+    }
+    .block-content .right-side {
+        border: none;
+    }
+    .block-SQL .published-block span {
+        font-family: monospace;
+        font-size: 10pt;
+    }
+}
+
 .block-toolbar {
     div {
         height: 100%;
@@ -103,5 +117,40 @@ ul.chart-type {
         display: block;
         margin-left: 5px;
         max-width: 300px;
+    }
+}
+
+.create-block-button {
+    color: darken($slamdata-border-color, 20%);
+    position: relative;
+    &:hover {
+        color: darken($slamdata-border-color, 50%);
+    }
+    .button-group {
+        background: white;
+        border: 1px solid $slamdata-border-color;
+        padding: 5px;
+        position: absolute;
+        z-index: 10;
+        li {
+            line-height: 1;
+        }
+        a {
+            margin: 0;
+        }
+        &:before {
+            @include css-triangle(6px, $slamdata-border-color, bottom);
+            position: absolute;
+            top: -12px;
+            left: 0px;
+            z-index: 90;
+        }
+        &:after {
+            @include css-triangle(5px, white, bottom);
+            position: absolute;
+            top: -10px;
+            left: 1px;
+            z-index: 100;
+        }
     }
 }

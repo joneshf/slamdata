@@ -3,7 +3,8 @@ function addBlock(blockType, test) {
         return { block: __utils__.findAll(block).length
                }
     }, blockSelector);
-    casper.click(contentSelector + ' ' + '.toolbar [title="' + blockType + '"]');
+    casper.click('.create-block-button');
+    casper.click('.create-block-button [title="' + blockType + '"]');
     // Make sure we added exactly one markdown block.
     test.assertExists(blockSelector, 'Added a block');
     test.assertElementCount(blockSelector, count.block + 1);

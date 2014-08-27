@@ -25,7 +25,7 @@ module SlamData.NodeWebKit where
   import Data.Argonaut (decodeMaybe, encodeJson, jsonParser, printJson)
   import Data.Argonaut.Decode (DecodeJson)
   import Data.Argonaut.Encode (EncodeJson)
-  import Data.Array (filter, head, last, length, nubBy, snoc)
+  import Data.Array (filter, head, insertAt, last, length, nubBy, snoc)
   import Data.Either (either, Either(..))
   import Data.Function (mkFn0, mkFn1, mkFn3, runFn1, Fn1())
   import Data.Maybe (Maybe(..))
@@ -291,7 +291,7 @@ module SlamData.NodeWebKit where
           ident <- NotebookID <$> v4
           let name = "Untitled" ++ show (length state.notebooks + 1)
           let path = mount state.settings.seConfig
-          let notebook = Notebook {ident: ident, blocks: [], name: name, path: path}
+          let notebook = Notebook {ident: ident, blocks: [], name: name, path: path, published: false}
           e # emit responseEvent state{notebooks = state.notebooks `snoc` notebook}
           pure unit
         CloseNotebook ident -> do
@@ -304,7 +304,7 @@ module SlamData.NodeWebKit where
         HideSettings -> do
           e # emit responseEvent state{showSettings = false}
           pure unit
-        CreateBlock ident ty -> do
+        CreateBlock ident ty index -> do
           ident' <- BlockID <$> v4
           let block = Block { ident: ident'
                             , blockType: ty
@@ -313,7 +313,7 @@ module SlamData.NodeWebKit where
                             , evalContent: ""
                             , label: ""
                             }
-          let notebooks' = createBlock ident block <$> state.notebooks
+          let notebooks' = insertBlock ident block index <$> state.notebooks
           e # emit responseEvent state{notebooks = notebooks'}
           pure unit
         DeleteBlock nID bID -> do
@@ -386,7 +386,7 @@ module SlamData.NodeWebKit where
                 Nothing -> pure unit
                 Just revision -> do
                   i <- NotebookID <$> v4
-                  let default = {ident: i, blocks: [], name: name, path: path}
+                  let default = {ident: i, blocks: [], name: name, path: path, published: false}
                   let nb = jsonParse default revision
                   let notebook' = Notebook nb{name = name}
                   let notebooks' = state.notebooks `snoc` notebook'
@@ -410,6 +410,14 @@ module SlamData.NodeWebKit where
               e # emit responseEvent state{notebooks = notebooks'}
               pure unit
             } {} XT.NoBody
+          pure unit
+        TogglePublish (Notebook n) -> do
+          let dataUrl = serverURI state.settings.sdConfig ++ "/data/fs"
+          let url = dataUrl </> n.path </> n.name </> "index.nb"
+          let n' = deleteID n
+          let notebook' = Notebook n'{published = not n.published}
+          let notebooks' = replaceNotebook notebook' <$> state.notebooks
+          e # emit responseEvent state{notebooks = notebooks'}
           pure unit
         _ -> (e # emit responseEvent state) *> pure unit)
 
@@ -452,6 +460,11 @@ module SlamData.NodeWebKit where
     where
       go (Block b) = b.ident /= bID
   deleteBlock _ _ nb = nb
+
+  insertBlock :: NotebookID -> Block -> Number -> Notebook -> Notebook
+  insertBlock ident block index (Notebook n@{ident = ident', blocks = blocks})
+    | ident == ident' = Notebook n{blocks = insertAt index block blocks}
+  insertBlock _ _ _ nb = nb
 
   updateBlock :: NotebookID -> Block -> Notebook -> Notebook
   updateBlock ident (Block b) (Notebook n@{ident = ident', blocks = blocks})
