@@ -14,6 +14,7 @@ module SlamData.Helpers where
     , SEConfig(..)
     , SEConfigServer(..)
     )
+  import SlamData.Types.Workspace.Notebook (Notebook(..))
 
   import qualified Data.Map as M
 
@@ -38,6 +39,10 @@ module SlamData.Helpers where
   activate :: forall a. (Eq a) => a -> a -> String
   activate x y | x == y = " active"
   activate _ _          = ""
+
+  publish :: Notebook -> String
+  publish (Notebook {published = true}) = " published"
+  publish _                             = ""
 
   -- | Server stuff.
 

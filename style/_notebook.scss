@@ -5,7 +5,11 @@
     }
 }
 
-.block.published {
+.published .create-block-button {
+    display: none;
+}
+
+.published .block {
     border: none;
     .block-toolbar {
         display: none;

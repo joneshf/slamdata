@@ -28,7 +28,7 @@ module SlamData.App.Workspace.Notebook
     , renameIcon
     , saveIcon
     )
-  import SlamData.Helpers (activate, value)
+  import SlamData.Helpers (activate, publish, value)
   import SlamData.Lens (_ident, _name, _notebookRec)
   import SlamData.Types
     ( SlamDataRequest()
@@ -157,7 +157,7 @@ module SlamData.App.Workspace.Notebook
       [settings {request: this.props.request, state: this.props.state} []
       ]
   reifyContent this nb@(Notebook nb') =
-    D.div {className: "content" ++ activate (Just nb'.ident) this.state.active}
+    D.div {className: "content" ++ activate (Just nb'.ident) this.state.active ++ publish nb}
       [ D.div {className: "toolbar button-bar"}
         [externalActions this nb]
       , D.hr {} []
