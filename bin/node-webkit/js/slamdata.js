@@ -59669,17 +59669,17 @@ var logo = React_DOM.li({})([ React_DOM.a({
     alt: "SlamData home page", 
     src: "imgs/slamdata-logo.png"
 })([  ]) ]) ]);
-var intersperse = function (_31) {
-    return function (_32) {
-        if (_32.length === 0) {
+var intersperse = function (_42) {
+    return function (_43) {
+        if (_43.length === 0) {
             return [  ];
         };
-        if (_32.length === 1) {
-            return [ _32[0] ];
+        if (_43.length === 1) {
+            return [ _43[0] ];
         };
-        if (_32.length > 0) {
-            var _181 = _32.slice(1);
-            return Prelude[":"](_32[0])(Prelude[":"](_31)(intersperse(_31)(_181)));
+        if (_43.length > 0) {
+            var _224 = _43.slice(1);
+            return Prelude[":"](_43[0])(Prelude[":"](_42)(intersperse(_42)(_224)));
         };
         throw new Error("Failed pattern match");
     };
@@ -59689,46 +59689,46 @@ var divider = React_DOM.li({
 })([  ]);
 var menuSide = function (name) {
     return React.createClass((function () {
-        var _182 = {};
-        for (var _183 in React.spec) {
-            if (React.spec.hasOwnProperty(_183)) {
-                _182[_183] = React.spec[_183];
+        var _225 = {};
+        for (var _226 in React.spec) {
+            if (React.spec.hasOwnProperty(_226)) {
+                _225[_226] = React.spec[_226];
             };
         };
-        _182.displayName = "MenuSide";
-        _182.render = function ($$this) {
+        _225.displayName = "MenuSide";
+        _225.render = function ($$this) {
             return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.ul({
                 className: name
             })(Prelude["++"](Data_Array.semigroupArray({}))(intersperse(divider)($$this.props.children))($$this.props.extra)));
         };
-        return _182;
+        return _225;
     })());
 };
 var leftSide = menuSide("left");
 var rightSide = menuSide("right");
-var command = function (_30) {
-    if (_30.action instanceof Data_Maybe.Nothing) {
+var command = function (_41) {
+    if (_41.action instanceof Data_Maybe.Nothing) {
         return React_DOM.li({})([ React_DOM.a({
-            id: "menu-command-" + _30.name
-        })([ React_DOM.rawText(_30.name) ]) ]);
+            id: "menu-command-" + _41.name
+        })([ React_DOM.rawText(_41.name) ]) ]);
     };
-    if (_30.action instanceof Data_Maybe.Just) {
+    if (_41.action instanceof Data_Maybe.Just) {
         return React_DOM.li({})([ React_DOM.a({
-            id: "menu-command-" + _30.name, 
-            onClick: _30.action.value0
-        })([ React_DOM.rawText(_30.name) ]) ]);
+            id: "menu-command-" + _41.name, 
+            onClick: _41.action.value0
+        })([ React_DOM.rawText(_41.name) ]) ]);
     };
     throw new Error("Failed pattern match");
 };
 var menuButton = React.createClass((function () {
-    var _190 = {};
-    for (var _191 in React.spec) {
-        if (React.spec.hasOwnProperty(_191)) {
-            _190[_191] = React.spec[_191];
+    var _233 = {};
+    for (var _234 in React.spec) {
+        if (React.spec.hasOwnProperty(_234)) {
+            _233[_234] = React.spec[_234];
         };
     };
-    _190.displayName = "MenuButton";
-    _190.render = function ($$this) {
+    _233.displayName = "MenuButton";
+    _233.render = function ($$this) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.li({
             className: "has-dropdown"
         })([ React_DOM.a({
@@ -59737,7 +59737,7 @@ var menuButton = React.createClass((function () {
             className: "dropdown"
         })(Prelude["<$>"](Data_Array.functorArray({}))(command)($$this.props.commands)) ]));
     };
-    return _190;
+    return _233;
 })());
 var editMenu = function (request) {
     return menuButton({
@@ -59781,34 +59781,34 @@ var SlamData_Types_Workspace_FileSystem = require("SlamData.Types.Workspace.File
 var React_DOM = require("React.DOM");
 var Data_String = require("Data.String");
 var React_TreeView = require("React.TreeView");
-var toggleTree = function (_81) {
-    return function (_82) {
-        var name = Control_Lens["^."](_81.props.files)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._fileTypeRec(Data_Const.functorConst({})))(SlamData_Lens._name(Data_Const.functorConst({}))));
-        var path = Data_Array.snoc(_81.props.path)(name + "/");
-        return _81.state.collapsed ? function __do() {
-    _81.props.request(new SlamData_Types.ReadFileSystem(path))();
-    return _81.setState({
-        collapsed: !_81.state.collapsed
+var toggleTree = function (_92) {
+    return function (_93) {
+        var name = Control_Lens["^."](_92.props.files)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._fileTypeRec(Data_Const.functorConst({})))(SlamData_Lens._name(Data_Const.functorConst({}))));
+        var path = Data_Array.snoc(_92.props.path)(name + "/");
+        return _92.state.collapsed ? function __do() {
+    _92.props.request(new SlamData_Types.ReadFileSystem(path))();
+    return _92.setState({
+        collapsed: !_92.state.collapsed
     });
-} : Prelude.pure(Control_Monad_Eff.applicativeEff({}))(_81.setState({
-    collapsed: !_81.state.collapsed
+} : Prelude.pure(Control_Monad_Eff.applicativeEff({}))(_92.setState({
+    collapsed: !_92.state.collapsed
 }));
     };
 };
 var reify = React.createClass((function () {
-    var _310 = {};
-    for (var _311 in React.spec) {
-        if (React.spec.hasOwnProperty(_311)) {
-            _310[_311] = React.spec[_311];
+    var _353 = {};
+    for (var _354 in React.spec) {
+        if (React.spec.hasOwnProperty(_354)) {
+            _353[_354] = React.spec[_354];
         };
     };
-    _310.displayName = "FileSystemTree";
-    _310.getInitialState = function (_) {
+    _353.displayName = "FileSystemTree";
+    _353.getInitialState = function (_) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
             collapsed: true
         });
     };
-    _310.render = function ($$this) {
+    _353.render = function ($$this) {
         if ($$this.props.files.type === "file" && $$this.props.files.name === "index.nb") {
             return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div({})([ React_DOM.span({
                 onClick: React.eventHandler($$this)(function (this_1) {
@@ -59842,7 +59842,7 @@ var reify = React.createClass((function () {
         };
         throw new Error("Failed pattern match");
     };
-    return _310;
+    return _353;
 })());
 var fsTab = React_DOM.dl({
     className: "tabs", 
@@ -59866,19 +59866,19 @@ var fsContent = function (files) {
     };
 };
 var filesystem = React.createClass((function () {
-    var _312 = {};
-    for (var _313 in React.spec) {
-        if (React.spec.hasOwnProperty(_313)) {
-            _312[_313] = React.spec[_313];
+    var _355 = {};
+    for (var _356 in React.spec) {
+        if (React.spec.hasOwnProperty(_356)) {
+            _355[_356] = React.spec[_356];
         };
     };
-    _312.displayName = "FileSystem";
-    _312.render = function ($$this) {
+    _355.displayName = "FileSystem";
+    _355.render = function ($$this) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div({
             className: "slamdata-panel"
         })([ fsTab, fsContent($$this.props.files)($$this.props.request) ]));
     };
-    return _312;
+    return _355;
 })());
 module.exports = {
     filesystem: filesystem
@@ -59890,26 +59890,26 @@ var React = require("React");
 var Control_Monad_Eff = require("Control.Monad.Eff");
 var React_DOM = require("React.DOM");
 var blockRow = React.createClass((function () {
-    var _992 = {};
-    for (var _993 in React.spec) {
-        if (React.spec.hasOwnProperty(_993)) {
-            _992[_993] = React.spec[_993];
+    var _164 = {};
+    for (var _165 in React.spec) {
+        if (React.spec.hasOwnProperty(_165)) {
+            _164[_165] = React.spec[_165];
         };
     };
-    _992.displayName = "BlockRow";
-    _992.render = function ($$this) {
+    _164.displayName = "BlockRow";
+    _164.render = function ($$this) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div({
             className: $$this.props.styles + " row"
         })((function () {
             if ($$this.props.children.length > 0) {
-                var _988 = $$this.props.children.slice(1);
-                if (_988.length > 0) {
-                    var _990 = _988.slice(1);
+                var _160 = $$this.props.children.slice(1);
+                if (_160.length > 0) {
+                    var _162 = _160.slice(1);
                     return [ React_DOM.div({
                         className: "large-1  columns"
                     })([ $$this.props.children[0] ]), React_DOM.div({
                         className: "large-11 columns right-side"
-                    })([ _988[0] ]) ];
+                    })([ _160[0] ]) ];
                 };
             };
             if ($$this.props.children.length === 1) {
@@ -59925,7 +59925,7 @@ var blockRow = React.createClass((function () {
             throw new Error("Failed pattern match");
         })()));
     };
-    return _992;
+    return _164;
 })());
 module.exports = {
     blockRow: blockRow
@@ -59974,14 +59974,14 @@ function VisualTypeTab() {
 
 };
 VisualTypeTab.value = new VisualTypeTab();
-var visualIcon = function (_91) {
-    if (_91 instanceof Graphics_C3.Bar) {
+var visualIcon = function (_102) {
+    if (_102 instanceof Graphics_C3.Bar) {
         return SlamData_Components.barChartIcon;
     };
-    if (_91 instanceof Graphics_C3.Line) {
+    if (_102 instanceof Graphics_C3.Line) {
         return SlamData_Components.lineChartIcon;
     };
-    if (_91 instanceof Graphics_C3.Pie) {
+    if (_102 instanceof Graphics_C3.Pie) {
         return SlamData_Components.pieChartIcon;
     };
     throw new Error("Failed pattern match");
@@ -59992,14 +59992,14 @@ var visual = function ($$this) {
             onClick: React.eventHandler($$this)(function (this_1) {
                 return function (_) {
                     return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState((function () {
-                        var _315 = {};
-                        for (var _316 in this_1.state) {
-                            if (this_1.state.hasOwnProperty(_316)) {
-                                _315[_316] = this_1.state[_316];
+                        var _358 = {};
+                        for (var _359 in this_1.state) {
+                            if (this_1.state.hasOwnProperty(_359)) {
+                                _358[_359] = this_1.state[_359];
                             };
                         };
-                        _315.visual = ty;
-                        return _315;
+                        _358.visual = ty;
+                        return _358;
                     })()));
                 };
             }), 
@@ -60007,76 +60007,76 @@ var visual = function ($$this) {
         })([ React_DOM.a({})([ visualIcon(ty) ]), React_DOM.span({})([ React_DOM.rawText(Prelude.show(Graphics_C3.showC3Type({}))(ty)) ]) ]);
     };
 };
-var toggleTree = function (_85) {
-    return function (_86) {
-        return function (_87) {
-            var name = Control_Lens["^."](_86.props.files)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._fileTypeRec(Data_Const.functorConst({})))(SlamData_Lens._name(Data_Const.functorConst({}))));
-            var path = Data_Array.snoc(_86.props.path)(name + "/");
-            return _86.state.collapsed ? function __do() {
-    _86.props.request(_85)();
-    return _86.setState({
-        collapsed: !_86.state.collapsed
+var toggleTree = function (_96) {
+    return function (_97) {
+        return function (_98) {
+            var name = Control_Lens["^."](_97.props.files)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._fileTypeRec(Data_Const.functorConst({})))(SlamData_Lens._name(Data_Const.functorConst({}))));
+            var path = Data_Array.snoc(_97.props.path)(name + "/");
+            return _97.state.collapsed ? function __do() {
+    _97.props.request(_96)();
+    return _97.setState({
+        collapsed: !_97.state.collapsed
     });
-} : Prelude.pure(Control_Monad_Eff.applicativeEff({}))(_86.setState({
-    collapsed: !_86.state.collapsed
+} : Prelude.pure(Control_Monad_Eff.applicativeEff({}))(_97.setState({
+    collapsed: !_97.state.collapsed
 }));
         };
     };
 };
 var showVisualTab = function (__unused) {
-    return new Prelude.Show(function (_95) {
-        if (_95 instanceof FieldsTab) {
+    return new Prelude.Show(function (_106) {
+        if (_106 instanceof FieldsTab) {
             return "Fields";
         };
-        if (_95 instanceof VisualTypeTab) {
+        if (_106 instanceof VisualTypeTab) {
             return "Type";
         };
         throw new Error("Failed pattern match");
     });
 };
-var reifyField = function (_88) {
-    return function (_89) {
-        return function (_90) {
+var reifyField = function (_99) {
+    return function (_100) {
+        return function (_101) {
             return React_DOM.div({
                 className: "visual-field"
             })([ React_DOM.input({
-                onClick: React.eventHandler(_88)(function (this_1) {
+                onClick: React.eventHandler(_99)(function (this_1) {
                     return function (e) {
-                        var path$prime = Data_Array_Unsafe.tail(_89);
-                        var root = Data_Array_Unsafe.head(_89);
+                        var path$prime = Data_Array_Unsafe.tail(_100);
+                        var root = Data_Array_Unsafe.head(_100);
                         var field = root + Data_String.joinWith("/")(path$prime);
-                        var fields = SlamData_Helpers.checked(e.target) ? Data_Map.alter(Prelude.ordString({}))(Data_Maybe.maybe(Data_Maybe.Just.create(Data_Set.singleton(_90.name)))(Prelude[">>>"](Prelude.semigroupoidArr({}))(Data_Set.insert(Prelude.ordString({}))(_90.name))(Data_Maybe.Just.create)))(field)(this_1.state.fields) : Data_Map.alter(Prelude.ordString({}))(Prelude["<$>"](Data_Maybe.functorMaybe({}))(Data_Set["delete"](Prelude.ordString({}))(_90.name)))(field)(this_1.state.fields);
+                        var fields = SlamData_Helpers.checked(e.target) ? Data_Map.alter(Prelude.ordString({}))(Data_Maybe.maybe(Data_Maybe.Just.create(Data_Set.singleton(_101.name)))(Prelude[">>>"](Prelude.semigroupoidArr({}))(Data_Set.insert(Prelude.ordString({}))(_101.name))(Data_Maybe.Just.create)))(field)(this_1.state.fields) : Data_Map.alter(Prelude.ordString({}))(Prelude["<$>"](Data_Maybe.functorMaybe({}))(Data_Set["delete"](Prelude.ordString({}))(_101.name)))(field)(this_1.state.fields);
                         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState((function () {
-                            var _324 = {};
-                            for (var _325 in this_1.state) {
-                                if (this_1.state.hasOwnProperty(_325)) {
-                                    _324[_325] = this_1.state[_325];
+                            var _367 = {};
+                            for (var _368 in this_1.state) {
+                                if (this_1.state.hasOwnProperty(_368)) {
+                                    _367[_368] = this_1.state[_368];
                                 };
                             };
-                            _324.fields = fields;
-                            return _324;
+                            _367.fields = fields;
+                            return _367;
                         })()));
                     };
                 }), 
                 type: "checkbox"
-            })([  ]), React_DOM.rawText(_90.name) ]);
+            })([  ]), React_DOM.rawText(_101.name) ]);
         };
     };
 };
 var reify = React.createClass((function () {
-    var _333 = {};
-    for (var _334 in React.spec) {
-        if (React.spec.hasOwnProperty(_334)) {
-            _333[_334] = React.spec[_334];
+    var _376 = {};
+    for (var _377 in React.spec) {
+        if (React.spec.hasOwnProperty(_377)) {
+            _376[_377] = React.spec[_377];
         };
     };
-    _333.displayName = "FieldsTree";
-    _333.getInitialState = function (_) {
+    _376.displayName = "FieldsTree";
+    _376.getInitialState = function (_) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
             collapsed: true
         });
     };
-    _333.render = function ($$this) {
+    _376.render = function ($$this) {
         var name = Control_Lens["^."]($$this.props.files)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._fileTypeRec(Data_Const.functorConst({})))(SlamData_Lens._name(Data_Const.functorConst({}))));
         var path = Data_Array.snoc($$this.props.path)(name);
         var path$prime = Data_Array.snoc($$this.props.path)(name + "/");
@@ -60110,21 +60110,21 @@ var reify = React.createClass((function () {
         };
         throw new Error("Failed pattern match");
     };
-    return _333;
+    return _376;
 })());
 var placeholder = React_DOM.option({
     disabled: true, 
     selected: true, 
     value: ""
 })([ React_DOM.rawText("Select a field") ]);
-var optionify = function (_92) {
+var optionify = function (_103) {
     return React_DOM.optgroup({
-        label: _92.value0
+        label: _103.value0
     })(Prelude["<$>"](Data_Array.functorArray({}))(function (f) {
         return React_DOM.option({
             value: f
         })([ React_DOM.rawText(f) ]);
-    })(Data_Set.toList(_92.value1)));
+    })(Data_Set.toList(_103.value1)));
 };
 var selectFields = function ($$this) {
     return React_DOM.select({
@@ -60134,14 +60134,14 @@ var selectFields = function ($$this) {
                 var field = SlamData_Helpers.value(e.target);
                 var selected = Data_Map.alter(Prelude.ordString({}))(Data_Maybe.maybe(Data_Maybe.Just.create(Data_Set.singleton(field)))(Prelude[">>>"](Prelude.semigroupoidArr({}))(Data_Set.insert(Prelude.ordString({}))(field))(Data_Maybe.Just.create)))(path)(this_1.state.selectedFields);
                 return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState((function () {
-                    var _338 = {};
-                    for (var _339 in this_1.state) {
-                        if (this_1.state.hasOwnProperty(_339)) {
-                            _338[_339] = this_1.state[_339];
+                    var _381 = {};
+                    for (var _382 in this_1.state) {
+                        if (this_1.state.hasOwnProperty(_382)) {
+                            _381[_382] = this_1.state[_382];
                         };
                     };
-                    _338.selectedFields = selected;
-                    return _338;
+                    _381.selectedFields = selected;
+                    return _381;
                 })()));
             };
         })
@@ -60152,12 +60152,12 @@ var eqVisualTab = function (__unused) {
         return function (vt$prime) {
             return !Prelude["=="](eqVisualTab({}))(vt)(vt$prime);
         };
-    }, function (_93) {
-        return function (_94) {
-            if (_93 instanceof FieldsTab && _94 instanceof FieldsTab) {
+    }, function (_104) {
+        return function (_105) {
+            if (_104 instanceof FieldsTab && _105 instanceof FieldsTab) {
                 return true;
             };
-            if (_93 instanceof VisualTypeTab && _94 instanceof VisualTypeTab) {
+            if (_104 instanceof VisualTypeTab && _105 instanceof VisualTypeTab) {
                 return true;
             };
             return false;
@@ -60171,14 +60171,14 @@ var visualTab = function ($$this) {
             onClick: React.eventHandler($$this)(function (this_1) {
                 return function (_) {
                     return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState((function () {
-                        var _342 = {};
-                        for (var _343 in this_1.state) {
-                            if (this_1.state.hasOwnProperty(_343)) {
-                                _342[_343] = this_1.state[_343];
+                        var _385 = {};
+                        for (var _386 in this_1.state) {
+                            if (this_1.state.hasOwnProperty(_386)) {
+                                _385[_386] = this_1.state[_386];
                             };
                         };
-                        _342.active = tab;
-                        return _342;
+                        _385.active = tab;
+                        return _385;
                     })()));
                 };
             })
@@ -60190,14 +60190,14 @@ var visualTabs = function ($$this) {
         className: "tabs vertical"
     })(Prelude["<$>"](Data_Array.functorArray({}))(visualTab($$this))([ FieldsTab.value, VisualTypeTab.value ]));
 };
-var createData = function (_84) {
-    return Prelude["<$>"](Data_Array.functorArray({}))(function (_83) {
+var createData = function (_95) {
+    return Prelude["<$>"](Data_Array.functorArray({}))(function (_94) {
         return {
-            fields: Data_Set.toList(_83.value1), 
-            path: _83.value0, 
-            type: _84.visual
+            fields: Data_Set.toList(_94.value1), 
+            path: _94.value0, 
+            type: _95.visual
         };
-    })(Data_Map.toList(_84.selectedFields));
+    })(Data_Map.toList(_95.selectedFields));
 };
 var visualEditorContent = function ($$this) {
     return React_DOM.div({
@@ -60225,14 +60225,14 @@ var visualEditorContent = function ($$this) {
     })([ React_DOM.rawText("Create") ]) ]) ]) ]);
 };
 var visualEditor = React.createClass((function () {
-    var _350 = {};
-    for (var _351 in React.spec) {
-        if (React.spec.hasOwnProperty(_351)) {
-            _350[_351] = React.spec[_351];
+    var _393 = {};
+    for (var _394 in React.spec) {
+        if (React.spec.hasOwnProperty(_394)) {
+            _393[_394] = React.spec[_394];
         };
     };
-    _350.displayName = "VisualEditor";
-    _350.getInitialState = function (_) {
+    _393.displayName = "VisualEditor";
+    _393.getInitialState = function (_) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
             active: FieldsTab.value, 
             fields: Data_Map.empty, 
@@ -60240,12 +60240,12 @@ var visualEditor = React.createClass((function () {
             visual: Graphics_C3.Line.value
         });
     };
-    _350.render = function ($$this) {
+    _393.render = function ($$this) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(SlamData_App_Workspace_Notebook_Block_Common.blockRow({
             styles: "block-content edit-visual"
         })([ visualTabs(React.coerceThis($$this)), visualEditorContent(React.coerceThis($$this)) ]));
     };
-    return _350;
+    return _393;
 })());
 module.exports = {
     FieldsTab: FieldsTab, 
@@ -60271,10 +60271,10 @@ var Control_Monad_Identity = require("Control.Monad.Identity");
 var Control_Monad_Eff = require("Control.Monad.Eff");
 var SlamData_Helpers = require("SlamData.Helpers");
 var SlamData_App_Workspace_Notebook_Block_Visual = require("SlamData.App.Workspace.Notebook.Block.Visual");
-var typeName = function (_97) {
+var typeName = function (_108) {
     return React_DOM.div({
         className: "block-type text-center"
-    })([ React_DOM.span({})([ React_DOM.rawText(Prelude.show(SlamData_Types_Workspace_Notebook_Block.showBlockType({}))(_97.blockType)) ]) ]);
+    })([ React_DOM.span({})([ React_DOM.rawText(Prelude.show(SlamData_Types_Workspace_Notebook_Block.showBlockType({}))(_108.blockType)) ]) ]);
 };
 var toolbar = function ($$this) {
     return React_DOM.div({
@@ -60285,15 +60285,15 @@ var toolbar = function ($$this) {
         className: "right button-group"
     })([ SlamData_Components.actionButton($$this)(new SlamData_Types.DeleteBlock(Control_Lens["^."]($$this.props.notebook)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._notebookRec(Data_Const.functorConst({})))(SlamData_Lens._ident(Data_Const.functorConst({})))), Control_Lens["^."]($$this.props.block)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._blockRec(Data_Const.functorConst({})))(SlamData_Lens._ident(Data_Const.functorConst({}))))))("Close")(SlamData_Components.closeIcon) ]) ]);
 };
-var publish = function (_96) {
-    if (_96.published) {
+var publish = function (_107) {
+    if (_107.published) {
         return " published";
     };
     return "";
 };
 var evaluatedBlockContent = function ($$this) {
-    var _355 = Control_Lens["^."]($$this.props.block)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._blockRec(Data_Const.functorConst({})))(SlamData_Lens._blockType(Data_Const.functorConst({}))));
-    if (_355 === "Visual") {
+    var _398 = Control_Lens["^."]($$this.props.block)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._blockRec(Data_Const.functorConst({})))(SlamData_Lens._blockType(Data_Const.functorConst({}))));
+    if (_398 === "Visual") {
         return React_DOM.div({
             id: Control_Lens["^."]($$this.props.block)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._blockRec(Data_Const.functorConst({})))(SlamData_Lens._evalContent(Data_Const.functorConst({}))))
         })([  ]);
@@ -60324,11 +60324,11 @@ var evaluatedBlock = function ($$this) {
         className: "block-label"
     })([ React_DOM.rawText(blockRec.label) ]), evaluatedBlock$prime($$this) ]);
 };
-var createBlockButton$prime = function (_98) {
+var createBlockButton$prime = function (_109) {
     return SlamData_Components.createBlockButton({
-        request: _98.props.request, 
-        ident: Control_Lens["^."](_98.props.notebook)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._notebookRec(Data_Const.functorConst({})))(SlamData_Lens._ident(Data_Const.functorConst({})))), 
-        index: _98.props.index
+        request: _109.props.request, 
+        ident: Control_Lens["^."](_109.props.notebook)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._notebookRec(Data_Const.functorConst({})))(SlamData_Lens._ident(Data_Const.functorConst({})))), 
+        index: _109.props.index
     })([  ]);
 };
 var blockEditor = function ($$this) {
@@ -60346,14 +60346,14 @@ var blockEditor = function ($$this) {
         onChange: React.eventHandler($$this)(function (this_1) {
             return function (e) {
                 return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState((function () {
-                    var _358 = {};
-                    for (var _359 in this_1.state) {
-                        if (this_1.state.hasOwnProperty(_359)) {
-                            _358[_359] = this_1.state[_359];
+                    var _401 = {};
+                    for (var _402 in this_1.state) {
+                        if (this_1.state.hasOwnProperty(_402)) {
+                            _401[_402] = this_1.state[_402];
                         };
                     };
-                    _358.editContent = SlamData_Helpers.value(e.target);
-                    return _358;
+                    _401.editContent = SlamData_Helpers.value(e.target);
+                    return _401;
                 })()));
             };
         }), 
@@ -60369,8 +60369,8 @@ var blockEditor = function ($$this) {
     })([  ]) ]) ]);
 };
 var blockContent = function ($$this) {
-    var _360 = Control_Lens["^."]($$this.props.block)(SlamData_Lens._blockRec(Data_Const.functorConst({})));
-    if (_360.blockMode === "Edit" && _360.blockType === "Visual") {
+    var _403 = Control_Lens["^."]($$this.props.block)(SlamData_Lens._blockRec(Data_Const.functorConst({})));
+    if (_403.blockMode === "Edit" && _403.blockType === "Visual") {
         return SlamData_App_Workspace_Notebook_Block_Visual.visualEditor({
             block: $$this.props.block, 
             files: $$this.props.files, 
@@ -60378,36 +60378,36 @@ var blockContent = function ($$this) {
             request: $$this.props.request
         })([  ]);
     };
-    if (_360.blockMode === "Edit") {
+    if (_403.blockMode === "Edit") {
         return blockEditor($$this);
     };
-    if (_360.blockMode === "Eval") {
+    if (_403.blockMode === "Eval") {
         return evaluatedBlock($$this);
     };
     throw new Error("Failed pattern match");
 };
 var block = React.createClass((function () {
-    var _365 = {};
-    for (var _366 in React.spec) {
-        if (React.spec.hasOwnProperty(_366)) {
-            _365[_366] = React.spec[_366];
+    var _408 = {};
+    for (var _409 in React.spec) {
+        if (React.spec.hasOwnProperty(_409)) {
+            _408[_409] = React.spec[_409];
         };
     };
-    _365.displayName = "Block";
-    _365.getInitialState = function ($$this) {
+    _408.displayName = "Block";
+    _408.getInitialState = function ($$this) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
             editContent: Control_Lens["^."]($$this.props.block)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._blockRec(Data_Const.functorConst({})))(SlamData_Lens._editContent(Data_Const.functorConst({})))), 
             evalContent: Control_Lens["^."]($$this.props.block)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._blockRec(Data_Const.functorConst({})))(SlamData_Lens._evalContent(Data_Const.functorConst({}))))
         });
     };
-    _365.render = function ($$this) {
+    _408.render = function ($$this) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div({})([ React_DOM.div({
             className: "block" + publish($$this.props.notebook)
         })([ SlamData_App_Workspace_Notebook_Block_Common.blockRow({
             styles: "block-toolbar toolbar"
         })([ typeName($$this.props.block), toolbar(React.coerceThis($$this)) ]), Control_Lens["^."]($$this.props.notebook)(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._notebookRec(Data_Const.functorConst({})))(SlamData_Lens._published(Data_Const.functorConst({})))) ? evaluatedBlock(React.coerceThis($$this)) : blockContent(React.coerceThis($$this)) ]), createBlockButton$prime(React.coerceThis($$this)) ]));
     };
-    return _365;
+    return _408;
 })());
 module.exports = {
     block: block
@@ -60529,61 +60529,61 @@ var slamEngineServerSettings = function ($$this) {
 var _seMountings = function (__dict_Functor_1) {
     return Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._seConfig(__dict_Functor_1))(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._seConfigRec(__dict_Functor_1))(SlamData_Lens._mountings(__dict_Functor_1)));
 };
-var slamEngineMountingPath = function (_119) {
-    return function (_120) {
+var slamEngineMountingPath = function (_130) {
+    return function (_131) {
         return React_DOM.div({})([ React_DOM.label({
             htmlFor: "mongodb-path"
         })([ React_DOM.rawText("Path") ]), React_DOM.input({
             name: "mongodb-path", 
-            onChange: React.eventHandler(_119)(function (this_1) {
+            onChange: React.eventHandler(_130)(function (this_1) {
                 return function (e) {
                     var path$prime = SlamData_Helpers.value(e.target);
-                    var state$prime = Control_Lens["%~"](Data_Profunctor.profunctorArr({}))(_seMountings(Control_Monad_Identity.functorIdentity({})))(Control_Lens[".."](Prelude.semigroupoidArr({}))(Control_Lens[".~"](Control_Lens.at(Control_Lens_At.atMapKVKV(Prelude.ordString({})))(_120.value0)(Control_Monad_Identity.functorIdentity({})))(Data_Maybe.Nothing.value))(Control_Lens["?~"](Control_Lens.at(Control_Lens_At.atMapKVKV(Prelude.ordString({})))(path$prime)(Control_Monad_Identity.functorIdentity({})))(_120.value1)))(this_1.state);
+                    var state$prime = Control_Lens["%~"](Data_Profunctor.profunctorArr({}))(_seMountings(Control_Monad_Identity.functorIdentity({})))(Control_Lens[".."](Prelude.semigroupoidArr({}))(Control_Lens[".~"](Control_Lens.at(Control_Lens_At.atMapKVKV(Prelude.ordString({})))(_131.value0)(Control_Monad_Identity.functorIdentity({})))(Data_Maybe.Nothing.value))(Control_Lens["?~"](Control_Lens.at(Control_Lens_At.atMapKVKV(Prelude.ordString({})))(path$prime)(Control_Monad_Identity.functorIdentity({})))(_131.value1)))(this_1.state);
                     return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState(state$prime));
                 };
             }), 
             placeholder: "/", 
-            value: _120.value0
+            value: _131.value0
         })([  ]) ]);
     };
 };
 var _mountingMongoURI = function (__dict_Functor_2) {
     return Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._mountingWrapper(__dict_Functor_2))(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._mountingRec(__dict_Functor_2))(SlamData_Lens._connectionUri(__dict_Functor_2)));
 };
-var slamEngineMountingMongoDBMongoUri = function (_121) {
-    return function (_122) {
+var slamEngineMountingMongoDBMongoUri = function (_132) {
+    return function (_133) {
         return React_DOM.div({})([ React_DOM.label({
             htmlFor: "mongodb-mongouri"
         })([ React_DOM.rawText("MongoUri") ]), React_DOM.input({
             name: "mongodb-mongouri", 
-            onChange: React.eventHandler(_121)(function (this_1) {
+            onChange: React.eventHandler(_132)(function (this_1) {
                 return function (e) {
-                    var state$prime = Control_Lens["%~"](Data_Profunctor.profunctorArr({}))(_seMountings(Control_Monad_Identity.functorIdentity({})))(Control_Lens["%~"](Data_Profunctor.profunctorArr({}))(Control_Lens.ix(Control_Lens_At.ixedMapKVKV(Prelude.ordString({})))(_122.value0)(Control_Monad_Identity.applicativeIdentity({})))(Control_Lens[".~"](_mountingMongoURI(Control_Monad_Identity.functorIdentity({})))(SlamData_Helpers.value(e.target))))(this_1.state);
+                    var state$prime = Control_Lens["%~"](Data_Profunctor.profunctorArr({}))(_seMountings(Control_Monad_Identity.functorIdentity({})))(Control_Lens["%~"](Data_Profunctor.profunctorArr({}))(Control_Lens.ix(Control_Lens_At.ixedMapKVKV(Prelude.ordString({})))(_133.value0)(Control_Monad_Identity.applicativeIdentity({})))(Control_Lens[".~"](_mountingMongoURI(Control_Monad_Identity.functorIdentity({})))(SlamData_Helpers.value(e.target))))(this_1.state);
                     return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState(state$prime));
                 };
             }), 
             placeholder: "mongodb://localhost:27017", 
-            value: Control_Lens["^."](_122.value1)(_mountingMongoURI(Data_Const.functorConst({})))
+            value: Control_Lens["^."](_133.value1)(_mountingMongoURI(Data_Const.functorConst({})))
         })([  ]) ]);
     };
 };
 var _mountingDatabase = function (__dict_Functor_3) {
     return Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._mountingWrapper(__dict_Functor_3))(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._mountingRec(__dict_Functor_3))(SlamData_Lens._database(__dict_Functor_3)));
 };
-var slamEngineMountingMongoDBDatabse = function (_123) {
-    return function (_124) {
+var slamEngineMountingMongoDBDatabse = function (_134) {
+    return function (_135) {
         return React_DOM.div({})([ React_DOM.label({
             htmlFor: "mongodb-database"
         })([ React_DOM.rawText("Database") ]), React_DOM.input({
             name: "mongodb-database", 
-            onChange: React.eventHandler(_123)(function (this_1) {
+            onChange: React.eventHandler(_134)(function (this_1) {
                 return function (e) {
-                    var state$prime = Control_Lens["%~"](Data_Profunctor.profunctorArr({}))(_seMountings(Control_Monad_Identity.functorIdentity({})))(Control_Lens["%~"](Data_Profunctor.profunctorArr({}))(Control_Lens.ix(Control_Lens_At.ixedMapKVKV(Prelude.ordString({})))(_124.value0)(Control_Monad_Identity.applicativeIdentity({})))(Control_Lens[".~"](_mountingDatabase(Control_Monad_Identity.functorIdentity({})))(SlamData_Helpers.value(e.target))))(this_1.state);
+                    var state$prime = Control_Lens["%~"](Data_Profunctor.profunctorArr({}))(_seMountings(Control_Monad_Identity.functorIdentity({})))(Control_Lens["%~"](Data_Profunctor.profunctorArr({}))(Control_Lens.ix(Control_Lens_At.ixedMapKVKV(Prelude.ordString({})))(_135.value0)(Control_Monad_Identity.applicativeIdentity({})))(Control_Lens[".~"](_mountingDatabase(Control_Monad_Identity.functorIdentity({})))(SlamData_Helpers.value(e.target))))(this_1.state);
                     return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState(state$prime));
                 };
             }), 
             placeholder: "test", 
-            value: Control_Lens["^."](_124.value1)(_mountingDatabase(Data_Const.functorConst({})))
+            value: Control_Lens["^."](_135.value1)(_mountingDatabase(Data_Const.functorConst({})))
         })([  ]) ]);
     };
 };
@@ -60624,14 +60624,14 @@ var reifyTab = function (name) {
             id: "settings-" + Prelude.show(SlamData_Types_Workspace_Notebook_Settings.showSettingsTab({}))(name), 
             onClick: function (_) {
                 return $$this.setState((function () {
-                    var _421 = {};
-                    for (var _422 in $$this.state) {
-                        if ($$this.state.hasOwnProperty(_422)) {
-                            _421[_422] = $$this.state[_422];
+                    var _464 = {};
+                    for (var _465 in $$this.state) {
+                        if ($$this.state.hasOwnProperty(_465)) {
+                            _464[_465] = $$this.state[_465];
                         };
                     };
-                    _421.active = name;
-                    return _421;
+                    _464.active = name;
+                    return _464;
                 })());
             }
         })([ React_DOM.rawText(Prelude.show(SlamData_Types_Workspace_Notebook_Settings.showSettingsTab({}))(name)) ]) ]);
@@ -60647,33 +60647,33 @@ var tabs = function ($$this) {
         className: "tabs vertical"
     })([ slamEngineTab($$this), slamDataTab($$this) ]) ]);
 };
-var reifyContent = function (_126) {
-    return function (_127) {
-        if (_126 instanceof SlamData_Types_Workspace_Notebook_Settings.SlamEngineTab) {
+var reifyContent = function (_137) {
+    return function (_138) {
+        if (_137 instanceof SlamData_Types_Workspace_Notebook_Settings.SlamEngineTab) {
             return React_DOM.div({
-                className: "content" + SlamData_Helpers.activate(SlamData_Types_Workspace_Notebook_Settings.eqSettingsTab({}))(SlamData_Types_Workspace_Notebook_Settings.SlamEngineTab.value)(_127.state.active)
-            })([ React_DOM.h6({})([ React_DOM.rawText("Settings for the local instance of SlamEngine") ]), React_DOM.form({})([ SlamData_App_Workspace_Notebook_Settings_SlamEngine.slamEngineServerSettings(_127), SlamData_App_Workspace_Notebook_Settings_SlamEngine.slamEngineMountingsSettings(_127) ]) ]);
+                className: "content" + SlamData_Helpers.activate(SlamData_Types_Workspace_Notebook_Settings.eqSettingsTab({}))(SlamData_Types_Workspace_Notebook_Settings.SlamEngineTab.value)(_138.state.active)
+            })([ React_DOM.h6({})([ React_DOM.rawText("Settings for the local instance of SlamEngine") ]), React_DOM.form({})([ SlamData_App_Workspace_Notebook_Settings_SlamEngine.slamEngineServerSettings(_138), SlamData_App_Workspace_Notebook_Settings_SlamEngine.slamEngineMountingsSettings(_138) ]) ]);
         };
-        if (_126 instanceof SlamData_Types_Workspace_Notebook_Settings.SlamDataTab) {
+        if (_137 instanceof SlamData_Types_Workspace_Notebook_Settings.SlamDataTab) {
             return React_DOM.div({
-                className: "content" + SlamData_Helpers.activate(SlamData_Types_Workspace_Notebook_Settings.eqSettingsTab({}))(SlamData_Types_Workspace_Notebook_Settings.SlamDataTab.value)(_127.state.active)
-            })([ React_DOM.h6({})([ React_DOM.rawText("SlamEngine server to connect to") ]), React_DOM.form({})([ SlamData_App_Workspace_Notebook_Settings_SlamData.slamDataServerSettings(_127), SlamData_App_Workspace_Notebook_Settings_SlamData.slamDataJavaSettings(_127) ]) ]);
+                className: "content" + SlamData_Helpers.activate(SlamData_Types_Workspace_Notebook_Settings.eqSettingsTab({}))(SlamData_Types_Workspace_Notebook_Settings.SlamDataTab.value)(_138.state.active)
+            })([ React_DOM.h6({})([ React_DOM.rawText("SlamEngine server to connect to") ]), React_DOM.form({})([ SlamData_App_Workspace_Notebook_Settings_SlamData.slamDataServerSettings(_138), SlamData_App_Workspace_Notebook_Settings_SlamData.slamDataJavaSettings(_138) ]) ]);
         };
         throw new Error("Failed pattern match");
     };
 };
 var slamDataContent = reifyContent(SlamData_Types_Workspace_Notebook_Settings.SlamDataTab.value);
 var slamEngineContent = reifyContent(SlamData_Types_Workspace_Notebook_Settings.SlamEngineTab.value);
-var externalActions = function (_125) {
-    if (_125.state.active instanceof SlamData_Types_Workspace_Notebook_Settings.SlamDataTab) {
+var externalActions = function (_136) {
+    if (_136.state.active instanceof SlamData_Types_Workspace_Notebook_Settings.SlamDataTab) {
         return React_DOM.ul({
             className: "button-group"
-        })([ SlamData_Components.actionButton(_125)(new SlamData_Types.SaveSDConfig(_125.state.sdConfig))("Save")(SlamData_Components.saveIcon) ]);
+        })([ SlamData_Components.actionButton(_136)(new SlamData_Types.SaveSDConfig(_136.state.sdConfig))("Save")(SlamData_Components.saveIcon) ]);
     };
-    if (_125.state.active instanceof SlamData_Types_Workspace_Notebook_Settings.SlamEngineTab) {
+    if (_136.state.active instanceof SlamData_Types_Workspace_Notebook_Settings.SlamEngineTab) {
         return React_DOM.ul({
             className: "button-group"
-        })([ SlamData_Components.actionButton(_125)(new SlamData_Types.SaveSEConfig(_125.state.seConfig))("Save")(SlamData_Components.saveIcon) ]);
+        })([ SlamData_Components.actionButton(_136)(new SlamData_Types.SaveSEConfig(_136.state.seConfig))("Save")(SlamData_Components.saveIcon) ]);
     };
     throw new Error("Failed pattern match");
 };
@@ -60686,21 +60686,21 @@ var contents = function ($$this) {
     })([ slamEngineContent($$this), slamDataContent($$this) ]) ]);
 };
 var settings = React.createClass((function () {
-    var _430 = {};
-    for (var _431 in React.spec) {
-        if (React.spec.hasOwnProperty(_431)) {
-            _430[_431] = React.spec[_431];
+    var _473 = {};
+    for (var _474 in React.spec) {
+        if (React.spec.hasOwnProperty(_474)) {
+            _473[_474] = React.spec[_474];
         };
     };
-    _430.displayName = "Settings";
-    _430.getInitialState = function ($$this) {
+    _473.displayName = "Settings";
+    _473.getInitialState = function ($$this) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
             active: SlamData_Types_Workspace_Notebook_Settings.SlamEngineTab.value, 
             sdConfig: $$this.props.state.settings.sdConfig, 
             seConfig: $$this.props.state.settings.seConfig
         });
     };
-    _430.render = function ($$this) {
+    _473.render = function ($$this) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div({
             id: "settings"
         })([ React_DOM.div({
@@ -60709,7 +60709,7 @@ var settings = React.createClass((function () {
             className: "vertical"
         })([ tabs(React.coerceThis($$this)), contents(React.coerceThis($$this)) ]) ]));
     };
-    return _430;
+    return _473;
 })());
 module.exports = {
     settings: settings
@@ -60748,21 +60748,21 @@ var settingsTab = function ($$this) {
         published: false
     };
 };
-var renameAction = function (_141) {
-    return function (_142) {
+var renameAction = function (_152) {
+    return function (_153) {
         return React_DOM.li({})([ React_DOM.a({
             className: "tiny secondary button has-tooltip", 
-            onClick: React.eventHandler(_141)(function (this_1) {
+            onClick: React.eventHandler(_152)(function (this_1) {
                 return function (_) {
                     return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState((function () {
-                        var _434 = {};
-                        for (var _435 in this_1.state) {
-                            if (this_1.state.hasOwnProperty(_435)) {
-                                _434[_435] = this_1.state[_435];
+                        var _477 = {};
+                        for (var _478 in this_1.state) {
+                            if (this_1.state.hasOwnProperty(_478)) {
+                                _477[_478] = this_1.state[_478];
                             };
                         };
-                        _434.renaming = new Data_Maybe.Just(_142.name);
-                        return _434;
+                        _477.renaming = new Data_Maybe.Just(_153.name);
+                        return _477;
                     })()));
                 };
             }), 
@@ -60770,112 +60770,112 @@ var renameAction = function (_141) {
         })([ SlamData_Components.renameIcon ]) ]);
     };
 };
-var reifyBlock = function (_136) {
-    return function (_137) {
-        return function (_138) {
-            return function (_139) {
+var reifyBlock = function (_147) {
+    return function (_148) {
+        return function (_149) {
+            return function (_150) {
                 return SlamData_App_Workspace_Notebook_Block.block({
-                    block: _139, 
-                    key: _139.ident, 
-                    notebook: _137, 
-                    request: _136.props.request, 
-                    files: _136.props.state.files, 
-                    index: _138
+                    block: _150, 
+                    key: _150.ident, 
+                    notebook: _148, 
+                    request: _147.props.request, 
+                    files: _147.props.state.files, 
+                    index: _149
                 })([  ]);
             };
         };
     };
 };
-var reifyBlocks = function (_134) {
-    return function (_135) {
-        return zipWithIndex(reifyBlock(_134)(_135))(_135.blocks);
+var reifyBlocks = function (_145) {
+    return function (_146) {
+        return zipWithIndex(reifyBlock(_145)(_146))(_146.blocks);
     };
 };
-var publishTitle = function (_140) {
-    if (_140.published) {
+var publishTitle = function (_151) {
+    if (_151.published) {
         return "Unpublish";
     };
     return "Publish";
 };
-var noteBookName = function (_143) {
-    return function (_144) {
-        if (_143.state.renaming instanceof Data_Maybe.Just) {
+var noteBookName = function (_154) {
+    return function (_155) {
+        if (_154.state.renaming instanceof Data_Maybe.Just) {
             return React_DOM.input({
-                onBlur: React.eventHandler(_143)(function (this_1) {
+                onBlur: React.eventHandler(_154)(function (this_1) {
                     return function (e) {
                         return function __do() {
-                            this_1.props.request(new SlamData_Types.RenameNotebook(_144, SlamData_Helpers.value(e.target)))();
+                            this_1.props.request(new SlamData_Types.RenameNotebook(_155, SlamData_Helpers.value(e.target)))();
                             return this_1.setState((function () {
-                                var _448 = {};
-                                for (var _449 in this_1.state) {
-                                    if (this_1.state.hasOwnProperty(_449)) {
-                                        _448[_449] = this_1.state[_449];
+                                var _491 = {};
+                                for (var _492 in this_1.state) {
+                                    if (this_1.state.hasOwnProperty(_492)) {
+                                        _491[_492] = this_1.state[_492];
                                     };
                                 };
-                                _448.renaming = Data_Maybe.Nothing.value;
-                                return _448;
+                                _491.renaming = Data_Maybe.Nothing.value;
+                                return _491;
                             })());
                         };
                     };
                 }), 
-                onChange: React.eventHandler(_143)(function (this_1) {
+                onChange: React.eventHandler(_154)(function (this_1) {
                     return function (e) {
                         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState((function () {
-                            var _450 = {};
-                            for (var _451 in this_1.state) {
-                                if (this_1.state.hasOwnProperty(_451)) {
-                                    _450[_451] = this_1.state[_451];
+                            var _493 = {};
+                            for (var _494 in this_1.state) {
+                                if (this_1.state.hasOwnProperty(_494)) {
+                                    _493[_494] = this_1.state[_494];
                                 };
                             };
-                            _450.renaming = Data_Maybe.Just.create(SlamData_Helpers.value(e.target));
-                            return _450;
+                            _493.renaming = Data_Maybe.Just.create(SlamData_Helpers.value(e.target));
+                            return _493;
                         })()));
                     };
                 }), 
-                value: _143.state.renaming.value0
+                value: _154.state.renaming.value0
             })([  ]);
         };
-        if (_143.state.renaming instanceof Data_Maybe.Nothing) {
-            return React_DOM.rawText(_144.name);
+        if (_154.state.renaming instanceof Data_Maybe.Nothing) {
+            return React_DOM.rawText(_155.name);
         };
         throw new Error("Failed pattern match");
     };
 };
-var reifyTabs = function (_128) {
-    return function (_129) {
-        if (Prelude["=="](SlamData_Types_Workspace_Notebook.eqNotebookID({}))(_129.ident)(_128.state.settingsId)) {
+var reifyTabs = function (_139) {
+    return function (_140) {
+        if (Prelude["=="](SlamData_Types_Workspace_Notebook.eqNotebookID({}))(_140.ident)(_139.state.settingsId)) {
             return React_DOM.dd({
-                className: "tab" + SlamData_Helpers.activate(Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(new Data_Maybe.Just(_129.ident))(_128.state.active)
+                className: "tab" + SlamData_Helpers.activate(Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(new Data_Maybe.Just(_140.ident))(_139.state.active)
             })([ React_DOM.a({
                 id: "notebook-Settings", 
-                onClick: React.eventHandler(_128)(function (this_1) {
+                onClick: React.eventHandler(_139)(function (this_1) {
                     return function (_) {
                         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState((function () {
-                            var _455 = {};
-                            for (var _456 in this_1.state) {
-                                if (this_1.state.hasOwnProperty(_456)) {
-                                    _455[_456] = this_1.state[_456];
+                            var _498 = {};
+                            for (var _499 in this_1.state) {
+                                if (this_1.state.hasOwnProperty(_499)) {
+                                    _498[_499] = this_1.state[_499];
                                 };
                             };
-                            _455.active = new Data_Maybe.Just(_129.ident);
-                            return _455;
+                            _498.active = new Data_Maybe.Just(_140.ident);
+                            return _498;
                         })()));
                     };
                 })
-            })([ React_DOM.rawText(_129.name), React_DOM.i({
+            })([ React_DOM.rawText(_140.name), React_DOM.i({
                 className: "fa fa-times", 
-                onClick: React.eventHandler(_128)(function (this_1) {
+                onClick: React.eventHandler(_139)(function (this_1) {
                     return function (_) {
                         return function __do() {
-                            Prelude["=="](Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(this_1.state.active)(new Data_Maybe.Just(_129.ident)) ? this_1.setState((function () {
-    var _457 = {};
-    for (var _458 in this_1.state) {
-        if (this_1.state.hasOwnProperty(_458)) {
-            _457[_458] = this_1.state[_458];
+                            Prelude["=="](Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(this_1.state.active)(new Data_Maybe.Just(_140.ident)) ? this_1.setState((function () {
+    var _500 = {};
+    for (var _501 in this_1.state) {
+        if (this_1.state.hasOwnProperty(_501)) {
+            _500[_501] = this_1.state[_501];
         };
     };
-    _457.active = Data_Maybe.Nothing.value;
-    return _457;
+    _500.active = Data_Maybe.Nothing.value;
+    return _500;
 })()) : Prelude.unit;
                             return this_1.props.request(SlamData_Types.HideSettings.value)();
                         };
@@ -60884,38 +60884,38 @@ var reifyTabs = function (_128) {
             })([  ]) ]) ]);
         };
         return React_DOM.dd({
-            className: "tab" + SlamData_Helpers.activate(Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(new Data_Maybe.Just(_129.ident))(_128.state.active)
+            className: "tab" + SlamData_Helpers.activate(Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(new Data_Maybe.Just(_140.ident))(_139.state.active)
         })([ React_DOM.a({
-            onClick: React.eventHandler(_128)(function (this_2) {
+            onClick: React.eventHandler(_139)(function (this_2) {
                 return function (_) {
                     return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_2.setState((function () {
-                        var _459 = {};
-                        for (var _460 in this_2.state) {
-                            if (this_2.state.hasOwnProperty(_460)) {
-                                _459[_460] = this_2.state[_460];
+                        var _502 = {};
+                        for (var _503 in this_2.state) {
+                            if (this_2.state.hasOwnProperty(_503)) {
+                                _502[_503] = this_2.state[_503];
                             };
                         };
-                        _459.active = new Data_Maybe.Just(_129.ident);
-                        return _459;
+                        _502.active = new Data_Maybe.Just(_140.ident);
+                        return _502;
                     })()));
                 };
             })
-        })([ noteBookName(React.coerceThis(_128))(_129), React_DOM.i({
+        })([ noteBookName(React.coerceThis(_139))(_140), React_DOM.i({
             className: "fa fa-times", 
-            onClick: React.eventHandler(_128)(function (this_2) {
+            onClick: React.eventHandler(_139)(function (this_2) {
                 return function (_) {
                     return function __do() {
-                        Prelude["=="](Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(this_2.state.active)(new Data_Maybe.Just(_129.ident)) ? this_2.setState((function () {
-    var _461 = {};
-    for (var _462 in this_2.state) {
-        if (this_2.state.hasOwnProperty(_462)) {
-            _461[_462] = this_2.state[_462];
+                        Prelude["=="](Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(this_2.state.active)(new Data_Maybe.Just(_140.ident)) ? this_2.setState((function () {
+    var _504 = {};
+    for (var _505 in this_2.state) {
+        if (this_2.state.hasOwnProperty(_505)) {
+            _504[_505] = this_2.state[_505];
         };
     };
-    _461.active = Data_Maybe.Nothing.value;
-    return _461;
+    _504.active = Data_Maybe.Nothing.value;
+    return _504;
 })()) : Prelude.unit;
-                        return this_2.props.request(new SlamData_Types.CloseNotebook(_129.ident))();
+                        return this_2.props.request(new SlamData_Types.CloseNotebook(_140.ident))();
                     };
                 };
             })
@@ -60939,86 +60939,86 @@ var createNotebookButton = function ($$this) {
         })
     })([ SlamData_Components.newNotebookIcon ]) ]) ]);
 };
-var createBlockButton$prime = function (_132) {
-    return function (_133) {
+var createBlockButton$prime = function (_143) {
+    return function (_144) {
         return SlamData_Components.createBlockButton({
-            request: _132.props.request, 
-            ident: _133.ident, 
+            request: _143.props.request, 
+            ident: _144.ident, 
             index: 0
         })([  ]);
     };
 };
-var reifyContent = function (_130) {
-    return function (_131) {
-        if (Prelude["=="](SlamData_Types_Workspace_Notebook.eqNotebookID({}))(_131.ident)(_130.state.settingsId)) {
+var reifyContent = function (_141) {
+    return function (_142) {
+        if (Prelude["=="](SlamData_Types_Workspace_Notebook.eqNotebookID({}))(_142.ident)(_141.state.settingsId)) {
             return React_DOM.div({
-                className: "content" + SlamData_Helpers.activate(Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(new Data_Maybe.Just(_131.ident))(_130.state.active)
+                className: "content" + SlamData_Helpers.activate(Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(new Data_Maybe.Just(_142.ident))(_141.state.active)
             })([ SlamData_App_Workspace_Notebook_Settings.settings({
-                request: _130.props.request, 
-                state: _130.props.state
+                request: _141.props.request, 
+                state: _141.props.state
             })([  ]) ]);
         };
         return React_DOM.div({
-            className: "content" + SlamData_Helpers.activate(Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(new Data_Maybe.Just(_131.ident))(_130.state.active)
+            className: "content" + SlamData_Helpers.activate(Data_Maybe.eqMaybe(SlamData_Types_Workspace_Notebook.eqNotebookID({})))(new Data_Maybe.Just(_142.ident))(_141.state.active)
         })([ React_DOM.div({
             className: "toolbar button-bar"
-        })([ externalActions(_130)(_131) ]), React_DOM.hr({})([  ]), React_DOM.div({
+        })([ externalActions(_141)(_142) ]), React_DOM.hr({})([  ]), React_DOM.div({
             className: "actual-content"
-        })(Prelude[":"](createBlockButton$prime(_130)(_131))(reifyBlocks(_130)(_131))) ]);
+        })(Prelude[":"](createBlockButton$prime(_141)(_142))(reifyBlocks(_141)(_142))) ]);
     };
 };
 var notebooks = React.createClass((function () {
-    var _476 = {};
-    for (var _477 in React.spec) {
-        if (React.spec.hasOwnProperty(_477)) {
-            _476[_477] = React.spec[_477];
+    var _519 = {};
+    for (var _520 in React.spec) {
+        if (React.spec.hasOwnProperty(_520)) {
+            _519[_520] = React.spec[_520];
         };
     };
-    _476.displayName = "Notebooks";
-    _476.componentWillReceiveProps = function ($$this, props) {
+    _519.displayName = "Notebooks";
+    _519.componentWillReceiveProps = function ($$this, props) {
         return props.state.showSettings && !$$this.props.state.showSettings ? Prelude.pure(Control_Monad_Eff.applicativeEff({}))($$this.setState((function () {
-    var _470 = {};
-    for (var _471 in $$this.state) {
-        if ($$this.state.hasOwnProperty(_471)) {
-            _470[_471] = $$this.state[_471];
+    var _513 = {};
+    for (var _514 in $$this.state) {
+        if ($$this.state.hasOwnProperty(_514)) {
+            _513[_514] = $$this.state[_514];
         };
     };
-    _470.active = new Data_Maybe.Just($$this.state.settingsId);
-    return _470;
+    _513.active = new Data_Maybe.Just($$this.state.settingsId);
+    return _513;
 })())) : Data_Array.length(props.state.notebooks) > Data_Array.length($$this.props.state.notebooks) ? (function () {
     var active = Prelude["<$>"](Data_Maybe.functorMaybe({}))(Prelude.flip(Control_Lens["^."])(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._notebookRec(Data_Const.functorConst({})))(SlamData_Lens._ident(Data_Const.functorConst({})))))(Data_Array.head(Data_Array["\\\\"](SlamData_Types_Workspace_Notebook.eqNotebook({}))(props.state.notebooks)($$this.props.state.notebooks)));
     return Prelude.pure(Control_Monad_Eff.applicativeEff({}))($$this.setState((function () {
-        var _472 = {};
-        for (var _473 in $$this.state) {
-            if ($$this.state.hasOwnProperty(_473)) {
-                _472[_473] = $$this.state[_473];
+        var _515 = {};
+        for (var _516 in $$this.state) {
+            if ($$this.state.hasOwnProperty(_516)) {
+                _515[_516] = $$this.state[_516];
             };
         };
-        _472.active = active;
-        return _472;
+        _515.active = active;
+        return _515;
     })()));
 })() : Data_Array.length(props.state.notebooks) < Data_Array.length($$this.props.state.notebooks) ? (function () {
     var active = Prelude["<$>"](Data_Maybe.functorMaybe({}))(Prelude.flip(Control_Lens["^."])(Control_Lens[".."](Prelude.semigroupoidArr({}))(SlamData_Lens._notebookRec(Data_Const.functorConst({})))(SlamData_Lens._ident(Data_Const.functorConst({})))))(Data_Array.head(props.state.notebooks));
     return Prelude.pure(Control_Monad_Eff.applicativeEff({}))($$this.setState((function () {
-        var _474 = {};
-        for (var _475 in $$this.state) {
-            if ($$this.state.hasOwnProperty(_475)) {
-                _474[_475] = $$this.state[_475];
+        var _517 = {};
+        for (var _518 in $$this.state) {
+            if ($$this.state.hasOwnProperty(_518)) {
+                _517[_518] = $$this.state[_518];
             };
         };
-        _474.active = active;
-        return _474;
+        _517.active = active;
+        return _517;
     })()));
 })() : Prelude.pure(Control_Monad_Eff.applicativeEff({}))(Prelude.unit);
     };
-    _476.getInitialState = function ($$this) {
+    _519.getInitialState = function ($$this) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
             settingsId: SlamData_Types_Workspace_Notebook.NotebookID.create(Node_UUID.runUUID(Node_UUID.v4)), 
             active: Data_Maybe.Nothing.value, 
             renaming: Data_Maybe.Nothing.value
         });
     };
-    _476.render = function ($$this) {
+    _519.render = function ($$this) {
         var settings = $$this.props.state.showSettings ? [ settingsTab($$this) ] : [  ];
         var tabs = Prelude["<$>"](Data_Array.functorArray({}))(reifyTabs(React.coerceThis($$this)))(Prelude["++"](Data_Array.semigroupArray({}))($$this.props.state.notebooks)(settings));
         var tabs$prime = Data_Array.snoc(tabs)(createNotebookButton(React.coerceThis($$this)));
@@ -61031,7 +61031,7 @@ var notebooks = React.createClass((function () {
             className: "tabs-content"
         })(content) ]));
     };
-    return _476;
+    return _519;
 })());
 module.exports = {
     notebooks: notebooks
@@ -61065,28 +61065,28 @@ var workspace$prime = function (props) {
         id: "notebook"
     })([ SlamData_App_Workspace_Notebook.notebooks(props)([  ]) ]) ]);
 };
-var path = function (_145) {
-    return SlamData_Helpers.getOrElse(Data_Array.head(Prelude["<$>"](Data_Array.functorArray({}))(Data_Tuple.fst)(Data_Map.toList(_145.settings.seConfig.mountings))))(SlamData_Helpers.defaultMountPath);
+var path = function (_156) {
+    return SlamData_Helpers.getOrElse(Data_Array.head(Prelude["<$>"](Data_Array.functorArray({}))(Data_Tuple.fst)(Data_Map.toList(_156.settings.seConfig.mountings))))(SlamData_Helpers.defaultMountPath);
 };
 var workspace = React.createClass((function () {
-    var _482 = {};
-    for (var _483 in React.spec) {
-        if (React.spec.hasOwnProperty(_483)) {
-            _482[_483] = React.spec[_483];
+    var _525 = {};
+    for (var _526 in React.spec) {
+        if (React.spec.hasOwnProperty(_526)) {
+            _525[_526] = React.spec[_526];
         };
     };
-    _482.displayName = "Workspace";
-    _482.requestFS = function ($$this) {
+    _525.displayName = "Workspace";
+    _525.requestFS = function ($$this) {
         return $$this.props.request(new SlamData_Types.ReadFileSystem([ path($$this.props.state) ]));
     };
-    _482.componentDidMount = function ($$this) {
+    _525.componentDidMount = function ($$this) {
         return function __do() {
             $$this.requestFS();
             Control_Reactive_Timer.interval(5000)($$this.requestFS)();
             return Prelude.unit;
         };
     };
-    _482.render = function ($$this) {
+    _525.render = function ($$this) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div({
             id: "workspace"
         })([ workspace$prime({
@@ -61094,7 +61094,7 @@ var workspace = React.createClass((function () {
             state: $$this.props.state
         }) ]));
     };
-    return _482;
+    return _525;
 })());
 module.exports = {
     workspace: workspace
@@ -61108,25 +61108,25 @@ var React_DOM = require("React.DOM");
 var SlamData_App_Menu = require("SlamData.App.Menu");
 var SlamData_App_Workspace = require("SlamData.App.Workspace");
 var app = React.createClass((function () {
-    var _484 = {};
-    for (var _485 in React.spec) {
-        if (React.spec.hasOwnProperty(_485)) {
-            _484[_485] = React.spec[_485];
+    var _527 = {};
+    for (var _528 in React.spec) {
+        if (React.spec.hasOwnProperty(_528)) {
+            _527[_528] = React.spec[_528];
         };
     };
-    _484.displayName = "App";
-    _484.getInitialState = function (_) {
+    _527.displayName = "App";
+    _527.getInitialState = function (_) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
             showSettings: false
         });
     };
-    _484.render = function ($$this) {
+    _527.render = function ($$this) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.div({})([ SlamData_App_Menu.menu($$this.props.request), SlamData_App_Workspace.workspace({
             request: $$this.props.request, 
             state: $$this.props.state
         })([  ]) ]));
     };
-    return _484;
+    return _527;
 })());
 module.exports = {
     app: app
@@ -61162,14 +61162,14 @@ var dirOpenIcon = icon("fa fa-folder-open-o");
 var dirClosedIcon = icon("fa fa-folder-o");
 var createBlockIcon = icon("fa fa-plus-square-o");
 var closeIcon = icon("fa fa-times");
-var blockIcon = function (_33) {
-    if (_33 === "Markdown") {
+var blockIcon = function (_44) {
+    if (_44 === "Markdown") {
         return markdownIcon;
     };
-    if (_33 === "SQL") {
+    if (_44 === "SQL") {
         return sqlIcon;
     };
-    if (_33 === "Visual") {
+    if (_44 === "Visual") {
         return visualIcon;
     };
     throw new Error("Failed pattern match");
@@ -61210,38 +61210,38 @@ var internalActions = function ($$this) {
     };
 };
 var createBlockButton = React.createClass((function () {
-    var _195 = {};
-    for (var _196 in React.spec) {
-        if (React.spec.hasOwnProperty(_196)) {
-            _195[_196] = React.spec[_196];
+    var _238 = {};
+    for (var _239 in React.spec) {
+        if (React.spec.hasOwnProperty(_239)) {
+            _238[_239] = React.spec[_239];
         };
     };
-    _195.displayName = "CreateBlockButton";
-    _195.getInitialState = function (_) {
+    _238.displayName = "CreateBlockButton";
+    _238.getInitialState = function (_) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))({
             dropdown: false
         });
     };
-    _195.render = function ($$this) {
+    _238.render = function ($$this) {
         return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(React_DOM.a({
             className: "create-block-button", 
             onClick: React.eventHandler($$this)(function (this_1) {
                 return function (_) {
                     return Prelude.pure(Control_Monad_Eff.applicativeEff({}))(this_1.setState((function () {
-                        var _193 = {};
-                        for (var _194 in this_1.state) {
-                            if (this_1.state.hasOwnProperty(_194)) {
-                                _193[_194] = this_1.state[_194];
+                        var _236 = {};
+                        for (var _237 in this_1.state) {
+                            if (this_1.state.hasOwnProperty(_237)) {
+                                _236[_237] = this_1.state[_237];
                             };
                         };
-                        _193.dropdown = !this_1.state.dropdown;
-                        return _193;
+                        _236.dropdown = !this_1.state.dropdown;
+                        return _236;
                     })()));
                 };
             })
         })([ React_DOM.div({})($$this.state.dropdown ? [ createBlockIcon, internalActions(React.coerceThis($$this))($$this.props.ident)($$this.props.index) ] : [ createBlockIcon ]) ]));
     };
-    return _195;
+    return _238;
 })());
 module.exports = {
     blockIcon: blockIcon, 
@@ -61283,14 +61283,14 @@ var _settings = function (__dict_Functor_0) {
         return o.settings;
     })(function (o) {
         return function (x) {
-            var _201 = {};
-            for (var _202 in o) {
-                if (o.hasOwnProperty(_202)) {
-                    _201[_202] = o[_202];
+            var _244 = {};
+            for (var _245 in o) {
+                if (o.hasOwnProperty(_245)) {
+                    _244[_245] = o[_245];
                 };
             };
-            _201.settings = x;
-            return _201;
+            _244.settings = x;
+            return _244;
         };
     })(__dict_Functor_0);
 };
@@ -61299,97 +61299,97 @@ var _server = function (__dict_Functor_1) {
         return o.server;
     })(function (o) {
         return function (x) {
-            var _203 = {};
-            for (var _204 in o) {
-                if (o.hasOwnProperty(_204)) {
-                    _203[_204] = o[_204];
+            var _246 = {};
+            for (var _247 in o) {
+                if (o.hasOwnProperty(_247)) {
+                    _246[_247] = o[_247];
                 };
             };
-            _203.server = x;
-            return _203;
+            _246.server = x;
+            return _246;
         };
     })(__dict_Functor_1);
 };
 var _seConfigServer = function (__dict_Functor_2) {
-    return function (_45) {
-        return function (_46) {
-            return Prelude["<$>"](__dict_Functor_2)(SlamData_Types.SEConfigServer.create)(_45(_46));
+    return function (_56) {
+        return function (_57) {
+            return Prelude["<$>"](__dict_Functor_2)(SlamData_Types.SEConfigServer.create)(_56(_57));
         };
     };
 };
 var _seConfigRec = function (__dict_Functor_3) {
-    return function (_39) {
-        return function (_40) {
-            return Prelude["<$>"](__dict_Functor_3)(SlamData_Types.SEConfig.create)(_39(_40));
+    return function (_50) {
+        return function (_51) {
+            return Prelude["<$>"](__dict_Functor_3)(SlamData_Types.SEConfig.create)(_50(_51));
         };
     };
 };
 var _seConfig = function (__dict_Functor_4) {
-    return function (_59) {
-        return function (_60) {
+    return function (_70) {
+        return function (_71) {
             return Prelude["<$>"](__dict_Functor_4)(function (sec$prime) {
-                var _211 = {};
-                for (var _212 in _60) {
-                    if (_60.hasOwnProperty(_212)) {
-                        _211[_212] = _60[_212];
+                var _254 = {};
+                for (var _255 in _71) {
+                    if (_71.hasOwnProperty(_255)) {
+                        _254[_255] = _71[_255];
                     };
                 };
-                _211.seConfig = sec$prime;
-                return _211;
-            })(_59(_60.seConfig));
+                _254.seConfig = sec$prime;
+                return _254;
+            })(_70(_71.seConfig));
         };
     };
 };
 var _sdConfigServer = function (__dict_Functor_5) {
-    return function (_41) {
-        return function (_42) {
-            return Prelude["<$>"](__dict_Functor_5)(SlamData_Types.SDConfigServer.create)(_41(_42));
+    return function (_52) {
+        return function (_53) {
+            return Prelude["<$>"](__dict_Functor_5)(SlamData_Types.SDConfigServer.create)(_52(_53));
         };
     };
 };
 var _sdConfigRec = function (__dict_Functor_6) {
-    return function (_37) {
-        return function (_38) {
-            return Prelude["<$>"](__dict_Functor_6)(SlamData_Types.SDConfig.create)(_37(_38));
+    return function (_48) {
+        return function (_49) {
+            return Prelude["<$>"](__dict_Functor_6)(SlamData_Types.SDConfig.create)(_48(_49));
         };
     };
 };
 var _sdConfigNodeWebkit = function (__dict_Functor_7) {
-    return function (_43) {
-        return function (_44) {
-            return Prelude["<$>"](__dict_Functor_7)(SlamData_Types.SDConfigNodeWebkit.create)(_43(_44));
+    return function (_54) {
+        return function (_55) {
+            return Prelude["<$>"](__dict_Functor_7)(SlamData_Types.SDConfigNodeWebkit.create)(_54(_55));
         };
     };
 };
 var _sdConfig = function (__dict_Functor_8) {
-    return function (_57) {
-        return function (_58) {
+    return function (_68) {
+        return function (_69) {
             return Prelude["<$>"](__dict_Functor_8)(function (sdc$prime) {
-                var _222 = {};
-                for (var _223 in _58) {
-                    if (_58.hasOwnProperty(_223)) {
-                        _222[_223] = _58[_223];
+                var _265 = {};
+                for (var _266 in _69) {
+                    if (_69.hasOwnProperty(_266)) {
+                        _265[_266] = _69[_266];
                     };
                 };
-                _222.sdConfig = sdc$prime;
-                return _222;
-            })(_57(_58.sdConfig));
+                _265.sdConfig = sdc$prime;
+                return _265;
+            })(_68(_69.sdConfig));
         };
     };
 };
 var _published = function (__dict_Functor_9) {
-    return function (_79) {
-        return function (_80) {
+    return function (_90) {
+        return function (_91) {
             return Prelude["<$>"](__dict_Functor_9)(function (i$prime) {
-                var _227 = {};
-                for (var _228 in _80) {
-                    if (_80.hasOwnProperty(_228)) {
-                        _227[_228] = _80[_228];
+                var _270 = {};
+                for (var _271 in _91) {
+                    if (_91.hasOwnProperty(_271)) {
+                        _270[_271] = _91[_271];
                     };
                 };
-                _227.published = i$prime;
-                return _227;
-            })(_79(_80.published));
+                _270.published = i$prime;
+                return _270;
+            })(_90(_91.published));
         };
     };
 };
@@ -61398,21 +61398,21 @@ var _port = function (__dict_Functor_10) {
         return o.port;
     })(function (o) {
         return function (x) {
-            var _230 = {};
-            for (var _231 in o) {
-                if (o.hasOwnProperty(_231)) {
-                    _230[_231] = o[_231];
+            var _273 = {};
+            for (var _274 in o) {
+                if (o.hasOwnProperty(_274)) {
+                    _273[_274] = o[_274];
                 };
             };
-            _230.port = x;
-            return _230;
+            _273.port = x;
+            return _273;
         };
     })(__dict_Functor_10);
 };
 var _notebookRec = function (__dict_Functor_11) {
-    return function (_53) {
-        return function (_54) {
-            return Prelude["<$>"](__dict_Functor_11)(SlamData_Types_Workspace_Notebook.Notebook.create)(_53(_54));
+    return function (_64) {
+        return function (_65) {
+            return Prelude["<$>"](__dict_Functor_11)(SlamData_Types_Workspace_Notebook.Notebook.create)(_64(_65));
         };
     };
 };
@@ -61421,30 +61421,30 @@ var _nodeWebkit = function (__dict_Functor_12) {
         return o.nodeWebkit;
     })(function (o) {
         return function (x) {
-            var _234 = {};
-            for (var _235 in o) {
-                if (o.hasOwnProperty(_235)) {
-                    _234[_235] = o[_235];
+            var _277 = {};
+            for (var _278 in o) {
+                if (o.hasOwnProperty(_278)) {
+                    _277[_278] = o[_278];
                 };
             };
-            _234.nodeWebkit = x;
-            return _234;
+            _277.nodeWebkit = x;
+            return _277;
         };
     })(__dict_Functor_12);
 };
 var _name = function (__dict_Functor_13) {
-    return function (_75) {
-        return function (_76) {
+    return function (_86) {
+        return function (_87) {
             return Prelude["<$>"](__dict_Functor_13)(function (i$prime) {
-                var _238 = {};
-                for (var _239 in _76) {
-                    if (_76.hasOwnProperty(_239)) {
-                        _238[_239] = _76[_239];
+                var _281 = {};
+                for (var _282 in _87) {
+                    if (_87.hasOwnProperty(_282)) {
+                        _281[_282] = _87[_282];
                     };
                 };
-                _238.name = i$prime;
-                return _238;
-            })(_75(_76.name));
+                _281.name = i$prime;
+                return _281;
+            })(_86(_87.name));
         };
     };
 };
@@ -61453,28 +61453,28 @@ var _mountings = function (__dict_Functor_14) {
         return o.mountings;
     })(function (o) {
         return function (x) {
-            var _241 = {};
-            for (var _242 in o) {
-                if (o.hasOwnProperty(_242)) {
-                    _241[_242] = o[_242];
+            var _284 = {};
+            for (var _285 in o) {
+                if (o.hasOwnProperty(_285)) {
+                    _284[_285] = o[_285];
                 };
             };
-            _241.mountings = x;
-            return _241;
+            _284.mountings = x;
+            return _284;
         };
     })(__dict_Functor_14);
 };
 var _mountingWrapper = function (__dict_Functor_15) {
-    return function (_47) {
-        return function (_48) {
-            return Prelude["<$>"](__dict_Functor_15)(SlamData_Types.MountMongo.create)(_47(_48.value0));
+    return function (_58) {
+        return function (_59) {
+            return Prelude["<$>"](__dict_Functor_15)(SlamData_Types.MountMongo.create)(_58(_59.value0));
         };
     };
 };
 var _mountingRec = function (__dict_Functor_16) {
-    return function (_49) {
-        return function (_50) {
-            return Prelude["<$>"](__dict_Functor_16)(SlamData_Types.MountingWrapper.create)(_49(_50));
+    return function (_60) {
+        return function (_61) {
+            return Prelude["<$>"](__dict_Functor_16)(SlamData_Types.MountingWrapper.create)(_60(_61));
         };
     };
 };
@@ -61483,14 +61483,14 @@ var _location = function (__dict_Functor_17) {
         return o.location;
     })(function (o) {
         return function (x) {
-            var _248 = {};
-            for (var _249 in o) {
-                if (o.hasOwnProperty(_249)) {
-                    _248[_249] = o[_249];
+            var _291 = {};
+            for (var _292 in o) {
+                if (o.hasOwnProperty(_292)) {
+                    _291[_292] = o[_292];
                 };
             };
-            _248.location = x;
-            return _248;
+            _291.location = x;
+            return _291;
         };
     })(__dict_Functor_17);
 };
@@ -61499,85 +61499,85 @@ var _java = function (__dict_Functor_18) {
         return o.java;
     })(function (o) {
         return function (x) {
-            var _250 = {};
-            for (var _251 in o) {
-                if (o.hasOwnProperty(_251)) {
-                    _250[_251] = o[_251];
+            var _293 = {};
+            for (var _294 in o) {
+                if (o.hasOwnProperty(_294)) {
+                    _293[_294] = o[_294];
                 };
             };
-            _250.java = x;
-            return _250;
+            _293.java = x;
+            return _293;
         };
     })(__dict_Functor_18);
 };
 var _ident = function (__dict_Functor_19) {
-    return function (_61) {
-        return function (_62) {
+    return function (_72) {
+        return function (_73) {
             return Prelude["<$>"](__dict_Functor_19)(function (i$prime) {
-                var _254 = {};
-                for (var _255 in _62) {
-                    if (_62.hasOwnProperty(_255)) {
-                        _254[_255] = _62[_255];
+                var _297 = {};
+                for (var _298 in _73) {
+                    if (_73.hasOwnProperty(_298)) {
+                        _297[_298] = _73[_298];
                     };
                 };
-                _254.ident = i$prime;
-                return _254;
-            })(_61(_62.ident));
+                _297.ident = i$prime;
+                return _297;
+            })(_72(_73.ident));
         };
     };
 };
 var _files = function (__dict_Functor_20) {
-    return function (_77) {
-        return function (_78) {
+    return function (_88) {
+        return function (_89) {
             return Prelude["<$>"](__dict_Functor_20)(function (i$prime) {
-                var _259 = {};
-                for (var _260 in _78) {
-                    if (_78.hasOwnProperty(_260)) {
-                        _259[_260] = _78[_260];
+                var _302 = {};
+                for (var _303 in _89) {
+                    if (_89.hasOwnProperty(_303)) {
+                        _302[_303] = _89[_303];
                     };
                 };
-                _259.files = i$prime;
-                return _259;
-            })(_77(_78.files));
+                _302.files = i$prime;
+                return _302;
+            })(_88(_89.files));
         };
     };
 };
 var _fileTypeRec = function (__dict_Functor_21) {
-    return function (_51) {
-        return function (_52) {
-            return Prelude["<$>"](__dict_Functor_21)(SlamData_Types_Workspace_FileSystem.FileType.create)(_51(_52));
+    return function (_62) {
+        return function (_63) {
+            return Prelude["<$>"](__dict_Functor_21)(SlamData_Types_Workspace_FileSystem.FileType.create)(_62(_63));
         };
     };
 };
 var _evalContent = function (__dict_Functor_22) {
-    return function (_71) {
-        return function (_72) {
+    return function (_82) {
+        return function (_83) {
             return Prelude["<$>"](__dict_Functor_22)(function (i$prime) {
-                var _266 = {};
-                for (var _267 in _72) {
-                    if (_72.hasOwnProperty(_267)) {
-                        _266[_267] = _72[_267];
+                var _309 = {};
+                for (var _310 in _83) {
+                    if (_83.hasOwnProperty(_310)) {
+                        _309[_310] = _83[_310];
                     };
                 };
-                _266.evalContent = i$prime;
-                return _266;
-            })(_71(_72.evalContent));
+                _309.evalContent = i$prime;
+                return _309;
+            })(_82(_83.evalContent));
         };
     };
 };
 var _editContent = function (__dict_Functor_23) {
-    return function (_69) {
-        return function (_70) {
+    return function (_80) {
+        return function (_81) {
             return Prelude["<$>"](__dict_Functor_23)(function (i$prime) {
-                var _271 = {};
-                for (var _272 in _70) {
-                    if (_70.hasOwnProperty(_272)) {
-                        _271[_272] = _70[_272];
+                var _314 = {};
+                for (var _315 in _81) {
+                    if (_81.hasOwnProperty(_315)) {
+                        _314[_315] = _81[_315];
                     };
                 };
-                _271.editContent = i$prime;
-                return _271;
-            })(_69(_70.editContent));
+                _314.editContent = i$prime;
+                return _314;
+            })(_80(_81.editContent));
         };
     };
 };
@@ -61586,30 +61586,30 @@ var _database = function (__dict_Functor_24) {
         return o.database;
     })(function (o) {
         return function (x) {
-            var _274 = {};
-            for (var _275 in o) {
-                if (o.hasOwnProperty(_275)) {
-                    _274[_275] = o[_275];
+            var _317 = {};
+            for (var _318 in o) {
+                if (o.hasOwnProperty(_318)) {
+                    _317[_318] = o[_318];
                 };
             };
-            _274.database = x;
-            return _274;
+            _317.database = x;
+            return _317;
         };
     })(__dict_Functor_24);
 };
 var _content = function (__dict_Functor_25) {
-    return function (_63) {
-        return function (_64) {
+    return function (_74) {
+        return function (_75) {
             return Prelude["<$>"](__dict_Functor_25)(function (i$prime) {
-                var _278 = {};
-                for (var _279 in _64) {
-                    if (_64.hasOwnProperty(_279)) {
-                        _278[_279] = _64[_279];
+                var _321 = {};
+                for (var _322 in _75) {
+                    if (_75.hasOwnProperty(_322)) {
+                        _321[_322] = _75[_322];
                     };
                 };
-                _278.content = i$prime;
-                return _278;
-            })(_63(_64.content));
+                _321.content = i$prime;
+                return _321;
+            })(_74(_75.content));
         };
     };
 };
@@ -61618,69 +61618,69 @@ var _connectionUri = function (__dict_Functor_26) {
         return o.connectionUri;
     })(function (o) {
         return function (x) {
-            var _281 = {};
-            for (var _282 in o) {
-                if (o.hasOwnProperty(_282)) {
-                    _281[_282] = o[_282];
+            var _324 = {};
+            for (var _325 in o) {
+                if (o.hasOwnProperty(_325)) {
+                    _324[_325] = o[_325];
                 };
             };
-            _281.connectionUri = x;
-            return _281;
+            _324.connectionUri = x;
+            return _324;
         };
     })(__dict_Functor_26);
 };
 var _children = function (__dict_Functor_27) {
-    return function (_73) {
-        return function (_74) {
+    return function (_84) {
+        return function (_85) {
             return Prelude["<$>"](__dict_Functor_27)(function (i$prime) {
-                var _285 = {};
-                for (var _286 in _74) {
-                    if (_74.hasOwnProperty(_286)) {
-                        _285[_286] = _74[_286];
+                var _328 = {};
+                for (var _329 in _85) {
+                    if (_85.hasOwnProperty(_329)) {
+                        _328[_329] = _85[_329];
                     };
                 };
-                _285.children = i$prime;
-                return _285;
-            })(_73(_74.children));
+                _328.children = i$prime;
+                return _328;
+            })(_84(_85.children));
         };
     };
 };
 var _blockType = function (__dict_Functor_28) {
-    return function (_67) {
-        return function (_68) {
+    return function (_78) {
+        return function (_79) {
             return Prelude["<$>"](__dict_Functor_28)(function (i$prime) {
-                var _290 = {};
-                for (var _291 in _68) {
-                    if (_68.hasOwnProperty(_291)) {
-                        _290[_291] = _68[_291];
+                var _333 = {};
+                for (var _334 in _79) {
+                    if (_79.hasOwnProperty(_334)) {
+                        _333[_334] = _79[_334];
                     };
                 };
-                _290.blockType = i$prime;
-                return _290;
-            })(_67(_68.blockType));
+                _333.blockType = i$prime;
+                return _333;
+            })(_78(_79.blockType));
         };
     };
 };
 var _blockRec = function (__dict_Functor_29) {
-    return function (_55) {
-        return function (_56) {
-            return Prelude["<$>"](__dict_Functor_29)(SlamData_Types_Workspace_Notebook_Block.Block.create)(_55(_56));
+    return function (_66) {
+        return function (_67) {
+            return Prelude["<$>"](__dict_Functor_29)(SlamData_Types_Workspace_Notebook_Block.Block.create)(_66(_67));
         };
     };
 };
 var _blockMode = function (__dict_Functor_30) {
-    return function (_65) {
-        return function (_66) {
+    return function (_76) {
+        return function (_77) {
             return Prelude["<$>"](__dict_Functor_30)(function (i$prime) {
-                var _297 = {};
-                for (var _298 in _66) {
-                    if (_66.hasOwnProperty(_298)) {
-                        _297[_298] = _66[_298];
+                var _340 = {};
+                for (var _341 in _77) {
+                    if (_77.hasOwnProperty(_341)) {
+                        _340[_341] = _77[_341];
                     };
                 };
-                _297.blockMode = i$prime;
-                return _297;
-            })(_65(_66.blockMode));
+                _340.blockMode = i$prime;
+                return _340;
+            })(_76(_77.blockMode));
         };
     };
 };
@@ -61811,11 +61811,11 @@ function SlamEngineTab() {
 };
 SlamEngineTab.value = new SlamEngineTab();
 var showSettingsTab = function (__unused) {
-    return new Prelude.Show(function (_118) {
-        if (_118 instanceof SlamDataTab) {
+    return new Prelude.Show(function (_129) {
+        if (_129 instanceof SlamDataTab) {
             return "SlamData";
         };
-        if (_118 instanceof SlamEngineTab) {
+        if (_129 instanceof SlamEngineTab) {
             return "SlamEngine";
         };
         throw new Error("Failed pattern match");
@@ -61826,12 +61826,12 @@ var eqSettingsTab = function (__unused) {
         return function (st$prime) {
             return !Prelude["=="](eqSettingsTab({}))(st)(st$prime);
         };
-    }, function (_116) {
-        return function (_117) {
-            if (_116 instanceof SlamDataTab && _117 instanceof SlamDataTab) {
+    }, function (_127) {
+        return function (_128) {
+            if (_127 instanceof SlamDataTab && _128 instanceof SlamDataTab) {
                 return true;
             };
-            if (_116 instanceof SlamEngineTab && _117 instanceof SlamEngineTab) {
+            if (_127 instanceof SlamEngineTab && _128 instanceof SlamEngineTab) {
                 return true;
             };
             return false;
@@ -63405,8 +63405,8 @@ var Data_Map = require("Data.Map");
 function checked(el) {  return el.checked;};
 function selectedOptgroup(el) {  return el.selectedOptions[0].parentNode.label;};
 function value(el) {  return el.value;};
-var serverURI = function (_36) {
-    return _36.server.location + ":" + Prelude.show(Prelude.showNumber({}))(_36.server.port);
+var serverURI = function (_47) {
+    return _47.server.location + ":" + Prelude.show(Prelude.showNumber({}))(_47.server.port);
 };
 var getOrElse = Prelude.flip(Data_Maybe.fromMaybe);
 var endsWith = function (str) {
@@ -63439,9 +63439,9 @@ var defaultSEConfig = {
     }))
 };
 var activate = function (__dict_Eq_0) {
-    return function (_34) {
-        return function (_35) {
-            if (Prelude["=="](__dict_Eq_0)(_34)(_35)) {
+    return function (_45) {
+        return function (_46) {
+            if (Prelude["=="](__dict_Eq_0)(_45)(_46)) {
                 return " active";
             };
             return "";
@@ -63469,104 +63469,104 @@ module.exports = {
 "use strict";
 var Prelude = require("Prelude");
 var SlamData_Types = require("SlamData.Types");
-var isTogglePublish = function (_108) {
-    if (_108 instanceof SlamData_Types.TogglePublish) {
+var isTogglePublish = function (_119) {
+    if (_119 instanceof SlamData_Types.TogglePublish) {
         return true;
     };
     return false;
 };
-var isShowSettings = function (_109) {
-    if (_109 instanceof SlamData_Types.ShowSettings) {
+var isShowSettings = function (_120) {
+    if (_120 instanceof SlamData_Types.ShowSettings) {
         return true;
     };
     return false;
 };
-var isSaveSEConfig = function (_100) {
-    if (_100 instanceof SlamData_Types.SaveSEConfig) {
+var isSaveSEConfig = function (_111) {
+    if (_111 instanceof SlamData_Types.SaveSEConfig) {
         return true;
     };
     return false;
 };
-var isSaveSDConfig = function (_99) {
-    if (_99 instanceof SlamData_Types.SaveSDConfig) {
+var isSaveSDConfig = function (_110) {
+    if (_110 instanceof SlamData_Types.SaveSDConfig) {
         return true;
     };
     return false;
 };
-var isSaveNotebook = function (_105) {
-    if (_105 instanceof SlamData_Types.SaveNotebook) {
+var isSaveNotebook = function (_116) {
+    if (_116 instanceof SlamData_Types.SaveNotebook) {
         return true;
     };
     return false;
 };
-var isRenameNotebook = function (_107) {
-    if (_107 instanceof SlamData_Types.RenameNotebook) {
+var isRenameNotebook = function (_118) {
+    if (_118 instanceof SlamData_Types.RenameNotebook) {
         return true;
     };
     return false;
 };
-var isReadFileSystem = function (_101) {
-    if (_101 instanceof SlamData_Types.ReadFileSystem) {
+var isReadFileSystem = function (_112) {
+    if (_112 instanceof SlamData_Types.ReadFileSystem) {
         return true;
     };
     return false;
 };
-var isReadFields = function (_102) {
-    if (_102 instanceof SlamData_Types.ReadFields) {
+var isReadFields = function (_113) {
+    if (_113 instanceof SlamData_Types.ReadFields) {
         return true;
     };
     return false;
 };
-var isOpenNotebook = function (_106) {
-    if (_106 instanceof SlamData_Types.OpenNotebook) {
+var isOpenNotebook = function (_117) {
+    if (_117 instanceof SlamData_Types.OpenNotebook) {
         return true;
     };
     return false;
 };
-var isHideSettings = function (_110) {
-    if (_110 instanceof SlamData_Types.HideSettings) {
+var isHideSettings = function (_121) {
+    if (_121 instanceof SlamData_Types.HideSettings) {
         return true;
     };
     return false;
 };
-var isEvalVisual = function (_115) {
-    if (_115 instanceof SlamData_Types.EvalVisual) {
+var isEvalVisual = function (_126) {
+    if (_126 instanceof SlamData_Types.EvalVisual) {
         return true;
     };
     return false;
 };
-var isEvalBlock = function (_114) {
-    if (_114 instanceof SlamData_Types.EvalBlock) {
+var isEvalBlock = function (_125) {
+    if (_125 instanceof SlamData_Types.EvalBlock) {
         return true;
     };
     return false;
 };
-var isEditBlock = function (_113) {
-    if (_113 instanceof SlamData_Types.EditBlock) {
+var isEditBlock = function (_124) {
+    if (_124 instanceof SlamData_Types.EditBlock) {
         return true;
     };
     return false;
 };
-var isDeleteBlock = function (_112) {
-    if (_112 instanceof SlamData_Types.DeleteBlock) {
+var isDeleteBlock = function (_123) {
+    if (_123 instanceof SlamData_Types.DeleteBlock) {
         return true;
     };
     return false;
 };
-var isCreateNotebook = function (_103) {
-    if (_103 instanceof SlamData_Types.CreateNotebook) {
+var isCreateNotebook = function (_114) {
+    if (_114 instanceof SlamData_Types.CreateNotebook) {
         return true;
     };
     return false;
 };
-var isCreateBlock = function (_111) {
-    if (_111 instanceof SlamData_Types.CreateBlock) {
+var isCreateBlock = function (_122) {
+    if (_122 instanceof SlamData_Types.CreateBlock) {
         return true;
     };
     return false;
 };
-var isCloseNotebook = function (_104) {
-    if (_104 instanceof SlamData_Types.CloseNotebook) {
+var isCloseNotebook = function (_115) {
+    if (_115 instanceof SlamData_Types.CloseNotebook) {
         return true;
     };
     return false;
@@ -63963,46 +63963,46 @@ var SlamDataEvent = {
 var responseEvent = "response";
 var requestEvent = "request";
 var encodeSEConfigServer = function (__unused) {
-    return new Data_Argonaut_Encode.EncodeJson(function (_27) {
-        return Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("port")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJNumber({}))(_27.port)))(Data_Argonaut.jsonEmptyObject);
+    return new Data_Argonaut_Encode.EncodeJson(function (_38) {
+        return Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("port")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJNumber({}))(_38.port)))(Data_Argonaut.jsonEmptyObject);
     });
 };
 var encodeSDConfigServer = function (__unused) {
-    return new Data_Argonaut_Encode.EncodeJson(function (_24) {
-        return Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("location")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJString({}))(_24.location)))(Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("port")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJNumber({}))(_24.port)))(Data_Argonaut.jsonEmptyObject));
+    return new Data_Argonaut_Encode.EncodeJson(function (_35) {
+        return Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("location")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJString({}))(_35.location)))(Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("port")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJNumber({}))(_35.port)))(Data_Argonaut.jsonEmptyObject));
     });
 };
 var encodeSDConfigNodeWebkit = function (__unused) {
-    return new Data_Argonaut_Encode.EncodeJson(function (_25) {
-        return Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("java")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJString({}))(_25.java)))(Data_Argonaut.jsonEmptyObject);
+    return new Data_Argonaut_Encode.EncodeJson(function (_36) {
+        return Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("java")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJString({}))(_36.java)))(Data_Argonaut.jsonEmptyObject);
     });
 };
 var encodeSDConfig = function (__unused) {
-    return new Data_Argonaut_Encode.EncodeJson(function (_23) {
-        return Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("server")(Data_Argonaut.encodeJson(encodeSDConfigServer({}))(_23.server)))(Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("nodeWebkit")(Data_Argonaut.encodeJson(encodeSDConfigNodeWebkit({}))(_23.nodeWebkit)))(Data_Argonaut.jsonEmptyObject));
+    return new Data_Argonaut_Encode.EncodeJson(function (_34) {
+        return Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("server")(Data_Argonaut.encodeJson(encodeSDConfigServer({}))(_34.server)))(Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("nodeWebkit")(Data_Argonaut.encodeJson(encodeSDConfigNodeWebkit({}))(_34.nodeWebkit)))(Data_Argonaut.jsonEmptyObject));
     });
 };
 var encodeMountingRec = function (__unused) {
-    return new Data_Argonaut_Encode.EncodeJson(function (_29) {
-        return Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("connectionUri")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJString({}))(_29.connectionUri)))(Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("database")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJString({}))(_29.database)))(Data_Argonaut.jsonEmptyObject));
+    return new Data_Argonaut_Encode.EncodeJson(function (_40) {
+        return Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("connectionUri")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJString({}))(_40.connectionUri)))(Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("database")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeJsonJString({}))(_40.database)))(Data_Argonaut.jsonEmptyObject));
     });
 };
 var encodeMounting = function (__unused) {
-    return new Data_Argonaut_Encode.EncodeJson(function (_28) {
-        return Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("mongodb")(Data_Argonaut.encodeJson(encodeMountingRec({}))(_28.value0)))(Data_Argonaut.jsonEmptyObject);
+    return new Data_Argonaut_Encode.EncodeJson(function (_39) {
+        return Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("mongodb")(Data_Argonaut.encodeJson(encodeMountingRec({}))(_39.value0)))(Data_Argonaut.jsonEmptyObject);
     });
 };
 var encodeSEConfig = function (__unused) {
-    return new Data_Argonaut_Encode.EncodeJson(function (_26) {
-        return Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("server")(Data_Argonaut.encodeJson(encodeSEConfigServer({}))(_26.server)))(Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("mountings")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeMap(encodeMounting({})))(_26.mountings)))(Data_Argonaut.jsonEmptyObject));
+    return new Data_Argonaut_Encode.EncodeJson(function (_37) {
+        return Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("server")(Data_Argonaut.encodeJson(encodeSEConfigServer({}))(_37.server)))(Data_Argonaut["~>"](Data_Argonaut[":="](Data_Argonaut_Encode.encodeJsonJson({}))("mountings")(Data_Argonaut.encodeJson(Data_Argonaut_Encode.encodeMap(encodeMounting({})))(_37.mountings)))(Data_Argonaut.jsonEmptyObject));
     });
 };
 var decodeSEConfigServer = function (__unused) {
     return new Data_Argonaut_Decode.DecodeJson(function (json) {
         return Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Argonaut.toObject(json))("SEConfigServer"))(function (obj) {
-            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("port")(obj))("port"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonNumber({}))))(function (_13) {
+            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("port")(obj))("port"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonNumber({}))))(function (_8) {
                 return Prelude.pure(Data_Either.applicativeEither({}))({
-                    port: _13
+                    port: _8
                 });
             });
         });
@@ -64011,11 +64011,11 @@ var decodeSEConfigServer = function (__unused) {
 var decodeSDConfigServer = function (__unused) {
     return new Data_Argonaut_Decode.DecodeJson(function (json) {
         return Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Argonaut.toObject(json))("SDConfigServer"))(function (obj) {
-            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("location")(obj))("location"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonString({}))))(function (_8) {
-                return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("port")(obj))("port"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonNumber({}))))(function (_7) {
+            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("location")(obj))("location"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonString({}))))(function (_3) {
+                return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("port")(obj))("port"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonNumber({}))))(function (_2) {
                     return Prelude.pure(Data_Either.applicativeEither({}))({
-                        location: _8, 
-                        port: _7
+                        location: _3, 
+                        port: _2
                     });
                 });
             });
@@ -64025,9 +64025,9 @@ var decodeSDConfigServer = function (__unused) {
 var decodeSDConfigNodeWebkit = function (__unused) {
     return new Data_Argonaut_Decode.DecodeJson(function (json) {
         return Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Argonaut.toObject(json))("SDConfigNodeWebkit"))(function (obj) {
-            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("java")(obj))("java"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonString({}))))(function (_9) {
+            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("java")(obj))("java"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonString({}))))(function (_4) {
                 return Prelude.pure(Data_Either.applicativeEither({}))({
-                    java: _9
+                    java: _4
                 });
             });
         });
@@ -64036,11 +64036,11 @@ var decodeSDConfigNodeWebkit = function (__unused) {
 var decodeSDConfig = function (__unused) {
     return new Data_Argonaut_Decode.DecodeJson(function (json) {
         return Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Argonaut.toObject(json))("SDConfig"))(function (obj) {
-            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("server")(obj))("server"))(Data_Argonaut.decodeJson(decodeSDConfigServer({}))))(function (_6) {
-                return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("nodeWebkit")(obj))("nodeWebkit"))(Data_Argonaut.decodeJson(decodeSDConfigNodeWebkit({}))))(function (_5) {
+            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("server")(obj))("server"))(Data_Argonaut.decodeJson(decodeSDConfigServer({}))))(function (_1) {
+                return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("nodeWebkit")(obj))("nodeWebkit"))(Data_Argonaut.decodeJson(decodeSDConfigNodeWebkit({}))))(function (_0) {
                     return Prelude.pure(Data_Either.applicativeEither({}))({
-                        server: _6, 
-                        nodeWebkit: _5
+                        server: _1, 
+                        nodeWebkit: _0
                     });
                 });
             });
@@ -64050,11 +64050,11 @@ var decodeSDConfig = function (__unused) {
 var decodeMountingRec = function (__unused) {
     return new Data_Argonaut_Decode.DecodeJson(function (json) {
         return Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Argonaut.toObject(json))("MountingWrapper"))(function (obj) {
-            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("connectionUri")(obj))("connectionUri"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonString({}))))(function (_16) {
-                return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("database")(obj))("database"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonString({}))))(function (_15) {
+            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("connectionUri")(obj))("connectionUri"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonString({}))))(function (_11) {
+                return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("database")(obj))("database"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeJsonString({}))))(function (_10) {
                     return Prelude.pure(Data_Either.applicativeEither({}))({
-                        connectionUri: _16, 
-                        database: _15
+                        connectionUri: _11, 
+                        database: _10
                     });
                 });
             });
@@ -64064,8 +64064,8 @@ var decodeMountingRec = function (__unused) {
 var decodeMounting = function (__unused) {
     return new Data_Argonaut_Decode.DecodeJson(function (json) {
         return Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Argonaut.toObject(json))("MountMongo"))(function (obj) {
-            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("mongodb")(obj))("mongodb"))(Data_Argonaut.decodeJson(decodeMountingRec({}))))(function (_14) {
-                return Prelude.pure(Data_Either.applicativeEither({}))(new MountMongo(_14));
+            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("mongodb")(obj))("mongodb"))(Data_Argonaut.decodeJson(decodeMountingRec({}))))(function (_9) {
+                return Prelude.pure(Data_Either.applicativeEither({}))(new MountMongo(_9));
             });
         });
     });
@@ -64073,12 +64073,12 @@ var decodeMounting = function (__unused) {
 var decodeSEConfig = function (__unused) {
     return new Data_Argonaut_Decode.DecodeJson(function (json) {
         return Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Argonaut.toObject(json))("SEConfig"))(function (obj) {
-            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("server")(obj))("server"))(Data_Argonaut.decodeJson(decodeSEConfigServer({}))))(function (_12) {
-                return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("mountings")(obj))("mountings"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeMap(Data_Argonaut_Decode.decodeJsonJson({})))))(function (_11) {
-                    return Prelude[">>="](Data_Either.bindEither({}))(Data_Traversable.traverse(Data_Argonaut_Decode.traversableMap(Prelude.ordString({})))(Data_Either.applicativeEither({}))(Data_Argonaut.decodeJson(decodeMounting({})))(_11))(function (_10) {
+            return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("server")(obj))("server"))(Data_Argonaut.decodeJson(decodeSEConfigServer({}))))(function (_7) {
+                return Prelude[">>="](Data_Either.bindEither({}))(Prelude[">>="](Data_Either.bindEither({}))(Data_Argonaut["?>>="](Data_Map.lookup(Prelude.ordString({}))("mountings")(obj))("mountings"))(Data_Argonaut.decodeJson(Data_Argonaut_Decode.decodeMap(Data_Argonaut_Decode.decodeJsonJson({})))))(function (_6) {
+                    return Prelude[">>="](Data_Either.bindEither({}))(Data_Traversable.traverse(Data_Argonaut_Decode.traversableMap(Prelude.ordString({})))(Data_Either.applicativeEither({}))(Data_Argonaut.decodeJson(decodeMounting({})))(_6))(function (_5) {
                         return Prelude.pure(Data_Either.applicativeEither({}))({
-                            server: _12, 
-                            mountings: _10
+                            server: _7, 
+                            mountings: _5
                         });
                     });
                 });
