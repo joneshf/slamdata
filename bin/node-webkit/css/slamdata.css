@@ -6989,6 +6989,16 @@ th.hide-for-touch {
   .block .right-side {
     border-left: 1px solid #d3d3d3; }
 
+.block.published {
+  border: none; }
+  .block.published .block-toolbar {
+    display: none; }
+  .block.published .block-content .right-side {
+    border: none; }
+  .block.published .block-SQL .published-block span {
+    font-family: monospace;
+    font-size: 10pt; }
+
 .block-toolbar div {
   height: 100%; }
 .block-toolbar.row {

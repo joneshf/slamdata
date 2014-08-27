@@ -265,7 +265,7 @@ module SlamData.NodeWebKit where
           ident <- NotebookID <$> v4
           let name = "Untitled" ++ show (length state.notebooks + 1)
           let path = mount state.settings.seConfig
-          let notebook = Notebook {ident: ident, blocks: [], name: name, path: path}
+          let notebook = Notebook {ident: ident, blocks: [], name: name, path: path, published: false}
           e # emit responseEvent state{notebooks = state.notebooks `snoc` notebook}
           pure unit
         CloseNotebook ident -> do
@@ -360,7 +360,7 @@ module SlamData.NodeWebKit where
                 Nothing -> pure unit
                 Just revision -> do
                   i <- NotebookID <$> v4
-                  let default = {ident: i, blocks: [], name: name, path: path}
+                  let default = {ident: i, blocks: [], name: name, path: path, published: false}
                   let nb = jsonParse default revision
                   let notebook' = Notebook nb{name = name}
                   let notebooks' = state.notebooks `snoc` notebook'
@@ -384,6 +384,14 @@ module SlamData.NodeWebKit where
               e # emit responseEvent state{notebooks = notebooks'}
               pure unit
             } {} XT.NoBody
+          pure unit
+        TogglePublish (Notebook n) -> do
+          let dataUrl = serverURI state.settings.sdConfig ++ "/data/fs"
+          let url = dataUrl </> n.path </> n.name </> "index.nb"
+          let n' = deleteID n
+          let notebook' = Notebook n'{published = not n.published}
+          let notebooks' = replaceNotebook notebook' <$> state.notebooks
+          e # emit responseEvent state{notebooks = notebooks'}
           pure unit
         _ -> (e # emit responseEvent state) *> pure unit)
 

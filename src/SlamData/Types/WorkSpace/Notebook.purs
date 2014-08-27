@@ -21,10 +21,11 @@ module SlamData.Types.Workspace.Notebook where
   newtype NotebookID = NotebookID UUID
   newtype Notebook = Notebook NotebookRec
   type NotebookRec =
-    { ident  :: NotebookID
-    , blocks :: [Block]
-    , name   :: String
-    , path   :: String
+    { ident     :: NotebookID
+    , blocks    :: [Block]
+    , name      :: String
+    , path      :: String
+    , published :: Boolean
     }
 
   instance eqNotebookID :: Eq NotebookID where
@@ -38,21 +39,28 @@ module SlamData.Types.Workspace.Notebook where
 
   instance decodeNotebook :: DecodeJson Notebook where
     decodeJson json = toObject json ?>>= "Notebook" >>= \obj -> do
-      ident  <- M.lookup "ident"  obj ?>>= "ident"  >>= decodeJson
-      blocks <- M.lookup "blocks" obj ?>>= "blocks" >>= decodeJson
-      name   <- M.lookup "name"   obj ?>>= "name"   >>= decodeJson
-      path   <- M.lookup "path"   obj ?>>= "path"   >>= decodeJson
-      pure $ Notebook {ident: ident, blocks: blocks, name: name, path: path}
+      ident     <- M.lookup "ident"  obj    ?>>= "ident"     >>= decodeJson
+      blocks    <- M.lookup "blocks" obj    ?>>= "blocks"    >>= decodeJson
+      name      <- M.lookup "name"   obj    ?>>= "name"      >>= decodeJson
+      path      <- M.lookup "path"   obj    ?>>= "path"      >>= decodeJson
+      published <- M.lookup "published" obj ?>>= "published" >>= decodeJson
+      pure $ Notebook { ident: ident
+                      , blocks: blocks
+                      , name: name
+                      , path: path
+                      , published: published
+                      }
 
   instance decodeNotebookID :: DecodeJson NotebookID where
     decodeJson json = NotebookID <$> decodeJson json
 
   instance encodeJsonNotebook :: EncodeJson Notebook where
     encodeJson (Notebook nb)
-      =  "ident"  := encodeJson nb.ident
-      ~> "blocks" := encodeJson nb.blocks
-      ~> "name"   := encodeJson nb.name
-      ~> "path"   := encodeJson nb.path
+      =  "ident"     := encodeJson nb.ident
+      ~> "blocks"    := encodeJson nb.blocks
+      ~> "name"      := encodeJson nb.name
+      ~> "path"      := encodeJson nb.path
+      ~> "published" := encodeJson nb.published
       ~> jsonEmptyObject
 
   instance encodeJsonNotebookID :: EncodeJson NotebookID where
