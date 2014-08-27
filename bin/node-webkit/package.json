@@ -7,7 +7,7 @@
     "height": 720,
     "icon": "imgs/slamdata-48x48.png",
     "title": "SlamData",
-    "toolbar": false,
+    "toolbar": true,
     "width": 1280
   }
 }

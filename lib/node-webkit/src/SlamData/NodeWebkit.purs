@@ -13,11 +13,13 @@ module SlamData.NodeWebKit where
 
   import Control.Alt ((<|>))
   import Control.Apply ((*>))
+  import Control.Bind ((>=>))
   import Control.Lens ((^.), (..), (.~), (~))
   import Control.Monad.Eff (Eff(..))
   import Control.Monad.Identity (Identity())
   import Control.Monad.Cont.Trans (runContT)
   import Control.Monad.Eff.Exception (Error())
+  import Control.Monad.ST (newSTRef, readSTRef, writeSTRef)
   import Control.Reactive.Timer (timeout, Timer())
 
   import Data.Argonaut (decodeMaybe, encodeJson, jsonParser, printJson)
@@ -96,12 +98,14 @@ module SlamData.NodeWebKit where
     , defaultSEConfig
     , getOrElse
     , serverURI
-
     )
   import SlamData.Types
     ( requestEvent
     , responseEvent
+    , SlamDataEvent(..)
     , SlamDataEventTy(..)
+    , SlamDataState()
+    , SDConfig()
     , SEConfig(..)
     )
   import SlamData.Types.Workspace.Notebook.Block
@@ -216,10 +220,23 @@ module SlamData.NodeWebKit where
         closeWindow true win
         pure unit)
 
+      -- Make an emitter.
+      e <- emitter
+
+      -- Warning, this can probably lead to a whole slew of bugs.
+      -- We're updating the state each time a `requestEvent` is fired.
+      -- We do this to access the latest state outside the main event handler.
+      -- In particular, we need the state when firing off menu events.
+      -- Do not mutate this state anywhere except these two lines.
+      -- Only read from it.
+      stState <- newSTRef $ initialState sdConfig seConfig
+      e # on requestEvent (\o -> writeSTRef stState o.state)
+
       -- Make the menubar.
       -- We only need to make a File menu for linux/win.
       menu <- if platform == "darwin" then
           nwWindowMenu >>= createMacBuiltin "SlamData" defaultMacOptions
+            {hideEdit = true, hideWindow = true}
         else do
           quitItem <- nwMenuItem defaultMenuItemOptions
             { label = "Quit"
@@ -233,11 +250,20 @@ module SlamData.NodeWebKit where
             , submenu = Just fileMenuItems
             }
           nwWindowMenu >>= append fileMenu
+      settingsItem <- nwMenuItem defaultMenuItemOptions
+        { label = "Settings"
+        , click = do
+          state <- readSTRef stState
+          e # emit requestEvent (SlamDataEvent {state: state, event: ShowSettings})
+        }
+      editMenuItems <- nwMenu >>= append settingsItem
+      editMenu <- nwMenuItem defaultMenuItemOptions
+        { label = "Edit"
+        , submenu = Just editMenuItems
+        }
+      menu' <- menu # append editMenu
       setWindowMenu menu win
 
-      -- Make an emitter.
-      e <- emitter
-      let respond d = e # emit responseEvent d
       e # on requestEvent (\{event = event, state = state} -> case event of
         SaveSDConfig sdC ->
           writeTextFile UTF8 sdConfigFile (showConfig sdC)
@@ -396,14 +422,18 @@ module SlamData.NodeWebKit where
         _ -> (e # emit responseEvent state) *> pure unit)
 
       -- Start up SlamData.
-      slamData e { files: FileType { name: mount seConfig
-                                   , "type": "directory"
-                                   , children: []
-                                   }
-                 , notebooks: []
-                 , settings: {sdConfig: sdConfig, seConfig: seConfig}
-                 , showSettings: false
-                 }
+      slamData e (initialState sdConfig seConfig)
+
+  initialState :: SDConfig -> SEConfig -> SlamDataState
+  initialState sdConfig seConfig =
+    { files: FileType { name: mount seConfig
+                      , "type": "directory"
+                      , children: []
+                      }
+    , notebooks: []
+    , settings: {sdConfig: sdConfig, seConfig: seConfig}
+    , showSettings: false
+    }
 
   uniqueNotebooks :: Notebook -> Notebook -> Boolean
   uniqueNotebooks (Notebook nb) (Notebook nb') = nb.ident == nb'.ident
