@@ -18,7 +18,7 @@ module SlamData.App.Workspace.Notebook.Block
     )
   import SlamData.App.Workspace.Notebook.Block.Visual (visualEditor)
   import SlamData.Components (actionButton, closeIcon, createBlockButton)
-  import SlamData.Helpers (value)
+  import SlamData.Helpers (publish, value)
   import SlamData.Lens
     ( _blockMode
     , _blockRec
@@ -63,8 +63,8 @@ module SlamData.App.Workspace.Notebook.Block
       { editContent: this.props.block^._blockRec.._editContent
       , evalContent: this.props.block^._blockRec.._evalContent
       }
-    , render = \this -> pure $ D.div {}
-      [ D.div {className: "block" ++ publish this.props.notebook}
+    , render = \this -> pure $ D.div {className: publish this.props.notebook}
+      [ D.div {className: "block"}
         [ blockRow {styles: "block-toolbar toolbar"}
           [ typeName this.props.block
           , toolbar $ coerceThis this
@@ -77,10 +77,6 @@ module SlamData.App.Workspace.Notebook.Block
       , createBlockButton' $ coerceThis this
       ]
     }
-
-  publish :: Notebook -> String
-  publish (Notebook {published = true}) = " published"
-  publish _                             = ""
 
   typeName :: Block -> Component
   typeName (Block b) = D.div {className: "block-type text-center"}

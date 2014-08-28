@@ -5,7 +5,11 @@
     }
 }
 
-.block.published {
+.published .create-block-button {
+    display: none;
+}
+
+.published .block {
     border: none;
     .block-toolbar {
         display: none;
@@ -16,6 +20,14 @@
     .block-SQL .published-block span {
         font-family: monospace;
         font-size: 10pt;
+    }
+    .block-content {
+        .large-1 {
+            display: none;
+        }
+        .large-11 {
+            width: 100%;
+        }
     }
 }
 
