@@ -15,11 +15,16 @@ module SlamData.NodeWebKit where
   import Control.Apply ((*>))
   import Control.Bind ((>=>))
   import Control.Lens ((^.), (..), (.~), (~))
-  import Control.Monad.Eff (Eff(..))
-  import Control.Monad.Identity (Identity())
   import Control.Monad.Cont.Trans (runContT)
-  import Control.Monad.Eff.Exception (Error())
-  import Control.Monad.ST (newSTRef, readSTRef, writeSTRef)
+  import Control.Monad.Eff (Eff())
+  import Control.Monad.Eff.Exception
+    ( catchException
+    , message
+    , Error()
+    , Exception()
+    )
+  import Control.Monad.Identity (Identity())
+  import Control.Monad.ST (newSTRef, readSTRef, writeSTRef, ST())
   import Control.Reactive.Timer (timeout, Timer())
 
   import Data.Argonaut (decodeMaybe, encodeJson, jsonParser, printJson)
@@ -40,12 +45,13 @@ module SlamData.NodeWebKit where
   import Network.HTTP (Verb(..))
   import Network.Oboe (done, oboe, oboeGet, oboeOptions, JSON())
 
-  import Node.ChildProcess (defaultSpawnOptions, spawn, ChildProcess(..), Stream())
+  import Node.ChildProcess (defaultSpawnOptions, spawn, ChildProcess(..), Spawn(), Stream())
   import Node.ChildProcess.Signal (sigterm)
-  import Node.Domain (create, run)
+  import Node.Domain (create, run, Domain(), DomainEff())
   import Node.Encoding (Encoding(UTF8))
   import Node.Events (emit, emitter, on, Event(..), EventEff(), EventEmitter)
-  import Node.FS.Sync (writeTextFile)
+  import Node.FS (FS())
+  import Node.FS.Sync (readTextFile, writeTextFile)
   import Node.Path (basename, join, FilePath())
   import Node.UUID (runUUID, v4)
   import Node.WebKit
@@ -68,6 +74,8 @@ module SlamData.NodeWebKit where
   import Node.WebKit.Types
     ( nwMenuItemModCmd
     , nwMenuItemModCtrl
+    , NW()
+    , WindowPolicyEff()
     )
   import Node.WebKit.Window
     ( closeWindow
@@ -77,6 +85,8 @@ module SlamData.NodeWebKit where
     , onClose
     , onNewWinPolicy
     )
+
+  import React.Types (React())
 
   import Showdown (makeHtml)
 
@@ -153,11 +163,6 @@ module SlamData.NodeWebKit where
          -> Eff (event :: EventEff | eff) (Stream ioStream)
   onData = on $ Event "data"
 
-  foreign import requireConfig
-    "function requireConfig(location) {\
-    \  return JSON.stringify(require(location));\
-    \}" :: forall r. FilePath -> String
-
   linuxConfigHome :: Maybe FilePath
   linuxConfigHome = env "XDG_CONFIG_HOME"
                 <|> (\home -> home </> ".config") <$> env "HOME"
@@ -180,17 +185,37 @@ module SlamData.NodeWebKit where
   showConfig = encodeJson >>> printJson
 
   parseConfig :: forall a. (DecodeJson a) => String -> Maybe a
-  parseConfig config = case runParser (requireConfig config) jsonParser of
+  parseConfig config = case runParser config jsonParser of
     Left err -> Nothing
     Right config -> decodeMaybe config
 
   showError :: forall eff. Either Error Unit -> Eff (trace :: Trace | eff) Unit
   showError = either print pure
 
+  catchRead :: forall eff
+            .  String
+            -> Eff (err :: Exception, fs :: FS, trace :: Trace | eff) String
+            -> Eff (fs :: FS, trace :: Trace | eff) String
+  catchRead def = catchException \err -> do
+    trace $ "Error reading file\n" ++ message err ++ "\ndefaulting."
+    pure def
+
   mount :: SEConfig -> String
   mount (SEConfig {mountings = m}) =
     (fst <$> head (M.toList m)) `getOrElse` defaultMountPath
 
+  main :: forall h. Eff ( domain :: DomainEff
+                        , dom    :: DOM
+                        , event  :: EventEff
+                        , fs     :: FS
+                        , nw     :: NW
+                        , policy :: WindowPolicyEff
+                        , react  :: React
+                        , spawn  :: Spawn
+                        , st     :: ST h
+                        , timer  :: Timer
+                        , trace  :: Trace
+                        ) Domain
   main = do
     domain <- create
     -- We're just logging to the console,
@@ -198,8 +223,10 @@ module SlamData.NodeWebKit where
     -- Either user facing, or back to us to aggregate/deal with.
     domain # on (Event "error") (\err -> trace $ "stderr: " ++ err.message)
     domain # run do
-      let sdConfig = parseConfig sdConfigFile `getOrElse` defaultSDConfig
-      let seConfig = parseConfig seConfigFile `getOrElse` defaultSEConfig
+      sdConfigStr <- catchRead "" $ readTextFile UTF8 sdConfigFile
+      seConfigStr <- catchRead "" $ readTextFile UTF8 seConfigFile
+      let sdConfig = parseConfig sdConfigStr `getOrElse` defaultSDConfig
+      let seConfig = parseConfig seConfigStr `getOrElse` defaultSEConfig
       let java = sdConfig^._sdConfigRec.._nodeWebkit.._sdConfigNodeWebkit.._java
 
       -- Start up SlamEngine.
