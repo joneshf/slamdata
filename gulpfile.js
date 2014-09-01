@@ -11,7 +11,6 @@ var gulp = require('gulp')
   , nwBuilder = require('node-webkit-builder')
   , path = require('path')
   , purescript = require('gulp-purescript')
-  , rename = require('gulp-rename')
   , rimraf = require('rimraf')
   , runSequence = require('run-sequence')
   , sass = require('gulp-sass')
@@ -260,23 +259,8 @@ gulp.task('browserify', ['compile', 'browserify-index'], function() {
         .pipe(connect.reload());
 });
 
-gulp.task('browserify-node-webkit', ['compile-node-webkit', 'browserify', 'browserify-node-webkit-index'], function() {
-    return browserify('./output/node-webkit.js', {ignoreMissing: true, insertGlobals: false, detectGlobals: false})
-        .require('./output/node_modules/SlamData.NodeWebKit', {expose: 'SlamData.NodeWebKit'})
-        .bundle()
-        .pipe(sourceStream('slamdata-node-webkit.js'))
-        .pipe(gulp.dest('lib/node-webkit/js'))
-        .pipe(connect.reload());
-});
-
 gulp.task('browserify-index', function() {
     return gulp.src('index.js')
-        .pipe(gulp.dest('output'));
-});
-
-gulp.task('browserify-node-webkit-index', function() {
-    return gulp.src('lib/node-webkit/index.js')
-        .pipe(rename('node-webkit.js'))
         .pipe(gulp.dest('output'));
 });
 
