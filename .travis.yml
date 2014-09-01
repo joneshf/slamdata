@@ -1,14 +1,35 @@
-language: haskell
-ghc:
-  - 7.8
+language: node_js
+node_js:
+  - "0.10"
+notifications:
+  email: false
+env:
+  - PATH=$HOME/bin:$PATH purescript_datadir=$HOME/.local/share/purescript DISPLAY=:1
+before_install:
+  - mkdir -p $HOME/bin
+  - mkdir -p $HOME/.local/share/purescript/prelude
 install:
-  - cabal install purescript
-  - npm install -g bower phantomjs
-  - gem install compass
+  - wget -O $HOME/bin/psc https://github.com/joneshf/purescript/releases/download/v0.5.4.1-joneshf/psc
+  - wget -O $HOME/bin/psc-make https://github.com/joneshf/purescript/releases/download/v0.5.4.1-joneshf/psc-make
+  - wget -O $purescript_datadir/prelude/prelude.purs https://github.com/joneshf/purescript/releases/download/v0.5.4.1-joneshf/prelude.purs
+  - chmod a+x $HOME/bin/psc
+  - chmod a+x $HOME/bin/psc-make
+  - npm install -g bower
   - bower install https://github.com/joneshf/slamengine/releases/download/releases%2Fbeta-1/slamengine_2.10-0.1-SNAPSHOT-one-jar.jar.zip
 script:
   - java -jar bower_components/slamengine_2.10-0.1-SNAPSHOT-one-jar.jar/index.jar &
   - npm test
-cache:
-  directories:
-    - $HOME/.cabal
+after_success:
+  - ./scripts/travis/dist.sh
+deploy:
+  provider: releases
+  api_key: $GITHUB_RELEASES_TOKEN
+  file:
+    - dist/SlamData/linux64.tar.gz
+    - dist/SlamData/osx.zip
+    - dist/SlamData/win.zip
+  on:
+    repo: joneshf/slamdata
+    tags: true
+    all_branches: true
+  skip_cleanup: true

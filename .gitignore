@@ -14,3 +14,4 @@ test/screenshots
 sublime-gulp.log
 output
 *.orig
+bin

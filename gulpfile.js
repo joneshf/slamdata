@@ -100,8 +100,8 @@ var paths = {
                  },
             js: 'lib/node-webkit/js',
             src: [ 'lib/node-webkit/src/**/*.purs'
-                 , 'lib/node-webkit/bower_components/slamdata/src/**/*.purs'
                  , 'lib/node-webkit/bower_components/purescript-*/src/**/*.purs'
+                 , 'src/**/*.purs'
                  ]
         }
     },
@@ -116,12 +116,6 @@ var options = {
         js: 'slamdata.js',
     },
     compile: {
-        // externs: 'js/slamdata.e.purs',
-        // modules: [ 'SlamData'
-        //          , 'SlamData.Types'
-        //          , 'SlamData.Types.JS'
-        //          , 'SlamData.Helpers'
-        //          ],
         output: 'output/node_modules'
     },
     connect: {
