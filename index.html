@@ -260,7 +260,7 @@
                     });
                     var blockname = 'out' + sqlBlocks.length;
                     var url = baseUrl + '/query/fs' + notebook.path + '?out=' +
-                        notebook.name + '/' + blockname + '.json';
+                        notebook.name + '/' + blockname;
                     oboe({
                         url: url,
                         method: 'POST',

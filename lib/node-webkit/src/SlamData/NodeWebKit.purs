@@ -336,7 +336,7 @@ module SlamData.NodeWebKit where
           let blockName = "out" ++ show (countOut n)
           let queryUrl = serverURI state.settings.sdConfig ++ "/query/fs" ++ n.path
           let dataUrl = serverURI state.settings.sdConfig ++ "/data/fs"
-          let out = n.name ++ "/" ++ blockName ++ ".json"
+          let out = n.name ++ "/" ++ blockName
           X.post X.defaultAjaxOptions
             { onReadyStateChange = X.onDone \res -> do
               out' <- jsonParse {out: ""} <$> X.getResponseText res
