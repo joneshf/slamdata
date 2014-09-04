@@ -348,15 +348,42 @@ gulp.task('dist-node-webkit', function() {
         files: 'bin/node-webkit/**',
         macIcns: 'imgs/slamdata.icns',
         platforms: ['linux64', 'osx', 'win'],
-        winIco: 'imgs/slamdata.ico',
-        version: '0.10.1'
+        winIco: 'imgs/slamdata.ico'
     });
+    return nw.on('log', gutil.log).build();
+});
+
+gulp.task('dist-node-webkit-platform', function() {
+    var opts = {
+        buildDir: 'dist',
+        files: 'bin/node-webkit/**',
+    };
+    if (process.platform === 'linux') {
+        opts.platforms = ['linux64'];
+    } else if (process.platform === 'darwin') {
+        opts.platforms = ['osx'];
+        opts.macIcns = 'imgs/slamdata.icns';
+    } else {
+        opts.platforms = ['win']
+        opts.winIco = 'imgs/slamdata.ico';
+    }
+    var nw = new nwBuilder(opts);
     return nw.on('log', gutil.log).build();
 });
 
 gulp.task('test-casperjs', function(done) {
     spawn( './node_modules/.bin/casperjs'
-         , ['test', 'test/tests']
+         , ['test', 'test/casperjs']
+         , {stdio: 'inherit'}
+         ).on('close', done);
+});
+
+gulp.task('test-webdriver', function(done) {
+    spawn( './node_modules/.bin/mocha'
+         , [ '-G'
+           , '--recursive'
+           , '--timeout', '30000'
+           , 'test/webdriver/**/*.js']
          , {stdio: 'inherit'}
          ).on('close', done);
 });
@@ -367,7 +394,7 @@ gulp.task('build', sequence( ['clean-build', 'browserify', 'sass']
                            ));
 gulp.task('default', sequence(['browserify', 'sass']));
 gulp.task('dist', sequence(['build', 'clean-dist'], 'dist-node-webkit', 'jre'));
-gulp.task('test', sequence('build', ['test-casperjs']));
+gulp.task('test', sequence('build', 'dist-node-webkit-platform', 'jre', 'test-casperjs', 'test-webdriver'));
 gulp.task('watch', ['connect'], function() {
     gulp.watch(paths.src, ['browserify']);
     gulp.watch(paths.style, ['sass']);

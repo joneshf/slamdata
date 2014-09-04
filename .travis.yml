@@ -5,9 +5,15 @@ notifications:
   email: false
 env:
   - PATH=$HOME/bin:$PATH purescript_datadir=$HOME/.local/share/purescript DISPLAY=:1
+services:
+  - mongodb
 before_install:
   - mkdir -p $HOME/bin
   - mkdir -p $HOME/.local/share/purescript/prelude
+  - mkdir -p $HOME/.config/slamdata
+  - ./scripts/travis/write_sdConfig.sh
+  - ./scripts/travis/write_seConfig.sh
+  - Xvfb :1 &
 install:
   - wget -O $HOME/bin/psc https://github.com/joneshf/purescript/releases/download/v0.5.4.1-joneshf/psc
   - wget -O $HOME/bin/psc-make https://github.com/joneshf/purescript/releases/download/v0.5.4.1-joneshf/psc-make
@@ -15,7 +21,7 @@ install:
   - chmod a+x $HOME/bin/psc
   - chmod a+x $HOME/bin/psc-make
   - npm install -g bower
-  - bower install https://github.com/joneshf/slamengine/releases/download/releases%2Fbeta-1/slamengine_2.10-0.1-SNAPSHOT-one-jar.jar.zip
+  - bower install https://github.com/joneshf/slamengine/releases/download/releases%2Fbeta-2/slamengine_2.10-0.1-SNAPSHOT-one-jar.jar
 script:
   - java -jar bower_components/slamengine_2.10-0.1-SNAPSHOT-one-jar.jar/index.jar &
   - npm test
