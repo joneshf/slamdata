@@ -174,7 +174,7 @@ module SlamData.NodeWebKit where
   seConfigFile :: FilePath
   seConfigFile = resolveConfigDir </> "slamengine-config.json"
   seJar :: FilePath
-  seJar = "jar" </> "slamengine_2.10-0.1-SNAPSHOT-one-jar.jar"
+  seJar = "jar" </> "slamengine.jar"
 
   showConfig :: forall a. (EncodeJson a) => a -> String
   showConfig = encodeJson >>> printJson
