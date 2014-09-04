@@ -11,6 +11,7 @@ var gulp = require('gulp')
   , nwBuilder = require('node-webkit-builder')
   , path = require('path')
   , purescript = require('gulp-purescript')
+  , rename = require('gulp-rename')
   , rimraf = require('rimraf')
   , runSequence = require('run-sequence')
   , sass = require('gulp-sass')
@@ -105,8 +106,8 @@ var paths = {
                  ]
         }
     },
-    slamEngine: {
-        jar: '../slamengine/target/scala-2.10/slamengine_2.10-0.1-SNAPSHOT-one-jar.jar'
+    slamengine: {
+        jar: 'bower_components/slamengine-jar/index.jar'
     }
 }
 
@@ -302,7 +303,8 @@ gulp.task('sass', ['clean-sass'], function() {
 });
 
 gulp.task('slamengine-jar', function() {
-    return gulp.src('../slamengine/target/scala-2.10/slamengine_2.10-0.1-SNAPSHOT-one-jar.jar')
+    return gulp.src(paths.slamengine.jar)
+        .pipe(rename('slamengine.jar'))
         .pipe(gulp.dest(paths.build['node-webkit'].jar));
 });
 
