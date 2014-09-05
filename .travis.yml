@@ -21,9 +21,10 @@ install:
   - chmod a+x $HOME/bin/psc
   - chmod a+x $HOME/bin/psc-make
   - npm install -g bower
-  - bower install https://github.com/joneshf/slamengine/releases/download/releases%2Fbeta-2/slamengine_2.10-0.1-SNAPSHOT-one-jar.jar
+  - npm install
+  - bower install
 script:
-  - java -jar bower_components/slamengine_2.10-0.1-SNAPSHOT-one-jar.jar/index.jar &
+  - java -jar bower_components/slamengine-jar/index.jar &
   - npm test
 after_success:
   - ./scripts/travis/dist.sh
