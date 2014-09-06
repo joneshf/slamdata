@@ -424,13 +424,13 @@ module SlamData.NodeWebKit where
           pure unit
         RenameNotebook (Notebook n) path -> do
           let dataUrl = serverURI state.settings.sdConfig ++ "/data/fs"
-          let url = dataUrl </> n.path </> n.name </> "index.nb"
+          let url = dataUrl </> n.path </> n.name </> "/"
           let base = basename path
           let fs = mount state.settings.seConfig
           X.ajax X.defaultAjaxOptions
             { method = "MOVE"
             , url = url
-            , headers = ["Destination" ~ (fs </> path </> "index.nb")]
+            , headers = ["Destination" ~ (fs </> path </> "/")]
             , onLoad = \_ -> do
               let notebook' = Notebook n{name = base}
               let notebooks' = replaceNotebook notebook' <$> state.notebooks

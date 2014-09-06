@@ -5,9 +5,15 @@ notifications:
   email: false
 env:
   - PATH=$HOME/bin:$PATH purescript_datadir=$HOME/.local/share/purescript DISPLAY=:1
+services:
+  - mongodb
 before_install:
   - mkdir -p $HOME/bin
   - mkdir -p $HOME/.local/share/purescript/prelude
+  - mkdir -p $HOME/.config/slamdata
+  - ./scripts/travis/write_sdConfig.sh
+  - ./scripts/travis/write_seConfig.sh
+  - Xvfb :1 &
 install:
   - wget -O $HOME/bin/psc https://github.com/joneshf/purescript/releases/download/v0.5.4.1-joneshf/psc
   - wget -O $HOME/bin/psc-make https://github.com/joneshf/purescript/releases/download/v0.5.4.1-joneshf/psc-make
