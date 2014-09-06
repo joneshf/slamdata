@@ -30,7 +30,6 @@ deploy:
     - dist/SlamData/osx.zip
     - dist/SlamData/win.zip
   on:
-    repo: joneshf/slamdata
     tags: true
     all_branches: true
   skip_cleanup: true
