@@ -5,9 +5,12 @@ var gulp = require('gulp')
   , browserify = require('browserify')
   , concat = require('gulp-concat')
   , connect = require('gulp-connect')
+  , chromedriver = require('chromedriver')
   , es = require('event-stream')
   , fs = require('fs')
   , gutil = require('gulp-util')
+  , huxley = require('gulp-huxley')
+  , distBinary = require('./test/platform').resolveNWBinary()
   , nwBuilder = require('node-webkit-builder')
   , path = require('path')
   , purescript = require('gulp-purescript')
@@ -15,6 +18,7 @@ var gulp = require('gulp')
   , rimraf = require('rimraf')
   , runSequence = require('run-sequence')
   , sass = require('gulp-sass')
+  , seleniumChrome = require('selenium-webdriver/chrome')
   , sourceStream = require('vinyl-source-stream')
   , spawn = require('child_process').spawn
   , taskListing = require('gulp-task-listing')
@@ -388,6 +392,22 @@ gulp.task('test-webdriver', function(done) {
            , 'test/webdriver/**/*.js']
          , {stdio: 'inherit'}
          ).on('close', done);
+});
+
+gulp.task('huxley-record', function() {
+    var opts = new seleniumChrome.Options()
+        .setChromeBinaryPath(distBinary)
+      , service = new seleniumChrome.ServiceBuilder(chromedriver.path)
+        .build()
+      , driver = function() {return seleniumChrome.createDriver(opts, service)}
+      ;
+    gulp.src('./Huxleyfile.json')
+        .pipe(huxley({
+            action: 'record',
+            browser: 'chrome',
+            driver: driver,
+            server: 'http://localhost:9515'
+        }));
 });
 
 // Main tasks.
