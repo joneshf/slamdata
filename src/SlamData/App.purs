@@ -8,6 +8,7 @@ module SlamData.App (app, AppProps(), AppState()) where
   import React (coerceThis, createClass, spec)
   import React.Types(ComponentClass(), React(), ReactThis())
 
+  import SlamData.App.ConfigModal (configModal)
   import SlamData.App.Menu (menu)
   import SlamData.App.Workspace (workspace)
   import SlamData.Types (SlamDataState(), SlamDataRequest())
@@ -28,6 +29,11 @@ module SlamData.App (app, AppProps(), AppState()) where
     , render = \this -> pure $ D.div {}
       [ menu this.props.request
       , workspace
+        { request: this.props.request
+        , state: this.props.state
+        }
+        []
+      , configModal
         { request: this.props.request
         , state: this.props.state
         }

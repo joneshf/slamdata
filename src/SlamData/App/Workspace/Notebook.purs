@@ -203,9 +203,9 @@ module SlamData.App.Workspace.Notebook
                   -> Notebook
                   -> Component
   externalActions this nb = D.ul {className: "button-group"}
-    [ actionButton this (SaveNotebook nb) "Save" saveIcon
+    [ actionButton this [SaveNotebook nb] "Save" saveIcon
     , renameAction this nb
-    , actionButton this (TogglePublish nb) (publishTitle nb) publishIcon
+    , actionButton this [TogglePublish nb] (publishTitle nb) publishIcon
     ]
 
   publishTitle :: Notebook -> String

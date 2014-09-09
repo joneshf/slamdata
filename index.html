@@ -48,7 +48,8 @@
                 sdConfig: helpers.defaultSDConfig,
                 seConfig: helpers.defaultSEConfig
             },
-            showSettings: false
+            showSettings: false,
+            showConfig: false
         };
         // Start up an emitter to pass down to slamdata.
         var emitter = new TinyEmitter();
@@ -330,6 +331,12 @@
                         });
                     })
                 }, 1000);
+            } else if (jsTypes.isHideConfig(newEvent)) {
+                newState.showConfig = false;
+                respond(newState);
+            } else if (jsTypes.isShowConfig(newEvent)) {
+                newState.showConfig = true;
+                respond(newState);
             } else {
                 // We can't do anything else, just pass it on back.
                 respond(newState);

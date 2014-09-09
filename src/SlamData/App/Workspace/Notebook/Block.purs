@@ -91,8 +91,8 @@ module SlamData.App.Workspace.Notebook.Block
     , D.ul {className: "right button-group"}
       [actionButton
         this
-        (DeleteBlock (this.props.notebook^._notebookRec.._ident)
-                     (this.props.block^._blockRec.._ident))
+        [DeleteBlock (this.props.notebook^._notebookRec.._ident)
+                     (this.props.block^._blockRec.._ident)]
         "Close"
         closeIcon
       ]

@@ -51,7 +51,7 @@ module SlamData.NodeWebKit where
   import Node.Encoding (Encoding(UTF8))
   import Node.Events (emit, emitter, on, Event(..), EventEff(), EventEmitter)
   import Node.FS (FS())
-  import Node.FS.Sync (readTextFile, writeTextFile)
+  import Node.FS.Sync (exists, readTextFile, writeTextFile)
   import Node.Path (basename, join, FilePath())
   import Node.UUID (runUUID, v4)
   import Node.WebKit
@@ -75,6 +75,7 @@ module SlamData.NodeWebKit where
     ( nwMenuItemModCmd
     , nwMenuItemModCtrl
     , NW()
+    , NWWindow()
     , WindowPolicyEff()
     )
   import Node.WebKit.Window
@@ -109,6 +110,7 @@ module SlamData.NodeWebKit where
     , getOrElse
     , serverURI
     )
+  import SlamData.NodeWebKit.Menu (menu)
   import SlamData.Types
     ( requestEvent
     , responseEvent
@@ -204,6 +206,34 @@ module SlamData.NodeWebKit where
   mount (SEConfig {mountings = m}) =
     (fst <$> head (M.toList m)) `getOrElse` defaultMountPath
 
+  startSlamEngine :: forall eff
+                  .  NWWindow
+                  -> Eff ( event :: EventEff
+                         , fs :: FS
+                         , nw :: NW
+                         , spawn :: Spawn
+                         , trace :: Trace
+                         | eff
+                         ) Unit
+  startSlamEngine win = do
+    sdConfigStr <- catchRead "" $ readTextFile UTF8 sdConfigFile
+    seConfigStr <- catchRead "" $ readTextFile UTF8 seConfigFile
+    let sdConfig = parseConfig sdConfigStr `getOrElse` defaultSDConfig
+    let seConfig = parseConfig seConfigStr `getOrElse` defaultSEConfig
+    let java = sdConfig^._sdConfigRec.._nodeWebkit.._sdConfigNodeWebkit.._java
+
+    -- Start up SlamEngine.
+    ChildProcess se <- spawn java ["-jar", seJar, seConfigFile] defaultSpawnOptions
+    -- Log out things.
+    se.stdout # onData (mkFn1 \msg -> trace $ "stdout: " ++ msg)
+    se.stderr # onData (mkFn1 \msg -> trace $ "stderr: " ++ msg)
+    -- Cleanup after ourselves.
+    win # onClose (mkFn0 \_ -> do
+      pure $ runFn1 se.kill sigterm
+      closeWindow true win
+      pure unit)
+    pure unit
+
   main :: forall h. Eff ( domain :: DomainEff
                         , dom    :: DOM
                         , event  :: EventEff
@@ -223,79 +253,33 @@ module SlamData.NodeWebKit where
     -- Either user facing, or back to us to aggregate/deal with.
     domain # on (Event "error") (\err -> trace $ "stderr: " ++ err.message)
     domain # run do
-      sdConfigStr <- catchRead "" $ readTextFile UTF8 sdConfigFile
-      seConfigStr <- catchRead "" $ readTextFile UTF8 seConfigFile
-      let sdConfig = parseConfig sdConfigStr `getOrElse` defaultSDConfig
-      let seConfig = parseConfig seConfigStr `getOrElse` defaultSEConfig
-      let java = sdConfig^._sdConfigRec.._nodeWebkit.._sdConfigNodeWebkit.._java
 
-      -- Start up SlamEngine.
-      ChildProcess se <- spawn "java" ["-jar", seJar, seConfigFile] defaultSpawnOptions
-      -- Log out things.
-      se.stdout # onData (mkFn1 \msg -> trace $ "stdout: " ++ msg)
-      se.stderr # onData (mkFn1 \msg -> trace $ "stderr: " ++ msg)
-
+      -- Make an emitter.
+      e <- emitter
       win <- nwWindow >>= get
+
       -- Open links in the user's default method, e.g. in the browser.
       win # onNewWinPolicy (mkFn3 \_ url policy -> do
         nwShell >>= openExternal url
         ignore policy)
 
-      -- Cleanup after ourselves.
-      win # onClose (mkFn0 \_ -> do
-        pure $ runFn1 se.kill sigterm
-        closeWindow true win
-        pure unit)
+      let initialState' = initialState defaultSDConfig defaultSEConfig
 
-      -- Make an emitter.
-      e <- emitter
+      -- Set the menubar.
+      menu win e initialState' >>= flip setWindowMenu win
 
-      -- Warning, this can probably lead to a whole slew of bugs.
-      -- We're updating the state each time a `requestEvent` is fired.
-      -- We do this to access the latest state outside the main event handler.
-      -- In particular, we need the state when firing off menu events.
-      -- Do not mutate this state anywhere except these two lines.
-      -- Only read from it.
-      stState <- newSTRef $ initialState sdConfig seConfig
-      e # on requestEvent (\o -> writeSTRef stState o.state)
-
-      -- Make the menubar.
-      -- We only need to make a File menu for linux/win.
-      menu <- if platform == "darwin" then
-          nwWindowMenu >>= createMacBuiltin "SlamData" defaultMacOptions
-            {hideEdit = true, hideWindow = true}
-        else do
-          quitItem <- nwMenuItem defaultMenuItemOptions
-            { label = "Quit"
-            , click = closeWindow false win
-            , key = "Q"
-            , modifiers = nwMenuItemModCtrl
-            }
-          fileMenuItems <- nwMenu >>= append quitItem
-          fileMenu <- nwMenuItem defaultMenuItemOptions
-            { label = "File"
-            , submenu = Just fileMenuItems
-            }
-          nwWindowMenu >>= append fileMenu
-      settingsItem <- nwMenuItem defaultMenuItemOptions
-        { label = "Settings"
-        , click = do
-          state <- readSTRef stState
-          e # emit requestEvent (SlamDataEvent {state: state, event: ShowSettings})
-        }
-      editMenuItems <- nwMenu >>= append settingsItem
-      editMenu <- nwMenuItem defaultMenuItemOptions
-        { label = "Edit"
-        , submenu = Just editMenuItems
-        }
-      menu' <- menu # append editMenu
-      setWindowMenu menu win
-
+      -- Handle all of the events.
       e # on requestEvent (\{event = event, state = state} -> case event of
         SaveSDConfig sdC ->
           writeTextFile UTF8 sdConfigFile (showConfig sdC)
         SaveSEConfig seC ->
           writeTextFile UTF8 seConfigFile (showConfig seC)
+        HideConfig -> do
+          e # emit responseEvent state{showConfig = false}
+          pure unit
+        ShowConfig -> do
+          e # emit responseEvent state{showConfig = true}
+          pure unit
         ReadFileSystem paths -> do
           let path = join paths
           let fs = serverURI state.settings.sdConfig ++ "/metadata/fs" ++ path
@@ -449,7 +433,12 @@ module SlamData.NodeWebKit where
         _ -> (e # emit responseEvent state) *> pure unit)
 
       -- Start up SlamData.
-      slamData e (initialState sdConfig seConfig)
+      slamData e initialState'
+
+      configExists <- (&&) <$> exists sdConfigFile <*> exists seConfigFile
+      if configExists
+        then startSlamEngine win
+        else (e # emit responseEvent initialState'{showConfig = true}) *> pure unit
 
   initialState :: SDConfig -> SEConfig -> SlamDataState
   initialState sdConfig seConfig =
@@ -460,6 +449,7 @@ module SlamData.NodeWebKit where
     , notebooks: []
     , settings: {sdConfig: sdConfig, seConfig: seConfig}
     , showSettings: false
+    , showConfig: false
     }
 
   uniqueNotebooks :: Notebook -> Notebook -> Boolean

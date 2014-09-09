@@ -93,6 +93,8 @@ module SlamData.Types where
 
   data SlamDataEventTy = SaveSDConfig SDConfig
                        | SaveSEConfig SEConfig
+                       | HideConfig
+                       | ShowConfig
                        | ReadFileSystem [FilePath]
                        | ReadFields [FilePath]
                        | CreateNotebook
@@ -126,6 +128,7 @@ module SlamData.Types where
     , notebooks    :: [Notebook]
     , settings     :: Settings
     , showSettings :: Boolean
+    , showConfig   :: Boolean
     }
 
   -- Instances

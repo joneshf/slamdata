@@ -116,16 +116,16 @@ casper.test.begin('Config is read properly', 9, function(test) {
     }).thenClick('#notebook-Settings', function() {
         casper.capture(screenshotDir + '/notebook_settings_slamengine.png');
 
-        test.assertField('slamengine-port', config.sePort.toString(), '`slamengine-port` should match `config.sePort`');
-        test.assertField('mongodb-path', config.seMountPath, '`mongodb-path` should match `config.seMountPath`');
-        test.assertField('mongodb-mongouri', config.seMongoURI, '`mongodb-mongouri` should match `config.seMongoURI`');
-        test.assertField('mongodb-database', config.seDatabase, '`mongodb-database` should match `config.seDatabase`');
-        test.assertField('java-binary', config.javaLocation, '`java-binary` should match `config.javaLocation`');
+        test.assertFieldCSS('#notebook [name="slamengine-port"]', config.sePort.toString(), '`slamengine-port` should match `config.sePort`');
+        test.assertFieldCSS('#notebook [name="mongodb-path"]', config.seMountPath, '`mongodb-path` should match `config.seMountPath`');
+        test.assertFieldCSS('#notebook [name="mongodb-mongouri"]', config.seMongoURI, '`mongodb-mongouri` should match `config.seMongoURI`');
+        test.assertFieldCSS('#notebook [name="mongodb-database"]', config.seDatabase, '`mongodb-database` should match `config.seDatabase`');
+        test.assertFieldCSS('#notebook [name="java-binary"]', config.javaLocation, '`java-binary` should match `config.javaLocation`');
     }).thenClick('#settings-SlamData', function() {
         casper.capture(screenshotDir + '/notebook_settings_slamdata.png');
 
-        test.assertField('server-location', config.serverLocation, '`server-location` should match `config.serverLocation`');
-        test.assertField('server-port', config.serverPort.toString(), '`server-port` should match `config.serverPort`');
+        test.assertFieldCSS('#notebook [name="server-location"]', config.serverLocation, '`server-location` should match `config.serverLocation`');
+        test.assertFieldCSS('#notebook [name="server-port"]', config.serverPort.toString(), '`server-port` should match `config.serverPort`');
     }).run(function() {
         test.done();
     });
