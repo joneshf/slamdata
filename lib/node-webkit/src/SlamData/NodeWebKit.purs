@@ -15,6 +15,7 @@ module SlamData.NodeWebKit where
   import Control.Apply ((*>))
   import Control.Bind ((>=>))
   import Control.Lens ((^.), (..), (.~), (~))
+  import Control.Monad (when)
   import Control.Monad.Cont.Trans (runContT)
   import Control.Monad.Eff (Eff())
   import Control.Monad.Eff.Exception
@@ -263,7 +264,9 @@ module SlamData.NodeWebKit where
         nwShell >>= openExternal url
         ignore policy)
 
-      let initialState' = initialState defaultSDConfig defaultSEConfig
+      configExists <- (&&) <$> exists sdConfigFile <*> exists seConfigFile
+      when configExists $ startSlamEngine win
+      let initialState' = (initialState defaultSDConfig defaultSEConfig){showConfig = not configExists}
 
       -- Set the menubar.
       menu win e initialState' >>= flip setWindowMenu win
@@ -434,11 +437,6 @@ module SlamData.NodeWebKit where
 
       -- Start up SlamData.
       slamData e initialState'
-
-      configExists <- (&&) <$> exists sdConfigFile <*> exists seConfigFile
-      if configExists
-        then startSlamEngine win
-        else (e # emit responseEvent initialState'{showConfig = true}) *> pure unit
 
   initialState :: SDConfig -> SEConfig -> SlamDataState
   initialState sdConfig seConfig =
