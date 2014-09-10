@@ -1,17 +1,31 @@
 module SlamData.App.ConfigModal (configModal) where
 
+  import Control.Lens ((^.), (.~), (..), LensP())
+
   import React (coerceThis, createClass, spec)
   import React.Types (Component(), ComponentClass(), ReactThis())
 
-  import SlamData.Components (actionButton, saveIcon)
   import SlamData.App.Workspace.Notebook.Settings.SlamData
     ( slamDataJavaSettings
     , slamDataServerSettings
     )
   import SlamData.App.Workspace.Notebook.Settings.SlamEngine
     (slamEngineMountingsSettings)
+  import SlamData.Components (actionButton, saveIcon)
+  import SlamData.Lens
+    ( _port
+    , _sdConfig
+    , _sdConfigRec
+    , _sdConfigServer
+    , _seConfig
+    , _seConfigRec
+    , _seConfigServer
+    , _server
+    )
   import SlamData.Types
-    ( SlamDataEventTy(..)
+    ( SDConfig()
+    , SEConfig()
+    , SlamDataEventTy(..)
     , SlamDataRequest()
     , SlamDataState()
     )
@@ -61,8 +75,23 @@ module SlamData.App.ConfigModal (configModal) where
              .  ReactThis fields (SettingsProps eff) SettingsState
              -> Component
   saveButton this = D.ul {className: "button-group"}
-    [actionButton this [SaveSDConfig this.state.sdConfig, SaveSEConfig this.state.seConfig, HideConfig] "Save" saveIcon]
+    [actionButton
+      this [ SaveSDConfig this.state.sdConfig
+           -- Since we're using the components verbatim,
+           -- we have to use the port from the sdConfig.
+           , SaveSEConfig (this.state # _seServerPort .~ this.state^._sdServerPort).seConfig
+           , HideConfig
+           ]
+      "Save"
+      saveIcon
+    ]
 
   visible :: Boolean -> String
   visible true  = " visible"
   visible false = ""
+
+  _sdServerPort :: forall r. LensP {sdConfig :: SDConfig | r} Number
+  _sdServerPort = _sdConfig.._sdConfigRec.._server.._sdConfigServer.._port
+
+  _seServerPort :: forall r. LensP {seConfig :: SEConfig | r} Number
+  _seServerPort = _seConfig.._seConfigRec.._server.._seConfigServer.._port
