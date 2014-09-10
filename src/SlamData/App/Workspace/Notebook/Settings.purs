@@ -43,10 +43,10 @@ module SlamData.App.Workspace.Notebook.Settings (settings) where
                   -> Component
   externalActions this@{state = {active = SlamDataTab}} =
     D.ul {className: "button-group"}
-      [actionButton this (SaveSDConfig this.state.sdConfig) "Save" saveIcon]
+      [actionButton this [SaveSDConfig this.state.sdConfig] "Save" saveIcon]
   externalActions this@{state = {active = SlamEngineTab}} =
     D.ul {className: "button-group"}
-      [actionButton this (SaveSEConfig this.state.seConfig) "Save" saveIcon]
+      [actionButton this [SaveSEConfig this.state.seConfig] "Save" saveIcon]
 
   tabs :: forall fields eff state
        .  ReactThis fields (SettingsProps eff) SettingsState

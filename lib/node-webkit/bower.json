@@ -32,7 +32,7 @@
     "purescript-node-child-process": "~0.0.1",
     "purescript-node-domain": "~0.0.1",
     "purescript-node-events": "~0.0.6",
-    "purescript-node-fs": "~0.1.0",
+    "purescript-node-fs": "joneshf/purescript-node-fs#exists",
     "purescript-node-path": "~0.2.0",
     "purescript-node-uuid": "~0.3.1",
     "purescript-node-webkit": "~0.1.0",

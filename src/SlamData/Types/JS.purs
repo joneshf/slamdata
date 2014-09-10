@@ -11,6 +11,12 @@ module SlamData.Types.JS where
   isSaveSEConfig :: SlamDataEventTy -> Boolean
   isSaveSEConfig (SaveSEConfig _) = true
   isSaveSEConfig _                = false
+  isShowConfig :: SlamDataEventTy -> Boolean
+  isShowConfig ShowConfig = true
+  isShowConfig _          = false
+  isHideConfig :: SlamDataEventTy -> Boolean
+  isHideConfig HideConfig = true
+  isHideConfig _          = false
   isReadFileSystem :: SlamDataEventTy -> Boolean
   isReadFileSystem (ReadFileSystem _) = true
   isReadFileSystem _                  = false

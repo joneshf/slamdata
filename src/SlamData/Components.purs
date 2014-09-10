@@ -1,5 +1,7 @@
 module SlamData.Components where
 
+  import Data.Foldable (traverse_)
+
   import React (coerceThis, createClass, eventHandler, spec)
   import React.Types (Component(), ComponentClass(), ReactThis())
 
@@ -60,14 +62,14 @@ module SlamData.Components where
 
   actionButton :: forall eff fields props state
                .  ReactThis fields {request :: SlamDataRequest eff | props} state
-               -> SlamDataEventTy
+               -> [SlamDataEventTy]
                -> String
                -> Component
                -> Component
   actionButton this event title icon = D.li {}
     [D.a { className: "tiny secondary button has-tooltip"
-         , onClick: eventHandler this \this -> pure $
-            this.props.request event
+         , onClick: eventHandler this \this _ ->
+            traverse_ this.props.request event
          , title: title
          }
       [icon]
@@ -108,13 +110,13 @@ module SlamData.Components where
   internalActions this ident index = D.ul {className: "button-group"}
     (actions (actionButton this) ident index <$> (BlockType <$> ["Markdown", "SQL", "Visual"]))
 
-  actions :: (SlamDataEventTy -> String -> Component -> Component)
+  actions :: ([SlamDataEventTy] -> String -> Component -> Component)
           -> NotebookID
           -> Number
           -> BlockType
           -> Component
   actions f ident index ty =
-    f (CreateBlock ident ty index) (show ty) (blockIcon ty)
+    f [CreateBlock ident ty index] (show ty) (blockIcon ty)
 
   blockIcon :: BlockType -> Component
   blockIcon (BlockType "Markdown") = markdownIcon
