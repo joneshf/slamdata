@@ -62,3 +62,9 @@ module SlamData.Types.JS where
   isEvalVisual :: SlamDataEventTy -> Boolean
   isEvalVisual (EvalVisual _ _ _) = true
   isEvalVisual _                  = false
+  isCreateValidation :: SlamDataEventTy -> Boolean
+  isCreateValidation (CreateValidation _ _) = true
+  isCreateValidation _                      = false
+  isDeleteValidation :: SlamDataEventTy -> Boolean
+  isDeleteValidation (DeleteValidation _) = true
+  isDeleteValidation _                    = false

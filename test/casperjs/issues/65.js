@@ -1,9 +1,9 @@
 var qs = require('querystring')
   , config =
     { serverLocation: 'http://localhost'
-    , serverPort: 8080
+    , serverPort: 20223
     , javaLocation: 'java'
-    , sePort: 8080
+    , sePort: 20223
     , seMountPath: '/'
     , seMongoURI: 'mongodb://localhost:27017'
     , seDatabase: 'test'

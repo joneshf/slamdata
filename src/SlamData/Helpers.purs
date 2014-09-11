@@ -2,6 +2,7 @@ module SlamData.Helpers where
 
   import Data.Maybe (fromMaybe, Maybe())
   import Data.String (indexOf', length)
+  import Data.Validation (runV)
 
   import React.Types (Element())
 
@@ -13,7 +14,11 @@ module SlamData.Helpers where
     , SDConfigServer(..)
     , SEConfig(..)
     , SEConfigServer(..)
+    , SlamDataState()
+    , Validation()
+    , ValidationTy(..)
     )
+  import SlamData.Types.Workspace.FileSystem (FileType(..))
   import SlamData.Types.Workspace.Notebook (Notebook(..))
 
   import qualified Data.Map as M
@@ -37,10 +42,28 @@ module SlamData.Helpers where
   publish (Notebook {published = true}) = " published"
   publish _                             = ""
 
+  defaultState :: SlamDataState
+  defaultState =
+    { files: FileType { name: defaultMountPath
+                      , "type": "directory"
+                      , children: []
+                      }
+    , notebooks: []
+    , settings: {sdConfig: defaultSDConfig, seConfig: defaultSEConfig}
+    , showSettings: false
+    , showConfig: false
+    , validation: M.empty
+    }
+
+  runV' :: Validation -> ValidationTy -> String
+  runV' v ty = runV id (const "") $ extractV v ty
+    where
+      extractV v ty = M.lookup ty v `getOrElse` pure unit
+
   -- | Server stuff.
 
   defaultServerLocation = "http://localhost"
-  defaultServerPort = 8080
+  defaultServerPort = 20223
   defaultMountPath = "/"
   defaultMongoURI = "mongodb://localhost:27017"
   defaultMongoDatabase = "test"

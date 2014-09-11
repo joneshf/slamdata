@@ -46,31 +46,31 @@ module SlamData.Lens where
   _seConfig f o@{seConfig = sec} = (\sec' -> o{seConfig = sec'}) <$> f sec
 
   _server :: forall a r. LensP {server :: a | r} a
-  _server = lens (\o -> o.server) (\o x -> o{server = x})
+  _server f o@{server = i} = (\i' -> o{server = i'}) <$> f i
 
   _location :: forall a r. LensP {location :: a | r} a
-  _location = lens (\o -> o.location) (\o x -> o{location = x})
+  _location f o@{location = i} = (\i' -> o{location = i'}) <$> f i
 
   _port :: forall a r. LensP {port :: a | r} a
-  _port = lens (\o -> o.port) (\o x -> o{port = x})
+  _port f o@{port = i} = (\i' -> o{port = i'}) <$> f i
 
   _nodeWebkit :: forall a r. LensP {nodeWebkit :: a | r} a
-  _nodeWebkit = lens (\o -> o.nodeWebkit) (\o x -> o{nodeWebkit = x})
+  _nodeWebkit f o@{nodeWebkit = i} = (\i' -> o{nodeWebkit = i'}) <$> f i
 
   _java :: forall a r. LensP {java :: a | r} a
-  _java = lens (\o -> o.java) (\o x -> o{java = x})
+  _java f o@{java = i} = (\i' -> o{java = i'}) <$> f i
 
   _mountings :: forall a r. LensP {mountings :: a | r} a
-  _mountings = lens (\o -> o.mountings) (\o x -> o{mountings = x})
+  _mountings f o@{mountings = i} = (\i' -> o{mountings = i'}) <$> f i
 
   _connectionUri :: forall a r. LensP {connectionUri :: a | r} a
-  _connectionUri = lens (\o -> o.connectionUri) (\o x -> o{connectionUri = x})
+  _connectionUri f o@{connectionUri = i} = (\i' -> o{connectionUri = i'}) <$> f i
 
   _database :: forall a r. LensP {database :: a | r} a
-  _database = lens (\o -> o.database) (\o x -> o{database = x})
+  _database f o@{database = i} = (\i' -> o{database = i'}) <$> f i
 
   _settings :: forall a r. LensP {settings :: a | r} a
-  _settings = lens (\o -> o.settings) (\o x -> o{settings = x})
+  _settings f o@{settings = i} = (\i' -> o{settings = i'}) <$> f i
 
   _ident :: forall a r. LensP {ident :: a | r} a
   _ident f o@{ident = i} = (\i' -> o{ident = i'}) <$> f i
@@ -104,3 +104,6 @@ module SlamData.Lens where
 
   _numOut :: forall a r. LensP {numOut :: a | r} a
   _numOut f o@{numOut = i} = (\i' -> o{numOut = i'}) <$> f i
+
+  _validation :: forall a r. LensP {validation :: a | r} a
+  _validation f o@{validation = i} = (\i' -> o{validation = i'}) <$> f i

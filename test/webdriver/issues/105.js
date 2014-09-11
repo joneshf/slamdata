@@ -15,7 +15,7 @@ var assert = require('assert')
   , newDriver = function() {
         return chrome.createDriver(opts, service)
     }
-  , serverURL = 'http://localhost:8080'
+  , serverURL = 'http://localhost:20223'
   ;
 
 function promiseAssertComparison(cmp, msg) {
