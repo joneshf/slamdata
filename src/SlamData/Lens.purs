@@ -101,3 +101,6 @@ module SlamData.Lens where
 
   _published :: forall a r. LensP {published :: a | r} a
   _published f o@{published = i} = (\i' -> o{published = i'}) <$> f i
+
+  _numOut :: forall a r. LensP {numOut :: a | r} a
+  _numOut f o@{numOut = i} = (\i' -> o{numOut = i'}) <$> f i

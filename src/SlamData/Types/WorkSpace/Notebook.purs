@@ -26,6 +26,7 @@ module SlamData.Types.Workspace.Notebook where
     , name      :: String
     , path      :: String
     , published :: Boolean
+    , numOut    :: Number
     }
 
   instance eqNotebookID :: Eq NotebookID where
@@ -39,16 +40,18 @@ module SlamData.Types.Workspace.Notebook where
 
   instance decodeNotebook :: DecodeJson Notebook where
     decodeJson json = toObject json ?>>= "Notebook" >>= \obj -> do
-      ident     <- M.lookup "ident"  obj    ?>>= "ident"     >>= decodeJson
-      blocks    <- M.lookup "blocks" obj    ?>>= "blocks"    >>= decodeJson
-      name      <- M.lookup "name"   obj    ?>>= "name"      >>= decodeJson
-      path      <- M.lookup "path"   obj    ?>>= "path"      >>= decodeJson
+      ident     <- M.lookup "ident"     obj ?>>= "ident"     >>= decodeJson
+      blocks    <- M.lookup "blocks"    obj ?>>= "blocks"    >>= decodeJson
+      name      <- M.lookup "name"      obj ?>>= "name"      >>= decodeJson
+      path      <- M.lookup "path"      obj ?>>= "path"      >>= decodeJson
       published <- M.lookup "published" obj ?>>= "published" >>= decodeJson
+      numOut    <- M.lookup "numOut"    obj ?>>= "numOut"    >>= decodeJson
       pure $ Notebook { ident: ident
                       , blocks: blocks
                       , name: name
                       , path: path
                       , published: published
+                      , numOut: numOut
                       }
 
   instance decodeNotebookID :: DecodeJson NotebookID where
@@ -61,6 +64,7 @@ module SlamData.Types.Workspace.Notebook where
       ~> "name"      := encodeJson nb.name
       ~> "path"      := encodeJson nb.path
       ~> "published" := encodeJson nb.published
+      ~> "numOut"    := encodeJson nb.numOut
       ~> jsonEmptyObject
 
   instance encodeJsonNotebookID :: EncodeJson NotebookID where
