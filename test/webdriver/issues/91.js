@@ -46,16 +46,18 @@ test.describe('SQL block label', function() {
     });
 
     test.it('we first need a notebook with some blocks', function() {
-        driver.findElement({css: '#add-notebook'}).click();
-        driver.findElement({css: createBlock}).click();
-        driver.findElement({css: createSQL}).click();
-        driver.findElement({css: createBlock}).click();
-        driver.findElement({css: createSQL}).click();
-        driver.findElement({css: createBlock}).click();
-        driver.findElement({css: createSQL}).click();
-        // Blur.
-        driver.findElement({css: createBlock}).click();
-        driver.findElement({css: createBlock}).click();
+        driver.sleep(15000).then(function() {
+            driver.findElement({css: '#add-notebook'}).click();
+            driver.findElement({css: createBlock}).click();
+            driver.findElement({css: createSQL}).click();
+            driver.findElement({css: createBlock}).click();
+            driver.findElement({css: createSQL}).click();
+            driver.findElement({css: createBlock}).click();
+            driver.findElement({css: createSQL}).click();
+            // Blur.
+            driver.findElement({css: createBlock}).click();
+            driver.findElement({css: createBlock}).click();
+        });
     });
 
     test.it('the out labels should be unique', function() {
