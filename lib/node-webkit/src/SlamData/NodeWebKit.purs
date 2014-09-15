@@ -14,7 +14,7 @@ module SlamData.NodeWebKit where
   import Control.Alt ((<|>))
   import Control.Apply ((*>))
   import Control.Bind ((>=>))
-  import Control.Lens ((^.), (..), (.~), (~), (#~), (+=), (%=))
+  import Control.Lens ((^.), (..), (.~), (~), (%~), (?~), (#~), (+=), (%=), at)
   import Control.Monad (when)
   import Control.Monad.Cont.Trans (runContT)
   import Control.Monad.Eff (Eff())
@@ -107,6 +107,7 @@ module SlamData.NodeWebKit where
     , _sdConfigNodeWebkit
     , _sdConfigRec
     , _seConfigRec
+    , _validation
     )
   import SlamData.Helpers
     ( defaultMountPath
@@ -178,9 +179,9 @@ module SlamData.NodeWebKit where
   resolveConfigDir :: FilePath
   resolveConfigDir = case platform of
     "darwin" -> fromJust $
-      env "HOME" </> "Library" </> "Application Support" </> "slamdata"
-    "linux"  -> fromJust linuxConfigHome </> "slamdata"
-    "win32"  -> fromJust $ env "LOCALAPPDATA" </> "slamdata"
+      env "HOME" </> "Library" </> "Application Support" </> "SlamData"
+    "linux"  -> fromJust linuxConfigHome </> "SlamData"
+    "win32"  -> fromJust $ env "LOCALAPPDATA" </> "SlamData"
 
   sdConfigFile :: FilePath
   sdConfigFile = resolveConfigDir </> "slamdata-config.json"
@@ -220,7 +221,7 @@ module SlamData.NodeWebKit where
                          , spawn :: Spawn
                          , trace :: Trace
                          | eff
-                         ) Unit
+                         ) SlamDataState
   startSlamEngine win = do
     sdConfigStr <- catchRead "" $ readTextFile UTF8 sdConfigFile
     seConfigStr <- catchRead "" $ readTextFile UTF8 seConfigFile
@@ -238,7 +239,7 @@ module SlamData.NodeWebKit where
       pure $ runFn1 se.kill sigterm
       closeWindow true win
       pure unit)
-    pure unit
+    pure $ initialState sdConfig seConfig
 
   main :: forall h. Eff ( domain :: DomainEff
                         , dom    :: DOM
@@ -257,7 +258,7 @@ module SlamData.NodeWebKit where
     -- We're just logging to the console,
     -- but we should actually send these errors somewhere.
     -- Either user facing, or back to us to aggregate/deal with.
-    domain # on (Event "error") (\err -> trace $ "stderr: " ++ err.message)
+    domain # on (Event "error") (\err -> trace $ "Error: " ++ err.message)
     domain # run do
 
       -- Make an emitter.
@@ -270,8 +271,8 @@ module SlamData.NodeWebKit where
         ignore policy)
 
       configExists <- (&&) <$> exists sdConfigFile <*> exists seConfigFile
-      when configExists $ startSlamEngine win
-      let initialState' = (initialState defaultSDConfig defaultSEConfig){showConfig = not configExists}
+      initialState' <- if configExists then startSlamEngine win
+        else pure $ (initialState defaultSDConfig defaultSEConfig){showConfig = true}
 
       -- Set the menubar.
       menu win e initialState' >>= flip setWindowMenu win
@@ -448,6 +449,12 @@ module SlamData.NodeWebKit where
           let notebooks' = replaceNotebook notebook' <$> state.notebooks
           e # emit responseEvent state{notebooks = notebooks'}
           pure unit
+        CreateValidation ty val -> do
+          e # emit responseEvent ((state # _validation %~ at ty ?~ val) :: SlamDataState)
+          pure unit
+        DeleteValidation ty -> do
+          e # emit responseEvent (state # _validation %~ at ty .~ Nothing)
+          pure unit
         _ -> (e # emit responseEvent state) *> pure unit)
 
       -- Start up SlamData.
@@ -463,6 +470,7 @@ module SlamData.NodeWebKit where
     , settings: {sdConfig: sdConfig, seConfig: seConfig}
     , showSettings: false
     , showConfig: false
+    , validation: M.empty
     }
 
   uniqueNotebooks :: Notebook -> Notebook -> Boolean

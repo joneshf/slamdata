@@ -91,13 +91,18 @@ var paths = {
                  ]
         },
         'node-webkit': {
-            dist: { linux: 'dist/SlamData/linux64/jre'
-                  , osx: 'dist/SlamData/osx/SlamData.app/Contents/Resources/jre'
-                  , win: 'dist/SlamData/win/jre'
-                  },
-            jre: { linux: 'lib/node-webkit/bower_components/jre-linux-x64/java-linux-x64/**/*'
-                 , osx: 'lib/node-webkit/bower_components/jre-osx/java-osx/**/*'
-                 , win: 'lib/node-webkit/bower_components/jre-windows-x64/java-windows/**/*'
+            jre: { linux: { src: 'bower_components/jre-linux-x64/java-linux-x64/**/*'
+                          , dest: 'dist/SlamData/linux64/jre'
+                          , java: 'dist/SlamData/linux64/jre/bin/java'
+                          }
+                 , osx: { src: 'bower_components/jre-osx/java-osx/**/*'
+                        , dest: 'dist/SlamData/osx/SlamData.app/Contents/Resources/jre'
+                        , java: 'dist/SlamData/osx/SlamData.app/Contents/Resources/jre/bin/java'
+                        }
+                 , win: { src: 'bower_components/jre-windows-x64/java-windows/**/*'
+                        , dest: 'dist/SlamData/win/jre'
+                        , java: 'dist/SlamData/win/jre/bin/java.exe'
+                        }
                  },
             js: 'lib/node-webkit/js',
             src: [ 'lib/node-webkit/src/**/*.purs'
@@ -220,8 +225,14 @@ function imgs(target) {
 
 function jre (platform) {
     return function() {
-        return gulp.src(paths.lib['node-webkit'].jre[platform])
-            .pipe(gulp.dest(paths.lib['node-webkit'].dist[platform]));
+        return gulp.src(paths.lib['node-webkit'].jre[platform].src)
+            .pipe(gulp.dest(paths.lib['node-webkit'].jre[platform].dest));
+    }
+}
+
+function jreChmod (platform) {
+    return function(cb) {
+        fs.chmod(paths.lib['node-webkit'].jre[platform].java, '755', cb);
     }
 }
 
@@ -244,6 +255,7 @@ gulp.task('browserify', ['compile', 'browserify-index'], function() {
         .require('./output/node_modules/Data.Argonaut.Core', {expose: 'Data.Argonaut.Core'})
         .require('./output/node_modules/Data.Argonaut.Printer', {expose: 'Data.Argonaut.Printer'})
         .require('./output/node_modules/Data.Either', {expose: 'Data.Either'})
+        .require('./output/node_modules/Data.Map', {expose: 'Data.Map'})
         .require('./output/node_modules/Graphics.C3', {expose: 'Graphics.C3'})
         .require('./output/node_modules/Prelude', {expose: 'Prelude'})
         .require('./output/node_modules/SlamData', {expose: 'SlamData'})
@@ -290,9 +302,16 @@ gulp.task('connect', function() {
     return connect.server(options.connect);
 });
 
-gulp.task('jre-linux', jre('linux'));
-gulp.task('jre-osx', jre('osx'));
-gulp.task('jre-win', jre('win'));
+gulp.task('jre-linux-chmod', jreChmod('linux'));
+gulp.task('jre-linux-copy', jre('linux'));
+gulp.task('jre-osx-chmod', jreChmod('osx'));
+gulp.task('jre-osx-copy', jre('osx'));
+gulp.task('jre-win-chmod', jreChmod('win'));
+gulp.task('jre-win-copy', jre('win'));
+
+gulp.task('jre-linux', sequence('jre-linux-copy', 'jre-linux-chmod'));
+gulp.task('jre-osx', sequence('jre-osx-copy', 'jre-osx-chmod'));
+gulp.task('jre-win', sequence('jre-win-copy', 'jre-win-chmod'));
 gulp.task('jre', ['jre-linux', 'jre-osx', 'jre-win']);
 
 gulp.task('sass', ['clean-sass'], function() {
@@ -374,10 +393,28 @@ gulp.task('dist-node-webkit-platform', function() {
 });
 
 gulp.task('test-casperjs', function(done) {
-    spawn( './node_modules/.bin/casperjs'
-         , ['test', 'test/casperjs']
-         , {stdio: 'inherit'}
-         ).on('close', done);
+    var running = false;
+    var se = spawn( paths.lib['node-webkit'].jre.linux.java
+                  , [ '-jar', paths.slamengine.jar
+                    , path.join(process.env.HOME, '.config', 'SlamData', 'slamengine-config.json')
+                    ]
+                  );
+    se.stdout.on('data', function(data) {
+        if (!running) {
+            running = true;
+            spawn( './node_modules/.bin/casperjs'
+                 , ['test', 'test/casperjs']
+                 , {stdio: 'inherit'}
+                 ).on('close', function(code, sig) {
+                      se.kill();
+                      done(code);
+                  });
+        }
+    });
+    se.stderr.on('data', function(err) {
+        throw new Error(err);
+    });
+    return se;
 });
 
 gulp.task('test-webdriver', function(done) {

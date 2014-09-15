@@ -10,7 +10,7 @@ module SlamData.App.Workspace.Notebook.Settings.SlamData
   import React (eventHandler)
   import React.Types (Component(), ReactThis())
 
-  import SlamData.Helpers (value)
+  import SlamData.Helpers (runV', value)
   import SlamData.Lens
     ( _java
     , _location
@@ -25,11 +25,16 @@ module SlamData.App.Workspace.Notebook.Settings.SlamData
   import SlamData.Types
     ( SDConfig()
     , SDConfigServerRec()
+    , SlamDataEventTy(..)
+    , ValidationTy(..)
     )
   import SlamData.Types.Workspace.Notebook.Settings
     ( SettingsProps()
     , SettingsState()
     )
+  import SlamData.Validation (defaultPort, portParser, validateParsed)
+
+  import Text.Parsing.Parser (runParser)
 
   import qualified React.DOM as D
 
@@ -62,12 +67,16 @@ module SlamData.App.Workspace.Notebook.Settings.SlamData
   slamDataServerPort this = D.div {}
     [ D.label {htmlFor: "server-port"} [D.rawText "Port"]
     , D.input { name: "server-port"
-              , onChange: eventHandler this \this e -> pure $
-                this.setState (this.state # _sdServerPort .~ (readInt 10 $ value e.target))
+              , onChange: eventHandler this \this' e -> do
+                let parsed = runParser (value e.target) portParser
+                this'.props.request $ CreateValidation SettingsSDServerPort $ validateParsed parsed
+                pure $ this'.setState (this'.state # _sdServerPort .~ defaultPort parsed)
               , placeholder: "8080"
-              , value: this.state^._sdServerPort
+              , defaultValue: this.state^._sdServerPort
               }
       []
+    , D.span {className: "validation-error"}
+      [D.rawText $ runV' this.props.state.validation SettingsSDServerPort]
     ]
   -- Java Fields
 

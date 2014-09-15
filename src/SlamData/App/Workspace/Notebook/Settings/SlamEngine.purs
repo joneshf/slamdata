@@ -8,12 +8,10 @@ module SlamData.App.Workspace.Notebook.Settings.SlamEngine
   import Data.Maybe (Maybe(..))
   import Data.Tuple (Tuple(..))
 
-  import Global (readInt)
-
   import React (eventHandler)
   import React.Types (Component(), ReactThis())
 
-  import SlamData.Helpers (value)
+  import SlamData.Helpers (getOrElse, runV', value)
   import SlamData.Lens
     ( _connectionUri
     , _database
@@ -32,12 +30,23 @@ module SlamData.App.Workspace.Notebook.Settings.SlamEngine
     , SDConfigNodeWebkitRec()
     , SEConfig()
     , SEConfigServerRec()
+    , SlamDataEventTy(..)
+    , ValidationTy(..)
     )
   import SlamData.Types.Workspace.Notebook.Settings
     ( SettingsProps()
     , SettingsState()
     , SettingsTab(..)
     )
+  import SlamData.Validation
+    ( defaultPort
+    , portParser
+    , validateMongoUri
+    , validateMountPath
+    , validateParsed
+    )
+
+  import Text.Parsing.Parser (runParser)
 
   import qualified Data.Map as M
   import qualified React.DOM as D
@@ -58,12 +67,16 @@ module SlamData.App.Workspace.Notebook.Settings.SlamEngine
   slamEngineServerPort this = D.div {}
     [ D.label {htmlFor: "slamengine-port"} [D.rawText "Port"]
     , D.input { name: "slamengine-port"
-              , onChange: eventHandler this \this e -> pure $
-                this.setState (this.state # _seServerPort .~ (readInt 10 $ value e.target))
+              , onChange: eventHandler this \this e -> do
+                let parsed = runParser (value e.target) portParser
+                this.props.request $ CreateValidation SettingsSEServerPort $ validateParsed parsed
+                pure $ this.setState (this.state # _seServerPort .~ defaultPort parsed)
               , placeholder: "8080"
-              , value: this.state^._seServerPort
+              , defaultValue: this.state^._seServerPort
               }
       []
+    , D.span {className: "validation-error"}
+      [D.rawText $ runV' this.props.state.validation SettingsSEServerPort]
     ]
 
   -- Mounting Fields
@@ -102,10 +115,13 @@ module SlamData.App.Workspace.Notebook.Settings.SlamEngine
                 let state' = this.state # _seMountings
                            %~ (at path .~ Nothing) .. (at path' ?~ mounting)
                 pure $ this.setState state'
+                this.props.request $ CreateValidation SettingsSEMountPath $ validateMountPath path'
               , placeholder: "/"
-              , value: path
+              , defaultValue: path
               }
       []
+    , D.span {className: "validation-error"}
+      [D.rawText $ runV' this.props.state.validation SettingsSEMountPath]
     ]
 
   slamEngineMountingMongoDBMongoUri :: forall fields eff state
@@ -116,14 +132,18 @@ module SlamData.App.Workspace.Notebook.Settings.SlamEngine
     [ D.label {htmlFor: "mongodb-mongouri"} [D.rawText "MongoUri"]
     , D.input { name: "mongodb-mongouri"
               , onChange: eventHandler this \this e -> do
+                let uri = value e.target
                 let state' = this.state # _seMountings
                            %~ ix path
                            %~ _mountingMongoURI .~ value e.target
                 pure $ this.setState state'
+                this.props.request $ CreateValidation SettingsSEMongoUri $ validateMongoUri uri
               , placeholder: "mongodb://localhost:27017"
-              , value: mounting^._mountingMongoURI
+              , defaultValue: mounting^._mountingMongoURI
               }
       []
+    , D.span {className: "validation-error"}
+      [D.rawText $ runV' this.props.state.validation SettingsSEMongoUri]
     ]
 
   slamEngineMountingMongoDBDatabse :: forall fields eff state
@@ -139,7 +159,7 @@ module SlamData.App.Workspace.Notebook.Settings.SlamEngine
                            %~ _mountingDatabase .~ value e.target
                 pure $ this.setState state'
               , placeholder: "test"
-              , value: mounting^._mountingDatabase
+              , defaultValue: mounting^._mountingDatabase
               }
       []
     ]

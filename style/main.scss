@@ -20,6 +20,7 @@ $slamdata-orange: rgb(255, 128, 0);
 
 // Import our stuff.
 @import "config-modal.scss";
+@import "error.scss";
 @import "filesystem.scss";
 @import "notebook.scss";
 @import "notebook/settings.scss";

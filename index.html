@@ -31,26 +31,14 @@
     <script type="text/javascript">
         var C3 = require('Graphics.C3');
         var Prelude = require('Prelude');
+        var Map = require('Data.Map');
         var sd = require('SlamData');
         var helpers = require('SlamData.Helpers');
         var types = require('SlamData.Types');
         var jsTypes = require('SlamData.Types.JS');
         var blockTypes = require('SlamData.Types.Workspace.Notebook.Block');
         // Load up slamdata.
-        var state = {
-            files: {
-                name: helpers.defaultMountPath,
-                type: 'directory',
-                children: []
-            },
-            notebooks: [],
-            settings: {
-                sdConfig: helpers.defaultSDConfig,
-                seConfig: helpers.defaultSEConfig
-            },
-            showSettings: false,
-            showConfig: false
-        };
+        var state = helpers.defaultState;
         // Start up an emitter to pass down to slamdata.
         var emitter = new TinyEmitter();
         var respond = function(data) {
@@ -336,6 +324,18 @@
                 respond(newState);
             } else if (jsTypes.isShowConfig(newEvent)) {
                 newState.showConfig = true;
+                respond(newState);
+            } else if (jsTypes.isSaveSDConfig(newEvent)) {
+                newState.settings.sdConfig = newEvent.value0;
+                respond(newState);
+            } else if (jsTypes.isSaveSEConfig(newEvent)) {
+                newState.settings.seConfig = newEvent.value0;
+                respond(newState);
+            } else if (jsTypes.isCreateValidation(newEvent)) {
+                var key = newEvent.value0;
+                var val = newEvent.value1;
+                var v = Map.insert(types.ordValidationTy())(key)(val)(newState.validation);
+                newState.validation = v;
                 respond(newState);
             } else {
                 // We can't do anything else, just pass it on back.

@@ -1,13 +1,14 @@
 #!/bin/bash
 set -ev
-cat <<EOF > $HOME/.config/slamdata/slamdata-config.json
+mkdir -p $HOME/.config/SlamData
+cat <<EOF > $HOME/.config/SlamData/slamdata-config.json
 {
   "nodeWebkit": {
     "java": "java"
   },
   "server": {
     "location": "http://localhost",
-    "port": 8080
+    "port": 20223
   }
 }
 EOF

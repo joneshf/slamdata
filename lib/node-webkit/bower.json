@@ -15,9 +15,6 @@
     "tests"
   ],
   "dependencies": {
-    "jre-linux-x64": "http://installbuilder.bitrock.com/java/jre1.7.0_67-linux-x64.zip",
-    "jre-osx": "http://installbuilder.bitrock.com/java/jre1.7.0_67-osx.zip",
-    "jre-windows-x64": "http://installbuilder.bitrock.com/java/jre1.7.0_67-windows-x64.zip",
     "purescript-argonaut": "~0.1.1",
     "purescript-arrays": "*",
     "purescript-c3": "~0.1.0",
@@ -46,6 +43,7 @@
     "purescript-tuples": "*",
     "purescript-webstorage": "~0.2.0",
     "purescript-xhr": "~0.2.0",
-    "purescript-exceptions": "~0.2.1"
+    "purescript-exceptions": "~0.2.1",
+    "purescript-validation": "~0.0.3"
   }
 }

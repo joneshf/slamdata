@@ -1,17 +1,18 @@
 #!/bin/bash
 set -ev
-cat <<EOF > $HOME/.config/slamdata/slamengine-config.json
+mkdir -p $HOME/.config/SlamData
+cat <<EOF > $HOME/.config/SlamData/slamengine-config.json
 {
   "mountings": {
     "/": {
       "mongodb": {
-        "connectionUri": "mongodb://localhost:27017",
-        "database": "test"
+        "connectionUri": "mongodb://slamengine:slamengine@ds045089.mongolab.com:45089/slamengine-test-01",
+        "database": "slamengine-test-01"
       }
     }
   },
   "server": {
-    "port": 8080
+    "port": 20223
   }
 }
 EOF

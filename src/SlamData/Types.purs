@@ -23,6 +23,7 @@ module SlamData.Types where
   import Data.Maybe (maybe, Maybe(..))
   import Data.Tuple (uncurry, Tuple(..))
   import Data.Traversable (sequence, traverse, Traversable)
+  import Data.Validation (V(..))
 
   import DOM (DOM())
 
@@ -110,6 +111,8 @@ module SlamData.Types where
                        | EditBlock Notebook Block
                        | EvalBlock Notebook Block
                        | EvalVisual Notebook Block [VisualData]
+                       | CreateValidation ValidationTy ValidationVal
+                       | DeleteValidation ValidationTy
 
   type SlamDataRequest eff
     =  SlamDataEventTy
@@ -129,7 +132,36 @@ module SlamData.Types where
     , settings     :: Settings
     , showSettings :: Boolean
     , showConfig   :: Boolean
+    , validation   :: Validation
     }
+
+  data ValidationTy = SettingsSDServerPort
+                    | SettingsSEMongoUri
+                    | SettingsSEMountPath
+                    | SettingsSEServerPort
+
+  instance eqValidationTy :: Eq ValidationTy where
+    (==) SettingsSDServerPort SettingsSDServerPort = true
+    (==) SettingsSEMongoUri   SettingsSEMongoUri   = true
+    (==) SettingsSEMountPath  SettingsSEMountPath  = true
+    (==) SettingsSEServerPort SettingsSEServerPort = true
+    (==) _                    _                    = false
+    (/=) v v' = not (v == v')
+
+  instance ordValidationTy :: Ord ValidationTy where
+    -- Lower bound
+    compare SettingsSDServerPort _                   = LT
+    compare SettingsSEMongoUri   SettingsSEMountPath = LT
+    -- Upper bound
+    compare SettingsSEServerPort _                   = GT
+    compare v v' | v == v' = EQ
+    compare v v' = case compare v' v of
+      LT -> GT
+      GT -> LT
+
+  type ValidationVal = V String Unit
+
+  type Validation = M.Map ValidationTy ValidationVal
 
   -- Instances
 

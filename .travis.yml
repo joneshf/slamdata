@@ -10,7 +10,6 @@ services:
 before_install:
   - mkdir -p $HOME/bin
   - mkdir -p $HOME/.local/share/purescript/prelude
-  - mkdir -p $HOME/.config/slamdata
   - ./scripts/travis/write_sdConfig.sh
   - ./scripts/travis/write_seConfig.sh
   - Xvfb :1 &
@@ -24,7 +23,6 @@ install:
   - npm install
   - bower install
 script:
-  - java -jar bower_components/slamengine-jar/index.jar &
   - npm test
 after_success:
   - ./scripts/travis/dist.sh
