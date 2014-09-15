@@ -89,6 +89,7 @@ module SlamData.App.Workspace.Notebook
     , name: "Settings"
     , path: ""
     , published: false
+    , numOut: 0
     }
 
   createNotebookButton :: forall eff fields state

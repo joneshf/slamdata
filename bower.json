@@ -35,7 +35,7 @@
     "purescript-foldable-traversable": "*",
     "purescript-foreign": "~0.1.6",
     "purescript-http": "~0.2.0",
-    "purescript-lens": "~0.1.0",
+    "purescript-lens": "~0.2.0",
     "purescript-maps": "~0.0.4",
     "purescript-maybe": "*",
     "purescript-monoid": "*",

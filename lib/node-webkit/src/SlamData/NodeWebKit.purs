@@ -14,7 +14,7 @@ module SlamData.NodeWebKit where
   import Control.Alt ((<|>))
   import Control.Apply ((*>))
   import Control.Bind ((>=>))
-  import Control.Lens ((^.), (..), (.~), (~))
+  import Control.Lens ((^.), (..), (.~), (~), (#~), (+=), (%=))
   import Control.Monad (when)
   import Control.Monad.Cont.Trans (runContT)
   import Control.Monad.Eff (Eff())
@@ -33,6 +33,7 @@ module SlamData.NodeWebKit where
   import Data.Argonaut.Encode (EncodeJson)
   import Data.Array (filter, head, insertAt, last, length, nubBy, snoc)
   import Data.Either (either, Either(..))
+  import Data.Foldable (find)
   import Data.Function (mkFn0, mkFn1, mkFn3, runFn1, Fn1())
   import Data.Maybe (Maybe(..))
   import Data.Maybe.Unsafe (fromJust)
@@ -97,9 +98,12 @@ module SlamData.NodeWebKit where
     ( _children
     , _fileTypeRec
     , _files
+    , _ident
     , _java
     , _mountings
     , _nodeWebkit
+    , _notebookRec
+    , _numOut
     , _sdConfigNodeWebkit
     , _sdConfigRec
     , _seConfigRec
@@ -125,6 +129,7 @@ module SlamData.NodeWebKit where
     ( Block(..)
     , BlockID(..)
     , BlockMode(..)
+    , BlockRec()
     , BlockType(..)
     )
   import SlamData.Types.Workspace.Notebook.Block.Visual (VisualData(..))
@@ -305,7 +310,13 @@ module SlamData.NodeWebKit where
           ident <- NotebookID <$> v4
           let name = "Untitled" ++ show (length state.notebooks + 1)
           let path = mount state.settings.seConfig
-          let notebook = Notebook {ident: ident, blocks: [], name: name, path: path, published: false}
+          let notebook = Notebook { ident: ident
+                                  , blocks: []
+                                  , name: name
+                                  , path: path
+                                  , published: false
+                                  , numOut: 0
+                                  }
           e # emit responseEvent state{notebooks = state.notebooks `snoc` notebook}
           pure unit
         CloseNotebook ident -> do
@@ -320,14 +331,19 @@ module SlamData.NodeWebKit where
           pure unit
         CreateBlock ident ty index -> do
           ident' <- BlockID <$> v4
+          let isSQL = ty == BlockType "SQL"
+          let n = fromJust $ find (\n -> n^._notebookRec.._ident == ident) state.notebooks
           let block = Block { ident: ident'
                             , blockType: ty
                             , blockMode: BlockMode "Edit"
                             , editContent: ""
                             , evalContent: ""
-                            , label: ""
+                            , label: if isSQL then "out" ++ show (n^._notebookRec.._numOut) else ""
                             }
-          let notebooks' = insertBlock ident block index <$> state.notebooks
+          let n' = n #~ do
+                 when isSQL (_notebookRec.._numOut += 1)
+                 id %= insertBlock ident block index
+          let notebooks' = replaceNotebook n' <$> state.notebooks
           e # emit responseEvent state{notebooks = notebooks'}
           pure unit
         DeleteBlock nID bID -> do
@@ -347,10 +363,10 @@ module SlamData.NodeWebKit where
           e # emit responseEvent state{notebooks = notebooks'}
           pure unit
         EvalBlock (Notebook n) (Block b@{blockType = BlockType "SQL"}) -> do
-          let blockName = "out" ++ show (countOut n)
+          let blockName = "out" ++ show (countOut n b)
           let queryUrl = serverURI state.settings.sdConfig ++ "/query/fs" ++ n.path
           let dataUrl = serverURI state.settings.sdConfig ++ "/data/fs"
-          let out = n.name ++ "/" ++ blockName
+          let out = n.name ++ "/" ++ b.label
           X.post X.defaultAjaxOptions
             { onReadyStateChange = X.onDone \res -> do
               out' <- jsonParse {out: ""} <$> X.getResponseText res
@@ -360,7 +376,6 @@ module SlamData.NodeWebKit where
                   content <- X.getResponseText res
                   let block'' = Block b{ blockMode = BlockMode "Eval"
                                        , evalContent = content
-                                       , label = blockName
                                        }
                   let notebooks' = updateBlock n.ident block'' <$> state.notebooks
                   e # emit responseEvent state{notebooks = notebooks'}
@@ -400,7 +415,7 @@ module SlamData.NodeWebKit where
                 Nothing -> pure unit
                 Just revision -> do
                   i <- NotebookID <$> v4
-                  let default = {ident: i, blocks: [], name: name, path: path, published: false}
+                  let default = {ident: i, blocks: [], name: name, path: path, published: false, numOut: 0}
                   let nb = jsonParse default revision
                   let notebook' = Notebook nb{name = name}
                   let notebooks' = state.notebooks `snoc` notebook'
@@ -458,11 +473,12 @@ module SlamData.NodeWebKit where
     | nb.ident == nb'.ident = n
   replaceNotebook _ n = n
 
-  countOut :: NotebookRec -> Number
-  countOut {blocks = bs} = length $ filter go bs
+  countOut :: NotebookRec -> BlockRec -> Number
+  countOut {blocks = bs} {blockType = ty} = go bs 0
     where
-      go (Block b) =
-        b.blockType == BlockType "SQL" && b.blockMode == BlockMode "Eval"
+      go []           n                     = n
+      go (Block b:bs) n | b.blockType == ty = go bs (n + 1)
+      go (_:bs)       n                     = go bs n
 
   createBlock :: NotebookID -> Block -> Notebook -> Notebook
   createBlock ident block (Notebook n@{ident = ident', blocks = blocks})

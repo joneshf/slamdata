@@ -25,6 +25,8 @@
     "browserify": "^5.10.0",
     "casperjs": "^1.1.0-beta3",
     "chromedriver": "^2.10.0-1",
+    "core.operators": "^1.0.0",
+    "data.array": "^0.1.2",
     "event-stream": "^3.1.5",
     "gulp": "^3.8.5",
     "gulp-bower": "0.0.6",
