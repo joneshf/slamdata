@@ -27,6 +27,7 @@ module SlamData.Types.Workspace.Notebook where
     , path      :: String
     , published :: Boolean
     , numOut    :: Number
+    , persisted :: Boolean
     }
 
   instance eqNotebookID :: Eq NotebookID where
@@ -46,12 +47,14 @@ module SlamData.Types.Workspace.Notebook where
       path      <- M.lookup "path"      obj ?>>= "path"      >>= decodeJson
       published <- M.lookup "published" obj ?>>= "published" >>= decodeJson
       numOut    <- M.lookup "numOut"    obj ?>>= "numOut"    >>= decodeJson
+      persisted <- M.lookup "persisted" obj ?>>= "persisted" >>= decodeJson
       pure $ Notebook { ident: ident
                       , blocks: blocks
                       , name: name
                       , path: path
                       , published: published
                       , numOut: numOut
+                      , persisted: persisted
                       }
 
   instance decodeNotebookID :: DecodeJson NotebookID where
@@ -65,6 +68,7 @@ module SlamData.Types.Workspace.Notebook where
       ~> "path"      := encodeJson nb.path
       ~> "published" := encodeJson nb.published
       ~> "numOut"    := encodeJson nb.numOut
+      ~> "persisted" := encodeJson nb.persisted
       ~> jsonEmptyObject
 
   instance encodeJsonNotebookID :: EncodeJson NotebookID where
