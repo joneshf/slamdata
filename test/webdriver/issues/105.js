@@ -20,7 +20,7 @@ var assert = require('assert')
 
 function promiseAssertComparison(cmp, msg) {
     var prom = new wd.promise.Deferred();
-    var req = new http.Request('GET', '/metadata/fs/Untitled1/');
+    var req = new http.Request('GET', '/metadata/fs/Untitled/');
     var client = new http.HttpClient(serverURL);
     client.send(req, function(err, res) {
         if (err) {
@@ -49,6 +49,10 @@ test.describe('Renaming a notebook', function() {
             driver.findElement({css: '#notebook .content.active .create-block-button'}).click();
             driver.findElement({css: '#notebook .content.active .create-block-button [title="SQL"]'}).click();
             driver.findElement({css: '#notebook .content.active [title="Save"]'}).click()
+            // Since it's the first save, we have to confirm the name.
+            driver.findElement({css: '#notebook .tab.active input'}).click();
+            // Blur it to confirm.
+            driver.findElement({tagName: 'body'}).click();
             // We should have a better way to confirm the notebook was saved.
             // See https://github.com/slamdata/slamdata/issues/75
             driver.sleep(10000).then(function() {
@@ -60,8 +64,8 @@ test.describe('Renaming a notebook', function() {
     test.it('after moving the location of the notebook', function() {
         driver.findElement({css: '#notebook .content.active [title="Rename"]'}).click();
         driver.findElement({css: '#notebook .tab.active input'}).clear();
-        driver.findElement({css: '#notebook .tab.active input'}).sendKeys('Foo');
-        // Blur it.
+        driver.findElement({css: '#notebook .tab.active input'}).sendKeys('Bar');
+        // Blur it to confirm.
         driver.findElement({tagName: 'body'}).click();
     });
 

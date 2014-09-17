@@ -309,7 +309,7 @@ module SlamData.NodeWebKit where
           pure unit
         CreateNotebook -> do
           ident <- NotebookID <$> v4
-          let name = "Untitled" ++ show (length state.notebooks + 1)
+          let name = "Untitled"
           let path = mount state.settings.seConfig
           let notebook = Notebook { ident: ident
                                   , blocks: []
@@ -317,6 +317,7 @@ module SlamData.NodeWebKit where
                                   , path: path
                                   , published: false
                                   , numOut: 0
+                                  , persisted: false
                                   }
           e # emit responseEvent state{notebooks = state.notebooks `snoc` notebook}
           pure unit
@@ -400,10 +401,13 @@ module SlamData.NodeWebKit where
           let dataUrl = serverURI state.settings.sdConfig ++ "/data/fs"
           let url = dataUrl ++ n.path ++ n.name ++ "/index.nb"
           let n' = deleteID n
+          let n'' = n'{persisted = true}
           X.post X.defaultAjaxOptions
-            { onReadyStateChange = X.onDone \_ ->
-              (e # emit responseEvent state) *> pure unit
-            } url {} (XT.UrlEncoded $ jsonStringify n')
+            { onReadyStateChange = X.onDone \_ -> do
+              let notebooks' = replaceNotebook (Notebook n'') <$> state.notebooks
+              e # emit responseEvent state{notebooks = notebooks'}
+              pure unit
+            } url {} (XT.UrlEncoded $ jsonStringify n'')
           pure unit
         OpenNotebook path -> do
           let dataUrl = serverURI state.settings.sdConfig ++ "/data/fs"
@@ -414,9 +418,17 @@ module SlamData.NodeWebKit where
               revisions <- trim >>> split "\n" <$> X.getResponseText res
               case last revisions of
                 Nothing -> pure unit
+                Just "" -> pure unit
                 Just revision -> do
                   i <- NotebookID <$> v4
-                  let default = {ident: i, blocks: [], name: name, path: path, published: false, numOut: 0}
+                  let default = { ident: i
+                                , blocks: []
+                                , name: name
+                                , path: path
+                                , published: false
+                                , numOut: 0
+                                , persisted: false
+                                }
                   let nb = jsonParse default revision
                   let notebook' = Notebook nb{name = name}
                   let notebooks' = state.notebooks `snoc` notebook'
