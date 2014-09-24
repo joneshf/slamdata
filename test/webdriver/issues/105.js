@@ -46,13 +46,25 @@ test.describe('Renaming a notebook', function() {
         // We need a much better way of ensuring the server is running than sleeping.
         driver.sleep(15000).then(function() {
             driver.findElement({css: '#add-notebook'}).click();
+            return driver.sleep(1000);
+        }).then(function() {
             driver.findElement({css: '#notebook .content.active .create-block-button'}).click();
+            return driver.sleep(1000);
+        }).then(function() {
             driver.findElement({css: '#notebook .content.active .create-block-button [title="SQL"]'}).click();
+            return driver.sleep(1000);
+        }).then(function() {
             driver.findElement({css: '#notebook .content.active [title="Save"]'}).click()
+            return driver.sleep(1000);
+        }).then(function() {
             // Since it's the first save, we have to confirm the name.
             driver.findElement({css: '#notebook .tab.active input'}).click();
+            return driver.sleep(1000);
+        }).then(function() {
             // Blur it to confirm.
             driver.findElement({tagName: 'body'}).click();
+            return driver.sleep(1000);
+        }).then(function() {
             // We should have a better way to confirm the notebook was saved.
             // See https://github.com/slamdata/slamdata/issues/75
             driver.sleep(10000).then(function() {
@@ -62,11 +74,20 @@ test.describe('Renaming a notebook', function() {
     });
 
     test.it('after moving the location of the notebook', function() {
-        driver.findElement({css: '#notebook .content.active [title="Rename"]'}).click();
-        driver.findElement({css: '#notebook .tab.active input'}).clear();
-        driver.findElement({css: '#notebook .tab.active input'}).sendKeys('Bar');
-        // Blur it to confirm.
-        driver.findElement({tagName: 'body'}).click();
+        driver.sleep(1000).then(function() {
+            driver.findElement({css: '#notebook .content.active [title="Rename"]'}).click();
+            return driver.sleep(1000);
+        }).then(function() {
+            driver.findElement({css: '#notebook .tab.active input'}).clear();
+            return driver.sleep(1000);
+        }).then(function() {
+            driver.findElement({css: '#notebook .tab.active input'}).sendKeys('Bar');
+            return driver.sleep(1000);
+        }).then(function() {
+            // Blur it to confirm.
+            driver.findElement({tagName: 'body'}).click();
+            return driver.sleep(1000);
+        });
     });
 
     test.it('all files in the notebook should have moved', function() {

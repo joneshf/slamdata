@@ -22,6 +22,7 @@ module SlamData.App.Workspace.Notebook.Settings.SlamEngine
     , _seConfig
     , _seConfigRec
     , _seConfigServer
+    , _seDirty
     , _server
     )
   import SlamData.Types
@@ -33,11 +34,11 @@ module SlamData.App.Workspace.Notebook.Settings.SlamEngine
     , SlamDataEventTy(..)
     , ValidationTy(..)
     )
-  import SlamData.Types.Workspace.Notebook.Settings
+  import SlamData.Types.React.WorkSpace.Notebook.Settings
     ( SettingsProps()
     , SettingsState()
-    , SettingsTab(..)
     )
+  import SlamData.Types.Workspace.Notebook.Settings (SettingsTab(..))
   import SlamData.Validation
     ( defaultPort
     , portParser
@@ -70,7 +71,7 @@ module SlamData.App.Workspace.Notebook.Settings.SlamEngine
               , onChange: eventHandler this \this e -> do
                 let parsed = runParser (value e.target) portParser
                 this.props.request $ CreateValidation SettingsSEServerPort $ validateParsed parsed
-                pure $ this.setState (this.state # _seServerPort .~ defaultPort parsed)
+                pure $ this.setState (this.state # _seServerPort .~ defaultPort parsed # _seDirty .~ true)
               , placeholder: "8080"
               , defaultValue: this.state^._seServerPort
               }
@@ -112,7 +113,7 @@ module SlamData.App.Workspace.Notebook.Settings.SlamEngine
     , D.input { name: "mongodb-path"
               , onChange: eventHandler this \this e -> do
                 let path' = value e.target
-                let state' = this.state # _seMountings
+                let state' = this.state # _seDirty .~ true # _seMountings
                            %~ (at path .~ Nothing) .. (at path' ?~ mounting)
                 pure $ this.setState state'
                 this.props.request $ CreateValidation SettingsSEMountPath $ validateMountPath path'
@@ -133,7 +134,7 @@ module SlamData.App.Workspace.Notebook.Settings.SlamEngine
     , D.input { name: "mongodb-mongouri"
               , onChange: eventHandler this \this e -> do
                 let uri = value e.target
-                let state' = this.state # _seMountings
+                let state' = this.state # _seDirty .~ true # _seMountings
                            %~ ix path
                            %~ _mountingMongoURI .~ value e.target
                 pure $ this.setState state'
@@ -154,7 +155,7 @@ module SlamData.App.Workspace.Notebook.Settings.SlamEngine
     [ D.label {htmlFor: "mongodb-database"} [D.rawText "Database"]
     , D.input { name: "mongodb-database"
               , onChange: eventHandler this \this e -> do
-                let state' = this.state # _seMountings
+                let state' = this.state # _seDirty .~ true # _seMountings
                            %~ ix path
                            %~ _mountingDatabase .~ value e.target
                 pure $ this.setState state'

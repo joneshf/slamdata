@@ -5,6 +5,7 @@ module SlamData.App.Workspace.Notebook.Block
   ) where
 
   import Control.Lens ((^.), (..), (.~))
+  import Control.Monad (unless)
 
   import Data.Function (mkFn3)
 
@@ -133,8 +134,10 @@ module SlamData.App.Workspace.Notebook.Block
           let content = this.state.editContent
               block' = this.props.block # _blockRec.._editContent .~ content
           in this.props.request $ EvalBlock this.props.notebook block'
-        , onChange: eventHandler this \this e -> pure $
-          this.setState this.state{editContent = value e.target}
+        , onChange: eventHandler this \this e -> do
+          pure $ this.setState this.state{editContent = value e.target}
+          let nb = this.props.notebook^._notebookRec
+          unless (nb.dirty) (this.props.request $ DirtyNotebook this.props.notebook)
         , onKeyUp: eventHandler this \this k ->
           if k.ctrlKey && k.key == "Enter" then
             let content = this.state.editContent

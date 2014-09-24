@@ -35,10 +35,10 @@ module SlamData.NodeWebKit where
   import Data.Either (either, Either(..))
   import Data.Foldable (find)
   import Data.Function (mkFn0, mkFn1, mkFn3, runFn1, Fn1())
-  import Data.Maybe (Maybe(..))
+  import Data.Maybe (maybe, Maybe(..))
   import Data.Maybe.Unsafe (fromJust)
   import Data.String (joinWith, split, trim)
-  import Data.Tuple (fst)
+  import Data.Tuple (fst, Tuple(..))
 
   import Debug.Trace (trace, print, Trace())
 
@@ -105,8 +105,11 @@ module SlamData.NodeWebKit where
     , _notebookRec
     , _numOut
     , _sdConfigNodeWebkit
+    , _sdConfig
     , _sdConfigRec
+    , _seConfig
     , _seConfigRec
+    , _settings
     , _validation
     )
   import SlamData.Helpers
@@ -215,14 +218,16 @@ module SlamData.NodeWebKit where
 
   startSlamEngine :: forall eff
                   .  NWWindow
+                  -> Maybe ChildProcess
                   -> Eff ( event :: EventEff
                          , fs :: FS
                          , nw :: NW
                          , spawn :: Spawn
                          , trace :: Trace
                          | eff
-                         ) SlamDataState
-  startSlamEngine win = do
+                         ) (Tuple SlamDataState (Maybe ChildProcess))
+  startSlamEngine win cp = do
+    maybe (pure unit) (\(ChildProcess se) -> pure (runFn1 se.kill sigterm) *> pure unit) cp
     sdConfigStr <- catchRead "" $ readTextFile UTF8 sdConfigFile
     seConfigStr <- catchRead "" $ readTextFile UTF8 seConfigFile
     let sdConfig = parseConfig sdConfigStr `getOrElse` defaultSDConfig
@@ -239,7 +244,7 @@ module SlamData.NodeWebKit where
       pure $ runFn1 se.kill sigterm
       closeWindow true win
       pure unit)
-    pure $ initialState sdConfig seConfig
+    pure $ Tuple (initialState sdConfig seConfig) (Just $ ChildProcess se)
 
   main :: forall h. Eff ( domain :: DomainEff
                         , dom    :: DOM
@@ -271,18 +276,35 @@ module SlamData.NodeWebKit where
         ignore policy)
 
       configExists <- (&&) <$> exists sdConfigFile <*> exists seConfigFile
-      initialState' <- if configExists then startSlamEngine win
-        else pure $ (initialState defaultSDConfig defaultSEConfig){showConfig = true}
-
+      Tuple initialState' se <- if configExists then startSlamEngine win Nothing
+        else pure $ Tuple (initialState defaultSDConfig defaultSEConfig){showConfig = true} Nothing
+      -- FIXME: It'd be nice to not have to use `ST`.
+      -- Might be able to get away from this if we move this blob of stuff out into its own function.
+      -- Then we can use `State`, though, does it really make a difference?
+      stSE <- newSTRef se
       -- Set the menubar.
       menu win e initialState' >>= flip setWindowMenu win
 
       -- Handle all of the events.
       e # on requestEvent (\{event = event, state = state} -> case event of
-        SaveSDConfig sdC ->
+        SaveSDConfig sdC -> do
           writeTextFile UTF8 sdConfigFile (showConfig sdC)
-        SaveSEConfig seC ->
+          e # emit responseEvent (state#_settings.._sdConfig .~ sdC)
+          -- FIXME: This is not ideal,
+          -- but until we rethink our logic here we'll use `ST`
+          se' <- readSTRef stSE
+          Tuple _ se <- startSlamEngine win se'
+          writeSTRef stSE se
+          pure unit
+        SaveSEConfig seC -> do
           writeTextFile UTF8 seConfigFile (showConfig seC)
+          e # emit responseEvent (state#_settings.._seConfig .~ seC)
+          -- FIXME: This is not ideal,
+          -- but until we rethink our logic here we'll use `ST`
+          se' <- readSTRef stSE
+          Tuple _ se <- startSlamEngine win se'
+          writeSTRef stSE se
+          pure unit
         HideConfig -> do
           e # emit responseEvent state{showConfig = false}
           pure unit
@@ -318,6 +340,7 @@ module SlamData.NodeWebKit where
                                   , published: false
                                   , numOut: 0
                                   , persisted: false
+                                  , dirty: true
                                   }
           e # emit responseEvent state{notebooks = state.notebooks `snoc` notebook}
           pure unit
@@ -401,7 +424,7 @@ module SlamData.NodeWebKit where
           let dataUrl = serverURI state.settings.sdConfig ++ "/data/fs"
           let url = dataUrl ++ n.path ++ n.name ++ "/index.nb"
           let n' = deleteID n
-          let n'' = n'{persisted = true}
+          let n'' = n'{persisted = true, dirty = false}
           X.post X.defaultAjaxOptions
             { onReadyStateChange = X.onDone \_ -> do
               let notebooks' = replaceNotebook (Notebook n'') <$> state.notebooks
@@ -428,6 +451,7 @@ module SlamData.NodeWebKit where
                                 , published: false
                                 , numOut: 0
                                 , persisted: false
+                                , dirty: false
                                 }
                   let nb = jsonParse default revision
                   let notebook' = Notebook nb{name = name}
@@ -447,7 +471,7 @@ module SlamData.NodeWebKit where
             , url = url
             , headers = ["Destination" ~ (fs </> path </> "/")]
             , onLoad = \_ -> do
-              let notebook' = Notebook n{name = base}
+              let notebook' = Notebook n{name = base, dirty = false}
               let notebooks' = replaceNotebook notebook' <$> state.notebooks
               e # emit responseEvent state{notebooks = notebooks'}
               pure unit
@@ -457,7 +481,7 @@ module SlamData.NodeWebKit where
           let dataUrl = serverURI state.settings.sdConfig ++ "/data/fs"
           let url = dataUrl </> n.path </> n.name </> "index.nb"
           let n' = deleteID n
-          let notebook' = Notebook n'{published = not n.published}
+          let notebook' = Notebook n'{published = not n.published, dirty = true}
           let notebooks' = replaceNotebook notebook' <$> state.notebooks
           e # emit responseEvent state{notebooks = notebooks'}
           pure unit
@@ -466,6 +490,16 @@ module SlamData.NodeWebKit where
           pure unit
         DeleteValidation ty -> do
           e # emit responseEvent (state # _validation %~ at ty .~ Nothing)
+          pure unit
+        DirtyNotebook (Notebook n) -> do
+          let nb = Notebook n{dirty = true}
+          let nbs = replaceNotebook nb <$> state.notebooks
+          e # emit responseEvent state{notebooks = nbs}
+          pure unit
+        CleanNotebook (Notebook n) -> do
+          let nb = Notebook n{dirty = false}
+          let nbs = replaceNotebook nb <$> state.notebooks
+          e # emit responseEvent state{notebooks = nbs}
           pure unit
         _ -> (e # emit responseEvent state) *> pure unit)
 
@@ -502,24 +536,24 @@ module SlamData.NodeWebKit where
 
   createBlock :: NotebookID -> Block -> Notebook -> Notebook
   createBlock ident block (Notebook n@{ident = ident', blocks = blocks})
-    | ident == ident' = Notebook n{blocks = blocks `snoc` block}
+    | ident == ident' = Notebook n{blocks = blocks `snoc` block, dirty = true}
   createBlock _ _ nb = nb
 
   deleteBlock :: NotebookID -> BlockID -> Notebook -> Notebook
   deleteBlock nID bID (Notebook n@{ident = nID', blocks = blocks})
-    | nID == nID' = Notebook n{blocks = filter go blocks}
+    | nID == nID' = Notebook n{blocks = filter go blocks, dirty = true}
     where
       go (Block b) = b.ident /= bID
   deleteBlock _ _ nb = nb
 
   insertBlock :: NotebookID -> Block -> Number -> Notebook -> Notebook
   insertBlock ident block index (Notebook n@{ident = ident', blocks = blocks})
-    | ident == ident' = Notebook n{blocks = insertAt index block blocks}
+    | ident == ident' = Notebook n{blocks = insertAt index block blocks, dirty = true}
   insertBlock _ _ _ nb = nb
 
   updateBlock :: NotebookID -> Block -> Notebook -> Notebook
   updateBlock ident (Block b) (Notebook n@{ident = ident', blocks = blocks})
-    | ident == ident' = Notebook n{blocks = go <$> blocks}
+    | ident == ident' = Notebook n{blocks = go <$> blocks, dirty = true}
     where
       go (Block b') | b.ident == b'.ident = Block b
       go b'                               = b'
