@@ -112,6 +112,9 @@ var paths = {
         }
     },
     slamengine: {
+        config: process.platform === 'linux' ? path.join(process.env.HOME, '.config', 'SlamData', 'slamengine-config.json') :
+                process.platform === 'darwin' ? path.join(process.env.HOME, 'Library', 'Application Support', 'SlamData', 'slamengine-config.json') :
+                path.join(process.env.LOCALAPPDATA, 'SlamData', 'slamengine-config.json'),
         jar: 'bower_components/slamengine-jar/index.jar'
     }
 }
@@ -394,11 +397,15 @@ gulp.task('dist-node-webkit-platform', function() {
 
 gulp.task('test-casperjs', function(done) {
     var running = false;
-    var se = spawn( paths.lib['node-webkit'].jre.linux.java
+    var platform = process.platform === 'linux' ? 'linux' :
+                   process.platform === 'darwin' ? 'osx' :
+                   'win'
+    var se = spawn( paths.lib['node-webkit'].jre[platform].java
                   , [ '-jar', paths.slamengine.jar
-                    , path.join(process.env.HOME, '.config', 'SlamData', 'slamengine-config.json')
+                    , paths.slamengine.config
                     ]
                   );
+    process.env.PATH += path.delimiter + path.join(process.env.PWD, 'node_modules', '.bin');
     se.stdout.on('data', function(data) {
         if (!running) {
             running = true;
