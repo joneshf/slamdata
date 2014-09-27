@@ -154,9 +154,13 @@ module SlamData.App.Workspace.Notebook.Block
   evaluatedBlock this = let blockRec = this.props.block^._blockRec in
     blockRow {styles: "block-content block-" ++ show blockRec.blockType}
       [ D.div {className: "block-label"}
-        [D.rawText blockRec.label]
+        [formatLabel blockRec.label]
       , evaluatedBlock' this
       ]
+
+  formatLabel :: String -> Component
+  formatLabel "" = D.rawText ""
+  formatLabel l  = D.rawText $ l ++ " :="
 
   evaluatedBlock' :: forall eff fields
                   .  ReactThis fields (BlockProps eff) BlockState

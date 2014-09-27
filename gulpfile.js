@@ -428,7 +428,7 @@ gulp.task('test-webdriver', function(done) {
     spawn( './node_modules/.bin/mocha'
          , [ '-G'
            , '--recursive'
-           , '--timeout', '30000'
+           , '--timeout', '60000'
            , 'test/webdriver/**/*.js']
          , {stdio: 'inherit'}
          ).on('close', done);
