@@ -143,6 +143,9 @@ module SlamData.NodeWebKit where
     , NotebookID(..)
     , NotebookRec(..)
     )
+
+  import System.Path.Unix ((</>))
+
   import Text.Parsing.Parser (runParser)
 
   import qualified Data.Map as M
@@ -164,9 +167,6 @@ module SlamData.NodeWebKit where
   env :: String -> Maybe String
   env = unsafeEnv Nothing Just
 
-  (</>) :: FilePath -> FilePath -> FilePath
-  (</>) fp fp' = join [fp, fp']
-
   -- PS doesn't do well with instance inference.
   onData :: forall eff ioStream
          .  (EventEmitter (Stream ioStream))
@@ -177,21 +177,20 @@ module SlamData.NodeWebKit where
 
   linuxConfigHome :: Maybe FilePath
   linuxConfigHome = env "XDG_CONFIG_HOME"
-                <|> (\home -> home </> ".config") <$> env "HOME"
+                <|> (\home -> join [home, ".config"]) <$> env "HOME"
 
   resolveConfigDir :: FilePath
-  resolveConfigDir = case platform of
-    "darwin" -> fromJust $
-      env "HOME" </> "Library" </> "Application Support" </> "SlamData"
-    "linux"  -> fromJust linuxConfigHome </> "SlamData"
-    "win32"  -> fromJust $ env "LOCALAPPDATA" </> "SlamData"
+  resolveConfigDir = join case platform of
+    "darwin" -> [fromJust $ env "HOME", "Library", "Application Support", "SlamData"]
+    "linux"  -> [fromJust linuxConfigHome, "SlamData"]
+    "win32"  -> [fromJust $ env "LOCALAPPDATA", "SlamData"]
 
   sdConfigFile :: FilePath
-  sdConfigFile = resolveConfigDir </> "slamdata-config.json"
+  sdConfigFile = join [resolveConfigDir, "slamdata-config.json"]
   seConfigFile :: FilePath
-  seConfigFile = resolveConfigDir </> "slamengine-config.json"
+  seConfigFile = join [resolveConfigDir, "slamengine-config.json"]
   seJar :: FilePath
-  seJar = "jar" </> "slamengine.jar"
+  seJar = join ["jar", "slamengine.jar"]
 
   showConfig :: forall a. (EncodeJson a) => a -> String
   showConfig = encodeJson >>> printJson
@@ -313,7 +312,7 @@ module SlamData.NodeWebKit where
           pure unit
         ReadFileSystem paths -> do
           let path = join paths
-          let fs = serverURI state.settings.sdConfig ++ "/metadata/fs" ++ path
+          let fs = metadataUrl state.settings.sdConfig </> path
           o <- oboeGet fs
           done o (\json ->
             let children = (unsafeCoerceJSON json).children
@@ -322,7 +321,7 @@ module SlamData.NodeWebKit where
           pure unit
         ReadFields paths -> do
           let path = join paths
-          let fs = serverURI state.settings.sdConfig ++ "/data/fs" ++ path ++ "?limit=1"
+          let fs = dataUrl state.settings.sdConfig </> path </> "?limit=1"
           o <- oboeGet fs
           done o (\json ->
             let fields = objectKeys $ unsafeCoerceJSON json
@@ -389,9 +388,9 @@ module SlamData.NodeWebKit where
           pure unit
         EvalBlock (Notebook n) (Block b@{blockType = BlockType "SQL"}) -> do
           let blockName = "out" ++ show (countOut n b)
-          let queryUrl = serverURI state.settings.sdConfig ++ "/query/fs" ++ n.path
-          let dataUrl = serverURI state.settings.sdConfig ++ "/data/fs"
-          let out = n.name ++ "/" ++ b.label
+          let queryUrl' = queryUrl state.settings.sdConfig </> n.path
+          let dataUrl' = dataUrl state.settings.sdConfig
+          let out = n.name </> b.label
           X.post X.defaultAjaxOptions
             { onReadyStateChange = X.onDone \res -> do
               out' <- jsonParse {out: ""} <$> X.getResponseText res
@@ -405,24 +404,24 @@ module SlamData.NodeWebKit where
                   let notebooks' = updateBlock n.ident block'' <$> state.notebooks
                   e # emit responseEvent state{notebooks = notebooks'}
                   pure unit
-                } (dataUrl ++ out'.out) {limit: 20}
+                } (dataUrl' ++ out'.out) {limit: 20}
               pure unit
-            } queryUrl {out: out} (XT.Multipart b.editContent)
+            } queryUrl' {out: out} (XT.Multipart b.editContent)
           pure unit
         EvalVisual (Notebook n) (Block b@{blockType = BlockType "Visual"}) ds -> do
           let selector = "chart-" ++ show b.ident
-          let dataUrl = serverURI state.settings.sdConfig ++ "/data/fs"
+          let dataUrl' = dataUrl state.settings.sdConfig
           let block' = Block b{ blockMode = BlockMode "Eval"
                               , evalContent = selector
                               }
           let notebooks' = updateBlock n.ident block' <$> state.notebooks
           e # emit responseEvent state{notebooks = notebooks'}
           -- Give it a small amount of time to create the selector.
-          timeout 1000 $ createVisual showVisualType dataUrl selector ds
+          timeout 1000 $ createVisual showVisualType dataUrl' selector ds
           pure unit
         SaveNotebook (Notebook n) -> do
-          let dataUrl = serverURI state.settings.sdConfig ++ "/data/fs"
-          let url = dataUrl ++ n.path ++ n.name ++ "/index.nb"
+          let dataUrl' = dataUrl state.settings.sdConfig
+          let url = dataUrl' </> n.path </> n.name </> "index.nb"
           let n' = deleteID n
           let n'' = n'{persisted = true, dirty = false}
           X.post X.defaultAjaxOptions
@@ -433,8 +432,8 @@ module SlamData.NodeWebKit where
             } url {} (XT.UrlEncoded $ jsonStringify n'')
           pure unit
         OpenNotebook path -> do
-          let dataUrl = serverURI state.settings.sdConfig ++ "/data/fs"
-          let url = dataUrl ++ (path </> "index.nb")
+          let dataUrl' = dataUrl state.settings.sdConfig
+          let url = dataUrl' </> path </> "index.nb"
           let name = basename path
           X.get X.defaultAjaxOptions
             {onLoad = \res -> do
@@ -462,8 +461,8 @@ module SlamData.NodeWebKit where
             } url {}
           pure unit
         RenameNotebook (Notebook n) path -> do
-          let dataUrl = serverURI state.settings.sdConfig ++ "/data/fs"
-          let url = dataUrl </> n.path </> n.name </> "/"
+          let dataUrl' = dataUrl state.settings.sdConfig
+          let url = dataUrl' </> n.path </> n.name </> "/"
           let base = basename path
           let fs = mount state.settings.seConfig
           X.ajax X.defaultAjaxOptions
@@ -478,8 +477,8 @@ module SlamData.NodeWebKit where
             } {} XT.NoBody
           pure unit
         TogglePublish (Notebook n) -> do
-          let dataUrl = serverURI state.settings.sdConfig ++ "/data/fs"
-          let url = dataUrl </> n.path </> n.name </> "index.nb"
+          let dataUrl' = dataUrl state.settings.sdConfig
+          let url = dataUrl' </> n.path </> n.name </> "index.nb"
           let n' = deleteID n
           let notebook' = Notebook n'{published = not n.published, dirty = true}
           let notebooks' = replaceNotebook notebook' <$> state.notebooks
@@ -505,6 +504,15 @@ module SlamData.NodeWebKit where
 
       -- Start up SlamData.
       slamData e initialState'
+
+  dataUrl :: SDConfig -> FilePath
+  dataUrl     = config2Url "data"
+  metadataUrl :: SDConfig -> FilePath
+  metadataUrl = config2Url "metadata"
+  queryUrl :: SDConfig -> FilePath
+  queryUrl    = config2Url "query"
+  config2Url :: FilePath -> SDConfig -> FilePath
+  config2Url p config = serverURI config </> p </> "fs"
 
   initialState :: SDConfig -> SEConfig -> SlamDataState
   initialState sdConfig seConfig =

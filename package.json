@@ -42,6 +42,7 @@
     "node-uuid": "^1.4.1",
     "node-webkit-builder": "^0.1.1",
     "npm": "^1.4.20",
+    "phantomjs": "^1.9.9",
     "rimraf": "^2.2.8",
     "run-sequence": "^0.3.6",
     "selenium-webdriver": "^2.42.1",
