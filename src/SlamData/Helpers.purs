@@ -1,7 +1,7 @@
 module SlamData.Helpers where
 
   import Data.Maybe (fromMaybe, Maybe())
-  import Data.String (indexOf', length)
+  import Data.String (indexOf, indexOf', length)
   import Data.Validation (runV)
 
   import React.Types (Element())
@@ -30,7 +30,10 @@ module SlamData.Helpers where
 
   endsWith :: String -> String -> Boolean
   endsWith str suffix =
-    indexOf' suffix (length str - length suffix) str /= -1
+    indexOf' suffix (length str - length suffix) str >= 0
+
+  contains :: String -> String -> Boolean
+  contains str str' = indexOf str' str >= 0
 
   -- SlamData specific stuff.
 

@@ -4,9 +4,13 @@ module SlamData.App.Workspace.Notebook.Block
   , BlockState()
   ) where
 
+  import Browser.Navigator (Navigator(), navigator)
+
   import Control.Lens ((^.), (..), (.~))
+  import Control.Monad (when)
 
   import Data.Function (mkFn3)
+  import Data.String (toLower)
 
   import React (coerceThis, createClass, eventHandler, spec)
   import React.Types (Component(), ComponentClass(), ReactThis())
@@ -18,7 +22,7 @@ module SlamData.App.Workspace.Notebook.Block
     )
   import SlamData.App.Workspace.Notebook.Block.Visual (visualEditor)
   import SlamData.Components (actionButton, closeIcon, createBlockButton)
-  import SlamData.Helpers (publish, value)
+  import SlamData.Helpers (contains, publish, value)
   import SlamData.Lens
     ( _blockMode
     , _blockRec
@@ -135,18 +139,25 @@ module SlamData.App.Workspace.Notebook.Block
           in this.props.request $ EvalBlock this.props.notebook block'
         , onChange: eventHandler this \this e -> pure $
           this.setState this.state{editContent = value e.target}
-        , onKeyUp: eventHandler this \this k ->
-          if k.ctrlKey && k.key == "Enter" then
-            let content = this.state.editContent
-                block' = this.props.block # _blockRec.._editContent .~ content
-            in this.props.request $ EvalBlock this.props.notebook block'
-          else
-            pure unit
+        , onKeyUp: eventHandler this \this k -> when (evalKey k navigator) do
+          let content = this.state.editContent
+          let block' = this.props.block # _blockRec.._editContent .~ content
+          this.props.request $ EvalBlock this.props.notebook block'
         , value: this.state.editContent
         }
         []
       ]
     ]
+
+  evalKey :: forall r
+          .  {ctrlKey :: Boolean, key :: String, which :: Number | r}
+          -> Navigator
+          -> Boolean
+  evalKey k {platform = p} | isMac p = k.which == 91 || k.which == 93 || k.which == 224
+  evalKey k _                        = k.ctrlKey && k.key == "Enter"
+
+  isMac :: String -> Boolean
+  isMac str = toLower str `contains` "mac"
 
   evaluatedBlock :: forall eff fields
                  .  ReactThis fields (BlockProps eff) BlockState

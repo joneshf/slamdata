@@ -91,7 +91,7 @@ module SlamData.Components where
     , render = \this -> pure $
       D.a { className: "create-block-button"
           , onClick: eventHandler this \this _ -> do
-            pure $ this.setState this.state{dropdown = not this.state.dropdown :: Boolean}
+            pure $ (coerceThis this).setState this.state{dropdown = not this.state.dropdown :: Boolean}
           }
         [D.div {} if this.state.dropdown then
             [ createBlockIcon
