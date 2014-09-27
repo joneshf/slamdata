@@ -20,6 +20,7 @@ module SlamData.App.Workspace.Notebook.Settings.SlamData
     , _sdConfigNodeWebkit
     , _sdConfigRec
     , _sdConfigServer
+    , _sdDirty
     , _server
     )
   import SlamData.Types
@@ -28,7 +29,7 @@ module SlamData.App.Workspace.Notebook.Settings.SlamData
     , SlamDataEventTy(..)
     , ValidationTy(..)
     )
-  import SlamData.Types.Workspace.Notebook.Settings
+  import SlamData.Types.React.WorkSpace.Notebook.Settings
     ( SettingsProps()
     , SettingsState()
     )
@@ -54,7 +55,7 @@ module SlamData.App.Workspace.Notebook.Settings.SlamData
     [ D.label {htmlFor: "server-location"} [D.rawText "Location"]
     , D.input { name: "server-location"
               , onChange: eventHandler this \this e -> pure $
-                this.setState (this.state # _sdServerLocation .~ value e.target)
+                this.setState (this.state # _sdDirty .~ true # _sdServerLocation .~ value e.target)
               , placeholder: "http://localhost"
               , value: this.state^._sdServerLocation
               }
@@ -70,7 +71,7 @@ module SlamData.App.Workspace.Notebook.Settings.SlamData
               , onChange: eventHandler this \this' e -> do
                 let parsed = runParser (value e.target) portParser
                 this'.props.request $ CreateValidation SettingsSDServerPort $ validateParsed parsed
-                pure $ this'.setState (this'.state # _sdServerPort .~ defaultPort parsed)
+                pure $ this'.setState (this'.state # _sdDirty .~ true # _sdServerPort .~ defaultPort parsed)
               , placeholder: "8080"
               , defaultValue: this.state^._sdServerPort
               }
@@ -95,7 +96,7 @@ module SlamData.App.Workspace.Notebook.Settings.SlamData
     [ D.label {htmlFor: "java-binary"} [D.rawText "Binary"]
     , D.input { name: "java-binary"
               , onChange: eventHandler this \this e -> pure $
-                this.setState (this.state # _sdJava .~ value e.target)
+                this.setState (this.state # _sdDirty .~ true # _sdJava .~ value e.target)
               , placeholder: "/usr/bin/java"
               , value: this.state^._sdJava
               }

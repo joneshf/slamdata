@@ -1,13 +1,25 @@
 module SlamData.Components where
 
+  import Control.Lens ((^.), (..), (.~), to, LensP())
+  import Control.Monad (when)
+
   import Data.Foldable (traverse_)
+  import Data.Maybe (Maybe(..))
 
   import React (coerceThis, createClass, eventHandler, spec)
   import React.Types (Component(), ComponentClass(), ReactThis())
 
   import SlamData.Types (SlamDataEventTy(..), SlamDataRequest())
-  import SlamData.Types.Workspace.Notebook (NotebookID())
+  import SlamData.Types.React.WorkSpace.Notebook
+    ( NotebookProps()
+    , NotebookState()
+    )
+  import SlamData.Types.Workspace.Notebook (Notebook(..), NotebookID())
   import SlamData.Types.Workspace.Notebook.Block (BlockType(..))
+  import SlamData.Types.React.WorkSpace.Notebook.Settings
+    ( SettingsProps()
+    , SettingsState()
+    )
 
   import qualified React.DOM as D
 
@@ -66,10 +78,10 @@ module SlamData.Components where
                -> String
                -> Component
                -> Component
-  actionButton this event title icon = D.li {}
+  actionButton this events title icon = D.li {}
     [D.a { className: "tiny secondary button has-tooltip"
          , onClick: eventHandler this \this _ ->
-            traverse_ this.props.request event
+            traverse_ this.props.request events
          , title: title
          }
       [icon]
@@ -91,7 +103,7 @@ module SlamData.Components where
     , render = \this -> pure $
       D.a { className: "create-block-button"
           , onClick: eventHandler this \this _ -> do
-            pure $ this.setState this.state{dropdown = not this.state.dropdown :: Boolean}
+            pure $ (coerceThis this).setState this.state{dropdown = not this.state.dropdown :: Boolean}
           }
         [D.div {} if this.state.dropdown then
             [ createBlockIcon
@@ -122,3 +134,41 @@ module SlamData.Components where
   blockIcon (BlockType "Markdown") = markdownIcon
   blockIcon (BlockType "SQL")      = sqlIcon
   blockIcon (BlockType "Visual")   = visualIcon
+
+  -- TODO: These two things should be the same,
+  --       but the notebook is forcing them to be different at the moment.
+  --       Figure out how to generalize this.
+
+  saveNotebookAction :: forall eff fields
+                     .  ReactThis fields (NotebookProps eff) NotebookState
+                     -> [SlamDataEventTy]
+                     -> Notebook
+                     -> Component
+  saveNotebookAction this events nb@(Notebook nb') = D.li {}
+    [D.a { className: "tiny secondary button has-tooltip"
+         , disabled: not nb'.dirty
+         , onClick: eventHandler this \this _ -> if not nb'.dirty
+            then pure unit
+            else if nb'.persisted
+            then traverse_ this.props.request events
+            else pure $ this.setState this.state{renaming = Just nb'.name, persisting = true}
+         , title: "Save"
+         }
+      [saveIcon]
+    ]
+
+  saveSettingsAction :: forall eff fields
+                     .  ReactThis fields (SettingsProps eff) SettingsState
+                     -> [SlamDataEventTy]
+                     -> LensP SettingsState Boolean
+                     -> Component
+  saveSettingsAction this events dirty = D.li {}
+    [D.a { className: "tiny secondary button has-tooltip"
+         , disabled: this.state^.dirty..to not
+         , onClick: eventHandler this \this _ -> when (this.state^.dirty) do
+            pure $ this.setState (this.state # dirty .~ false)
+            traverse_ this.props.request events
+         , title: "Save"
+         }
+      [saveIcon]
+    ]

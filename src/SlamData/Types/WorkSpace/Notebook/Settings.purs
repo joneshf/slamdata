@@ -1,21 +1,6 @@
 module SlamData.Types.Workspace.Notebook.Settings where
 
-  import SlamData.Types
-    ( SDConfig()
-    , SEConfig()
-    , SlamDataRequest()
-    , SlamDataState()
-    )
-
-  type SettingsProps eff =
-    { request :: SlamDataRequest eff
-    , state   :: SlamDataState
-    }
-  type SettingsState =
-    { active   :: SettingsTab
-    , sdConfig :: SDConfig
-    , seConfig :: SEConfig
-    }
+  import React.Types (Component())
 
   data SettingsTab = SlamDataTab
                    | SlamEngineTab
