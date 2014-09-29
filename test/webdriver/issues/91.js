@@ -48,15 +48,32 @@ test.describe('SQL block label', function() {
     test.it('we first need a notebook with some blocks', function() {
         driver.sleep(15000).then(function() {
             driver.findElement({css: '#add-notebook'}).click();
+            return driver.sleep(1000);
+        }).then(function() {
             driver.findElement({css: createBlock}).click();
+            return driver.sleep(1000);
+        }).then(function() {
             driver.findElement({css: createSQL}).click();
+            return driver.sleep(1000);
+        }).then(function() {
             driver.findElement({css: createBlock}).click();
+            return driver.sleep(1000);
+        }).then(function() {
             driver.findElement({css: createSQL}).click();
+            return driver.sleep(1000);
+        }).then(function() {
             driver.findElement({css: createBlock}).click();
+            return driver.sleep(1000);
+        }).then(function() {
             driver.findElement({css: createSQL}).click();
+            return driver.sleep(1000);
+        }).then(function() {
             // Blur.
             driver.findElement({css: createBlock}).click();
+            return driver.sleep(1000);
+        }).then(function() {
             driver.findElement({css: createBlock}).click();
+            return driver.sleep(1000);
         });
     });
 
@@ -65,11 +82,18 @@ test.describe('SQL block label', function() {
     });
 
     test.it('after reevaluating some blocks', function() {
-        driver.findElement({
-            css: '#notebook .content.active .block-SQL .evaled-block'
-        }).click();
-        driver.findElement({css: createBlock}).click();
-        driver.findElement({css: createBlock}).click();
+        driver.sleep(1000).then(function() {
+            driver.findElement({
+                css: '#notebook .content.active .block-SQL .evaled-block'
+            }).click();
+            return driver.sleep(1000);
+        }).then(function() {
+            driver.findElement({css: createBlock}).click();
+            return driver.sleep(1000);
+        }).then(function() {
+            driver.findElement({css: createBlock}).click();
+            return driver.sleep(1000);
+        });
     });
 
     test.it('nothing should have changed', function() {

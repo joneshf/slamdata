@@ -1,8 +1,4 @@
-module SlamData.App.Workspace.Notebook
-  ( NotebookProps()
-  , NotebookState()
-  , notebooks
-  ) where
+module SlamData.App.Workspace.Notebook (notebooks) where
 
   import Control.Lens ((^.), (..))
   import Control.Reactive.Timer (Timer())
@@ -34,7 +30,7 @@ module SlamData.App.Workspace.Notebook
     , newNotebookIcon
     , publishIcon
     , renameIcon
-    , saveIcon
+    , saveNotebookAction
     )
   import SlamData.Helpers (activate, publish, value)
   import SlamData.Lens (_ident, _name, _notebookRec)
@@ -42,6 +38,10 @@ module SlamData.App.Workspace.Notebook
     ( SlamDataRequest()
     , SlamDataState()
     , SlamDataEventTy(..)
+    )
+  import SlamData.Types.React.WorkSpace.Notebook
+    ( NotebookProps()
+    , NotebookState()
     )
   import SlamData.Types.Workspace.Notebook
     ( Notebook(..)
@@ -51,17 +51,6 @@ module SlamData.App.Workspace.Notebook
   import SlamData.Types.Workspace.Notebook.Block (Block(..), BlockType(..))
 
   import qualified React.DOM as D
-
-  type NotebookProps eff =
-    { request :: SlamDataRequest eff
-    , state   :: SlamDataState
-    }
-  type NotebookState =
-    { active     :: Maybe NotebookID
-    , persisting :: Boolean
-    , renaming   :: Maybe String
-    , settingsId :: NotebookID
-    }
 
   notebooks :: forall eff. ComponentClass (NotebookProps eff) NotebookState
   notebooks = createClass spec
@@ -108,6 +97,7 @@ module SlamData.App.Workspace.Notebook
     , published: false
     , numOut: 0
     , persisted: true
+    , dirty: false
     }
 
   createNotebookButton :: forall eff fields state
@@ -183,9 +173,13 @@ module SlamData.App.Workspace.Notebook
                .  ReactThis fields (NotebookProps eff) NotebookState
                -> Notebook
                -> Component
-  reifyContent this (Notebook nb) | nb.ident == this.state.settingsId =
-    D.div {className: "content" ++ activate (Just nb.ident) this.state.active}
-      [settings {request: this.props.request, state: this.props.state} []
+  reifyContent this nb@(Notebook nb') | nb'.ident == this.state.settingsId =
+    D.div {className: "content" ++ activate (Just nb'.ident) this.state.active}
+      [settings
+        { request: this.props.request
+        , state: this.props.state
+        }
+        []
       ]
   reifyContent this nb@(Notebook nb') =
     D.div {className: "content" ++ activate (Just nb'.ident) this.state.active ++ publish nb}
@@ -234,7 +228,7 @@ module SlamData.App.Workspace.Notebook
                   -> Notebook
                   -> Component
   externalActions this nb = D.ul {className: "button-group"}
-    [ saveAction this nb
+    [ saveNotebookAction this [SaveNotebook nb] nb
     , renameAction this nb
     , actionButton this [TogglePublish nb] (publishTitle nb) publishIcon
     ]
@@ -256,20 +250,6 @@ module SlamData.App.Workspace.Notebook
       [renameIcon]
     ]
 
-  saveAction :: forall eff fields
-             .  ReactThis fields (NotebookProps eff) NotebookState
-             -> Notebook
-             -> Component
-  saveAction this nb@(Notebook nb') = D.li {}
-    [D.a { className: "tiny secondary button has-tooltip"
-         , onClick: eventHandler this \this _ -> if nb'.persisted
-            then this.props.request $ SaveNotebook nb
-            else pure $ this.setState this.state{renaming = Just nb'.name, persisting = true}
-         , title: "Save"
-         }
-      [saveIcon]
-    ]
-
   noteBookName :: forall eff fields
                .  ReactThis fields (NotebookProps eff) NotebookState
                -> Notebook
@@ -279,8 +259,10 @@ module SlamData.App.Workspace.Notebook
       Just name ->
         D.input { onBlur: eventHandler this \this e -> do
                   let name = trim $ value e.target
-                  if not nb'.persisted then this.props.request $ SaveNotebook $ Notebook nb'{name = name}
-                    else if name /= nb'.name then this.props.request $ RenameNotebook nb name
+                  if not nb'.persisted
+                    then this.props.request $ SaveNotebook $ Notebook nb'{name = name}
+                    else if name /= nb'.name
+                    then this.props.request $ RenameNotebook nb name
                     else pure unit
                   pure $ this.setState this.state{renaming = Nothing}
                 , onChange: eventHandler this \this e -> pure $

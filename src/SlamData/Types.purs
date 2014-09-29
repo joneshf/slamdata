@@ -103,6 +103,8 @@ module SlamData.Types where
                        | OpenNotebook FilePath
                        | RenameNotebook Notebook FilePath
                        | SaveNotebook Notebook
+                       | DirtyNotebook Notebook
+                       | CleanNotebook Notebook
                        | TogglePublish Notebook
                        | ShowSettings
                        | HideSettings
