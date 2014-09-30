@@ -406,12 +406,23 @@ gulp.task('test-casperjs', function(done) {
                     ]
                   );
     process.env.PATH += path.delimiter + path.join(process.env.PWD, 'node_modules', '.bin');
+
+    var phantomjs = process.env.PWD + '/node_modules/.bin/phantomjs';
+
+    process.env.PHANTOMJS_EXECUTABLE = phantomjs;
+    
+    gutil.log('Path to phantomjs: ' + phantomjs);
+    gutil.log('process.env.PATH = ' + process.env.PATH);
+
     se.stdout.on('data', function(data) {
         if (!running) {
             running = true;
             spawn( './node_modules/.bin/casperjs'
                  , ['test', 'test/casperjs']
-                 , {stdio: 'inherit'}
+                 , {
+                      stdio: 'inherit', 
+                      env: process.env
+                    }
                  ).on('close', function(code, sig) {
                       se.kill();
                       done(code);
