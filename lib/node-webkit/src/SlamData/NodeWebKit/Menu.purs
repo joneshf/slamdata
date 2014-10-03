@@ -1,11 +1,12 @@
 module SlamData.NodeWebKit.Menu where
 
+  import Control.Events (EventEff())
   import Control.Monad.Eff (Eff())
   import Control.Monad.ST (newSTRef, readSTRef, writeSTRef, ST())
 
   import Data.Maybe (Maybe(..))
 
-  import Node.Events (emit, on, Emitter(), EventEff())
+  import Node.Events (emit, on, Emitter())
   import Node.WebKit.Menu
     ( append
     , createMacBuiltin

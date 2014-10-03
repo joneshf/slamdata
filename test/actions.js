@@ -27,6 +27,12 @@ function addNotebook(test) {
     test.assertDoesntExist(blockSelector, 'There are no blocks');
 };
 
+function firstSaveNotebook(test) {
+    casper.click('#notebook .content.active [title="Save"]');
+    test.assertExists('#notebook .tab.active input');
+    casper.sendKeys('#notebook .tab.active input', '');
+};
+
 function removeBlock(test) {
     var count = casper.evaluate(function(block) {
         return { block: __utils__.findAll(block).length
@@ -50,6 +56,12 @@ function removeNotebook(test) {
     test.assertElementCount(contentSelector, count.content - 1);
 };
 
+function renameNotebook(name, test) {
+    casper.click('#notebook .content.active [title="Rename"]');
+    test.assertExists('#notebook .tab.active input');
+    casper.sendKeys('#notebook .tab.active input', name);
+};
+
 function selectNotebook(n, test) {
     var nthTab = tabSelector + ':nth-of-type(' + n + ')';
     casper.click(nthTab + ' a');
@@ -60,7 +72,9 @@ function selectNotebook(n, test) {
 module.exports =
     { addBlock: addBlock
     , addNotebook: addNotebook
+    , firstSaveNotebook: firstSaveNotebook
     , removeBlock: removeBlock
     , removeNotebook: removeNotebook
+    , renameNotebook: renameNotebook
     , selectNotebook: selectNotebook
     }

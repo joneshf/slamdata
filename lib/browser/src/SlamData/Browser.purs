@@ -9,35 +9,41 @@ module SlamData.Browser where
   --    This query string business might also need to be replaced.
   --    You should be running slamengine somewhere.
 
+  import Control.Events.TinyEmitter (emitter, on)
   import Control.Monad.Eff (Eff())
-  import Control.Monad.Cont.Trans (runContT)
 
   import Data.Either (either)
 
   import DOM (DOM())
 
   import SlamData (slamData)
-  import SlamData.App (app)
+  import SlamData.App.Events (handleRequest)
   import SlamData.Helpers
     ( defaultSDConfig
     , defaultSEConfig
-    , location
+    , initialState
     , parseQueryString
     , query2SDConfig
     , query2SEConfig
-    , search
-    , window
     )
-  import SlamData.Types (FSWrite())
+  import SlamData.Types (requestEvent)
 
   import Text.Parsing.Parser (runParser)
 
-  main :: Eff (dom :: DOM, fsWrite :: FSWrite) Unit
+  -- main :: Eff (dom :: DOM) Unit
   main = do
-    let search' = window # location # search
-    let rawQueries = runParser search' parseQueryString
+    loc <- windowLocation
+    let rawQueries = runParser loc.search parseQueryString
     let sdConfig = either (const defaultSDConfig) query2SDConfig rawQueries
     let seConfig = either (const defaultSEConfig) query2SEConfig rawQueries
-    runContT
-      (slamData {sdConfig: sdConfig, seConfig: seConfig})
-      \_ -> pure unit
+    let initialState' = initialState sdConfig seConfig
+    -- TODO: Wrap `tiny-emitter` and use it for the events here.
+    e <- emitter
+    e # on requestEvent (handleRequest e)
+    slamData e initialState'
+
+  foreign import windowLocation """
+    function windowLocation() {
+      return window.location;
+    }
+  """ :: forall eff. Eff eff {search :: String}

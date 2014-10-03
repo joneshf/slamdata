@@ -64,11 +64,13 @@ var paths = {
         js: [ 'bower_components/jquery/dist/jquery.js'
             , 'bower_components/c3/c3.js'
             , 'bower_components/d3/d3.js'
+            , 'bower_components/foundation/js/foundation.js'
             , 'bower_components/node-uuid/uuid.js'
             , 'bower_components/oboe/dist/oboe-browser.js'
             , 'bower_components/react/react-with-addons.js'
             , 'bower_components/react-treeview/react-treeview.js'
             , 'bower_components/showdown/src/showdown.js'
+            , 'bower_components/tiny-emitter/dist/tinyemitter.js'
             , 'js/slamdata.js'
             ]
     },
@@ -86,8 +88,8 @@ var paths = {
         browser: {
             js: 'lib/browser/js',
             src: [ 'lib/browser/src/**/*.purs'
-                 , 'lib/browser/bower_components/slamdata/src/**/*.purs'
-                 , 'lib/browser/bower_components/purescript-*/src/**/*.purs'
+                 , 'bower_components/purescript-*/src/**/*.purs'
+                 , 'src/**/*.purs'
                  ]
         },
         'node-webkit': {
@@ -251,7 +253,7 @@ gulp.task('bower-browser', bowerLib('browser'));
 gulp.task('bower-node-webkit', bowerLib('node-webkit'));
 
 gulp.task('browserify', ['compile', 'browserify-index'], function() {
-    return browserify('./output/index.js')
+    return browserify('./output/index.js', {ignoreMissing: true})
         .require('./output/node_modules/Control.Alternative', {expose: 'Control.Alternative'})
         .require('./output/node_modules/Control.Monad.Identity', {expose: 'Control.Monad.Identity'})
         .require('./output/node_modules/Data.Argonaut', {expose: 'Data.Argonaut'})
@@ -262,6 +264,7 @@ gulp.task('browserify', ['compile', 'browserify-index'], function() {
         .require('./output/node_modules/Graphics.C3', {expose: 'Graphics.C3'})
         .require('./output/node_modules/Prelude', {expose: 'Prelude'})
         .require('./output/node_modules/SlamData', {expose: 'SlamData'})
+        .require('./output/node_modules/SlamData.App.Events', {expose: 'SlamData.App.Events'})
         .require('./output/node_modules/SlamData.Helpers', {expose: 'SlamData.Helpers'})
         .require('./output/node_modules/SlamData.Types', {expose: 'SlamData.Types'})
         .require('./output/node_modules/SlamData.Types.JS', {expose: 'SlamData.Types.JS'})
@@ -436,7 +439,7 @@ gulp.task('test-webdriver', function(done) {
 
 // Main tasks.
 gulp.task('build', sequence( ['clean-build', 'browserify', 'sass']
-                           , [/*'build-browser',*/ 'build-node-webkit']
+                           , ['build-browser', 'build-node-webkit']
                            ));
 gulp.task('default', sequence(['browserify', 'sass']));
 gulp.task('dist', sequence(['build', 'clean-dist'], 'dist-node-webkit', 'jre'));

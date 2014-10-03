@@ -13,6 +13,7 @@ var qs = require('querystring')
   , defaultURL = index + '?' + search
   , screenshotDir = 'test/screenshots'
   , actions = require('../actions')
+  , utils = require('utils')
   ;
 
 casper.test.setUp(function(done) {
@@ -24,17 +25,18 @@ casper.test.setUp(function(done) {
     }).run(done);
 });
 
-casper.test.begin('Content type is correct for SQL', 7, function(test) {
+casper.test.begin('Save notebook button', 7, function(test) {
     casper.start(defaultURL, function() {
         actions.addNotebook(test);
-        actions.addBlock('SQL', test);
     }).then(function() {
-        casper.sendKeys( '#notebook .tabs-content .content .actual-content .block textarea'
-                       , "select * from zips where city <> 'ABC%' limit 10"
-                       );
-        casper.capture(screenshotDir + '/evaled_sql_before_send.png');
-        casper.waitForResource('data/fs/Untitled/out0', function() {
-          casper.capture(screenshotDir + '/evaled_sql_after_send.png');
+        var disabled = casper.getElementAttribute('#notebook .content.active [title="Save"]', 'disabled');
+        test.assertNot(disabled, 'new notebooks have save button enabled');
+    }).then(function() {
+        casper.capture(screenshotDir + '/notebook_save_before_first_save.png');
+        actions.firstSaveNotebook(test);
+        casper.waitForResource('data/fs/Untitled/index.nb', function() {
+            var disabled = casper.getElementAttribute('#notebook .content.active [title="Save"]', 'disabled');
+            test.assertEquals(disabled, 'true', 'saved notebooks have save button disabled');
         })
     }).run(function() {
         test.done();
