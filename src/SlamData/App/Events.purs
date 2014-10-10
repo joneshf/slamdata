@@ -171,10 +171,9 @@ module SlamData.App.Events where
       e # emit responseEvent state{notebooks = notebooks'}
       pure unit
     EvalBlock (Notebook n) (Block b@{blockType = BlockType "SQL"}) -> do
-      let blockName = "out" ++ show (countOut n b)
-      let queryUrl' = queryUrl state.settings.sdConfig </> n.path
+      let queryUrl' = queryUrl state.settings.sdConfig </> n.path </> n.name </> "/"
       let dataUrl' = dataUrl state.settings.sdConfig
-      let out = n.name </> b.label
+      let out = b.label
       X.post X.defaultAjaxOptions
         { onReadyStateChange = X.onDone \res -> do
           out' <- jsonParse {out: ""} <$> X.getResponseText res
