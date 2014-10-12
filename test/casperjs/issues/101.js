@@ -24,17 +24,18 @@ casper.test.setUp(function(done) {
     }).run(done);
 });
 
-casper.test.begin('Content type is correct for SQL', 7, function(test) {
+casper.test.begin('SQL block label', 8, function(test) {
     casper.start(defaultURL, function() {
         actions.addNotebook(test);
         actions.addBlock('SQL', test);
     }).then(function() {
+        casper.capture(screenshotDir + '/sql_block_label_before_blur.png');
         casper.sendKeys( '#notebook .tabs-content .content .actual-content .block textarea'
-                       , "select * from zips where city <> 'ABC%' limit 10"
+                       , 'select * from foo limit 10' // we have to force a new collection until SE does it by default.
                        );
-        casper.capture(screenshotDir + '/evaled_sql_before_send.png');
         casper.waitForResource('data/fs/Untitled/out0', function() {
-          casper.capture(screenshotDir + '/evaled_sql_after_send.png');
+            casper.capture(screenshotDir + '/sql_block_label_after_blur.png');
+            test.assertSelectorHasText('#notebook .content.active .block-SQL .block-label', ':=')
         })
     }).run(function() {
         test.done();

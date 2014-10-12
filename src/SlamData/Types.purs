@@ -1,5 +1,6 @@
 module SlamData.Types where
 
+  import Control.Events (Event(..), EventEff())
   import Control.Monad.Eff (Eff(..))
   import Control.Reactive.Timer (Timer())
 
@@ -26,8 +27,6 @@ module SlamData.Types where
   import Data.Validation (V(..))
 
   import DOM (DOM())
-
-  import Node.Events (Event(..), EventEff())
 
   import React.Types (React())
 
@@ -87,7 +86,8 @@ module SlamData.Types where
     , database      :: String
     }
 
-  newtype SlamDataEvent = SlamDataEvent
+  newtype SlamDataEvent = SlamDataEvent SlamDataEventRec
+  type SlamDataEventRec =
     { state :: SlamDataState
     , event :: SlamDataEventTy
     }

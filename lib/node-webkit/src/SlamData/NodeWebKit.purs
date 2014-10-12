@@ -13,10 +13,8 @@ module SlamData.NodeWebKit where
 
   import Control.Alt ((<|>))
   import Control.Apply ((*>))
-  import Control.Bind ((>=>))
-  import Control.Lens ((^.), (..), (.~), (~), (%~), (?~), (#~), (+=), (%=), at)
-  import Control.Monad (when)
-  import Control.Monad.Cont.Trans (runContT)
+  import Control.Events (Event(..), EventEff(), EventEmitter)
+  import Control.Lens ((^.), (..), (.~))
   import Control.Monad.Eff (Eff())
   import Control.Monad.Eff.Exception
     ( catchException
@@ -24,59 +22,41 @@ module SlamData.NodeWebKit where
     , Error()
     , Exception()
     )
-  import Control.Monad.Identity (Identity())
+  import Control.Reactive.Timer (Timer())
   import Control.Monad.ST (newSTRef, readSTRef, writeSTRef, ST())
-  import Control.Reactive.Timer (timeout, Timer())
 
   import Data.Argonaut (decodeMaybe, encodeJson, jsonParser, printJson)
   import Data.Argonaut.Decode (DecodeJson)
   import Data.Argonaut.Encode (EncodeJson)
-  import Data.Array (filter, head, insertAt, last, length, nubBy, snoc)
   import Data.Either (either, Either(..))
-  import Data.Foldable (find)
   import Data.Function (mkFn0, mkFn1, mkFn3, runFn1, Fn1())
   import Data.Maybe (maybe, Maybe(..))
   import Data.Maybe.Unsafe (fromJust)
-  import Data.String (joinWith, split, trim)
-  import Data.Tuple (fst, Tuple(..))
+  import Data.Tuple (Tuple(..))
 
   import Debug.Trace (trace, print, Trace())
 
   import DOM (DOM())
 
-  import Network.HTTP (Verb(..))
-  import Network.Oboe (done, oboe, oboeGet, oboeOptions, JSON())
-
   import Node.ChildProcess (defaultSpawnOptions, spawn, ChildProcess(..), Spawn(), Stream())
   import Node.ChildProcess.Signal (sigterm)
   import Node.Domain (create, run, Domain(), DomainEff())
   import Node.Encoding (Encoding(UTF8))
-  import Node.Events (emit, emitter, on, Event(..), EventEff(), EventEmitter)
+  import Node.Events
+    ( emit
+    , emitter
+    , on
+    )
   import Node.FS (FS())
   import Node.FS.Sync (exists, readTextFile, writeTextFile)
-  import Node.Path (basename, join, FilePath())
-  import Node.UUID (runUUID, v4)
+  import Node.Path (join, FilePath())
   import Node.WebKit
     ( nwShell
     , openExternal
     )
-  import Node.WebKit.Menu
-    ( append
-    , createMacBuiltin
-    , defaultMacOptions
-    , nwMenu
-    , nwWindowMenu
-    , setWindowMenu
-    )
-  import Node.WebKit.MenuItem
-    ( defaultMenuItemOptions
-    , nwMenuItem
-    , onClick
-    )
+  import Node.WebKit.Menu (setWindowMenu)
   import Node.WebKit.Types
-    ( nwMenuItemModCmd
-    , nwMenuItemModCtrl
-    , NW()
+    ( NW()
     , NWWindow()
     , WindowPolicyEff()
     )
@@ -91,33 +71,23 @@ module SlamData.NodeWebKit where
 
   import React.Types (React())
 
-  import Showdown (makeHtml)
-
   import SlamData (slamData)
-  import SlamData.Lens
-    ( _children
-    , _fileTypeRec
-    , _files
-    , _ident
-    , _java
-    , _mountings
-    , _nodeWebkit
-    , _notebookRec
-    , _numOut
-    , _sdConfigNodeWebkit
-    , _sdConfig
-    , _sdConfigRec
-    , _seConfig
-    , _seConfigRec
-    , _settings
-    , _validation
-    )
+  import SlamData.App.Events (handleRequest)
   import SlamData.Helpers
-    ( defaultMountPath
-    , defaultSDConfig
+    ( defaultSDConfig
     , defaultSEConfig
     , getOrElse
-    , serverURI
+    , initialState
+    , mount
+    )
+  import SlamData.Lens
+    ( _java
+    , _nodeWebkit
+    , _sdConfig
+    , _sdConfigNodeWebkit
+    , _sdConfigRec
+    , _seConfig
+    , _settings
     )
   import SlamData.NodeWebKit.Menu (menu)
   import SlamData.Types
@@ -129,28 +99,13 @@ module SlamData.NodeWebKit where
     , SDConfig()
     , SEConfig(..)
     )
-  import SlamData.Types.Workspace.Notebook.Block
-    ( Block(..)
-    , BlockID(..)
-    , BlockMode(..)
-    , BlockRec()
-    , BlockType(..)
-    )
-  import SlamData.Types.Workspace.Notebook.Block.Visual (VisualData(..))
-  import SlamData.Types.Workspace.FileSystem (FileType(..), FileTypeRec())
-  import SlamData.Types.Workspace.Notebook
-    ( Notebook(..)
-    , NotebookID(..)
-    , NotebookRec(..)
-    )
+  import SlamData.Types.Workspace.FileSystem (FileType(..))
 
   import System.Path.Unix ((</>))
 
   import Text.Parsing.Parser (runParser)
 
   import qualified Data.Map as M
-  import qualified Network.XHR as X
-  import qualified Network.XHR.Types as XT
 
   foreign import platform "var platform = process.platform;" :: String
 
@@ -210,10 +165,6 @@ module SlamData.NodeWebKit where
   catchRead def = catchException \err -> do
     trace $ "Error reading file\n" ++ message err ++ "\ndefaulting."
     pure def
-
-  mount :: SEConfig -> String
-  mount (SEConfig {mountings = m}) =
-    (fst <$> head (M.toList m)) `getOrElse` defaultMountPath
 
   startSlamEngine :: forall eff
                   .  NWWindow
@@ -284,7 +235,8 @@ module SlamData.NodeWebKit where
       -- Set the menubar.
       menu win e initialState' >>= flip setWindowMenu win
 
-      -- Handle all of the events.
+      -- Handle all of the normal events.
+      e # on requestEvent (handleRequest e)
       e # on requestEvent (\{event = event, state = state} -> case event of
         SaveSDConfig sdC -> do
           writeTextFile UTF8 sdConfigFile (showConfig sdC)
@@ -304,395 +256,7 @@ module SlamData.NodeWebKit where
           Tuple _ se <- startSlamEngine win se'
           writeSTRef stSE se
           pure unit
-        HideConfig -> do
-          e # emit responseEvent state{showConfig = false}
-          pure unit
-        ShowConfig -> do
-          e # emit responseEvent state{showConfig = true}
-          pure unit
-        ReadFileSystem paths -> do
-          let path = join paths
-          let fs = metadataUrl state.settings.sdConfig </> path
-          o <- oboeGet fs
-          done o (\json ->
-            let children = (unsafeCoerceJSON json).children
-                files' = insertChildren paths [state.files] children
-            in e # emit responseEvent state{files = files'})
-          pure unit
-        ReadFields paths -> do
-          let path = join paths
-          let fs = dataUrl state.settings.sdConfig </> path </> "?limit=1"
-          o <- oboeGet fs
-          done o (\json ->
-            let fields = objectKeys $ unsafeCoerceJSON json
-                files' = insertFields paths [state.files] fields
-            in e # emit responseEvent state{files = files'})
-          pure unit
-        CreateNotebook -> do
-          ident <- NotebookID <$> v4
-          let name = "Untitled"
-          let path = mount state.settings.seConfig
-          let notebook = Notebook { ident: ident
-                                  , blocks: []
-                                  , name: name
-                                  , path: path
-                                  , published: false
-                                  , numOut: 0
-                                  , persisted: false
-                                  , dirty: true
-                                  }
-          e # emit responseEvent state{notebooks = state.notebooks `snoc` notebook}
-          pure unit
-        CloseNotebook ident -> do
-          let notebooks' = filter (\(Notebook n) -> n.ident /= ident) state.notebooks
-          e # emit responseEvent state{notebooks = notebooks'}
-          pure unit
-        ShowSettings -> do
-          e # emit responseEvent state{showSettings = true}
-          pure unit
-        HideSettings -> do
-          e # emit responseEvent state{showSettings = false}
-          pure unit
-        CreateBlock ident ty index -> do
-          ident' <- BlockID <$> v4
-          let isSQL = ty == BlockType "SQL"
-          let n = fromJust $ find (\n -> n^._notebookRec.._ident == ident) state.notebooks
-          let block = Block { ident: ident'
-                            , blockType: ty
-                            , blockMode: BlockMode "Edit"
-                            , editContent: ""
-                            , evalContent: ""
-                            , label: if isSQL then "out" ++ show (n^._notebookRec.._numOut) else ""
-                            }
-          let n' = n #~ do
-                 when isSQL (_notebookRec.._numOut += 1)
-                 id %= insertBlock ident block index
-          let notebooks' = replaceNotebook n' <$> state.notebooks
-          e # emit responseEvent state{notebooks = notebooks'}
-          pure unit
-        DeleteBlock nID bID -> do
-          let notebooks' = deleteBlock nID bID <$> state.notebooks
-          e # emit responseEvent state{notebooks = notebooks'}
-          pure unit
-        EditBlock (Notebook n) (Block b) -> do
-          let block' = Block b{blockMode = BlockMode "Edit"}
-          let notebooks' = updateBlock n.ident block' <$> state.notebooks
-          e # emit responseEvent state{notebooks = notebooks'}
-          pure unit
-        EvalBlock (Notebook n) (Block b@{blockType = BlockType "Markdown"}) -> do
-          let block' = Block b{ evalContent = makeHtml b.editContent
-                              , blockMode = BlockMode "Eval"
-                              }
-          let notebooks' = updateBlock n.ident block' <$> state.notebooks
-          e # emit responseEvent state{notebooks = notebooks'}
-          pure unit
-        EvalBlock (Notebook n) (Block b@{blockType = BlockType "SQL"}) -> do
-          let queryUrl' = queryUrl state.settings.sdConfig </> n.path </> n.name </> "/"
-          let dataUrl' = dataUrl state.settings.sdConfig
-          let out = b.label
-          X.post X.defaultAjaxOptions
-            { onReadyStateChange = X.onDone \res -> do
-              out' <- jsonParse {out: ""} <$> X.getResponseText res
-              X.get X.defaultAjaxOptions
-                { headers = ["Content-Type" ~ "text/plain"]
-                , onLoad = \res -> do
-                  content <- X.getResponseText res
-                  let block'' = Block b{ blockMode = BlockMode "Eval"
-                                       , evalContent = content
-                                       }
-                  let notebooks' = updateBlock n.ident block'' <$> state.notebooks
-                  e # emit responseEvent state{notebooks = notebooks'}
-                  pure unit
-                } (dataUrl' ++ out'.out) {limit: 20}
-              pure unit
-            } queryUrl' {out: out} (XT.Multipart b.editContent)
-          pure unit
-        EvalVisual (Notebook n) (Block b@{blockType = BlockType "Visual"}) ds -> do
-          let selector = "chart-" ++ show b.ident
-          let dataUrl' = dataUrl state.settings.sdConfig
-          let block' = Block b{ blockMode = BlockMode "Eval"
-                              , evalContent = selector
-                              }
-          let notebooks' = updateBlock n.ident block' <$> state.notebooks
-          e # emit responseEvent state{notebooks = notebooks'}
-          -- Give it a small amount of time to create the selector.
-          timeout 1000 $ createVisual showVisualType dataUrl' selector ds
-          pure unit
-        SaveNotebook (Notebook n) -> do
-          let dataUrl' = dataUrl state.settings.sdConfig
-          let url = dataUrl' </> n.path </> n.name </> "index.nb"
-          let n' = deleteID n
-          let n'' = n'{persisted = true, dirty = false}
-          X.post X.defaultAjaxOptions
-            { onReadyStateChange = X.onDone \_ -> do
-              let notebooks' = replaceNotebook (Notebook n'') <$> state.notebooks
-              e # emit responseEvent state{notebooks = notebooks'}
-              pure unit
-            } url {} (XT.UrlEncoded $ jsonStringify n'')
-          pure unit
-        OpenNotebook path -> do
-          let dataUrl' = dataUrl state.settings.sdConfig
-          let url = dataUrl' </> path </> "index.nb"
-          let name = basename path
-          X.get X.defaultAjaxOptions
-            {onLoad = \res -> do
-              revisions <- trim >>> split "\n" <$> X.getResponseText res
-              case last revisions of
-                Nothing -> pure unit
-                Just "" -> pure unit
-                Just revision -> do
-                  i <- NotebookID <$> v4
-                  let default = { ident: i
-                                , blocks: []
-                                , name: name
-                                , path: path
-                                , published: false
-                                , numOut: 0
-                                , persisted: false
-                                , dirty: false
-                                }
-                  let nb = jsonParse default revision
-                  let notebook' = Notebook nb{name = name}
-                  let notebooks' = state.notebooks `snoc` notebook'
-                  let notebooks'' = nubBy uniqueNotebooks notebooks'
-                  e # emit responseEvent state{notebooks = notebooks''}
-                  pure unit
-            } url {}
-          pure unit
-        RenameNotebook (Notebook n) path -> do
-          let dataUrl' = dataUrl state.settings.sdConfig
-          let url = dataUrl' </> n.path </> n.name </> "/"
-          let base = basename path
-          let fs = mount state.settings.seConfig
-          X.ajax X.defaultAjaxOptions
-            { method = "MOVE"
-            , url = url
-            , headers = ["Destination" ~ (fs </> path </> "/")]
-            , onLoad = \_ -> do
-              let notebook' = Notebook n{name = base, dirty = false}
-              let notebooks' = replaceNotebook notebook' <$> state.notebooks
-              e # emit responseEvent state{notebooks = notebooks'}
-              pure unit
-            } {} XT.NoBody
-          pure unit
-        TogglePublish (Notebook n) -> do
-          let dataUrl' = dataUrl state.settings.sdConfig
-          let url = dataUrl' </> n.path </> n.name </> "index.nb"
-          let n' = deleteID n
-          let notebook' = Notebook n'{published = not n.published, dirty = true}
-          let notebooks' = replaceNotebook notebook' <$> state.notebooks
-          e # emit responseEvent state{notebooks = notebooks'}
-          pure unit
-        CreateValidation ty val -> do
-          e # emit responseEvent ((state # _validation %~ at ty ?~ val) :: SlamDataState)
-          pure unit
-        DeleteValidation ty -> do
-          e # emit responseEvent (state # _validation %~ at ty .~ Nothing)
-          pure unit
-        DirtyNotebook (Notebook n) -> do
-          let nb = Notebook n{dirty = true}
-          let nbs = replaceNotebook nb <$> state.notebooks
-          e # emit responseEvent state{notebooks = nbs}
-          pure unit
-        CleanNotebook (Notebook n) -> do
-          let nb = Notebook n{dirty = false}
-          let nbs = replaceNotebook nb <$> state.notebooks
-          e # emit responseEvent state{notebooks = nbs}
-          pure unit
-        _ -> (e # emit responseEvent state) *> pure unit)
+        _ -> pure unit)
 
       -- Start up SlamData.
       slamData e initialState'
-
-  dataUrl :: SDConfig -> FilePath
-  dataUrl     = config2Url "data"
-  metadataUrl :: SDConfig -> FilePath
-  metadataUrl = config2Url "metadata"
-  queryUrl :: SDConfig -> FilePath
-  queryUrl    = config2Url "query"
-  config2Url :: FilePath -> SDConfig -> FilePath
-  config2Url p config = serverURI config </> p </> "fs"
-
-  initialState :: SDConfig -> SEConfig -> SlamDataState
-  initialState sdConfig seConfig =
-    { files: FileType { name: mount seConfig
-                      , "type": "directory"
-                      , children: []
-                      }
-    , notebooks: []
-    , settings: {sdConfig: sdConfig, seConfig: seConfig}
-    , showSettings: false
-    , showConfig: false
-    , validation: M.empty
-    }
-
-  uniqueNotebooks :: Notebook -> Notebook -> Boolean
-  uniqueNotebooks (Notebook nb) (Notebook nb') = nb.ident == nb'.ident
-
-  replaceNotebook :: Notebook -> Notebook -> Notebook
-  replaceNotebook n@(Notebook nb) (Notebook nb')
-    | nb.ident == nb'.ident = n
-  replaceNotebook _ n = n
-
-  countOut :: NotebookRec -> BlockRec -> Number
-  countOut {blocks = bs} {blockType = ty} = go bs 0
-    where
-      go []           n                     = n
-      go (Block b:bs) n | b.blockType == ty = go bs (n + 1)
-      go (_:bs)       n                     = go bs n
-
-  createBlock :: NotebookID -> Block -> Notebook -> Notebook
-  createBlock ident block (Notebook n@{ident = ident', blocks = blocks})
-    | ident == ident' = Notebook n{blocks = blocks `snoc` block, dirty = true}
-  createBlock _ _ nb = nb
-
-  deleteBlock :: NotebookID -> BlockID -> Notebook -> Notebook
-  deleteBlock nID bID (Notebook n@{ident = nID', blocks = blocks})
-    | nID == nID' = Notebook n{blocks = filter go blocks, dirty = true}
-    where
-      go (Block b) = b.ident /= bID
-  deleteBlock _ _ nb = nb
-
-  insertBlock :: NotebookID -> Block -> Number -> Notebook -> Notebook
-  insertBlock ident block index (Notebook n@{ident = ident', blocks = blocks})
-    | ident == ident' = Notebook n{blocks = insertAt index block blocks, dirty = true}
-  insertBlock _ _ _ nb = nb
-
-  updateBlock :: NotebookID -> Block -> Notebook -> Notebook
-  updateBlock ident (Block b) (Notebook n@{ident = ident', blocks = blocks})
-    | ident == ident' = Notebook n{blocks = go <$> blocks, dirty = true}
-    where
-      go (Block b') | b.ident == b'.ident = Block b
-      go b'                               = b'
-  updateBlock _ _ nb = nb
-
-  insertChildren :: [String] -> [FileType] -> [FileType] -> FileType
-  insertChildren ds fs kids = case insertChildren' ds fs kids of
-    [f] -> f
-
-  insertChildren' :: [String] -> [FileType] -> [FileType] -> [FileType]
-  insertChildren' [d]    (FileType f:fs) children
-    | (d == f.name ++ "/" || d == f.name) && f."type" == "directory" =
-      mergeKids (FileType f) children : fs
-  insertChildren' (d:ds) (FileType f:fs) children
-    | d == f.name =
-      FileType f{children = insertChildren' ds f.children children} : fs
-  insertChildren' ds     (f:fs)          children =
-    f : insertChildren' ds fs children
-
-  mergeKids :: FileType -> [FileType] -> FileType
-  mergeKids (FileType f) kids = let kids' = unsafeMerge FileType f.children <$> kids in
-    FileType f{children = kids'}
-
-  insertFields :: [String] -> [FileType] -> [String] -> FileType
-  insertFields ds fs fields = case insertFields' ds fs fields of
-    [f] -> f
-
-  insertFields' :: [String] -> [FileType] -> [String] -> [FileType]
-  insertFields' [d]    (FileType f:fs) fields
-    | d == f.name && f."type" == "file" =
-      insertFields'' (FileType f) fields : fs
-  insertFields' (d:ds) (FileType f:fs) fields
-    | d == f.name =
-      FileType f{children = insertFields' ds f.children fields} : fs
-  insertFields' ds     (f:fs)          fields =
-    f : insertFields' ds fs fields
-
-  insertFields'' :: FileType -> [String] -> FileType
-  insertFields'' (FileType f) fields =
-    FileType f{children = insertField <$> fields}
-
-  insertField :: String -> FileType
-  insertField field = FileType {name: field, "type": "field", children: []}
-
-  foreign import unsafeMerge
-    "function unsafeMerge(ft) {\
-    \  return function (oldKids) {\
-    \    return function(c) {\
-    \      var kid = c;\
-    \      for (var i = 0; i < oldKids.length; ++i) {\
-    \        var oldKid = oldKids[i];\
-    \        if (oldKid.name == c.name && oldKid.type == c.type) {\
-    \          if (oldKid.children != null) {\
-    \            kid.children = oldKid.children;\
-    \          } else {\
-    \            kid.children = [];\
-    \          }\
-    \          return kid;\
-    \        }\
-    \      }\
-    \      kid.children = [];\
-    \      return ft(kid);\
-    \    }\
-    \  }\
-    \};" :: (FileTypeRec -> FileType) -> [FileType] -> FileType -> FileType
-
-  foreign import jsonParse
-    "function jsonParse(def) {\
-    \  return function(str) {\
-    \    try {\
-    \      return JSON.parse(str);\
-    \    } catch (e) {\
-    \      return def;\
-    \    }\
-    \  }\
-    \}" :: forall r. { | r} -> String -> { | r}
-
-  foreign import jsonStringify
-    "function jsonStringify(o) {\
-    \  return JSON.stringify(o);\
-    \}" :: forall r. { | r} -> String
-
-  foreign import unsafeCoerceJSON
-    "function unsafeCoerceJSON(json) {\
-    \  return json;\
-    \}" :: forall r. JSON -> { | r}
-
-  foreign import objectKeys
-    "function objectKeys(obj) {\
-    \  return Object.keys(obj);\
-    \}" :: forall r. { | r} -> [String]
-
-  -- At the moment, the c3 bindings don't allow us to easily do what we need to.
-  foreign import createVisual
-    "function createVisual(showData) {\
-    \  return function(baseUrl) {\
-    \    return function(selector) {\
-    \      return function(data) {\
-    \        return function() {\
-    \          if (data.length === 0) {\
-    \            return;\
-    \          }\
-    \          var chart = c3.generate({\
-    \              bindto: '#' + selector,\
-    \              data: {\
-    \                  json: {},\
-    \                  type: showData(data[0])\
-    \              }\
-    \          });\
-    \          var jsons = {};\
-    \          data.map(function(datum) {\
-    \              oboe(baseUrl + datum.path).node('!', function(json) {\
-    \                  datum.fields.map(function(field) {\
-    \                      if (jsons[field] == null) {\
-    \                          jsons[field] = [];\
-    \                      }\
-    \                      jsons[field].push(json[field]);\
-    \                  });\
-    \                  chart.load({json: jsons});\
-    \              });\
-    \          });\
-    \        }\
-    \      }\
-    \    }\
-    \  }\
-    \}" :: forall eff. (VisualData -> String) -> String -> String -> [VisualData] -> Eff (timer :: Timer, c3 :: DOM | eff) Unit
-
-  showVisualType (VisualData v) = show v."type"
-
-  -- SlamEngine currently barfs if you POST some JSON with the same _id.
-  foreign import deleteID
-    "function deleteID(notebook) {\
-    \  delete notebook._id;\
-    \  return notebook;\
-    \}" :: NotebookRec -> NotebookRec

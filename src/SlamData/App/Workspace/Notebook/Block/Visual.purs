@@ -45,6 +45,8 @@ module SlamData.App.Workspace.Notebook.Block.Visual
   import SlamData.Types.Workspace.Notebook.Block (Block())
   import SlamData.Types.Workspace.Notebook.Block.Visual (VisualData(..))
 
+  import System.Path.Unix ((</>))
+
   import qualified React.DOM as D
   import qualified Data.Map as M
   import qualified Data.Set as S
@@ -163,7 +165,7 @@ module SlamData.App.Workspace.Notebook.Block.Visual
     , render = \this ->
       let name = this.props.files^._fileTypeRec.._name
           path = this.props.path `snoc` name
-          path' = this.props.path `snoc` (name ++ "/")
+          path' = this.props.path `snoc` (name </> "/")
           children = sort (this.props.files^._fileTypeRec.._children)
           req = this.props.request
       in case this.props.files of

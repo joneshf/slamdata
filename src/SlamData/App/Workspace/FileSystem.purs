@@ -26,6 +26,8 @@ module SlamData.App.Workspace.FileSystem
   import SlamData.Types (SlamDataEventTy(..), SlamDataRequest(), SlamDataRequestEff())
   import SlamData.Types.Workspace.FileSystem (FileType(..), FileTypeRec())
 
+  import System.Path.Unix ((</>), joinPath)
+
   import qualified React.DOM as D
 
   type FileSystemProps eff =
@@ -69,7 +71,7 @@ module SlamData.App.Workspace.FileSystem
     , render = \this -> case this.props.files of
       (FileType {"type" = "file", name = "index.nb"}) -> pure $ D.div {}
         [D.span {onClick: eventHandler this \this _ ->
-                 this.props.request $ OpenNotebook (joinWith "/" this.props.path)
+                 this.props.request $ OpenNotebook $ joinPath this.props.path
                }
           [D.rawText "index.nb"]
         ]
@@ -97,7 +99,7 @@ module SlamData.App.Workspace.FileSystem
              -> Eff (SlamDataRequestEff eff) Unit
   toggleTree this _ =
     let name = this.props.files^._fileTypeRec.._name
-        path = this.props.path `snoc` (name ++ "/")
+        path = this.props.path `snoc` (name </> "/")
     in if this.state.collapsed then do
       this.props.request $ ReadFileSystem path
       pure $ this.setState {collapsed: not this.state.collapsed}
