@@ -16,7 +16,7 @@ module SlamData.Types.Workspace.Notebook where
 
   import SlamData.Types.Workspace.Notebook.Block (Block())
 
-  import qualified Data.Map as M
+  import qualified Data.StrMap as M
 
   newtype NotebookID = NotebookID UUID
   newtype Notebook = Notebook NotebookRec
