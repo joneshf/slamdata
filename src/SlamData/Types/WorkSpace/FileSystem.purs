@@ -3,7 +3,7 @@ module SlamData.Types.Workspace.FileSystem where
   import Data.Argonaut ((?>>=), decodeJson, toArray, toObject, toString)
   import Data.Argonaut.Decode (DecodeJson)
 
-  import qualified Data.Map as M
+  import qualified Data.StrMap as M
 
   newtype FileType = FileType FileTypeRec
   type FileTypeRec =

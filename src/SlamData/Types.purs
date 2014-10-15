@@ -39,6 +39,7 @@ module SlamData.Types where
     )
   import SlamData.Types.Workspace.Notebook.Block.Visual (VisualData())
 
+  import qualified Data.StrMap as StrMap
   import qualified Data.Map as M
 
   type FilePath = String
@@ -68,7 +69,7 @@ module SlamData.Types where
 
   newtype SEConfig = SEConfig SEConfigRec
   type SEConfigRec =
-    { mountings :: M.Map FilePath Mounting
+    { mountings :: StrMap.StrMap Mounting
     , server    :: SEConfigServer
     }
 
@@ -187,19 +188,19 @@ module SlamData.Types where
 
   instance decodeSDConfig :: DecodeJson SDConfig where
     decodeJson json = toObject json ?>>= "SDConfig" >>= \obj -> do
-      server     <- M.lookup "server"     obj ?>>= "server"     >>= decodeJson
-      nodeWebkit <- M.lookup "nodeWebkit" obj ?>>= "nodeWebkit" >>= decodeJson
+      server     <- StrMap.lookup "server"     obj ?>>= "server"     >>= decodeJson
+      nodeWebkit <- StrMap.lookup "nodeWebkit" obj ?>>= "nodeWebkit" >>= decodeJson
       pure $ SDConfig {server: server, nodeWebkit: nodeWebkit}
 
   instance decodeSDConfigServer :: DecodeJson SDConfigServer where
     decodeJson json = toObject json ?>>= "SDConfigServer" >>= \obj -> do
-      location <- M.lookup "location" obj ?>>= "location" >>= decodeJson
-      port     <- M.lookup "port"     obj ?>>= "port"     >>= decodeJson
+      location <- StrMap.lookup "location" obj ?>>= "location" >>= decodeJson
+      port     <- StrMap.lookup "port"     obj ?>>= "port"     >>= decodeJson
       pure $ SDConfigServer {location: location, port: port}
 
   instance decodeSDConfigNodeWebkit :: DecodeJson SDConfigNodeWebkit where
     decodeJson json = toObject json ?>>= "SDConfigNodeWebkit" >>= \obj -> do
-      java <- M.lookup "java" obj ?>>= "java" >>= decodeJson
+      java <- StrMap.lookup "java" obj ?>>= "java" >>= decodeJson
       pure $ SDConfigNodeWebkit {java: java}
 
   -- SEConfig
@@ -227,8 +228,8 @@ module SlamData.Types where
 
   instance decodeSEConfig :: DecodeJson SEConfig where
     decodeJson json = toObject json ?>>= "SEConfig" >>= \obj -> do
-      server     <- M.lookup "server"    obj ?>>= "server"    >>= decodeJson
-      mountings  <- M.lookup "mountings" obj ?>>= "mountings" >>= decodeJson
+      server     <- StrMap.lookup "server"    obj ?>>= "server"    >>= decodeJson
+      mountings  <- StrMap.lookup "mountings" obj ?>>= "mountings" >>= decodeJson
       mountings' <- traverse decodeJson mountings
       pure $ SEConfig { server: server
                       , mountings: mountings'
@@ -236,18 +237,18 @@ module SlamData.Types where
 
   instance decodeSEConfigServer :: DecodeJson SEConfigServer where
     decodeJson json = toObject json ?>>= "SEConfigServer" >>= \obj -> do
-      port <- M.lookup "port" obj ?>>= "port" >>= decodeJson
+      port <- StrMap.lookup "port" obj ?>>= "port" >>= decodeJson
       pure $ SEConfigServer {port: port}
 
   instance decodeMounting :: DecodeJson Mounting where
     decodeJson json = toObject json ?>>= "MountMongo" >>= \obj -> do
-      mongodb <- M.lookup "mongodb" obj ?>>= "mongodb" >>= decodeJson
+      mongodb <- StrMap.lookup "mongodb" obj ?>>= "mongodb" >>= decodeJson
       pure $ MountMongo mongodb
 
   instance decodeMountingRec :: DecodeJson MountingWrapper where
     decodeJson json = toObject json ?>>= "MountingWrapper" >>= \obj -> do
-      connectionUri <- M.lookup "connectionUri" obj ?>>= "connectionUri" >>= decodeJson
-      database      <- M.lookup "database"      obj ?>>= "database"      >>= decodeJson
+      connectionUri <- StrMap.lookup "connectionUri" obj ?>>= "connectionUri" >>= decodeJson
+      database      <- StrMap.lookup "database"      obj ?>>= "database"      >>= decodeJson
       pure $ MountingWrapper {connectionUri: connectionUri, database: database}
 
   -- Events

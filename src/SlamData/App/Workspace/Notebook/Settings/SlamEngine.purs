@@ -49,7 +49,7 @@ module SlamData.App.Workspace.Notebook.Settings.SlamEngine
 
   import Text.Parsing.Parser (runParser)
 
-  import qualified Data.Map as M
+  import qualified Data.StrMap as M
   import qualified React.DOM as D
 
   -- Server Fields
@@ -114,7 +114,7 @@ module SlamData.App.Workspace.Notebook.Settings.SlamEngine
               , onChange: eventHandler this \this e -> do
                 let path' = value e.target
                 let state' = this.state # _seDirty .~ true # _seMountings
-                           %~ (at path .~ Nothing) .. (at path' ?~ mounting)
+                           %~ (at path .~ (Nothing :: Maybe Mounting)) .. (at path' ?~ mounting)
                 pure $ this.setState state'
                 this.props.request $ CreateValidation SettingsSEMountPath $ validateMountPath path'
               , placeholder: "/"
@@ -168,7 +168,7 @@ module SlamData.App.Workspace.Notebook.Settings.SlamEngine
   _seServerPort :: forall r. LensP {seConfig :: SEConfig | r} Number
   _seServerPort = _seConfig.._seConfigRec.._server.._seConfigServer.._port
 
-  _seMountings :: forall r. LensP {seConfig :: SEConfig | r} (M.Map String Mounting)
+  _seMountings :: forall r. LensP {seConfig :: SEConfig | r} (M.StrMap Mounting)
   _seMountings = _seConfig.._seConfigRec.._mountings
 
   _mountingMongoURI :: forall r. LensP Mounting String

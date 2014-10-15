@@ -20,7 +20,7 @@ module SlamData.Types.Workspace.Notebook.Block where
 
   import Node.UUID (parse, runUUID, unparse, v4, UUID())
 
-  import qualified Data.Map as M
+  import qualified Data.StrMap as M
 
   newtype BlockID = BlockID UUID
   newtype Block = Block BlockRec

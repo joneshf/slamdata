@@ -100,7 +100,7 @@ module SlamData.Helpers where
   defaultSEConfig :: SEConfig
   defaultSEConfig = SEConfig
     { server: SEConfigServer {port: defaultServerPort}
-    , mountings: M.singleton defaultMountPath $ MountMongo $
+    , mountings: SM.singleton defaultMountPath $ MountMongo $
         MountingWrapper { connectionUri: defaultMongoURI
                     , database: defaultMongoDatabase
                     }
@@ -112,7 +112,7 @@ module SlamData.Helpers where
 
   mount :: SEConfig -> String
   mount (SEConfig {mountings = m}) =
-    (fst <$> head (M.toList m)) `getOrElse` defaultMountPath
+    (fst <$> head (SM.toList m)) `getOrElse` defaultMountPath
 
   dataUrl :: SDConfig -> FilePath
   dataUrl     = config2Url "data"
@@ -161,7 +161,7 @@ module SlamData.Helpers where
     database <- SM.lookup "seDatabase"  qs
     pure $ SEConfig
       { server: SEConfigServer {port: readInt 10 port}
-      , mountings: M.singleton path $ MountMongo $ MountingWrapper
+      , mountings: SM.singleton path $ MountMongo $ MountingWrapper
          { connectionUri: mongoURI
          , database: database
          }
