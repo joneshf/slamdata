@@ -103,8 +103,6 @@ module SlamData.NodeWebKit where
 
   import System.Path.Unix ((</>))
 
-  import Text.Parsing.Parser (runParser)
-
   import qualified Data.Map as M
 
   foreign import platform "var platform = process.platform;" :: String
@@ -151,7 +149,7 @@ module SlamData.NodeWebKit where
   showConfig = encodeJson >>> printJson
 
   parseConfig :: forall a. (DecodeJson a) => String -> Maybe a
-  parseConfig config = case runParser config jsonParser of
+  parseConfig config = case jsonParser config  of
     Left err -> Nothing
     Right config -> decodeMaybe config
 

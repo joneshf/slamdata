@@ -15,7 +15,7 @@ module SlamData.App.Events where
   import Data.Maybe (Maybe(..))
   import Data.Maybe.Unsafe (fromJust)
   import Data.Path (FilePath())
-  import Data.String (split, trim)
+  import Data.String (joinWith, replace, split, trim)
   import Data.Tuple (fst)
 
   import DOM (DOM())
@@ -180,9 +180,10 @@ module SlamData.App.Events where
           X.get X.defaultAjaxOptions
             { headers = ["Content-Type" ~ "text/plain"]
             , onLoad = \res -> do
-              content <- X.getResponseText res
+              content <- trim >>> split "\n" >>> joinWith "," <$> X.getResponseText res
+              let content' = "[" ++ content ++ "]"
               let block'' = Block b{ blockMode = BlockMode "Eval"
-                                   , evalContent = content
+                                   , evalContent = content'
                                    }
               let notebooks' = updateBlock n.ident block'' <$> state.notebooks
               e # emit responseEvent state{notebooks = notebooks'}

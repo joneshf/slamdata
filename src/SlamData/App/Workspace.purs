@@ -22,7 +22,7 @@ module SlamData.App.Workspace (workspace, WorkspaceProps(), WorkspaceState()) wh
     )
   import SlamData.Types.Workspace.FileSystem (FileType(), FileTypes(..))
 
-  import qualified Data.Map as M
+  import qualified Data.StrMap as SM
   import qualified React.DOM as D
 
   type WorkspaceProps eff =
@@ -60,4 +60,4 @@ module SlamData.App.Workspace (workspace, WorkspaceProps(), WorkspaceState()) wh
 
   path :: SlamDataState -> String
   path {settings = {seConfig = SEConfig {mountings = m}}} =
-    (fst <$> M.toList m # head) `getOrElse` defaultMountPath
+    (fst <$> SM.toList m # head) `getOrElse` defaultMountPath
