@@ -68,6 +68,7 @@ var paths = {
             , 'bower_components/node-uuid/uuid.js'
             , 'bower_components/oboe/dist/oboe-browser.js'
             , 'bower_components/react/react-with-addons.js'
+            , 'bower_components/reactable/build/reactable.js'
             , 'bower_components/react-treeview/react-treeview.js'
             , 'bower_components/showdown/src/showdown.js'
             , 'bower_components/tiny-emitter/dist/tinyemitter.js'

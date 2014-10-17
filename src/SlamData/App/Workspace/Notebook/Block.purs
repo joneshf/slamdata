@@ -4,12 +4,15 @@ module SlamData.App.Workspace.Notebook.Block
   , BlockState()
   ) where
 
-  import Control.Lens ((^.), (..), (.~))
+  import Control.Lens ((^.), (..), (.~), to, view, LensP())
   import Control.Monad (unless)
 
+  import Data.Argonaut (jsonParser)
+  import Data.Either (either)
   import Data.Function (mkFn3)
 
   import React (coerceThis, createClass, eventHandler, spec)
+  import React.Reactable (defaultTableProps, table)
   import React.Types (Component(), ComponentClass(), ReactThis())
 
   import SlamData.App.Workspace.Notebook.Block.Common
@@ -184,6 +187,12 @@ module SlamData.App.Workspace.Notebook.Block
     BlockType "Visual" ->
       D.div {id: this.props.block^._blockRec.._evalContent}
         []
+    BlockType "SQL"    ->
+      either
+        D.rawText
+        (\t -> table defaultTableProps{columns = [], "data" = t} []) $
+        this.props.block^._blockRec.._evalContent..to jsonParser
+    -- Case here for sql, probably need to parse the json string that comes back and shove it into the table.
     _                  ->
       D.span {dangerouslySetInnerHTML: {__html: this.props.block^._blockRec.._evalContent}}
         []
