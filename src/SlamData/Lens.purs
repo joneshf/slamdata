@@ -116,3 +116,6 @@ module SlamData.Lens where
 
   _seDirty :: forall a r. LensP {seDirty :: a | r} a
   _seDirty f o@{seDirty = i} = (\i' -> o{seDirty = i'}) <$> f i
+
+  _label :: forall a r. LensP {label :: a | r} a
+  _label f o@{label = i} = (\i' -> o{label = i'}) <$> f i

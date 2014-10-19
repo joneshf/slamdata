@@ -24,7 +24,7 @@ casper.test.setUp(function(done) {
     }).run(done);
 });
 
-casper.test.begin('SQL block labels are unique', 18, function(test) {
+casper.test.begin('SQL block labels are unique', 19, function(test) {
     casper.start(defaultURL, function() {
         actions.addNotebook(test);
     }).then(function() {
@@ -32,11 +32,19 @@ casper.test.begin('SQL block labels are unique', 18, function(test) {
         casper.sendKeys( '#notebook .tabs-content .content .actual-content .block textarea'
                        , 'select * from foo limit 10' // we have to force a new collection until SE does it by default.
                        );
+        casper.sendKeys( '#notebook .tabs-content .content .actual-content .block textarea'
+                       , casper.page.event.key.Enter
+                       , {modifiers: 'ctrl'}
+                       );
     }).then(function() {
         casper.waitForResource('/data/fs/Untitled/out0', function() {
             actions.addBlock('SQL', test);
             casper.sendKeys( '#notebook .tabs-content .content .actual-content .block textarea'
                            , 'select * from foo limit 10' // we have to force a new collection until SE does it by default.
+                           );
+            casper.sendKeys( '#notebook .tabs-content .content .actual-content .block textarea'
+                           , casper.page.event.key.Enter
+                           , {modifiers: 'ctrl'}
                            );
         });
     }).then(function() {
@@ -44,6 +52,10 @@ casper.test.begin('SQL block labels are unique', 18, function(test) {
             actions.addBlock('SQL', test);
             casper.sendKeys( '#notebook .tabs-content .content .actual-content .block textarea'
                            , 'select * from foo limit 10' // we have to force a new collection until SE does it by default.
+                           );
+            casper.sendKeys( '#notebook .tabs-content .content .actual-content .block textarea'
+                           , casper.page.event.key.Enter
+                           , {modifiers: 'ctrl'}
                            );
         });
     }).then(function() {
@@ -59,8 +71,10 @@ casper.test.begin('SQL block labels are unique', 18, function(test) {
             };
         });
     }).then(function() {
-        casper.click('#notebook .tabs-content .content .actual-content .block .evaled-block');
-        casper.sendKeys('#notebook .tabs-content .content .actual-content .block textarea', '');
+        casper.sendKeys( '#notebook .tabs-content .content .actual-content .block textarea'
+                       , casper.page.event.key.Enter
+                       , {modifiers: 'ctrl'}
+                       );
         casper.waitForResource('/data/fs/Untitled/out2', function() {
             casper.capture(screenshotDir + '/sql_block_labels_unique_second.png');
             var labels = casper.getElementsInfo('#notebook .content.active .block-SQL .block-label');

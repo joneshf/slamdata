@@ -86,7 +86,22 @@
     text-align: center;
 }
 
+.block-SQL .SQL-editor {
+    height: 60px;
+    min-height: 40px;
+    textarea {
+        border: none;
+        border-bottom: 1px solid $slamdata-border-color;
+        height: 60px;
+        min-height: 40px;
+    }
+}
+
 .block-SQL .evaled-block {
+    &:hover {
+        background: transparent;
+        border: 1px solid transparent;
+    }
     span {
         font-family: monospace;
         font-size: 10pt;
