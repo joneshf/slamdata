@@ -113,7 +113,7 @@ module SlamData.App.Events where
       pure unit
     CreateNotebook -> do
       ident <- NotebookID <$> v4
-      let name = "Untitled"
+      let name = "Untitled.nb"
       let path = mount state.settings.seConfig
       let notebook = Notebook { ident: ident
                               , blocks: []

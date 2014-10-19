@@ -37,7 +37,7 @@ casper.test.begin('SQL results are in a table', 7, function(test) {
                        , {modifiers: 'ctrl'}
                        );
     }).then(function() {
-        casper.waitForResource('out0', function() {
+        casper.waitForResource('/data/fs/Untitled.nb/out0', function() {
             casper.capture(screenshotDir + '/sql_table.png');
             test.assertExists('#notebook .tabs-content .content .actual-content .block-SQL .evaled-block table');
         });
