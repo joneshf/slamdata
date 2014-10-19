@@ -24,7 +24,7 @@ casper.test.setUp(function(done) {
     }).run(done);
 });
 
-casper.test.begin('SQL block label', 8, function(test) {
+casper.test.begin('SQL block label', 7, function(test) {
     casper.start(defaultURL, function() {
         actions.addNotebook(test);
         actions.addBlock('SQL', test);
@@ -32,6 +32,10 @@ casper.test.begin('SQL block label', 8, function(test) {
         casper.capture(screenshotDir + '/sql_block_label_before_blur.png');
         casper.sendKeys( '#notebook .tabs-content .content .actual-content .block textarea'
                        , 'select * from foo limit 10' // we have to force a new collection until SE does it by default.
+                       );
+        casper.sendKeys( '#notebook .tabs-content .content .actual-content .block textarea'
+                       , casper.page.event.key.Enter
+                       , {modifiers: 'ctrl'}
                        );
         casper.waitForResource('out0', function() {
             casper.capture(screenshotDir + '/sql_block_label_after_blur.png');

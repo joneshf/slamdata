@@ -24,13 +24,17 @@ casper.test.setUp(function(done) {
     }).run(done);
 });
 
-casper.test.begin('SQL results are in a table', 8, function(test) {
+casper.test.begin('SQL results are in a table', 7, function(test) {
     casper.start(defaultURL, function() {
         actions.addNotebook(test);
     }).then(function() {
         actions.addBlock('SQL', test);
         casper.sendKeys( '#notebook .tabs-content .content .actual-content .block textarea'
                        , 'select * from "/system/indexes" limit 10' // we have to force a new collection until SE does it by default.
+                       );
+        casper.sendKeys( '#notebook .tabs-content .content .actual-content .block textarea'
+                       , casper.page.event.key.Enter
+                       , {modifiers: 'ctrl'}
                        );
     }).then(function() {
         casper.waitForResource('out0', function() {

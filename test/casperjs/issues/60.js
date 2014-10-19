@@ -24,13 +24,17 @@ casper.test.setUp(function(done) {
     }).run(done);
 });
 
-casper.test.begin('Content type is correct for SQL', 7, function(test) {
+casper.test.begin('Content type is correct for SQL', 6, function(test) {
     casper.start(defaultURL, function() {
         actions.addNotebook(test);
         actions.addBlock('SQL', test);
     }).then(function() {
         casper.sendKeys( '#notebook .tabs-content .content .actual-content .block textarea'
                        , "select * from zips where city <> 'ABC%' limit 10"
+                       );
+        casper.sendKeys( '#notebook .tabs-content .content .actual-content .block textarea'
+                       , casper.page.event.key.Enter
+                       , {modifiers: 'ctrl'}
                        );
         casper.capture(screenshotDir + '/evaled_sql_before_send.png');
         casper.waitForResource('out0', function() {
