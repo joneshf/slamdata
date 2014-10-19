@@ -61,8 +61,8 @@
     "react": "~0.11.1",
     "react-treeview": "joneshf/react-treeview#master",
     "showdown": "~0.3.1",
-    "slamengine-jar": "https://github.com/joneshf/slamengine/releases/download/releases%2Fbeta-2/slamengine_2.10-0.1-SNAPSHOT-one-jar.jar",
-    "reactable": "f0f3f45959ee2a851322f779658db7608b7b8a1d"
+    "reactable": "f0f3f45959ee2a851322f779658db7608b7b8a1d",
+    "slamengine-jar": "https://github.com/slamdata/slamengine/releases/download/v1.0.0rc1-109/slamengine_2.11-1.0.0rc1-one-jar.jar"
   },
   "devDependencies": {
     "underscore-contrib": "~0.3.0",
