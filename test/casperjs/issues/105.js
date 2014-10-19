@@ -25,7 +25,7 @@ casper.test.setUp(function(done) {
     }).run(done);
 });
 
-casper.test.begin('Renaming a notebook', 11, function(test) {
+casper.test.begin('Renaming a notebook', 10, function(test) {
     casper.start(defaultURL, function() {
         actions.addNotebook(test);
         actions.addBlock('SQL', test);

@@ -24,7 +24,7 @@ casper.test.setUp(function(done) {
     }).run(done);
 });
 
-casper.test.begin('SQL results are in a table', 8, function(test) {
+casper.test.begin('SQL results are in a table', 7, function(test) {
     casper.start(defaultURL, function() {
         actions.addNotebook(test);
     }).then(function() {
