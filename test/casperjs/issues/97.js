@@ -33,7 +33,7 @@ casper.test.begin('SQL results are in a table', 8, function(test) {
                        , 'select * from "/system/indexes" limit 10' // we have to force a new collection until SE does it by default.
                        );
     }).then(function() {
-        casper.waitForResource('/data/fs/Untitled/out0', function() {
+        casper.waitForResource('out0', function() {
             casper.capture(screenshotDir + '/sql_table.png');
             test.assertExists('#notebook .tabs-content .content .actual-content .block-SQL .evaled-block table');
         });

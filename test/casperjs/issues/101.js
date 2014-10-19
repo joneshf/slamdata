@@ -33,7 +33,7 @@ casper.test.begin('SQL block label', 8, function(test) {
         casper.sendKeys( '#notebook .tabs-content .content .actual-content .block textarea'
                        , 'select * from foo limit 10' // we have to force a new collection until SE does it by default.
                        );
-        casper.waitForResource('data/fs/Untitled/out0', function() {
+        casper.waitForResource('out0', function() {
             casper.capture(screenshotDir + '/sql_block_label_after_blur.png');
             test.assertSelectorHasText('#notebook .content.active .block-SQL .block-label', ':=')
         })

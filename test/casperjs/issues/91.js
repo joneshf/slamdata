@@ -33,21 +33,21 @@ casper.test.begin('SQL block labels are unique', 18, function(test) {
                        , 'select * from foo limit 10' // we have to force a new collection until SE does it by default.
                        );
     }).then(function() {
-        casper.waitForResource('/data/fs/Untitled/out0', function() {
+        casper.waitForResource('out0', function() {
             actions.addBlock('SQL', test);
             casper.sendKeys( '#notebook .tabs-content .content .actual-content .block textarea'
                            , 'select * from foo limit 10' // we have to force a new collection until SE does it by default.
                            );
         });
     }).then(function() {
-        casper.waitForResource('/data/fs/Untitled/out1', function() {
+        casper.waitForResource('out1', function() {
             actions.addBlock('SQL', test);
             casper.sendKeys( '#notebook .tabs-content .content .actual-content .block textarea'
                            , 'select * from foo limit 10' // we have to force a new collection until SE does it by default.
                            );
         });
     }).then(function() {
-        casper.waitForResource('/data/fs/Untitled/out2', function() {
+        casper.waitForResource('out2', function() {
             casper.capture(screenshotDir + '/sql_block_labels_unique_first.png');
             var labels = casper.getElementsInfo('#notebook .content.active .block-SQL .block-label');
             var labelsText = labels.map(function(label) {return label.text});
@@ -61,7 +61,7 @@ casper.test.begin('SQL block labels are unique', 18, function(test) {
     }).then(function() {
         casper.click('#notebook .tabs-content .content .actual-content .block .evaled-block');
         casper.sendKeys('#notebook .tabs-content .content .actual-content .block textarea', '');
-        casper.waitForResource('/data/fs/Untitled/out2', function() {
+        casper.waitForResource('out2', function() {
             casper.capture(screenshotDir + '/sql_block_labels_unique_second.png');
             var labels = casper.getElementsInfo('#notebook .content.active .block-SQL .block-label');
             var labelsText = labels.map(function(label) {return label.text});

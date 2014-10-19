@@ -33,7 +33,7 @@ casper.test.begin('Content type is correct for SQL', 7, function(test) {
                        , "select * from zips where city <> 'ABC%' limit 10"
                        );
         casper.capture(screenshotDir + '/evaled_sql_before_send.png');
-        casper.waitForResource('data/fs/Untitled/out0', function() {
+        casper.waitForResource('out0', function() {
           casper.capture(screenshotDir + '/evaled_sql_after_send.png');
         })
     }).run(function() {

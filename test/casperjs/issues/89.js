@@ -33,7 +33,7 @@ casper.test.begin('SQL results are in a table', 13, function(test) {
                        , 'select * from "/system/indexes" limit 5' // we have to force a new collection until SE does it by default.
                        );
     }).then(function() {
-        casper.waitForResource('/data/fs/Untitled/out0', function() {
+        casper.waitForResource('out0', function() {
             test.assertExists('#notebook .tabs-content .content .actual-content .block-SQL .evaled-block table tbody tr');
         });
     }).then(function() {
@@ -42,7 +42,7 @@ casper.test.begin('SQL results are in a table', 13, function(test) {
                        , 'select * from out0 limit 5' // we have to force a new collection until SE does it by default.
                        );
     }).then(function() {
-        casper.waitForResource('/data/fs/Untitled/out1', function() {
+        casper.waitForResource('out1', function() {
             test.assertExists('#notebook .tabs-content .content .actual-content .block-SQL .evaled-block table tbody tr');
         });
     }).then(function() {
@@ -51,7 +51,7 @@ casper.test.begin('SQL results are in a table', 13, function(test) {
                        , 'select * from "system/indexes" limit 5' // we have to force a new collection until SE does it by default.
                        );
     }).then(function() {
-        casper.waitForResource('/data/fs/Untitled/out1', function() {
+        casper.waitForResource('out1', function() {
             test.assertElementCount('#notebook .tabs-content .content .actual-content .block-SQL:first-of-type .evaled-block table tbody tr', 0);
         });
     }).run(function() {
