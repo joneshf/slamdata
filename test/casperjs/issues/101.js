@@ -24,7 +24,7 @@ casper.test.setUp(function(done) {
     }).run(done);
 });
 
-casper.test.begin('SQL block label', 8, function(test) {
+casper.test.begin('SQL block label', 7, function(test) {
     casper.start(defaultURL, function() {
         actions.addNotebook(test);
         actions.addBlock('SQL', test);

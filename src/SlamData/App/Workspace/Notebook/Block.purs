@@ -21,7 +21,12 @@ module SlamData.App.Workspace.Notebook.Block
     , blockRow
     )
   import SlamData.App.Workspace.Notebook.Block.Visual (visualEditor)
-  import SlamData.Components (actionButton, closeIcon, createBlockButton)
+  import SlamData.Components
+    ( actionButton
+    , blockIcon
+    , closeIcon
+    , createBlockButton
+    )
   import SlamData.Helpers (publish, value)
   import SlamData.Lens
     ( _blockMode
@@ -84,8 +89,7 @@ module SlamData.App.Workspace.Notebook.Block
 
   typeName :: Block -> Component
   typeName (Block b) = D.div {className: "block-type text-center"}
-    [D.span {} [D.rawText $ show b.blockType]
-    ]
+    [blockIcon b.blockType]
 
   toolbar :: forall eff fields
           .  ReactThis fields (BlockProps eff) BlockState

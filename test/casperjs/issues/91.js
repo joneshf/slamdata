@@ -24,7 +24,7 @@ casper.test.setUp(function(done) {
     }).run(done);
 });
 
-casper.test.begin('SQL block labels are unique', 18, function(test) {
+casper.test.begin('SQL block labels are unique', 15, function(test) {
     casper.start(defaultURL, function() {
         actions.addNotebook(test);
     }).then(function() {

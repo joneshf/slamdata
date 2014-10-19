@@ -8,7 +8,6 @@ function addBlock(blockType, test) {
     // Make sure we added exactly one markdown block.
     test.assertExists(blockSelector, 'Added a block');
     test.assertElementCount(blockSelector, count.block + 1);
-    test.assertSelectorHasText(blockTypeSelector, blockType, 'Block is titled ' + blockType);
 };
 
 function addNotebook(test) {
