@@ -32,6 +32,10 @@ casper.test.begin('SQL results are in a table', 11, function(test) {
         casper.sendKeys( '#notebook .tabs-content .content .actual-content .block textarea'
                        , 'select * from "/system/indexes" limit 5' // we have to force a new collection until SE does it by default.
                        );
+        casper.sendKeys( '#notebook .tabs-content .content .actual-content .block textarea'
+                       , casper.page.event.key.Enter
+                       , {modifiers: 'ctrl'}
+                       );
     }).then(function() {
         casper.waitForResource('/data/fs/Untitled/out0', function() {
             test.assertExists('#notebook .tabs-content .content .actual-content .block-SQL .evaled-block table tbody tr');
@@ -41,6 +45,10 @@ casper.test.begin('SQL results are in a table', 11, function(test) {
         casper.sendKeys( '#notebook .tabs-content .content .actual-content .block textarea'
                        , 'select * from out0 limit 5' // we have to force a new collection until SE does it by default.
                        );
+        casper.sendKeys( '#notebook .tabs-content .content .actual-content .block textarea'
+                       , casper.page.event.key.Enter
+                       , {modifiers: 'ctrl'}
+                       );
     }).then(function() {
         casper.waitForResource('/data/fs/Untitled/out1', function() {
             test.assertExists('#notebook .tabs-content .content .actual-content .block-SQL .evaled-block table tbody tr');
@@ -49,6 +57,10 @@ casper.test.begin('SQL results are in a table', 11, function(test) {
         casper.click('#notebook .tabs-content .content .actual-content .block-SQL .evaled-block table tbody tr');
         casper.sendKeys( '#notebook .tabs-content .content .actual-content .block textarea'
                        , 'select * from "system/indexes" limit 5' // we have to force a new collection until SE does it by default.
+                       );
+        casper.sendKeys( '#notebook .tabs-content .content .actual-content .block textarea'
+                       , casper.page.event.key.Enter
+                       , {modifiers: 'ctrl'}
                        );
     }).then(function() {
         casper.waitForResource('/data/fs/Untitled/out1', function() {
