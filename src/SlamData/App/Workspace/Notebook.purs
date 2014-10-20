@@ -32,7 +32,7 @@ module SlamData.App.Workspace.Notebook (notebooks) where
     , renameIcon
     , saveNotebookAction
     )
-  import SlamData.Helpers (activate, publish, value)
+  import SlamData.Helpers (activate, formatNotebookName, publish, value)
   import SlamData.Lens (_ident, _name, _notebookRec)
   import SlamData.Types
     ( SlamDataRequest()
@@ -259,16 +259,17 @@ module SlamData.App.Workspace.Notebook (notebooks) where
       Just name ->
         D.input { onBlur: eventHandler this \this e -> do
                   let name = trim $ value e.target
+                  let name' = name ++ ".nb"
                   if not nb'.persisted
-                    then this.props.request $ SaveNotebook $ Notebook nb'{name = name}
-                    else if name /= nb'.name
-                    then this.props.request $ RenameNotebook nb name
+                    then this.props.request $ SaveNotebook $ Notebook nb'{name = name'}
+                    else if name' /= nb'.name
+                    then this.props.request $ RenameNotebook nb name'
                     else pure unit
                   pure $ this.setState this.state{renaming = Nothing}
                 , onChange: eventHandler this \this e -> pure $
                   this.setState this.state{renaming = Just $ value e.target}
-                , value: name
+                , value: formatNotebookName name
                 }
           []
-      Nothing -> D.rawText $ nb'.name
-  noteBookName _    (Notebook {name = n}) = D.rawText n
+      Nothing -> D.rawText $ formatNotebookName nb'.name
+  noteBookName _    (Notebook {name = n}) = D.rawText $ formatNotebookName n

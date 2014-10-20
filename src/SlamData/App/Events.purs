@@ -113,7 +113,7 @@ module SlamData.App.Events where
       pure unit
     CreateNotebook -> do
       ident <- NotebookID <$> v4
-      let name = "Untitled"
+      let name = "Untitled.nb"
       let path = mount state.settings.seConfig
       let notebook = Notebook { ident: ident
                               , blocks: []
@@ -177,20 +177,29 @@ module SlamData.App.Events where
       X.post X.defaultAjaxOptions
         { headers = ["Destination" ~ out]
         , onReadyStateChange = X.onDone \res -> do
-          out' <- jsonParse {out: ""} <$> X.getResponseText res
-          X.get X.defaultAjaxOptions
-            { headers = ["Content-Type" ~ "text/plain"]
-            , onLoad = \res -> do
-              content <- trim >>> split "\n" >>> joinWith "," <$> X.getResponseText res
-              let content' = "[" ++ content ++ "]"
-              let block'' = Block b{ blockMode = BlockMode "Eval"
-                                   , evalContent = content'
-                                   }
-              let notebooks' = updateBlock n.ident block'' <$> state.notebooks
+          status <- X.getStatus res
+          if status >= 500
+            then do
+              error <- jsonParse {error: ""} <$> X.getResponseText res
+              let block = Block b{evalContent = error.error}
+              let notebooks' = updateBlock n.ident block <$> state.notebooks
               e # emit responseEvent state{notebooks = notebooks'}
               pure unit
-            } (dataUrl' ++ out'.out) {limit: 20}
-          pure unit
+            else do
+              out' <- jsonParse {out: ""} <$> X.getResponseText res
+              X.get X.defaultAjaxOptions
+                { headers = ["Content-Type" ~ "text/plain"]
+                , onLoad = \res -> do
+                  content <- trim >>> split "\n" >>> joinWith "," <$> X.getResponseText res
+                  let content' = "[" ++ content ++ "]"
+                  let block'' = Block b{ blockMode = BlockMode "Eval"
+                                       , evalContent = content'
+                                       }
+                  let notebooks' = updateBlock n.ident block'' <$> state.notebooks
+                  e # emit responseEvent state{notebooks = notebooks'}
+                  pure unit
+                } (dataUrl' ++ out'.out) {limit: 20}
+              pure unit
         } queryUrl' {} (XT.Multipart b.editContent)
       pure unit
     EvalVisual (Notebook n) (Block b@{blockType = BlockType "Visual"}) ds -> do

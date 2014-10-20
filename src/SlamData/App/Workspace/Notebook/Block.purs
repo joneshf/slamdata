@@ -4,7 +4,7 @@ module SlamData.App.Workspace.Notebook.Block
   , BlockState()
   ) where
 
-  import Control.Lens ((^.), (..), (.~), to, view, LensP())
+  import Control.Lens ((^.), (..), (.~), to)
   import Control.Monad (unless)
 
   import Data.Argonaut (jsonParser)
@@ -21,7 +21,12 @@ module SlamData.App.Workspace.Notebook.Block
     , blockRow
     )
   import SlamData.App.Workspace.Notebook.Block.Visual (visualEditor)
-  import SlamData.Components (actionButton, closeIcon, createBlockButton)
+  import SlamData.Components
+    ( actionButton
+    , blockIcon
+    , closeIcon
+    , createBlockButton
+    )
   import SlamData.Helpers (publish, value)
   import SlamData.Lens
     ( _blockMode
@@ -30,6 +35,7 @@ module SlamData.App.Workspace.Notebook.Block
     , _editContent
     , _evalContent
     , _ident
+    , _label
     , _notebookRec
     , _published
     )
@@ -84,8 +90,7 @@ module SlamData.App.Workspace.Notebook.Block
 
   typeName :: Block -> Component
   typeName (Block b) = D.div {className: "block-type text-center"}
-    [D.span {} [D.rawText $ show b.blockType]
-    ]
+    [blockIcon b.blockType]
 
   toolbar :: forall eff fields
           .  ReactThis fields (BlockProps eff) BlockState
@@ -116,6 +121,15 @@ module SlamData.App.Workspace.Notebook.Block
                .  ReactThis fields (BlockProps eff) BlockState
                -> Component
   blockContent this = case this.props.block^._blockRec of
+    {blockType = BlockType "SQL"} ->
+      blockRow {styles: "block-content block-SQL"}
+        [ D.div {className: "block-label"}
+          [formatLabel $ this.props.block^._blockRec.._label]
+        , D.div {}
+          [ sqlEditor this
+          , evaluatedBlock' this
+          ]
+        ]
     {blockMode = BlockMode "Edit", blockType = BlockType "Visual"} ->
       visualEditor { block: this.props.block
                    , files: this.props.files
@@ -154,6 +168,29 @@ module SlamData.App.Workspace.Notebook.Block
       ]
     ]
 
+  sqlEditor :: forall eff fields
+            .  ReactThis fields (BlockProps eff) BlockState
+            -> Component
+  sqlEditor this = D.div {className: "SQL-editor"}
+    [D.textarea
+      { autoFocus: "true"
+      , className: "block-editor"
+      , onChange: eventHandler this \this e -> do
+        pure $ this.setState this.state{editContent = value e.target}
+        let nb = this.props.notebook^._notebookRec
+        unless (nb.dirty) (this.props.request $ DirtyNotebook this.props.notebook)
+      , onKeyUp: eventHandler this \this k ->
+        if k.ctrlKey && k.key == "Enter" then
+          let content = this.state.editContent
+              block' = this.props.block # _blockRec.._editContent .~ content
+          in this.props.request $ EvalBlock this.props.notebook block'
+        else
+          pure unit
+      , value: this.state.editContent
+      }
+      []
+    ]
+
   evaluatedBlock :: forall eff fields
                  .  ReactThis fields (BlockProps eff) BlockState
                  -> Component
@@ -189,10 +226,9 @@ module SlamData.App.Workspace.Notebook.Block
         []
     BlockType "SQL"    ->
       either
-        D.rawText
+        (const $ D.rawText $ this.props.block^._blockRec.._evalContent)
         (\t -> table defaultTableProps{columns = [], "data" = t} []) $
         this.props.block^._blockRec.._evalContent..to jsonParser
-    -- Case here for sql, probably need to parse the json string that comes back and shove it into the table.
     _                  ->
       D.span {dangerouslySetInnerHTML: {__html: this.props.block^._blockRec.._evalContent}}
         []

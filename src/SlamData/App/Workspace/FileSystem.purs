@@ -4,11 +4,13 @@ module SlamData.App.Workspace.FileSystem
   , FileSystemState()
   ) where
 
-  import Control.Lens ((^.), (..))
+  import Control.Lens ((^.), (..), (<#>))
   import Control.Monad.Eff (Eff())
 
   import Data.Array (snoc, sort)
+  import Data.Foldable (find)
   import Data.Function (mkFn3)
+  import Data.Maybe (Maybe(..))
   import Data.String (charAt, joinWith, length)
 
   import React (coerceThis, createClass, eventHandler, spec)
@@ -20,8 +22,15 @@ module SlamData.App.Workspace.FileSystem
     , ReactThis()
     )
 
-  import SlamData.Components (dirOpenIcon, fileIcon)
-  import SlamData.Helpers (endsWith)
+  import SlamData.Components
+    ( dataFileIcon
+    , dirClosedIcon
+    , dirOpenIcon
+    , fileIcon
+    , mountIcon
+    , notebookIcon
+    )
+  import SlamData.Helpers (endsWith, formatNotebookName)
   import SlamData.Lens (_children, _fileTypeRec, _name)
   import SlamData.Types (SlamDataEventTy(..), SlamDataRequest(), SlamDataRequestEff())
   import SlamData.Types.Workspace.FileSystem (FileType(..), FileTypeRec())
@@ -69,28 +78,46 @@ module SlamData.App.Workspace.FileSystem
     { displayName = "FileSystemTree"
     , getInitialState = \_ -> pure {collapsed: true}
     , render = \this -> case this.props.files of
-      (FileType {"type" = "file", name = "index.nb"}) -> pure $ D.div {}
-        [D.span {onClick: eventHandler this \this _ ->
-                 this.props.request $ OpenNotebook $ joinPath this.props.path
-               }
-          [D.rawText "index.nb"]
-        ]
       (FileType {"type" = "file", name = n}) -> pure $ D.div {}
-        [D.span {} [D.rawText n]]
-      (FileType {"type" = "directory", name = n, children = c}) -> do
-        let name = this.props.files^._fileTypeRec.._name
-        let path = this.props.path `snoc` name
-        let children = sort (this.props.files^._fileTypeRec.._children)
-        let req = this.props.request
-        pure $ treeView
-          { collapsed: this.state.collapsed
-          , defaultCollapsed: true
-          , nodeLabel: D.span
-             {onClick: eventHandler (coerceThis this) toggleTree}
-             [D.rawText name]
-          , onClick: eventHandler (coerceThis this) toggleTree
-          }
-          ((\f -> reify {files: f, request: req, path: path} []) <$> children)
+        [D.span {}
+          [ dataFileIcon
+          , D.rawText n
+          ]
+        ]
+      (FileType {"type" = "directory", name = n}) | n `endsWith` ".nb" -> pure $ D.div {}
+        [D.span {onClick: eventHandler this \this _ ->
+                 this.props.request $ OpenNotebook $ joinPath $ this.props.path `snoc` n
+                }
+          [ notebookIcon
+          , D.rawText $ formatNotebookName n
+          ]
+        ]
+      (FileType {"type" = "directory", name = n, children = c}) -> pure $ treeView
+        { collapsed: this.state.collapsed
+        , defaultCollapsed: true
+        , nodeLabel: D.span
+           {onClick: eventHandler (coerceThis this) toggleTree}
+           [ if this.state.collapsed then dirClosedIcon else dirOpenIcon
+           , D.rawText n
+           ]
+        , onClick: eventHandler (coerceThis this) toggleTree
+        }
+        (sort c <#> \f -> reify { files: f
+                                , request: this.props.request
+                                , path: this.props.path `snoc` n
+                                } [])
+      (FileType {"type" = "mount", name = n}) -> pure $ D.div {}
+        [D.span {}
+          [ mountIcon
+          , D.rawText n
+          ]
+        ]
+      (FileType {name = n}) -> pure $ D.div {}
+        [D.span {}
+          [ fileIcon
+          , D.rawText n
+          ]
+        ]
     }
 
   toggleTree :: forall fields eff eff' event

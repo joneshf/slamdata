@@ -61,7 +61,7 @@ casper.test.begin('SlamData layout is proper', 1, function(test) {
     });
 });
 
-casper.test.begin('Basic Notebook Functionality', 15, function(test) {
+casper.test.begin('Basic Notebook Functionality', 14, function(test) {
     casper.start(defaultURL).then(function() {
         onlyAddButton(test);
         actions.addNotebook(test);

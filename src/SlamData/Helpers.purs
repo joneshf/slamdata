@@ -6,7 +6,7 @@ module SlamData.Helpers where
   import Data.Foldable (notElem)
   import Data.Maybe (fromMaybe, Maybe())
   import Data.Path (FilePath())
-  import Data.String (indexOf', joinWith, length)
+  import Data.String (indexOf', joinWith, lastIndexOf, length, take)
   import Data.Tuple (fst, Tuple(..))
   import Data.Validation (runV)
 
@@ -77,6 +77,11 @@ module SlamData.Helpers where
   runV' v ty = runV id (const "") $ extractV v ty
     where
       extractV v ty = M.lookup ty v `getOrElse` pure unit
+
+  formatNotebookName :: String -> String
+  formatNotebookName name = case lastIndexOf ".nb" name of
+    -1 -> name
+    n  -> take n name
 
   -- | Server stuff.
 
