@@ -34,7 +34,7 @@ casper.test.begin('Save notebook button', 7, function(test) {
     }).then(function() {
         casper.capture(screenshotDir + '/notebook_save_before_first_save.png');
         actions.firstSaveNotebook(test);
-        casper.waitForResource('data/fs/Untitled/index.nb', function() {
+        casper.waitForResource('data/fs/Untitled.nb/index.nb', function() {
             var disabled = casper.getElementAttribute('#notebook .content.active [title="Save"]', 'disabled');
             test.assertEquals(disabled, 'true', 'saved notebooks have save button disabled');
         })

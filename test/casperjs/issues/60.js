@@ -37,7 +37,7 @@ casper.test.begin('Content type is correct for SQL', 6, function(test) {
                        , {modifiers: 'ctrl'}
                        );
         casper.capture(screenshotDir + '/evaled_sql_before_send.png');
-        casper.waitForResource('data/fs/Untitled/out0', function() {
+        casper.waitForResource('data/fs/Untitled.nb/out0', function() {
           casper.capture(screenshotDir + '/evaled_sql_after_send.png');
         })
     }).run(function() {

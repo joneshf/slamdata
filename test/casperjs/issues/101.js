@@ -37,7 +37,7 @@ casper.test.begin('SQL block label', 7, function(test) {
                        , casper.page.event.key.Enter
                        , {modifiers: 'ctrl'}
                        );
-        casper.waitForResource('data/fs/Untitled/out0', function() {
+        casper.waitForResource('data/fs/Untitled.nb/out0', function() {
             casper.capture(screenshotDir + '/sql_block_label_after_blur.png');
             test.assertSelectorHasText('#notebook .content.active .block-SQL .block-label', ':=')
         })

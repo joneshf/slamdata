@@ -37,7 +37,7 @@ casper.test.begin('SQL results are in a table', 11, function(test) {
                        , {modifiers: 'ctrl'}
                        );
     }).then(function() {
-        casper.waitForResource('/data/fs/Untitled/out0', function() {
+        casper.waitForResource('/data/fs/Untitled.nb/out0', function() {
             test.assertExists('#notebook .tabs-content .content .actual-content .block-SQL .evaled-block table tbody tr');
         });
     }).then(function() {
@@ -50,7 +50,7 @@ casper.test.begin('SQL results are in a table', 11, function(test) {
                        , {modifiers: 'ctrl'}
                        );
     }).then(function() {
-        casper.waitForResource('/data/fs/Untitled/out1', function() {
+        casper.waitForResource('/data/fs/Untitled.nb/out1', function() {
             test.assertExists('#notebook .tabs-content .content .actual-content .block-SQL .evaled-block table tbody tr');
         });
     }).then(function() {
@@ -63,7 +63,7 @@ casper.test.begin('SQL results are in a table', 11, function(test) {
                        , {modifiers: 'ctrl'}
                        );
     }).then(function() {
-        casper.waitForResource('/data/fs/Untitled/out1', function() {
+        casper.waitForResource('/data/fs/Untitled.nb/out1', function() {
             test.assertElementCount('#notebook .tabs-content .content .actual-content .block-SQL:first-of-type .evaled-block table tbody tr', 0);
         });
     }).run(function() {
