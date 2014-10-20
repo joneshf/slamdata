@@ -25,6 +25,7 @@ module SlamData.Components where
 
   type FontAwesome = Component
   type Entypo = Component
+  type Icomoon = Component
 
   icon :: String -> Component
   icon name = D.i {className: name} []
@@ -52,16 +53,22 @@ module SlamData.Components where
   visualIcon      :: FontAwesome
   visualIcon      = icon "fa fa-bar-chart-o"
   -- FileSystem
-  dirOpenIcon     :: FontAwesome
-  dirOpenIcon     = icon "fa fa-folder-open-o"
-  dirClosedIcon   :: FontAwesome
-  dirClosedIcon   = icon "fa fa-folder-o"
-  fileIcon        :: FontAwesome
-  fileIcon        = icon "fa fa-file-o"
-  newNotebookIcon :: FontAwesome
-  newNotebookIcon = icon "fa fa-plus"
+  dataFileIcon    :: Icomoon
+  dataFileIcon    = icon "icon-file-xml"
+  dirClosedIcon   :: Icomoon
+  dirClosedIcon   = icon "icon-folder"
+  dirOpenIcon     :: Icomoon
+  dirOpenIcon     = icon "icon-folder-open"
+  fileIcon        :: Icomoon
+  fileIcon        = icon "icon-file-4"
   loadingIcon     :: FontAwesome
   loadingIcon     = icon "fa fa-circle-o-notch fa-spin"
+  mountIcon       :: Icomoon
+  mountIcon       = icon "icon-cabinet"
+  newNotebookIcon :: FontAwesome
+  newNotebookIcon = icon "fa fa-plus"
+  notebookIcon    :: Icomoon
+  notebookIcon    = icon "icon-notebook"
   -- Visuals
   areaChartIcon   :: Entypo
   areaChartIcon   = icon "icon-chart-area"
