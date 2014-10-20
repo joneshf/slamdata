@@ -22,7 +22,14 @@ module SlamData.App.Workspace.FileSystem
     , ReactThis()
     )
 
-  import SlamData.Components (dirOpenIcon, fileIcon)
+  import SlamData.Components
+    ( dataFileIcon
+    , dirClosedIcon
+    , dirOpenIcon
+    , fileIcon
+    , mountIcon
+    , notebookIcon
+    )
   import SlamData.Helpers (endsWith, formatNotebookName)
   import SlamData.Lens (_children, _fileTypeRec, _name)
   import SlamData.Types (SlamDataEventTy(..), SlamDataRequest(), SlamDataRequestEff())
@@ -72,25 +79,45 @@ module SlamData.App.Workspace.FileSystem
     , getInitialState = \_ -> pure {collapsed: true}
     , render = \this -> case this.props.files of
       (FileType {"type" = "file", name = n}) -> pure $ D.div {}
-        [D.span {} [D.rawText n]]
+        [D.span {}
+          [ dataFileIcon
+          , D.rawText n
+          ]
+        ]
       (FileType {"type" = "directory", name = n}) | n `endsWith` ".nb" -> pure $ D.div {}
         [D.span {onClick: eventHandler this \this _ ->
                  this.props.request $ OpenNotebook $ joinPath $ this.props.path `snoc` n
                 }
-          [D.rawText $ formatNotebookName n]
+          [ notebookIcon
+          , D.rawText $ formatNotebookName n
+          ]
         ]
       (FileType {"type" = "directory", name = n, children = c}) -> pure $ treeView
         { collapsed: this.state.collapsed
         , defaultCollapsed: true
         , nodeLabel: D.span
            {onClick: eventHandler (coerceThis this) toggleTree}
-           [D.rawText n]
+           [ if this.state.collapsed then dirClosedIcon else dirOpenIcon
+           , D.rawText n
+           ]
         , onClick: eventHandler (coerceThis this) toggleTree
         }
         (sort c <#> \f -> reify { files: f
                                 , request: this.props.request
                                 , path: this.props.path `snoc` n
                                 } [])
+      (FileType {"type" = "mount", name = n}) -> pure $ D.div {}
+        [D.span {}
+          [ mountIcon
+          , D.rawText n
+          ]
+        ]
+      (FileType {name = n}) -> pure $ D.div {}
+        [D.span {}
+          [ fileIcon
+          , D.rawText n
+          ]
+        ]
     }
 
   toggleTree :: forall fields eff eff' event

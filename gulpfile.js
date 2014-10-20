@@ -35,6 +35,7 @@ var paths = {
             css: 'bin/browser/css',
             dest: 'bin/browser',
             fonts: 'bin/browser/fonts',
+            icomoon: 'bin/browser/css/fonts',
             imgs: 'bin/browser/imgs',
             index: 'bin/browser',
             js: 'bin/browser/js'
@@ -43,6 +44,7 @@ var paths = {
             css: 'bin/node-webkit/css',
             dest: 'bin/node-webkit',
             fonts: 'bin/node-webkit/fonts',
+            icomoon: 'bin/node-webkit/css/fonts',
             imgs: 'bin/node-webkit/imgs',
             index: 'bin/node-webkit',
             jar: 'bin/node-webkit/jar',
@@ -53,6 +55,7 @@ var paths = {
         css: [ 'bower_components/c3/c3.css'
              , 'bower_components/entypo/font/entypo.css'
              , 'bower_components/fontawesome/css/font-awesome.css'
+             , 'bower_components/icomoon/style.css'
              , 'bower_components/react-treeview/react-treeview.css'
              ],
         entypo: [ 'bower_components/entypo/font/entypo.eot'
@@ -61,6 +64,11 @@ var paths = {
                 , 'bower_components/entypo/font/entypo.woff'
                 ],
         fonts: ['bower_components/fontawesome/fonts/*'],
+        icomoon: [ 'bower_components/icomoon/fonts/icomoon.eot'
+                 , 'bower_components/icomoon/fonts/icomoon.svg'
+                 , 'bower_components/icomoon/fonts/icomoon.ttf'
+                 , 'bower_components/icomoon/fonts/icomoon.woff'
+                 ],
         js: [ 'bower_components/jquery/dist/jquery.js'
             , 'bower_components/c3/c3.js'
             , 'bower_components/d3/d3.js'
@@ -217,6 +225,13 @@ function entypo(target) {
     }
 };
 
+function icomoon(target) {
+    return function() {
+        return gulp.src(paths.concat.icomoon)
+            .pipe(gulp.dest(paths.build[target].icomoon));
+    }
+};
+
 function imgs(target) {
     return function() {
         return gulp.src(paths.imgs)
@@ -334,6 +349,7 @@ gulp.task('concat-js-browser', concatJs('browser'));
 gulp.task('copy-browser', copy('browser'));
 gulp.task('entypo-browser', entypo('browser'));
 gulp.task('fonts-browser', fonts('browser'));
+gulp.task('icomoon-browser', icomoon('browser'));
 gulp.task('imgs-browser', imgs('browser'));
 
 gulp.task('concat-css-node-webkit', concatCss('node-webkit'));
@@ -341,6 +357,7 @@ gulp.task('concat-js-node-webkit', concatJs('node-webkit'));
 gulp.task('copy-node-webkit', copy('node-webkit'));
 gulp.task('entypo-node-webkit', entypo('node-webkit'));
 gulp.task('fonts-node-webkit', fonts('node-webkit'));
+gulp.task('icomoon-node-webkit', icomoon('node-webkit'));
 gulp.task('imgs-node-webkit', imgs('node-webkit'));
 
 gulp.task('build-browser', sequence( 'bower-browser'
@@ -350,6 +367,7 @@ gulp.task('build-browser', sequence( 'bower-browser'
                                      , 'copy-browser'
                                      , 'entypo-browser'
                                      , 'fonts-browser'
+                                     , 'icomoon-browser'
                                      , 'imgs-browser'
                                      ]
                                    ));
@@ -360,6 +378,7 @@ gulp.task('build-node-webkit', sequence( 'bower-node-webkit'
                                          , 'copy-node-webkit'
                                          , 'entypo-node-webkit'
                                          , 'fonts-node-webkit'
+                                         , 'icomoon-node-webkit'
                                          , 'imgs-node-webkit'
                                          , 'slamengine-jar'
                                          ]
