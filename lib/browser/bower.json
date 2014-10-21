@@ -1,6 +1,6 @@
 {
   "name": "slamdata-browser",
-  "version": "0.1.0",
+  "version": "1.0.0-rc1",
   "homepage": "https://github.com/slamdata/slamdata",
   "description": "Browser version of SlamData",
   "moduleType": [

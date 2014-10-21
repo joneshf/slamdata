@@ -2,7 +2,7 @@
   "main": "index.html",
   "name": "SlamData",
   "description": "Front end for SlamData",
-  "version": "0.1.0",
+  "version": "1.0.0-rc1",
   "window": {
     "height": 720,
     "icon": "imgs/slamdata-48x48.png",
