@@ -107,3 +107,15 @@ module SlamData.Lens where
 
   _validation :: forall a r. LensP {validation :: a | r} a
   _validation f o@{validation = i} = (\i' -> o{validation = i'}) <$> f i
+
+  _dirty :: forall a r. LensP {dirty :: a | r} a
+  _dirty f o@{dirty = i} = (\i' -> o{dirty = i'}) <$> f i
+
+  _sdDirty :: forall a r. LensP {sdDirty :: a | r} a
+  _sdDirty f o@{sdDirty = i} = (\i' -> o{sdDirty = i'}) <$> f i
+
+  _seDirty :: forall a r. LensP {seDirty :: a | r} a
+  _seDirty f o@{seDirty = i} = (\i' -> o{seDirty = i'}) <$> f i
+
+  _label :: forall a r. LensP {label :: a | r} a
+  _label f o@{label = i} = (\i' -> o{label = i'}) <$> f i

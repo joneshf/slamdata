@@ -16,7 +16,7 @@ module SlamData.Types.Workspace.Notebook where
 
   import SlamData.Types.Workspace.Notebook.Block (Block())
 
-  import qualified Data.Map as M
+  import qualified Data.StrMap as M
 
   newtype NotebookID = NotebookID UUID
   newtype Notebook = Notebook NotebookRec
@@ -28,6 +28,7 @@ module SlamData.Types.Workspace.Notebook where
     , published :: Boolean
     , numOut    :: Number
     , persisted :: Boolean
+    , dirty     :: Boolean
     }
 
   instance eqNotebookID :: Eq NotebookID where
@@ -48,6 +49,7 @@ module SlamData.Types.Workspace.Notebook where
       published <- M.lookup "published" obj ?>>= "published" >>= decodeJson
       numOut    <- M.lookup "numOut"    obj ?>>= "numOut"    >>= decodeJson
       persisted <- M.lookup "persisted" obj ?>>= "persisted" >>= decodeJson
+      dirty     <- M.lookup "dirty"     obj ?>>= "dirty"     >>= decodeJson
       pure $ Notebook { ident: ident
                       , blocks: blocks
                       , name: name
@@ -55,6 +57,7 @@ module SlamData.Types.Workspace.Notebook where
                       , published: published
                       , numOut: numOut
                       , persisted: persisted
+                      , dirty: dirty
                       }
 
   instance decodeNotebookID :: DecodeJson NotebookID where
@@ -69,6 +72,7 @@ module SlamData.Types.Workspace.Notebook where
       ~> "published" := encodeJson nb.published
       ~> "numOut"    := encodeJson nb.numOut
       ~> "persisted" := encodeJson nb.persisted
+      ~> "dirty"     := encodeJson nb.dirty
       ~> jsonEmptyObject
 
   instance encodeJsonNotebookID :: EncodeJson NotebookID where

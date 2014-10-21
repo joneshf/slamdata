@@ -1,5 +1,7 @@
 module SlamData (slamData) where
 
+  import Control.Events (EventEff(), EventEmitter)
+  import Control.Events.TinyEmitter (emit, on)
   import Control.Monad.Eff (Eff())
   import Control.Monad.Cont.Trans (ContT(..))
   import Control.Reactive.Timer (Timer())
@@ -8,7 +10,6 @@ module SlamData (slamData) where
 
   import DOM (DOM())
 
-  import Node.Events (Emitter(), EventEff(), emit, on)
 
   import React (renderComponentById)
   import React.Types (Component(), React())
@@ -23,8 +24,9 @@ module SlamData (slamData) where
     , responseEvent
     )
 
-  slamData :: forall eff
-           .  Emitter
+  slamData :: forall eff e
+           .  (EventEmitter e)
+           => e
            -> SlamDataState
            -> Eff (dom :: DOM, event :: EventEff, react :: React, timer :: Timer | eff) Unit
   slamData emitter state = do
@@ -33,8 +35,9 @@ module SlamData (slamData) where
       renderComponentById (app {request: request emitter state, state: state} []) "content")
     pure unit
 
-  request :: forall eff
-          .  Emitter
+  request :: forall eff e
+          .  (EventEmitter e)
+          => e
           -> SlamDataState
           -> SlamDataRequest eff
   request emitter state ty = do

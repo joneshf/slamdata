@@ -6,6 +6,7 @@
     <link rel="stylesheet" type="text/css" href="bower_components/c3/c3.css">
     <link rel="stylesheet" type="text/css" href="bower_components/entypo/font/entypo.css" />
     <link rel="stylesheet" type="text/css" href="bower_components/fontawesome/css/font-awesome.css" />
+    <link rel="stylesheet" type="text/css" href="bower_components/icomoon/style.css" />
     <link rel="stylesheet" type="text/css" href="bower_components/react-treeview/react-treeview.css">
     <link rel="stylesheet" type="text/css" href="css/main.css" />
     <script src="bower_components/c3/c3.js"></script>
@@ -19,6 +20,7 @@
     <div id="content"></div>
 
     <script src="bower_components/react/react-with-addons.js"></script>
+    <script src="bower_components/reactable/build/reactable.js"></script>
     <script src="bower_components/react-treeview/react-treeview.js"></script>
     <script src="bower_components/jquery/dist/jquery.js"></script>
     <script src="bower_components/underscore/underscore.js"></script>
@@ -29,320 +31,19 @@
     <script src="bower_components/tiny-emitter/dist/tinyemitter.js"></script>
     <script src="js/slamdata.js"></script>
     <script type="text/javascript">
-        var C3 = require('Graphics.C3');
-        var Prelude = require('Prelude');
-        var Map = require('Data.Map');
         var sd = require('SlamData');
+        var events = require('SlamData.App.Events');
         var helpers = require('SlamData.Helpers');
         var types = require('SlamData.Types');
-        var jsTypes = require('SlamData.Types.JS');
-        var blockTypes = require('SlamData.Types.Workspace.Notebook.Block');
         // Load up slamdata.
         var state = helpers.defaultState;
         // Start up an emitter to pass down to slamdata.
         var emitter = new TinyEmitter();
-        var respond = function(data) {
-            return emitter.emit(types.responseEvent, data);
-        }
-        var converter = new Showdown.converter();
-        var insertChildren = function(f, dirs, fs, children) {
-            if (dirs.length === 1 && dirs[0] === fs[0].name + '/' && fs[0].type === "directory") {
-                var oldKids = fs[0].children;
-                fs[0].children = children.map(function(c) {
-                    return f(oldKids, c);
-                });
-                return fs
-            } else if (dirs.length === 1 && dirs[0] === fs[0].name && fs[0].type === "file") {
-                var oldKids = fs[0].children;
-                fs[0].children = children.map(f);
-                return fs
-            } else if (dirs.length > 1 && dirs[0] === fs[0].name) {
-                var kids = insertChildren(f, dirs.slice(1), fs[0].children, children);
-                fs[0].children = kids;
-                return fs;
-            } else {
-                return [fs[0]].concat(insertChildren(f, dirs, fs.slice(1), children));
-            }
-        }
-        emitter.on(types.requestEvent, function(request) {
-            var newEvent = request.event;
-            // Mutation sucks.
-            var newState = _.snapshot(request.state);
-            if (jsTypes.isReadFileSystem(newEvent)) {
-                var dirs = newEvent.value0;
-                var path = dirs[0] + dirs.slice(1).join('/');
-                var fs = helpers.serverURI(state.settings.sdConfig) + '/metadata/fs' + path;
-                var insert = function(oldKids, c) {
-                    for (var i = 0; i < oldKids.length; ++i) {
-                        var oldKid = oldKids[i];
-                        if (oldKid.name == c.name && oldKid.type == c.type) {
-                            if (oldKid.children != null) {
-                                c.children = oldKid.children;
-                            } else {
-                                c.children = [];
-                            }
-                            return c;
-                        }
-                    }
-                    c.children = [];
-                    return c;
-                };
-                oboe(fs).done(function(files) {
-                    newState.files = insertChildren(insert, dirs, [newState.files], files.children)[0];
-                    respond(newState);
-                });
-            } else if (jsTypes.isReadFields(newEvent)) {
-                var dirs = newEvent.value0;
-                var path = dirs[0] + dirs.slice(1).join('/');
-                var data = helpers.serverURI(state.settings.sdConfig) + '/data/fs' + path + '?limit=1';
-                var insert = function(field) {
-                    return {
-                        name: field,
-                        type: "field",
-                        children: []
-                    }
-                };
-                oboe(data).done(function(json) {
-                    var fields = Object.keys(json);
-                    newState.files = insertChildren(insert, dirs, [newState.files], fields)[0];
-                    respond(newState);
-                });
-            } else if (jsTypes.isShowSettings(newEvent)) {
-                newState.showSettings = true;
-                respond(newState);
-            } else if (jsTypes.isHideSettings(newEvent)) {
-                newState.showSettings = false;
-                respond(newState);
-            } else if (jsTypes.isCreateNotebook(newEvent)) {
-                var notebook = {
-                    ident: uuid.v4(),
-                    blocks: [],
-                    name: "Untitled" + (newState.notebooks.length + 1),
-                    path: "/"
-                };
-                newState.notebooks.push(notebook);
-                respond(newState);
-            } else if (jsTypes.isCloseNotebook(newEvent)) {
-                var ident = newEvent.value0;
-                newState.notebooks = newState.notebooks.filter(function(nb) {
-                    return nb.ident !== ident;
-                });
-                respond(newState);
-            } else if (jsTypes.isOpenNotebook(newEvent)) {
-                var path = newEvent.value0.slice(1);
-                var url = helpers.serverURI(newState.settings.sdConfig) + '/data/fs' + path + '/index.nb';
-                var xhr = new XMLHttpRequest();
-                xhr.onload = function () {
-                    var notebook = xhr.response.trim().split('\n').slice(-1);
-                    newState.notebooks = newState.notebooks.concat(JSON.parse(notebook));
-                    respond(newState);
-                };
-                xhr.open('GET', url);
-                xhr.send(null);
-            } else if (jsTypes.isSaveNotebook(newEvent)) {
-                var notebook = newEvent.value0;
-                var url = helpers.serverURI(newState.settings.sdConfig) + '/data/fs' + notebook.path + notebook.name + '/index.nb';
-                delete notebook._id;
-                oboe({
-                    url: url,
-                    method: 'POST',
-                    body: JSON.stringify(notebook)
-                }).done(function() {
-                    respond(newState);
-                });
-            } else if (jsTypes.isTogglePublish(newEvent)) {
-                var notebook = newEvent.value0;
-                var url = helpers.serverURI(newState.settings.sdConfig) + '/data/fs' + notebook.path + notebook.name + '/index.nb';
-                delete notebook._id;
-                notebook.published = !notebook.published;
-                newState.notebooks = newState.notebooks.map(function(nb) {
-                    if (nb.ident === notebook.ident) {
-                        return notebook;
-                    } else {
-                        return nb;
-                    }
-                })
-                respond(newState);
-            } else if (jsTypes.isRenameNotebook(newEvent)) {
-                var notebook = newEvent.value0;
-                var dest = newEvent.value1;
-                var url = helpers.serverURI(newState.settings.sdConfig) + '/data/fs' + notebook.path + notebook.name + '/index.nb';
-                var xhr = new XMLHttpRequest();
-                xhr.onload = function() {
-                    newState.notebooks = newState.notebooks.map(function(nb) {
-                        if (nb.ident === notebook.ident) {
-                            nb.path = dest;
-                        }
-                        return nb;
-                    });
-                    respond(newState);
-                };
-                xhr.open('MOVE', url);
-                xhr.setRequestHeader('Accept', 'application/json');
-                xhr.setRequestHeader('Destination', dest);
-                xhr.send(null);
-            } else if (jsTypes.isCreateBlock(newEvent)) {
-                var newBlock = {
-                    ident: uuid.v4(),
-                    blockType: newEvent.value1,
-                    blockMode: 'Edit',
-                    editContent: '',
-                    evalContent: ''
-                };
-                var ident = newEvent.value0;
-                var index = newEvent.value2;
-                newState.notebooks = newState.notebooks.map(function(nb) {
-                    if (nb.ident === ident) {
-                        nb.blocks.splice(index, 0, newBlock);
-                    }
-                    return nb;
-                });
-                respond(newState);
-            } else if (jsTypes.isDeleteBlock(newEvent)) {
-                newState.notebooks = newState.notebooks.map(function(nb) {
-                    if (nb.ident === newEvent.value0) {
-                        nb.blocks = nb.blocks.filter(function(b) {
-                            return b.ident !== newEvent.value1;
-                        });
-                    }
-                    return nb;
-                });
-                respond(newState);
-            } else if (jsTypes.isEditBlock(newEvent)) {
-                var block = newEvent.value1;
-                var notebook = newEvent.value0;
-                newState.notebooks = newState.notebooks.map(function(nb) {
-                    if (nb.ident === notebook.ident) {
-                        nb.blocks = nb.blocks.map(function(b) {
-                            if (b.ident === block.ident) {
-                                b.blockMode = 'Edit';
-                            }
-                            return b;
-                        });
-                    }
-                    return nb;
-                });
-                respond(newState);
-            } else if (jsTypes.isEvalBlock(newEvent)) {
-                var block = newEvent.value1;
-                var notebook = newEvent.value0;
-                if ('Markdown' === (block.blockType)) {
-                    block.evalContent = converter.makeHtml(block.editContent);
-                    newState.notebooks = newState.notebooks.map(function(nb) {
-                        if (nb.ident === notebook.ident) {
-                            nb.blocks = nb.blocks.map(function(b) {
-                                if (b.ident === block.ident) {
-                                    b.editContent = block.editContent;
-                                    b.evalContent = block.evalContent;
-                                    b.blockMode = 'Eval';
-                                }
-                                return b;
-                            });
-                        }
-                        return nb;
-                    });
-                    respond(newState);
-                } else if ('SQL' === (block.blockType)) {
-                    var baseUrl = helpers.serverURI(state.settings.sdConfig);
-                    var sqlBlocks = notebook.blocks.filter(function(b) {
-                        return 'SQL' === b.blockType && 'Eval' === b.blockMode;
-                    });
-                    var blockname = 'out' + sqlBlocks.length;
-                    var url = baseUrl + '/query/fs' + notebook.path + '?out=' +
-                        notebook.name + '/' + blockname;
-                    oboe({
-                        url: url,
-                        method: 'POST',
-                        body: block.editContent,
-                    }).done(function(data) {
-                        var out = data.out;
-                        var xhr = new XMLHttpRequest();
-                        xhr.onload = function() {
-                            newState.notebooks = newState.notebooks.map(function(nb) {
-                                if (nb.ident === notebook.ident) {
-                                    nb.blocks = nb.blocks.map(function(b) {
-                                        if (b.ident === block.ident) {
-                                            b.editContent = block.editContent;
-                                            b.evalContent = xhr.responseText;
-                                            b.blockMode = 'Eval';
-                                            b.label = blockname;
-                                        }
-                                        return b;
-                                    });
-                                }
-                                return nb;
-                            });
-                            respond(newState);
-                        };
-                        xhr.open('GET', baseUrl + '/data/fs' + out + '?limit=20');
-                        xhr.setRequestHeader('Content-Type', 'text/plain')
-                        xhr.send(null);
-                    });
-                }
-            } else if (jsTypes.isEvalVisual(newEvent)) {
-                var notebook = newEvent.value0;
-                var block = newEvent.value1;
-                var data = newEvent.value2;
-                var selector = 'chart-' + block.ident;
-                var baseUrl = helpers.serverURI(newState.settings.sdConfig);
-                newState.notebooks = newState.notebooks.map(function(nb) {
-                    if (nb.ident === notebook.ident) {
-                        nb.blocks = nb.blocks.map(function(b) {
-                            if (b.ident === block.ident) {
-                                b.evalContent = selector;
-                                b.blockMode = 'Eval';
-                            }
-                            return b;
-                        });
-                    }
-                    return nb;
-                });
-                respond(newState);
-                setTimeout(function() {
-                    var chart = c3.generate({
-                        bindto: '#' + selector,
-                        data: {
-                            json: {},
-                            type: Prelude.show(C3.showC3Type())(data[0].type)
-                        }
-                    });
-                    var jsons = {}
-                    data.map(function(datum) {
-                        oboe(baseUrl + '/data/fs' + datum.path).node('!', function(json) {
-                            datum.fields.map(function(field) {
-                                if (jsons[field] == null) {
-                                    jsons[field] = [];
-                                }
-                                jsons[field].push(json[field]);
-                            });
-                            chart.load({json: jsons});
-                        });
-                    })
-                }, 1000);
-            } else if (jsTypes.isHideConfig(newEvent)) {
-                newState.showConfig = false;
-                respond(newState);
-            } else if (jsTypes.isShowConfig(newEvent)) {
-                newState.showConfig = true;
-                respond(newState);
-            } else if (jsTypes.isSaveSDConfig(newEvent)) {
-                newState.settings.sdConfig = newEvent.value0;
-                respond(newState);
-            } else if (jsTypes.isSaveSEConfig(newEvent)) {
-                newState.settings.seConfig = newEvent.value0;
-                respond(newState);
-            } else if (jsTypes.isCreateValidation(newEvent)) {
-                var key = newEvent.value0;
-                var val = newEvent.value1;
-                var v = Map.insert(types.ordValidationTy())(key)(val)(newState.validation);
-                newState.validation = v;
-                respond(newState);
-            } else {
-                // We can't do anything else, just pass it on back.
-                respond(newState);
-            }
+        var handler = events.handleRequest({})(emitter);
+        emitter.on(types.requestEvent, function(e) {
+            return handler(e)()
         });
-        require('SlamData').slamData(emitter)(state)();
+        sd.slamData({})(emitter)(state)();
         // We have to initialize any foundation stuff last.
         $(document).foundation();
     </script>

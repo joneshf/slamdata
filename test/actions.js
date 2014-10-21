@@ -8,7 +8,6 @@ function addBlock(blockType, test) {
     // Make sure we added exactly one markdown block.
     test.assertExists(blockSelector, 'Added a block');
     test.assertElementCount(blockSelector, count.block + 1);
-    test.assertSelectorHasText(blockTypeSelector, blockType, 'Block is titled ' + blockType);
 };
 
 function addNotebook(test) {
@@ -25,6 +24,12 @@ function addNotebook(test) {
     test.assertElementCount(contentSelector, count.content + 1);
     // Make sure there aren't any blocks in a new notebook.
     test.assertDoesntExist(blockSelector, 'There are no blocks');
+};
+
+function firstSaveNotebook(test) {
+    casper.click('#notebook .content.active [title="Save"]');
+    test.assertExists('#notebook .tab.active input');
+    casper.sendKeys('#notebook .tab.active input', '');
 };
 
 function removeBlock(test) {
@@ -50,6 +55,12 @@ function removeNotebook(test) {
     test.assertElementCount(contentSelector, count.content - 1);
 };
 
+function renameNotebook(name, test) {
+    casper.click('#notebook .content.active [title="Rename"]');
+    test.assertExists('#notebook .tab.active input');
+    casper.sendKeys('#notebook .tab.active input', name);
+};
+
 function selectNotebook(n, test) {
     var nthTab = tabSelector + ':nth-of-type(' + n + ')';
     casper.click(nthTab + ' a');
@@ -60,7 +71,9 @@ function selectNotebook(n, test) {
 module.exports =
     { addBlock: addBlock
     , addNotebook: addNotebook
+    , firstSaveNotebook: firstSaveNotebook
     , removeBlock: removeBlock
     , removeNotebook: removeNotebook
+    , renameNotebook: renameNotebook
     , selectNotebook: selectNotebook
     }

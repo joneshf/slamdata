@@ -11,7 +11,7 @@ module SlamData.App.ConfigModal (configModal) where
     )
   import SlamData.App.Workspace.Notebook.Settings.SlamEngine
     (slamEngineMountingsSettings)
-  import SlamData.Components (actionButton, saveIcon)
+  import SlamData.Components (actionButton, saveSettingsAction)
   import SlamData.Lens
     ( _port
     , _sdConfig
@@ -29,11 +29,11 @@ module SlamData.App.ConfigModal (configModal) where
     , SlamDataRequest()
     , SlamDataState()
     )
-  import SlamData.Types.Workspace.Notebook.Settings
+  import SlamData.Types.React.WorkSpace.Notebook.Settings
     ( SettingsProps()
     , SettingsState()
-    , SettingsTab(..)
     )
+  import SlamData.Types.Workspace.Notebook.Settings (SettingsTab(..))
 
   import qualified React.DOM as D
 
@@ -44,6 +44,8 @@ module SlamData.App.ConfigModal (configModal) where
       { active: SlamEngineTab
       , sdConfig: this.props.state.settings.sdConfig
       , seConfig: this.props.state.settings.seConfig
+      , sdDirty: true
+      , seDirty: true
       }
     , render = \this -> pure $ D.div
       { className: visible this.props.state.showConfig
@@ -75,15 +77,15 @@ module SlamData.App.ConfigModal (configModal) where
              .  ReactThis fields (SettingsProps eff) SettingsState
              -> Component
   saveButton this = D.ul {className: "button-group"}
-    [actionButton
-      this [ SaveSDConfig this.state.sdConfig
-           -- Since we're using the components verbatim,
-           -- we have to use the port from the sdConfig.
-           , SaveSEConfig (this.state # _seServerPort .~ this.state^._sdServerPort).seConfig
-           , HideConfig
-           ]
-      "Save"
-      saveIcon
+    [saveSettingsAction
+      this
+      [ SaveSDConfig this.state.sdConfig
+      -- Since we're using the components verbatim,
+      -- we have to use the port from the sdConfig.
+      , SaveSEConfig (this.state # _seServerPort .~ this.state^._sdServerPort).seConfig
+      , HideConfig
+      ]
+      _dirty
     ]
 
   visible :: Boolean -> String
@@ -95,3 +97,9 @@ module SlamData.App.ConfigModal (configModal) where
 
   _seServerPort :: forall r. LensP {seConfig :: SEConfig | r} Number
   _seServerPort = _seConfig.._seConfigRec.._server.._seConfigServer.._port
+
+  -- This probably breaks some lens law...
+
+  _dirty :: forall r. LensP {sdDirty :: Boolean, seDirty :: Boolean | r} Boolean
+  _dirty f o@{sdDirty = sd, seDirty = se} =
+    (\b -> o{sdDirty = b, seDirty = b}) <$> f (sd || se)

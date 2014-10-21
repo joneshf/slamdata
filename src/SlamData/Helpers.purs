@@ -1,8 +1,16 @@
 module SlamData.Helpers where
 
+  import Control.Alternative (some)
+
+  import Data.Array (head)
+  import Data.Foldable (notElem)
   import Data.Maybe (fromMaybe, Maybe())
-  import Data.String (indexOf, indexOf', length)
+  import Data.Path (FilePath())
+  import Data.String (indexOf, indexOf', joinWith, lastIndexOf, length, take)
+  import Data.Tuple (fst, Tuple(..))
   import Data.Validation (runV)
+
+  import Global (readInt)
 
   import React.Types (Element())
 
@@ -21,7 +29,14 @@ module SlamData.Helpers where
   import SlamData.Types.Workspace.FileSystem (FileType(..))
   import SlamData.Types.Workspace.Notebook (Notebook(..))
 
+  import System.Path.Unix
+
+  import Text.Parsing.Parser (Parser())
+  import Text.Parsing.Parser.Combinators (optional, sepBy, try)
+  import Text.Parsing.Parser.String (satisfy, string)
+
   import qualified Data.Map as M
+  import qualified Data.StrMap as SM
 
   -- Random purescript stuff.
 
@@ -45,23 +60,31 @@ module SlamData.Helpers where
   publish (Notebook {published = true}) = " published"
   publish _                             = ""
 
-  defaultState :: SlamDataState
-  defaultState =
-    { files: FileType { name: defaultMountPath
+  initialState :: SDConfig -> SEConfig -> SlamDataState
+  initialState sdConfig seConfig =
+    { files: FileType { name: mount seConfig
                       , "type": "directory"
                       , children: []
                       }
     , notebooks: []
-    , settings: {sdConfig: defaultSDConfig, seConfig: defaultSEConfig}
+    , settings: {sdConfig: sdConfig, seConfig: seConfig}
     , showSettings: false
     , showConfig: false
     , validation: M.empty
     }
 
+  defaultState :: SlamDataState
+  defaultState = initialState defaultSDConfig defaultSEConfig
+
   runV' :: Validation -> ValidationTy -> String
   runV' v ty = runV id (const "") $ extractV v ty
     where
       extractV v ty = M.lookup ty v `getOrElse` pure unit
+
+  formatNotebookName :: String -> String
+  formatNotebookName name = case lastIndexOf ".nb" name of
+    -1 -> name
+    n  -> take n name
 
   -- | Server stuff.
 
@@ -85,7 +108,7 @@ module SlamData.Helpers where
   defaultSEConfig :: SEConfig
   defaultSEConfig = SEConfig
     { server: SEConfigServer {port: defaultServerPort}
-    , mountings: M.singleton defaultMountPath $ MountMongo $
+    , mountings: SM.singleton defaultMountPath $ MountMongo $
         MountingWrapper { connectionUri: defaultMongoURI
                     , database: defaultMongoDatabase
                     }
@@ -95,7 +118,66 @@ module SlamData.Helpers where
   serverURI (SDConfig {server = SDConfigServer s}) =
     s.location ++ ":" ++ show s.port
 
+  mount :: SEConfig -> String
+  mount (SEConfig {mountings = m}) =
+    (fst <$> head (SM.toList m)) `getOrElse` defaultMountPath
+
+  dataUrl :: SDConfig -> FilePath
+  dataUrl     = config2Url "data"
+  metadataUrl :: SDConfig -> FilePath
+  metadataUrl = config2Url "metadata"
+  queryUrl :: SDConfig -> FilePath
+  queryUrl    = config2Url "query"
+  config2Url :: FilePath -> SDConfig -> FilePath
+  config2Url p config = serverURI config </> p </> "fs"
+
+  -- Parsing stuff
+  type Query = Tuple String String
+  type QueryString = SM.StrMap String
+
+  noneOf :: [String] -> Parser String String
+  noneOf ss = satisfy (flip notElem ss)
+
+  parseQueryString :: Parser String QueryString
+  parseQueryString = do
+    optional $ string "?"
+    queries <- parseQuery `sepBy` string "&"
+    pure $ SM.fromList queries
+
+  parseQuery :: Parser String Query
+  parseQuery = do
+    key <- (joinWith "" >>> decodeURIComponent) <$> some (try $ noneOf ["="])
+    string "="
+    val <- (joinWith "" >>> decodeURIComponent) <$> some (try $ noneOf ["&"])
+    pure $ Tuple key val
+
+  query2SDConfig :: QueryString -> SDConfig
+  query2SDConfig qs = fromMaybe defaultSDConfig do
+    loc  <- SM.lookup "serverLocation" qs
+    port <- SM.lookup "serverPort"     qs
+    java <- SM.lookup "javaLocation"   qs
+    pure $ SDConfig
+      { server: SDConfigServer {location: loc, port: readInt 10 port}
+      , nodeWebkit: SDConfigNodeWebkit {java: java}
+      }
+
+  query2SEConfig :: QueryString -> SEConfig
+  query2SEConfig qs = fromMaybe defaultSEConfig do
+    port     <- SM.lookup "sePort"      qs
+    path     <- SM.lookup "seMountPath" qs
+    mongoURI <- SM.lookup "seMongoURI"  qs
+    database <- SM.lookup "seDatabase"  qs
+    pure $ SEConfig
+      { server: SEConfigServer {port: readInt 10 port}
+      , mountings: SM.singleton path $ MountMongo $ MountingWrapper
+         { connectionUri: mongoURI
+         , database: database
+         }
+      }
+
   -- FFI stuff
+
+  foreign import decodeURIComponent :: String -> String
 
   foreign import checked
     "function checked(el) {\

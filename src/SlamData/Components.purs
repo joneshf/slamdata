@@ -1,18 +1,31 @@
 module SlamData.Components where
 
+  import Control.Lens ((^.), (..), (.~), to, LensP())
+  import Control.Monad (when)
+
   import Data.Foldable (traverse_)
+  import Data.Maybe (Maybe(..))
 
   import React (coerceThis, createClass, eventHandler, spec)
   import React.Types (Component(), ComponentClass(), ReactThis())
 
   import SlamData.Types (SlamDataEventTy(..), SlamDataRequest())
-  import SlamData.Types.Workspace.Notebook (NotebookID())
+  import SlamData.Types.React.WorkSpace.Notebook
+    ( NotebookProps()
+    , NotebookState()
+    )
+  import SlamData.Types.Workspace.Notebook (Notebook(..), NotebookID())
   import SlamData.Types.Workspace.Notebook.Block (BlockType(..))
+  import SlamData.Types.React.WorkSpace.Notebook.Settings
+    ( SettingsProps()
+    , SettingsState()
+    )
 
   import qualified React.DOM as D
 
   type FontAwesome = Component
   type Entypo = Component
+  type Icomoon = Component
 
   icon :: String -> Component
   icon name = D.i {className: name} []
@@ -40,16 +53,22 @@ module SlamData.Components where
   visualIcon      :: FontAwesome
   visualIcon      = icon "fa fa-bar-chart-o"
   -- FileSystem
-  dirOpenIcon     :: FontAwesome
-  dirOpenIcon     = icon "fa fa-folder-open-o"
-  dirClosedIcon   :: FontAwesome
-  dirClosedIcon   = icon "fa fa-folder-o"
-  fileIcon        :: FontAwesome
-  fileIcon        = icon "fa fa-file-o"
-  newNotebookIcon :: FontAwesome
-  newNotebookIcon = icon "fa fa-plus"
+  dataFileIcon    :: Icomoon
+  dataFileIcon    = icon "icon-file-xml"
+  dirClosedIcon   :: Icomoon
+  dirClosedIcon   = icon "icon-folder"
+  dirOpenIcon     :: Icomoon
+  dirOpenIcon     = icon "icon-folder-open"
+  fileIcon        :: Icomoon
+  fileIcon        = icon "icon-file-4"
   loadingIcon     :: FontAwesome
   loadingIcon     = icon "fa fa-circle-o-notch fa-spin"
+  mountIcon       :: Icomoon
+  mountIcon       = icon "icon-cabinet"
+  newNotebookIcon :: FontAwesome
+  newNotebookIcon = icon "fa fa-plus"
+  notebookIcon    :: Icomoon
+  notebookIcon    = icon "icon-notebook"
   -- Visuals
   areaChartIcon   :: Entypo
   areaChartIcon   = icon "icon-chart-area"
@@ -66,10 +85,10 @@ module SlamData.Components where
                -> String
                -> Component
                -> Component
-  actionButton this event title icon = D.li {}
+  actionButton this events title icon = D.li {}
     [D.a { className: "tiny secondary button has-tooltip"
          , onClick: eventHandler this \this _ ->
-            traverse_ this.props.request event
+            traverse_ this.props.request events
          , title: title
          }
       [icon]
@@ -122,3 +141,41 @@ module SlamData.Components where
   blockIcon (BlockType "Markdown") = markdownIcon
   blockIcon (BlockType "SQL")      = sqlIcon
   blockIcon (BlockType "Visual")   = visualIcon
+
+  -- TODO: These two things should be the same,
+  --       but the notebook is forcing them to be different at the moment.
+  --       Figure out how to generalize this.
+
+  saveNotebookAction :: forall eff fields
+                     .  ReactThis fields (NotebookProps eff) NotebookState
+                     -> [SlamDataEventTy]
+                     -> Notebook
+                     -> Component
+  saveNotebookAction this events nb@(Notebook nb') = D.li {}
+    [D.a { className: "tiny secondary button has-tooltip"
+         , disabled: not nb'.dirty
+         , onClick: eventHandler this \this _ -> if not nb'.dirty
+            then pure unit
+            else if nb'.persisted
+            then traverse_ this.props.request events
+            else pure $ this.setState this.state{renaming = Just nb'.name, persisting = true}
+         , title: "Save"
+         }
+      [saveIcon]
+    ]
+
+  saveSettingsAction :: forall eff fields
+                     .  ReactThis fields (SettingsProps eff) SettingsState
+                     -> [SlamDataEventTy]
+                     -> LensP SettingsState Boolean
+                     -> Component
+  saveSettingsAction this events dirty = D.li {}
+    [D.a { className: "tiny secondary button has-tooltip"
+         , disabled: this.state^.dirty..to not
+         , onClick: eventHandler this \this _ -> when (this.state^.dirty) do
+            pure $ this.setState (this.state # dirty .~ false)
+            traverse_ this.props.request events
+         , title: "Save"
+         }
+      [saveIcon]
+    ]

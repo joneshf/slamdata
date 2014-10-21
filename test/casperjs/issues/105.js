@@ -13,6 +13,7 @@ var qs = require('querystring')
   , defaultURL = index + '?' + search
   , screenshotDir = 'test/screenshots'
   , actions = require('../actions')
+  , utils = require('utils')
   ;
 
 casper.test.setUp(function(done) {
@@ -24,22 +25,24 @@ casper.test.setUp(function(done) {
     }).run(done);
 });
 
-casper.test.begin('Content type is correct for SQL', 6, function(test) {
+casper.test.begin('Renaming a notebook', 10, function(test) {
     casper.start(defaultURL, function() {
         actions.addNotebook(test);
         actions.addBlock('SQL', test);
-    }).then(function() {
-        casper.sendKeys( '#notebook .tabs-content .content .actual-content .block textarea'
-                       , "select * from zips where city <> 'ABC%' limit 10"
-                       );
-        casper.sendKeys( '#notebook .tabs-content .content .actual-content .block textarea'
-                       , casper.page.event.key.Enter
-                       , {modifiers: 'ctrl'}
-                       );
-        casper.capture(screenshotDir + '/evaled_sql_before_send.png');
-        casper.waitForResource('data/fs/Untitled.nb/out0', function() {
-          casper.capture(screenshotDir + '/evaled_sql_after_send.png');
-        })
+        actions.firstSaveNotebook(test);
+        test.skip(3);
+    // }).then(function() {
+    //     var req = casper.evaluate(function() {
+    //         return __utils__.sendAJAX('http://localhost:20223/metadata/fs/Untitled.nb/');
+    //     });
+    //     test.assert(JSON.parse(req).children.length > 1, JSON.stringify(req, null, 4));
+    // }).then(function() {
+    //     actions.renameNotebook('Foo', test)
+    // }).then(function() {
+    //     var req = casper.evaluate(function() {
+    //         return __utils__.sendAJAX('http://localhost:20223/metadata/fs/Untitled.nb/');
+    //     });
+    //     test.assert(JSON.parse(req).children.length === 0, JSON.stringify(req, null, 4));
     }).run(function() {
         test.done();
     })

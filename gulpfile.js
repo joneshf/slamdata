@@ -35,6 +35,7 @@ var paths = {
             css: 'bin/browser/css',
             dest: 'bin/browser',
             fonts: 'bin/browser/fonts',
+            icomoon: 'bin/browser/css/fonts',
             imgs: 'bin/browser/imgs',
             index: 'bin/browser',
             js: 'bin/browser/js'
@@ -43,6 +44,7 @@ var paths = {
             css: 'bin/node-webkit/css',
             dest: 'bin/node-webkit',
             fonts: 'bin/node-webkit/fonts',
+            icomoon: 'bin/node-webkit/css/fonts',
             imgs: 'bin/node-webkit/imgs',
             index: 'bin/node-webkit',
             jar: 'bin/node-webkit/jar',
@@ -53,6 +55,7 @@ var paths = {
         css: [ 'bower_components/c3/c3.css'
              , 'bower_components/entypo/font/entypo.css'
              , 'bower_components/fontawesome/css/font-awesome.css'
+             , 'bower_components/icomoon/style.css'
              , 'bower_components/react-treeview/react-treeview.css'
              ],
         entypo: [ 'bower_components/entypo/font/entypo.eot'
@@ -61,14 +64,22 @@ var paths = {
                 , 'bower_components/entypo/font/entypo.woff'
                 ],
         fonts: ['bower_components/fontawesome/fonts/*'],
+        icomoon: [ 'bower_components/icomoon/fonts/icomoon.eot'
+                 , 'bower_components/icomoon/fonts/icomoon.svg'
+                 , 'bower_components/icomoon/fonts/icomoon.ttf'
+                 , 'bower_components/icomoon/fonts/icomoon.woff'
+                 ],
         js: [ 'bower_components/jquery/dist/jquery.js'
             , 'bower_components/c3/c3.js'
             , 'bower_components/d3/d3.js'
+            , 'bower_components/foundation/js/foundation.js'
             , 'bower_components/node-uuid/uuid.js'
             , 'bower_components/oboe/dist/oboe-browser.js'
             , 'bower_components/react/react-with-addons.js'
+            , 'bower_components/reactable/build/reactable.js'
             , 'bower_components/react-treeview/react-treeview.js'
             , 'bower_components/showdown/src/showdown.js'
+            , 'bower_components/tiny-emitter/dist/tinyemitter.js'
             , 'js/slamdata.js'
             ]
     },
@@ -86,8 +97,8 @@ var paths = {
         browser: {
             js: 'lib/browser/js',
             src: [ 'lib/browser/src/**/*.purs'
-                 , 'lib/browser/bower_components/slamdata/src/**/*.purs'
-                 , 'lib/browser/bower_components/purescript-*/src/**/*.purs'
+                 , 'bower_components/purescript-*/src/**/*.purs'
+                 , 'src/**/*.purs'
                  ]
         },
         'node-webkit': {
@@ -167,13 +178,8 @@ function clean(path) {
 
 function compileLib(target) {
     return function() {
-        var psc = purescript.psc(options.lib[target]);
-        psc.on('error', function(e) {
-            gutil.log(e.message);
-            psc.end();
-        });
         return gulp.src(paths.lib[target].src)
-            .pipe(psc)
+            .pipe(purescript.psc(options.lib[target]))
             .pipe(gulp.dest(paths.lib[target].js));
     }
 };
@@ -219,6 +225,13 @@ function entypo(target) {
     }
 };
 
+function icomoon(target) {
+    return function() {
+        return gulp.src(paths.concat.icomoon)
+            .pipe(gulp.dest(paths.build[target].icomoon));
+    }
+};
+
 function imgs(target) {
     return function() {
         return gulp.src(paths.imgs)
@@ -251,7 +264,7 @@ gulp.task('bower-browser', bowerLib('browser'));
 gulp.task('bower-node-webkit', bowerLib('node-webkit'));
 
 gulp.task('browserify', ['compile', 'browserify-index'], function() {
-    return browserify('./output/index.js')
+    return browserify('./output/index.js', {ignoreMissing: true})
         .require('./output/node_modules/Control.Alternative', {expose: 'Control.Alternative'})
         .require('./output/node_modules/Control.Monad.Identity', {expose: 'Control.Monad.Identity'})
         .require('./output/node_modules/Data.Argonaut', {expose: 'Data.Argonaut'})
@@ -262,6 +275,7 @@ gulp.task('browserify', ['compile', 'browserify-index'], function() {
         .require('./output/node_modules/Graphics.C3', {expose: 'Graphics.C3'})
         .require('./output/node_modules/Prelude', {expose: 'Prelude'})
         .require('./output/node_modules/SlamData', {expose: 'SlamData'})
+        .require('./output/node_modules/SlamData.App.Events', {expose: 'SlamData.App.Events'})
         .require('./output/node_modules/SlamData.Helpers', {expose: 'SlamData.Helpers'})
         .require('./output/node_modules/SlamData.Types', {expose: 'SlamData.Types'})
         .require('./output/node_modules/SlamData.Types.JS', {expose: 'SlamData.Types.JS'})
@@ -335,6 +349,7 @@ gulp.task('concat-js-browser', concatJs('browser'));
 gulp.task('copy-browser', copy('browser'));
 gulp.task('entypo-browser', entypo('browser'));
 gulp.task('fonts-browser', fonts('browser'));
+gulp.task('icomoon-browser', icomoon('browser'));
 gulp.task('imgs-browser', imgs('browser'));
 
 gulp.task('concat-css-node-webkit', concatCss('node-webkit'));
@@ -342,6 +357,7 @@ gulp.task('concat-js-node-webkit', concatJs('node-webkit'));
 gulp.task('copy-node-webkit', copy('node-webkit'));
 gulp.task('entypo-node-webkit', entypo('node-webkit'));
 gulp.task('fonts-node-webkit', fonts('node-webkit'));
+gulp.task('icomoon-node-webkit', icomoon('node-webkit'));
 gulp.task('imgs-node-webkit', imgs('node-webkit'));
 
 gulp.task('build-browser', sequence( 'bower-browser'
@@ -351,6 +367,7 @@ gulp.task('build-browser', sequence( 'bower-browser'
                                      , 'copy-browser'
                                      , 'entypo-browser'
                                      , 'fonts-browser'
+                                     , 'icomoon-browser'
                                      , 'imgs-browser'
                                      ]
                                    ));
@@ -361,6 +378,7 @@ gulp.task('build-node-webkit', sequence( 'bower-node-webkit'
                                          , 'copy-node-webkit'
                                          , 'entypo-node-webkit'
                                          , 'fonts-node-webkit'
+                                         , 'icomoon-node-webkit'
                                          , 'imgs-node-webkit'
                                          , 'slamengine-jar'
                                          ]
@@ -406,12 +424,23 @@ gulp.task('test-casperjs', function(done) {
                     ]
                   );
     process.env.PATH += path.delimiter + path.join(process.env.PWD, 'node_modules', '.bin');
+
+    var phantomjs = process.env.PWD + '/node_modules/.bin/phantomjs';
+
+    process.env.PHANTOMJS_EXECUTABLE = phantomjs;
+
+    gutil.log('Path to phantomjs: ' + phantomjs);
+    gutil.log('process.env.PATH = ' + process.env.PATH);
+
     se.stdout.on('data', function(data) {
         if (!running) {
             running = true;
             spawn( './node_modules/.bin/casperjs'
                  , ['test', 'test/casperjs']
-                 , {stdio: 'inherit'}
+                 , {
+                      stdio: 'inherit',
+                      env: process.env
+                    }
                  ).on('close', function(code, sig) {
                       se.kill();
                       done(code);
@@ -428,7 +457,7 @@ gulp.task('test-webdriver', function(done) {
     spawn( './node_modules/.bin/mocha'
          , [ '-G'
            , '--recursive'
-           , '--timeout', '30000'
+           , '--timeout', '60000'
            , 'test/webdriver/**/*.js']
          , {stdio: 'inherit'}
          ).on('close', done);
@@ -436,7 +465,7 @@ gulp.task('test-webdriver', function(done) {
 
 // Main tasks.
 gulp.task('build', sequence( ['clean-build', 'browserify', 'sass']
-                           , [/*'build-browser',*/ 'build-node-webkit']
+                           , ['build-browser', 'build-node-webkit']
                            ));
 gulp.task('default', sequence(['browserify', 'sass']));
 gulp.task('dist', sequence(['build', 'clean-dist'], 'dist-node-webkit', 'jre'));
