@@ -1,6 +1,6 @@
 {
   "name": "slamdata-node-webkit",
-  "version": "1.0.0-rc1",
+  "version": "1.0.0",
   "homepage": "https://github.com/slamdata/slamdata",
   "description": "Node-webkit version of SlamData",
   "moduleType": [
