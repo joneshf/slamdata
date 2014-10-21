@@ -175,7 +175,8 @@ module SlamData.App.Events where
       let dataUrl' = dataUrl state.settings.sdConfig
       let out = b.label
       X.post X.defaultAjaxOptions
-        { onReadyStateChange = X.onDone \res -> do
+        { headers = ["Destination" ~ out]
+        , onReadyStateChange = X.onDone \res -> do
           status <- X.getStatus res
           if status >= 500
             then do
@@ -199,7 +200,7 @@ module SlamData.App.Events where
                   pure unit
                 } (dataUrl' ++ out'.out) {limit: 20}
               pure unit
-        } queryUrl' {out: out} (XT.Multipart b.editContent)
+        } queryUrl' {} (XT.Multipart b.editContent)
       pure unit
     EvalVisual (Notebook n) (Block b@{blockType = BlockType "Visual"}) ds -> do
       let selector = "chart-" ++ show b.ident
