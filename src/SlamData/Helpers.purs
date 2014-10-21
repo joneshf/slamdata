@@ -6,7 +6,7 @@ module SlamData.Helpers where
   import Data.Foldable (notElem)
   import Data.Maybe (fromMaybe, Maybe())
   import Data.Path (FilePath())
-  import Data.String (indexOf', joinWith, lastIndexOf, length, take)
+  import Data.String (indexOf, indexOf', joinWith, lastIndexOf, length, take)
   import Data.Tuple (fst, Tuple(..))
   import Data.Validation (runV)
 
@@ -45,7 +45,10 @@ module SlamData.Helpers where
 
   endsWith :: String -> String -> Boolean
   endsWith str suffix =
-    indexOf' suffix (length str - length suffix) str /= -1
+    indexOf' suffix (length str - length suffix) str >= 0
+
+  contains :: String -> String -> Boolean
+  contains str str' = indexOf str' str >= 0
 
   -- SlamData specific stuff.
 

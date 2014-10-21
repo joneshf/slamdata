@@ -4,12 +4,15 @@ module SlamData.App.Workspace.Notebook.Block
   , BlockState()
   ) where
 
+  import Browser.Navigator (Navigator(), navigator)
+
   import Control.Lens ((^.), (..), (.~), to)
-  import Control.Monad (unless)
+  import Control.Monad (unless, when)
 
   import Data.Argonaut (jsonParser)
   import Data.Either (either)
   import Data.Function (mkFn3)
+  import Data.String (toLower)
 
   import React (coerceThis, createClass, eventHandler, spec)
   import React.Reactable (defaultTableProps, table)
@@ -27,7 +30,7 @@ module SlamData.App.Workspace.Notebook.Block
     , closeIcon
     , createBlockButton
     )
-  import SlamData.Helpers (publish, value)
+  import SlamData.Helpers (contains, publish, value)
   import SlamData.Lens
     ( _blockMode
     , _blockRec
@@ -155,13 +158,10 @@ module SlamData.App.Workspace.Notebook.Block
           pure $ this.setState this.state{editContent = value e.target}
           let nb = this.props.notebook^._notebookRec
           unless (nb.dirty) (this.props.request $ DirtyNotebook this.props.notebook)
-        , onKeyUp: eventHandler this \this k ->
-          if k.ctrlKey && k.key == "Enter" then
-            let content = this.state.editContent
-                block' = this.props.block # _blockRec.._editContent .~ content
-            in this.props.request $ EvalBlock this.props.notebook block'
-          else
-            pure unit
+        , onKeyUp: eventHandler this \this k -> when (evalKey k navigator) do
+          let content = this.state.editContent
+          let block' = this.props.block # _blockRec.._editContent .~ content
+          this.props.request $ EvalBlock this.props.notebook block'
         , value: this.state.editContent
         }
         []
@@ -179,17 +179,24 @@ module SlamData.App.Workspace.Notebook.Block
         pure $ this.setState this.state{editContent = value e.target}
         let nb = this.props.notebook^._notebookRec
         unless (nb.dirty) (this.props.request $ DirtyNotebook this.props.notebook)
-      , onKeyUp: eventHandler this \this k ->
-        if k.ctrlKey && k.key == "Enter" then
+        , onKeyUp: eventHandler this \this k -> when (evalKey k navigator) do
           let content = this.state.editContent
-              block' = this.props.block # _blockRec.._editContent .~ content
-          in this.props.request $ EvalBlock this.props.notebook block'
-        else
-          pure unit
+          let block' = this.props.block # _blockRec.._editContent .~ content
+          this.props.request $ EvalBlock this.props.notebook block'
       , value: this.state.editContent
       }
       []
     ]
+
+  evalKey :: forall r
+          .  {ctrlKey :: Boolean, key :: String, which :: Number | r}
+          -> Navigator
+          -> Boolean
+  evalKey k {platform = p} | isMac p = k.which == 91 || k.which == 93 || k.which == 224
+  evalKey k _                        = k.ctrlKey && k.key == "Enter"
+
+  isMac :: String -> Boolean
+  isMac str = toLower str `contains` "mac"
 
   evaluatedBlock :: forall eff fields
                  .  ReactThis fields (BlockProps eff) BlockState
