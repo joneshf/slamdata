@@ -52,6 +52,8 @@ module SlamData.Components where
   sqlIcon         = icon "fa fa-database"
   visualIcon      :: FontAwesome
   visualIcon      = icon "fa fa-bar-chart-o"
+  runIcon         :: FontAwesome
+  runIcon         = icon "fa fa-play"
   -- FileSystem
   dataFileIcon    :: Icomoon
   dataFileIcon    = icon "icon-file-xml"

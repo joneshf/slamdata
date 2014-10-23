@@ -29,6 +29,7 @@ module SlamData.App.Workspace.Notebook.Block
     , blockIcon
     , closeIcon
     , createBlockButton
+    , runIcon
     )
   import SlamData.Helpers (contains, publish, value)
   import SlamData.Lens
@@ -99,7 +100,8 @@ module SlamData.App.Workspace.Notebook.Block
           .  ReactThis fields (BlockProps eff) BlockState
           -> Component
   toolbar this = D.div {className: "button-bar"}
-    [ D.ul {className: "left button-group"} []
+    [ D.ul {className: "left button-group"}
+      (internalActions this)
     , D.ul {className: "right button-group"}
       [actionButton
         this
@@ -109,6 +111,21 @@ module SlamData.App.Workspace.Notebook.Block
         closeIcon
       ]
     ]
+
+  internalActions :: forall eff fields
+                  .  ReactThis fields (BlockProps eff) BlockState
+                  -> [Component]
+  internalActions this = case this.props.block^._blockRec.._blockType of
+    BlockType "SQL" ->
+      let content = this.state.editContent
+          block' = this.props.block # _blockRec.._editContent .~ content
+      in [actionButton
+           this
+           [EvalBlock this.props.notebook block']
+           "Run"
+           runIcon
+         ]
+    _               -> []
 
   createBlockButton' :: forall eff fields
                      .  ReactThis fields (BlockProps eff) BlockState
