@@ -1,6 +1,5 @@
 module SlamData.App.Workspace.Notebook.Settings.SlamData
-  ( slamDataJavaSettings
-  , slamDataServerSettings
+  ( slamDataServerSettings
   ) where
 
   import Control.Lens ((.~), (^.), (..), LensP())
@@ -12,12 +11,9 @@ module SlamData.App.Workspace.Notebook.Settings.SlamData
 
   import SlamData.Helpers (runV', value)
   import SlamData.Lens
-    ( _java
-    , _location
-    , _nodeWebkit
+    ( _location
     , _port
     , _sdConfig
-    , _sdConfigNodeWebkit
     , _sdConfigRec
     , _sdConfigServer
     , _sdDirty
@@ -79,32 +75,6 @@ module SlamData.App.Workspace.Notebook.Settings.SlamData
     , D.span {className: "validation-error"}
       [D.rawText $ runV' this.props.state.validation SettingsSDServerPort]
     ]
-  -- Java Fields
-
-  slamDataJavaSettings :: forall fields eff state
-                         .  ReactThis fields (SettingsProps eff) SettingsState
-                         -> Component
-  slamDataJavaSettings this = D.fieldset {}
-    [ D.legend {} [D.rawText "Java"]
-    , slamDataJavaBinary this
-    ]
-
-  slamDataJavaBinary :: forall fields eff state
-                       .  ReactThis fields (SettingsProps eff) SettingsState
-                       -> Component
-  slamDataJavaBinary this = D.div {}
-    [ D.label {htmlFor: "java-binary"} [D.rawText "Binary"]
-    , D.input { name: "java-binary"
-              , onChange: eventHandler this \this e -> pure $
-                this.setState (this.state # _sdDirty .~ true # _sdJava .~ value e.target)
-              , placeholder: "/usr/bin/java"
-              , value: this.state^._sdJava
-              }
-      []
-    ]
-
-  _sdJava :: forall r. LensP {sdConfig :: SDConfig | r} String
-  _sdJava = _sdConfig.._sdConfigRec.._nodeWebkit.._sdConfigNodeWebkit.._java
 
   _sdServer :: forall r. LensP {sdConfig :: SDConfig | r} SDConfigServerRec
   _sdServer = _sdConfig.._sdConfigRec.._server.._sdConfigServer

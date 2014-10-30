@@ -28,7 +28,6 @@ module SlamData.App.Workspace.Notebook.Settings.SlamEngine
   import SlamData.Types
     ( Mounting()
     , SDConfig()
-    , SDConfigNodeWebkitRec()
     , SEConfig()
     , SEConfigServerRec()
     , SlamDataEventTy(..)
