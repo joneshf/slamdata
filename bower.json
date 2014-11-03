@@ -40,7 +40,6 @@
     "purescript-foreign": "~0.2.0",
     "purescript-http": "~0.2.0",
     "purescript-lens": "~0.3.1",
-    "purescript-maps": "~0.0.5",
     "purescript-maybe": "~0.2.1",
     "purescript-monoid": "~0.1.4",
     "purescript-node-uuid": "~0.4.1",
@@ -48,7 +47,6 @@
     "purescript-parsing": "~0.1.1",
     "purescript-react": "joneshf/purescript-react#simplify",
     "purescript-showdown": "~0.0.1",
-    "purescript-strings": "~0.3.0",
     "purescript-timers": "~0.0.5",
     "purescript-transformers": "~0.2.1",
     "purescript-tuples": "~0.2.1",
@@ -63,7 +61,9 @@
     "showdown": "~0.3.1",
     "reactable": "f0f3f45959ee2a851322f779658db7608b7b8a1d",
     "icomoon": "~0.0.1",
-    "slamengine-jar": "https://github.com/slamdata/slamengine/releases/download/v1.0.2-SNAPSHOT-112/slamengine_2.11-1.0.2-SNAPSHOT-one-jar.jar"
+    "slamengine-jar": "https://github.com/slamdata/slamengine/releases/download/v1.0.2-SNAPSHOT-112/slamengine_2.11-1.0.2-SNAPSHOT-one-jar.jar",
+    "purescript-strings": "~0.4.0",
+    "purescript-maps": "~0.1.1"
   },
   "devDependencies": {
     "underscore-contrib": "~0.3.0",

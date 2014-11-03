@@ -102,7 +102,7 @@ casper.test.begin('Multiple notebooks', 26, function(test) {
     });
 });
 
-casper.test.begin('Config is read properly', 9, function(test) {
+casper.test.begin('Config is read properly', 8, function(test) {
     casper.start(defaultURL, function() {
         casper.capture(screenshotDir + '/empty.png');
     }).thenClick('#menu-button-Edit', function() {
@@ -120,7 +120,6 @@ casper.test.begin('Config is read properly', 9, function(test) {
         test.assertFieldCSS('#notebook [name="mongodb-path"]', config.seMountPath, '`mongodb-path` should match `config.seMountPath`');
         test.assertFieldCSS('#notebook [name="mongodb-mongouri"]', config.seMongoURI, '`mongodb-mongouri` should match `config.seMongoURI`');
         test.assertFieldCSS('#notebook [name="mongodb-database"]', config.seDatabase, '`mongodb-database` should match `config.seDatabase`');
-        test.assertFieldCSS('#notebook [name="java-binary"]', config.javaLocation, '`java-binary` should match `config.javaLocation`');
     }).thenClick('#settings-SlamData', function() {
         casper.capture(screenshotDir + '/notebook_settings_slamdata.png');
 

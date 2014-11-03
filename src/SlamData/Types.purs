@@ -53,18 +53,12 @@ module SlamData.Types where
   newtype SDConfig = SDConfig SDConfigRec
   type SDConfigRec =
     { server     :: SDConfigServer
-    , nodeWebkit :: SDConfigNodeWebkit
     }
 
   newtype SDConfigServer = SDConfigServer SDConfigServerRec
   type SDConfigServerRec =
     { location :: String
     , port :: Number
-    }
-
-  newtype SDConfigNodeWebkit = SDConfigNodeWebkit SDConfigNodeWebkitRec
-  type SDConfigNodeWebkitRec =
-    { java :: String
     }
 
   newtype SEConfig = SEConfig SEConfigRec
@@ -171,8 +165,7 @@ module SlamData.Types where
   -- SDConfig
   instance encodeSDConfig :: EncodeJson SDConfig where
     encodeJson (SDConfig sdConfig)
-      =  "server"     := encodeJson sdConfig.server
-      ~> "nodeWebkit" := encodeJson sdConfig.nodeWebkit
+      =  "server" := encodeJson sdConfig.server
       ~> jsonEmptyObject
 
   instance encodeSDConfigServer :: EncodeJson SDConfigServer where
@@ -181,27 +174,16 @@ module SlamData.Types where
       ~> "port"    := encodeJson server.port
       ~> jsonEmptyObject
 
-  instance encodeSDConfigNodeWebkit :: EncodeJson SDConfigNodeWebkit where
-    encodeJson (SDConfigNodeWebkit nw)
-      = "java" := encodeJson nw.java
-      ~> jsonEmptyObject
-
   instance decodeSDConfig :: DecodeJson SDConfig where
     decodeJson json = toObject json ?>>= "SDConfig" >>= \obj -> do
-      server     <- StrMap.lookup "server"     obj ?>>= "server"     >>= decodeJson
-      nodeWebkit <- StrMap.lookup "nodeWebkit" obj ?>>= "nodeWebkit" >>= decodeJson
-      pure $ SDConfig {server: server, nodeWebkit: nodeWebkit}
+      server <- StrMap.lookup "server" obj ?>>= "server" >>= decodeJson
+      pure $ SDConfig {server: server}
 
   instance decodeSDConfigServer :: DecodeJson SDConfigServer where
     decodeJson json = toObject json ?>>= "SDConfigServer" >>= \obj -> do
       location <- StrMap.lookup "location" obj ?>>= "location" >>= decodeJson
       port     <- StrMap.lookup "port"     obj ?>>= "port"     >>= decodeJson
       pure $ SDConfigServer {location: location, port: port}
-
-  instance decodeSDConfigNodeWebkit :: DecodeJson SDConfigNodeWebkit where
-    decodeJson json = toObject json ?>>= "SDConfigNodeWebkit" >>= \obj -> do
-      java <- StrMap.lookup "java" obj ?>>= "java" >>= decodeJson
-      pure $ SDConfigNodeWebkit {java: java}
 
   -- SEConfig
   instance encodeSEConfig :: EncodeJson SEConfig where
