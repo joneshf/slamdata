@@ -3,6 +3,7 @@
 var gulp = require('gulp')
   , bower = require('gulp-bower')
   , browserify = require('browserify')
+  , bump = require('gulp-bump')
   , concat = require('gulp-concat')
   , connect = require('gulp-connect')
   , es = require('event-stream')
@@ -293,6 +294,26 @@ gulp.task('browserify-index', function() {
     return gulp.src('index.js')
         .pipe(gulp.dest('output'));
 });
+
+gulp.task('bump-patch-browser', function() {
+    return gulp.src(['lib/browser/bower.json'])
+        .pipe(bump({type: 'patch'}))
+        .pipe(gulp.dest('lib/browser'));
+});
+
+gulp.task('bump-patch-node-webkit', function() {
+    return gulp.src(['lib/node-webkit/bower.json', 'lib/node-webkit/package.json'])
+        .pipe(bump({type: 'patch'}))
+        .pipe(gulp.dest('lib/node-webkit'));
+});
+
+gulp.task('bump-patch-src', function() {
+    return gulp.src(['package.json', 'bower.json'])
+        .pipe(bump({type: 'patch'}))
+        .pipe(gulp.dest('./'));
+});
+
+gulp.task('bump-patch', ['bump-patch-src', 'bump-patch-browser', 'bump-patch-node-webkit']);
 
 gulp.task('clean-build', clean('bin'));
 gulp.task('clean-compile', clean('js'));
