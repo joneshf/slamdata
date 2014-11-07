@@ -72,5 +72,8 @@
   "devDependencies": {
     "underscore-contrib": "~0.3.0",
     "tiny-emitter": "~1.0.0"
+  },
+  "resolutions": {
+    "d3": "~3.3.13"
   }
 }
