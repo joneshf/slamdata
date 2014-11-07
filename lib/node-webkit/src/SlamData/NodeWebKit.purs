@@ -81,10 +81,7 @@ module SlamData.NodeWebKit where
     , mount
     )
   import SlamData.Lens
-    ( _java
-    , _nodeWebkit
-    , _sdConfig
-    , _sdConfigNodeWebkit
+    ( _sdConfig
     , _sdConfigRec
     , _seConfig
     , _settings
@@ -101,11 +98,19 @@ module SlamData.NodeWebKit where
     )
   import SlamData.Types.Workspace.FileSystem (FileType(..))
 
-  import System.Path.Unix ((</>))
+  import System.Path.Unix ((</>), joinPath, normalize)
 
   import qualified Data.Map as M
 
+  foreign import data Process :: !
+
   foreign import platform "var platform = process.platform;" :: String
+
+  foreign import execPath """
+    function execPath() {
+      return process.execPath;
+    }
+  """ :: forall eff. Eff (process :: Process | eff) FilePath
 
   foreign import unsafeEnv
     "function unsafeEnv(nothing) {\
@@ -164,23 +169,32 @@ module SlamData.NodeWebKit where
     trace $ "Error reading file\n" ++ message err ++ "\ndefaulting."
     pure def
 
+  javaBinary :: forall eff. Eff (process :: Process | eff) FilePath
+  javaBinary = do
+    ep <- execPath
+    pure $ case platform of
+      "win32"  -> normalize $ joinPath [ep, "..", "jre", "bin", "java.exe"]
+      "linux"  -> normalize $ joinPath [ep, "..", "jre", "bin", "java"]
+      "darwin" -> normalize $ joinPath [ep, "..", "..", "..", "..", "..", "Resources", "jre", "bin", "java"]
+
   startSlamEngine :: forall eff
                   .  NWWindow
                   -> Maybe ChildProcess
-                  -> Eff ( event :: EventEff
-                         , fs :: FS
-                         , nw :: NW
-                         , spawn :: Spawn
-                         , trace :: Trace
+                  -> Eff ( event   :: EventEff
+                         , fs      :: FS
+                         , nw      :: NW
+                         , process :: Process
+                         , spawn   :: Spawn
+                         , trace   :: Trace
                          | eff
                          ) (Tuple SlamDataState (Maybe ChildProcess))
   startSlamEngine win cp = do
     maybe (pure unit) (\(ChildProcess se) -> pure (runFn1 se.kill sigterm) *> pure unit) cp
+    java <- javaBinary
     sdConfigStr <- catchRead "" $ readTextFile UTF8 sdConfigFile
     seConfigStr <- catchRead "" $ readTextFile UTF8 seConfigFile
     let sdConfig = parseConfig sdConfigStr `getOrElse` defaultSDConfig
     let seConfig = parseConfig seConfigStr `getOrElse` defaultSEConfig
-    let java = sdConfig^._sdConfigRec.._nodeWebkit.._sdConfigNodeWebkit.._java
 
     -- Start up SlamEngine.
     ChildProcess se <- spawn java ["-jar", seJar, seConfigFile] defaultSpawnOptions
@@ -194,17 +208,18 @@ module SlamData.NodeWebKit where
       pure unit)
     pure $ Tuple (initialState sdConfig seConfig) (Just $ ChildProcess se)
 
-  main :: forall h. Eff ( domain :: DomainEff
-                        , dom    :: DOM
-                        , event  :: EventEff
-                        , fs     :: FS
-                        , nw     :: NW
-                        , policy :: WindowPolicyEff
-                        , react  :: React
-                        , spawn  :: Spawn
-                        , st     :: ST h
-                        , timer  :: Timer
-                        , trace  :: Trace
+  main :: forall h. Eff ( domain  :: DomainEff
+                        , dom     :: DOM
+                        , event   :: EventEff
+                        , fs      :: FS
+                        , nw      :: NW
+                        , policy  :: WindowPolicyEff
+                        , process :: Process
+                        , react   :: React
+                        , spawn   :: Spawn
+                        , st      :: ST h
+                        , timer   :: Timer
+                        , trace   :: Trace
                         ) Domain
   main = do
     domain <- create

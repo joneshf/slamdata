@@ -29,6 +29,7 @@ module SlamData.App.Workspace.Notebook.Block
     , blockIcon
     , closeIcon
     , createBlockButton
+    , runIcon
     )
   import SlamData.Helpers (contains, publish, value)
   import SlamData.Lens
@@ -40,6 +41,7 @@ module SlamData.App.Workspace.Notebook.Block
     , _ident
     , _label
     , _notebookRec
+    , _dirty
     , _published
     )
   import SlamData.Types (SlamDataEventTy(..), SlamDataRequest())
@@ -99,7 +101,8 @@ module SlamData.App.Workspace.Notebook.Block
           .  ReactThis fields (BlockProps eff) BlockState
           -> Component
   toolbar this = D.div {className: "button-bar"}
-    [ D.ul {className: "left button-group"} []
+    [ D.ul {className: "left button-group"}
+      (internalActions this)
     , D.ul {className: "right button-group"}
       [actionButton
         this
@@ -109,6 +112,21 @@ module SlamData.App.Workspace.Notebook.Block
         closeIcon
       ]
     ]
+
+  internalActions :: forall eff fields
+                  .  ReactThis fields (BlockProps eff) BlockState
+                  -> [Component]
+  internalActions this = case this.props.block^._blockRec.._blockType of
+    BlockType "SQL" ->
+      let content = this.state.editContent
+          block' = this.props.block # _blockRec.._editContent .~ content
+      in [actionButton
+           this
+           [EvalBlock this.props.notebook block']
+           "Run"
+           runIcon
+         ]
+    _               -> []
 
   createBlockButton' :: forall eff fields
                      .  ReactThis fields (BlockProps eff) BlockState
@@ -148,7 +166,7 @@ module SlamData.App.Workspace.Notebook.Block
   blockEditor this = blockRow {styles: "block-content"}
     [D.div {}
       [D.textarea
-        { autoFocus: "true"
+        { autoFocus: this.props.notebook^._notebookRec.._dirty
         , className: "block-editor"
         , onBlur: eventHandler this \this _ ->
           let content = this.state.editContent
@@ -173,7 +191,7 @@ module SlamData.App.Workspace.Notebook.Block
             -> Component
   sqlEditor this = D.div {className: "SQL-editor"}
     [D.textarea
-      { autoFocus: "true"
+      { autoFocus: this.props.notebook^._notebookRec.._dirty
       , className: "block-editor"
       , onChange: eventHandler this \this e -> do
         pure $ this.setState this.state{editContent = value e.target}

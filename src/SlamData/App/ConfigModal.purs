@@ -6,11 +6,11 @@ module SlamData.App.ConfigModal (configModal) where
   import React.Types (Component(), ComponentClass(), ReactThis())
 
   import SlamData.App.Workspace.Notebook.Settings.SlamData
-    ( slamDataJavaSettings
-    , slamDataServerSettings
+    ( slamDataServerSettings
     )
   import SlamData.App.Workspace.Notebook.Settings.SlamEngine
-    (slamEngineMountingsSettings)
+    ( slamEngineMountingsSettings
+    )
   import SlamData.Components (actionButton, saveSettingsAction)
   import SlamData.Lens
     ( _port
@@ -70,7 +70,6 @@ module SlamData.App.ConfigModal (configModal) where
     , saveButton this
     , slamDataServerSettings this
     , slamEngineMountingsSettings this
-    , slamDataJavaSettings this
     ]
 
   saveButton :: forall fields eff

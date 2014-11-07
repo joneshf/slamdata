@@ -18,7 +18,6 @@ module SlamData.Helpers where
     ( Mounting(..)
     , MountingWrapper(..)
     , SDConfig(..)
-    , SDConfigNodeWebkit(..)
     , SDConfigServer(..)
     , SEConfig(..)
     , SEConfigServer(..)
@@ -102,7 +101,6 @@ module SlamData.Helpers where
     { server: SDConfigServer { location: defaultServerLocation
                              , port: defaultServerPort
                              }
-    , nodeWebkit: SDConfigNodeWebkit {java: "java"}
     }
 
   defaultSEConfig :: SEConfig
@@ -157,9 +155,7 @@ module SlamData.Helpers where
     port <- SM.lookup "serverPort"     qs
     java <- SM.lookup "javaLocation"   qs
     pure $ SDConfig
-      { server: SDConfigServer {location: loc, port: readInt 10 port}
-      , nodeWebkit: SDConfigNodeWebkit {java: java}
-      }
+      {server: SDConfigServer {location: loc, port: readInt 10 port}}
 
   query2SEConfig :: QueryString -> SEConfig
   query2SEConfig qs = fromMaybe defaultSEConfig do

@@ -18,9 +18,6 @@ module SlamData.Lens where
   _sdConfigServer :: LensP SDConfigServer SDConfigServerRec
   _sdConfigServer f (SDConfigServer rec) = SDConfigServer <$> f rec
 
-  _sdConfigNodeWebkit :: LensP SDConfigNodeWebkit SDConfigNodeWebkitRec
-  _sdConfigNodeWebkit f (SDConfigNodeWebkit rec) = SDConfigNodeWebkit <$> f rec
-
   _seConfigServer :: LensP SEConfigServer SEConfigServerRec
   _seConfigServer f (SEConfigServer rec) = SEConfigServer <$> f rec
 
@@ -53,12 +50,6 @@ module SlamData.Lens where
 
   _port :: forall a r. LensP {port :: a | r} a
   _port f o@{port = i} = (\i' -> o{port = i'}) <$> f i
-
-  _nodeWebkit :: forall a r. LensP {nodeWebkit :: a | r} a
-  _nodeWebkit f o@{nodeWebkit = i} = (\i' -> o{nodeWebkit = i'}) <$> f i
-
-  _java :: forall a r. LensP {java :: a | r} a
-  _java f o@{java = i} = (\i' -> o{java = i'}) <$> f i
 
   _mountings :: forall a r. LensP {mountings :: a | r} a
   _mountings f o@{mountings = i} = (\i' -> o{mountings = i'}) <$> f i

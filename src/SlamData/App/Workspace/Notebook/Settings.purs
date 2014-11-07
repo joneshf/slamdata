@@ -4,8 +4,7 @@ module SlamData.App.Workspace.Notebook.Settings (settings) where
   import React.Types (Component(), ComponentClass(), ReactThis())
 
   import SlamData.App.Workspace.Notebook.Settings.SlamData
-    ( slamDataJavaSettings
-    , slamDataServerSettings
+    ( slamDataServerSettings
     )
   import SlamData.App.Workspace.Notebook.Settings.SlamEngine
     ( slamEngineMountingsSettings
@@ -114,8 +113,5 @@ module SlamData.App.Workspace.Notebook.Settings (settings) where
   reifyContent SlamDataTab this =
     D.div {className: "content" ++ activate SlamDataTab this.state.active}
       [ D.h6 {} [D.rawText "SlamEngine server to connect to"]
-      , D.form {}
-        [ slamDataServerSettings this
-        , slamDataJavaSettings this
-        ]
+      , D.form {} [slamDataServerSettings this]
       ]
