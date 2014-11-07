@@ -1,8 +1,8 @@
 module SlamData.Data.Chart
   ( Chart
   , NodeId(..)
-  , choices
-  , render
+  , chartChoices
+  , renderChart
   ) where 
   
   import Control.Monad.Eff
@@ -28,6 +28,6 @@ module SlamData.Data.Chart
   -- |   * Be serialized to and from JSON.
   -- |   * Be rendered given a data set and a target node in the DOM.
   class (EncodeJson a, DecodeJson a, Perturb a) <= Chart a where 
-    choices :: AnalysisSum -> Gen a
+    chartChoices :: AnalysisSum -> Gen a
     
-    render :: forall fx. [Json] -> a -> NodeId -> Eff (dom :: DOM | fx) Unit
+    renderChart :: forall fx. [Json] -> a -> NodeId -> Eff (dom :: DOM | fx) Unit

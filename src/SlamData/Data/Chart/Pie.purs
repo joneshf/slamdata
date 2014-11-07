@@ -246,7 +246,7 @@ module Data.Chart.Pie
     perturber = xmap detuplePieChart entuplePieChart (perturber </\> perturber)
 
   instance chartPieChart :: Chart PieChart where
-    choices (AnalysisSum m) =     
+    chartChoices (AnalysisSum m) =     
       let semantic = flip (^.) (_2 <<< _dimSum <<< _semantic)
           sums     = M.toList m
           valueChoices = fst <$> (A.filter (isNumeric <<< semantic) sums)
@@ -268,7 +268,7 @@ module Data.Chart.Pie
                 donut           : donut,
                 donutRatio      : donutRatio } }
 
-    render j (PieChart { axes = PieChartAxes axes, options = options }) (NodeId nodeId) = 
+    renderChart j (PieChart { axes = PieChartAxes axes, options = options }) (NodeId nodeId) = 
       runFn5 renderPieChart nodeId j (extract axes.value) (extract axes.label) (encodeJson options) where
 
       extract :: JCursor -> Json -> Json
