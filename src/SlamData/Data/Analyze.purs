@@ -166,9 +166,6 @@ module SlamData.Data.Analyze
     len = A.length j
     sum (Analysis m) = (M.toList >>> ((<$>) (Arrow.second $ summarize1 len)) >>> M.fromList >>> AnalysisSum) m
 
-  -- flattenJson :: Analysis -> Tuple (M.Map JCursor Number) [[Json]] 
-
-
   -- Lenses
   _dimStats :: LensP DimStats DimStatsRec
   _dimStats f (DimStats rec) = DimStats <$> f rec
