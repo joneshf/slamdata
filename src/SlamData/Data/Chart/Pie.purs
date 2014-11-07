@@ -4,7 +4,8 @@ module Data.Chart.Pie
   , PieChartOptions(..)
   , PieChartOptionsRec(..)
   , PieChart(..)
-  , ZeroToOne(..)
+  , ZeroToOne(..) -- FIXME
+  , LabelType(..) -- FIXME
   ) where 
 
   import Control.Monad.Eff
