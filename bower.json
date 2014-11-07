@@ -67,7 +67,7 @@
     "showdown": "~0.3.1",
     "reactable": "f0f3f45959ee2a851322f779658db7608b7b8a1d",
     "icomoon": "~0.0.1",
-    "slamengine-jar": "https://github.com/slamdata/slamengine/releases/download/v1.0.2-SNAPSHOT-112/slamengine_2.11-1.0.2-SNAPSHOT-one-jar.jar",
+    "slamengine-jar": "https://github.com/slamdata/slamengine/releases/download/v1.0.2-SNAPSHOT-112/slamengine_2.11-1.0.2-SNAPSHOT-one-jar.jar"
   },
   "devDependencies": {
     "underscore-contrib": "~0.3.0",
