@@ -4,6 +4,7 @@ module Data.Chart.Pie
   , PieChartOptions(..)
   , PieChartOptionsRec(..)
   , PieChart(..)
+  , ZeroToOne(..)
   ) where 
 
   import Control.Monad.Eff
@@ -66,7 +67,7 @@ module Data.Chart.Pie
     succ LabelTypeValue = Just LabelTypePercent
     succ LabelTypePercent = Nothing
 
-  data PieChartAxes = PieChartAxes PieChartAxesRec
+  newtype PieChartAxes = PieChartAxes PieChartAxesRec
 
   type PieChartAxesRec = {
     value         :: JCursor,
@@ -74,9 +75,9 @@ module Data.Chart.Pie
     valueChoices  :: [JCursor],
     labelChoices  :: [JCursor] }
 
-  data PieChartOptions = PieChartOptions PieChartOptionsRec
+  newtype PieChartOptions = PieChartOptions PieChartOptionsRec
 
-  data ZeroToOne = ZeroToOne Number
+  newtype ZeroToOne = ZeroToOne Number
 
   type PieChartOptionsRec = {
     labelThreshold  :: ZeroToOne,
@@ -85,7 +86,7 @@ module Data.Chart.Pie
     donut           :: Boolean,
     donutRatio      :: ZeroToOne }
 
-  data PieChart = PieChart {
+  newtype PieChart = PieChart {
     axes    :: PieChartAxes,
     options :: PieChartOptions }
 
