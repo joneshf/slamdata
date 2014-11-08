@@ -70,6 +70,7 @@
 
 .evaled-block {
     border: 1px solid transparent;
+    margin: 0;
     padding: rem-calc(20);
     &:hover {
         @include panel($bg: #e6e6e6);
