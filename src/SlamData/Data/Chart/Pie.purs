@@ -1,4 +1,4 @@
-module Data.Chart.Pie 
+module SlamData.Data.Chart.Pie 
   ( PieChartAxes(..)
   , PieChartAxesRec(..)
   , PieChartOptions(..)

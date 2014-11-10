@@ -49,7 +49,7 @@
     "purescript-node-uuid": "~0.4.1",
     "purescript-oboe": "~0.3.0",
     "purescript-parsing": "~0.1.2",
-    "purescript-strongcheck": "~0.4.8",
+    "purescript-strongcheck": "~0.4.9",
     "purescript-react": "joneshf/purescript-react#simplify",
     "purescript-showdown": "~0.0.1",
     "purescript-strings": "~0.4.0",

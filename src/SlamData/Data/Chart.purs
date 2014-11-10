@@ -5,13 +5,10 @@ module SlamData.Data.Chart
   , renderChart
   ) where 
   
-  import Control.Monad.Eff
+  import Control.Monad.Eff(Eff())
 
-  import Test.StrongCheck.Gen
-  import Test.StrongCheck.Perturb
-
-  import Control.Lens
-  import Data.Tuple(fst)
+  import Test.StrongCheck.Gen(Gen())
+  import Test.StrongCheck.Perturb(Perturb)
 
   import Data.Argonaut.Encode(EncodeJson)
   import Data.Argonaut.Decode(DecodeJson)
