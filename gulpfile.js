@@ -53,6 +53,7 @@ var paths = {
     },
     concat: {
         css: [ 'bower_components/c3/c3.css'
+             , 'bower_components/nv.d3.min.css'
              , 'bower_components/entypo/font/entypo.css'
              , 'bower_components/fontawesome/css/font-awesome.css'
              , 'bower_components/icomoon/style.css'
@@ -72,6 +73,7 @@ var paths = {
         js: [ 'bower_components/jquery/dist/jquery.js'
             , 'bower_components/c3/c3.js'
             , 'bower_components/d3/d3.js'
+            , 'bower_components/nv.d3.min.js'
             , 'bower_components/foundation/js/foundation.js'
             , 'bower_components/node-uuid/uuid.js'
             , 'bower_components/oboe/dist/oboe-browser.js'
