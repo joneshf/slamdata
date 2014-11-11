@@ -251,9 +251,9 @@ module SlamData.App.Workspace.Notebook.Block
         []
     BlockType "SQL"    ->
       either
-        (const $ D.rawText $ this.props.block^._blockRec.._evalContent)
-        (\t -> table defaultTableProps{columns = [], "data" = t} []) $
-        this.props.block^._blockRec.._evalContent..to jsonParser
+        (\_ -> D.rawText $ this.props.block^._blockRec.._evalContent)
+        (\t -> table defaultTableProps{columns = [], "data" = t} [])
+        (this.props.block^._blockRec.._evalContent..to jsonParser)
     _                  ->
       D.span {dangerouslySetInnerHTML: {__html: this.props.block^._blockRec.._evalContent}}
         []
