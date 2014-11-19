@@ -9,9 +9,8 @@ module SlamData.Data.Chart.LandscapeJ
 
   import Control.Comonad.Cofree (head)
 
-  import Test.StrongCheck.Perturb (Perturb, perturb)
-  import Test.StrongCheck (Arbitrary, arbitrary)
-  import Test.StrongCheck.Gen (GenState(..), Gen(..), toLazyList, updateSeedState, unGenOut, applyGen)
+  import Test.StrongCheck.Gen (GenState(..))
+  import Test.StrongCheck.Perturb (Perturb)
   import Test.StrongCheck.Landscape
 
   newtype DriverStateJ a = DriverStateJ (DriverState a)
