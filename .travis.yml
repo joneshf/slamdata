@@ -14,8 +14,8 @@ before_install:
   - ./scripts/travis/write_seConfig.sh
   - Xvfb :1 &
 install:
-  - wget -O $HOME/bin/psc https://github.com/purescript/purescript/releases/download/v0.6.1/psc
-  - wget -O $HOME/bin/psc-make https://github.com/purescript/purescript/releases/download/v0.6.1/psc-make
+  - wget -O  $HOME/bin/linux64.tar.gz    https://github.com/purescript/purescript/releases/download/v0.6.1/linux64.tar.gz
+  - tar -xzf $HOME/bin/linux64.tar.gz
   - chmod a+x $HOME/bin/psc
   - chmod a+x $HOME/bin/psc-make
   - npm install -g bower
