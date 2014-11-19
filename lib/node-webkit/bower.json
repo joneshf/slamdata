@@ -25,7 +25,6 @@
     "jre-osx": "http://installbuilder.bitrock.com/java/jre1.7.0_67-osx.zip",
     "jre-windows-x64": "http://installbuilder.bitrock.com/java/jre1.7.0_67-windows-x64.zip",
     "nvd3": "~1.1.15-beta",
-    "purescript-argonaut": "~0.2.1",
     "purescript-argonaut": "~0.2.10",
     "purescript-arrays": "~0.2.1",
     "purescript-arrows": "~0.1.1",
@@ -51,9 +50,7 @@
     "purescript-node-uuid": "~0.4.1",
     "purescript-node-webkit": "~0.2.2",
     "purescript-oboe": "~0.3.0",
-    "purescript-parsing": "~0.1.1",
     "purescript-parsing": "~0.1.2",
-    "purescript-path": "~0.2.3",
     "purescript-path": "~0.2.4",
     "purescript-react": "joneshf/purescript-react#simplify",
     "purescript-showdown": "~0.0.1",
@@ -62,7 +59,6 @@
     "purescript-timers": "~0.0.5",
     "purescript-tiny-emitter": "~0.1.0",
     "purescript-transformers": "~0.2.1",
-    "purescript-tuples": "~0.2.1",
     "purescript-tuples": "~0.2.2",
     "purescript-validation": "~0.0.3",
     "purescript-webstorage": "~0.2.0",
@@ -78,6 +74,7 @@
     "tiny-emitter": "~1.0.0"
   },
   "resolutions": {
-    "d3": "~3.3.13"
+    "d3": "~3.3.13",
+    "purescript-transformers": "~0.3.0"
   }
 }
