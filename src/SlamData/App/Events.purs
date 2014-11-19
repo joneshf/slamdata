@@ -318,8 +318,7 @@ module SlamData.App.Events where
   deleteBlock :: NotebookID -> BlockID -> Notebook -> Notebook
   deleteBlock nID bID (Notebook n@{ident = nID', blocks = blocks})
     | nID == nID' = Notebook n{blocks = filter go blocks, dirty = true}
-    where
-      go (Block b) = b.ident /= bID
+                    where go (Block b) = b.ident /= bID
   deleteBlock _ _ nb = nb
 
   insertBlock :: NotebookID -> Block -> Number -> Notebook -> Notebook
@@ -330,9 +329,8 @@ module SlamData.App.Events where
   updateBlock :: NotebookID -> Block -> Notebook -> Notebook
   updateBlock ident (Block b) (Notebook n@{ident = ident', blocks = blocks})
     | ident == ident' = Notebook n{blocks = go <$> blocks, dirty = true}
-    where
-      go (Block b') | b.ident == b'.ident = Block b
-      go b'                               = b'
+               where go (Block b') | b.ident == b'.ident = Block b
+                     go b'                               = b'
   updateBlock _ _ nb = nb
 
   insertChildren :: [String] -> [FileType] -> [FileType] -> FileType
