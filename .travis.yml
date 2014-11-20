@@ -15,7 +15,7 @@ before_install:
   - Xvfb :1 &
 install:
   - wget -O  $HOME/bin/linux64.tar.gz https://github.com/purescript/purescript/releases/download/v0.6.1/linux64.tar.gz
-  - tar -xzf $HOME/bin/linux64.tar.gz $HOME/bin/
+  - tar cvzf $HOME/bin/linux64.tar.gz $HOME/bin/
   - chmod a+x $HOME/bin/psc
   - chmod a+x $HOME/bin/psc-make
   - npm install -g bower
