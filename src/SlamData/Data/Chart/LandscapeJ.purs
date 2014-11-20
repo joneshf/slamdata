@@ -17,6 +17,9 @@ module SlamData.Data.Chart.LandscapeJ
   newtype LandscapeJ a   = LandscapeJ (Landscape a)
   newtype GenStateJ      = GenStateJ GenState
 
+  defaultDecay :: Decay
+  defaultDecay = decayHalf
+
   instance encodeJsonDriverStateJ :: (EncodeJson a) => EncodeJson (DriverStateJ a) where
     encodeJson (DriverStateJ (DriverState v)) =
       ("value"    := v.value)           ~> 
@@ -46,7 +49,7 @@ module SlamData.Data.Chart.LandscapeJ
 
   instance decodeJsonLandscapeJ :: (Perturb a, DecodeJson a) => DecodeJson (LandscapeJ a) where
     decodeJson j = f <$> decodeJson j
-      where f (DriverStateJ (DriverState v)) = LandscapeJ $ nearby' v.value v.state v.variance
+      where f (DriverStateJ (DriverState v)) = LandscapeJ $ nearby' v.state defaultDecay v.value v.variance
 
   unGenStateJ :: GenStateJ -> GenState
   unGenStateJ (GenStateJ v) = v
