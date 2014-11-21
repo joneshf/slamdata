@@ -14,11 +14,15 @@ $button-tny: rem-calc(2);
 // Import the rest of foundation so we can use variables defined in it.
 @import "bower_components/foundation/scss/foundation.scss";
 
+$padding: 10px;
 $slamdata-border-color: #d3d3d3;
-$workspace-extra-height: 0;
 $slamdata-orange: rgb(255, 128, 0);
+$tab-height: 53px;
+$workspace-extra-height: 175px;
 
 // Import our stuff.
+@import "app/workspace/extra/log.scss";
+@import "app/workspace/extra.scss";
 @import "config-modal.scss";
 @import "error.scss";
 @import "filesystem.scss";

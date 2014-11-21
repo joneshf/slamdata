@@ -4,7 +4,7 @@ module SlamData.App.Workspace.FileSystem
   , FileSystemState()
   ) where
 
-  import Control.Lens ((^.), (..), (<#>))
+  import Control.Lens ((^.), (..))
   import Control.Monad.Eff (Eff())
 
   import Data.Array (snoc, sort)

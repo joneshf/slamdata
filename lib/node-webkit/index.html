@@ -7,6 +7,11 @@
     <link rel="stylesheet" type="text/css" href="css/slamdata-node-webkit.css" />
 </head>
 <body>
+    <script type="text/javascript">
+        // This is needed because `moment` is too fancy.
+        // https://github.com/rogerwang/node-webkit/issues/2075
+        window.moment = require('moment');
+    </script>
     <div id="content"></div>
     <script src="js/slamdata.js"></script>
     <script src="js/slamdata-node-webkit.js"></script>

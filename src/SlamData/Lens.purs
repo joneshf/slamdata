@@ -110,3 +110,6 @@ module SlamData.Lens where
 
   _label :: forall a r. LensP {label :: a | r} a
   _label f o@{label = i} = (\i' -> o{label = i'}) <$> f i
+
+  _logs :: forall a r. LensP {logs :: a | r} a
+  _logs f o@{logs = i} = (\i' -> o{logs = i'}) <$> f i

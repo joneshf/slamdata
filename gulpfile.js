@@ -73,13 +73,15 @@ var paths = {
         js: [ 'bower_components/jquery/dist/jquery.js'
             , 'bower_components/c3/c3.js'
             , 'bower_components/d3/d3.js'
-            , 'bower_components/nv.d3.min.js'
             , 'bower_components/foundation/js/foundation.js'
             , 'bower_components/node-uuid/uuid.js'
+            , 'bower_components/moment/moment.js'
+            , 'bower_components/nv.d3.min.js'
             , 'bower_components/oboe/dist/oboe-browser.js'
+            // N.B. This must be before the other react stuff
             , 'bower_components/react/react-with-addons.js'
-            , 'bower_components/reactable/build/reactable.js'
             , 'bower_components/react-treeview/react-treeview.js'
+            , 'bower_components/reactable/build/reactable.js'
             , 'bower_components/showdown/src/showdown.js'
             , 'bower_components/tiny-emitter/dist/tinyemitter.js'
             , 'js/slamdata.js'
@@ -92,6 +94,7 @@ var paths = {
         'node-webkit': [ 'lib/node-webkit/css/**/*'
                        , 'lib/node-webkit/index.html'
                        , 'lib/node-webkit/js/**/*'
+                       , 'lib/node-webkit/node_modules/**/*'
                        , 'lib/node-webkit/package.json'
                        ]
     },

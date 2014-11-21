@@ -2,7 +2,7 @@ module SlamData.NodeWebKit.Menu where
 
   import Control.Events (EventEff())
   import Control.Monad.Eff (Eff())
-  import Control.Monad.ST (newSTRef, readSTRef, writeSTRef, ST())
+  import Control.Monad.ST (newSTRef, readSTRef, runST, writeSTRef, ST())
 
   import Data.Maybe (Maybe(..))
 
@@ -52,8 +52,8 @@ module SlamData.NodeWebKit.Menu where
        .  NWWindow
        -> Emitter
        -> SlamDataState
-       -> Eff (event :: EventEff, nw :: NW, st :: ST h | eff) NWMenu
-  menu win e state = do
+       -> Eff (event :: EventEff, nw :: NW | eff) NWMenu
+  menu win e state = runST do
     -- Warning, this can probably lead to a whole slew of bugs.
     -- We're updating the state each time a `requestEvent` is fired.
     -- We do this to access the latest state outside the main event handler.

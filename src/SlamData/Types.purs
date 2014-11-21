@@ -22,6 +22,7 @@ module SlamData.Types where
   import Data.Either (Either(..))
   import Data.Foldable (foldl, foldMap, foldr, Foldable)
   import Data.Maybe (maybe, Maybe(..))
+  import Data.Moment (Moment())
   import Data.Tuple (uncurry, Tuple(..))
   import Data.Traversable (sequence, traverse, Traversable)
   import Data.Validation (V(..))
@@ -110,6 +111,11 @@ module SlamData.Types where
                        | EvalVisual Notebook Block [VisualData]
                        | CreateValidation ValidationTy ValidationVal
                        | DeleteValidation ValidationTy
+                       | LogMessage Log
+
+  data Log = LogError   Moment String
+           | LogInfo    Moment String
+           | LogWarning Moment String
 
   type SlamDataRequest eff
     =  SlamDataEventTy
@@ -125,6 +131,7 @@ module SlamData.Types where
 
   type SlamDataState =
     { files        :: FileType
+    , logs         :: [Log]
     , notebooks    :: [Notebook]
     , settings     :: Settings
     , showSettings :: Boolean

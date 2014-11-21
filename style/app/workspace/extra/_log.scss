@@ -1,0 +1,16 @@
+#log {
+    overflow: hidden;
+    ul {
+        list-style-type: none;
+        margin: 0;
+    }
+    .tabs-content {
+        height: $workspace-extra-height - $tab-height - 2 * $padding;
+        padding: 0;
+        .content.active {
+            height: 100%;
+            overflow: auto;
+            padding: $padding 0;
+        }
+    }
+}

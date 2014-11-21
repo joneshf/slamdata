@@ -14,7 +14,7 @@ module SlamData.NodeWebKit where
   import Control.Alt ((<|>))
   import Control.Apply ((*>))
   import Control.Events (Event(..), EventEff(), EventEmitter)
-  import Control.Lens ((^.), (..), (.~))
+  import Control.Lens ((^.), (..), (.~), (%~))
   import Control.Monad.Eff (Eff())
   import Control.Monad.Eff.Exception
     ( catchException
@@ -23,15 +23,25 @@ module SlamData.NodeWebKit where
     , Exception()
     )
   import Control.Reactive.Timer (Timer())
-  import Control.Monad.ST (newSTRef, readSTRef, writeSTRef, ST())
+  import Control.Monad.ST
+    ( modifySTRef
+    , newSTRef
+    , readSTRef
+    , runST
+    , writeSTRef
+    , ST()
+    , STRef()
+    )
 
   import Data.Argonaut (decodeMaybe, encodeJson, jsonParser, printJson)
   import Data.Argonaut.Decode (DecodeJson)
   import Data.Argonaut.Encode (EncodeJson)
+  import Data.Array (snoc)
   import Data.Either (either, Either(..))
   import Data.Function (mkFn0, mkFn1, mkFn3, runFn1, Fn1())
   import Data.Maybe (maybe, Maybe(..))
   import Data.Maybe.Unsafe (fromJust)
+  import Data.Moment (now, Now())
   import Data.Tuple (Tuple(..))
 
   import Debug.Trace (trace, print, Trace())
@@ -46,6 +56,7 @@ module SlamData.NodeWebKit where
     ( emit
     , emitter
     , on
+    , Emitter()
     )
   import Node.FS (FS())
   import Node.FS.Sync (exists, readTextFile, writeTextFile)
@@ -81,7 +92,8 @@ module SlamData.NodeWebKit where
     , mount
     )
   import SlamData.Lens
-    ( _sdConfig
+    ( _logs
+    , _sdConfig
     , _sdConfigRec
     , _seConfig
     , _settings
@@ -90,6 +102,7 @@ module SlamData.NodeWebKit where
   import SlamData.Types
     ( requestEvent
     , responseEvent
+    , Log(..)
     , SlamDataEvent(..)
     , SlamDataEventTy(..)
     , SlamDataState()
@@ -125,14 +138,6 @@ module SlamData.NodeWebKit where
   env :: String -> Maybe String
   env = unsafeEnv Nothing Just
 
-  -- PS doesn't do well with instance inference.
-  onData :: forall eff ioStream
-         .  (EventEmitter (Stream ioStream))
-         => Fn1 String (Eff eff Unit)
-         -> Stream ioStream
-         -> Eff (event :: EventEff | eff) (Stream ioStream)
-  onData = on $ Event "data"
-
   linuxConfigHome :: Maybe FilePath
   linuxConfigHome = env "XDG_CONFIG_HOME"
                 <|> (\home -> join [home, ".config"]) <$> env "HOME"
@@ -161,12 +166,28 @@ module SlamData.NodeWebKit where
   showError :: forall eff. Either Error Unit -> Eff (trace :: Trace | eff) Unit
   showError = either print pure
 
-  catchRead :: forall eff
+  catchRead :: forall eff h
             .  String
-            -> Eff (err :: Exception, fs :: FS, trace :: Trace | eff) String
-            -> Eff (fs :: FS, trace :: Trace | eff) String
-  catchRead def = catchException \err -> do
-    trace $ "Error reading file\n" ++ message err ++ "\ndefaulting."
+            -> Emitter
+            -> STRef h SlamDataState
+            -> Eff ( err :: Exception
+                   , event :: EventEff
+                   , fs :: FS
+                   , now :: Now
+                   , st :: ST h
+                   , trace :: Trace
+                   | eff) String
+            -> Eff ( event :: EventEff
+                   , fs :: FS
+                   , now :: Now
+                   , st :: ST h
+                   , trace :: Trace
+                   | eff) String
+  catchRead def e stState = catchException \err -> do
+    m <- now
+    let log = LogError m $ "Error reading file\n" ++ message err ++ "\ndefaulting."
+    state <- readSTRef stState
+    e # emit requestEvent (SlamDataEvent {state: state, event: LogMessage log})
     pure def
 
   javaBinary :: forall eff. Eff (process :: Process | eff) FilePath
@@ -177,47 +198,64 @@ module SlamData.NodeWebKit where
       "linux"  -> normalize $ joinPath [ep, "..", "jre", "bin", "java"]
       "darwin" -> normalize $ joinPath [ep, "..", "..", "..", "..", "..", "Resources", "jre", "bin", "java"]
 
-  startSlamEngine :: forall eff
+  startSlamEngine :: forall eff h
                   .  NWWindow
                   -> Maybe ChildProcess
+                  -> Emitter
+                  -> STRef h SlamDataState
                   -> Eff ( event   :: EventEff
                          , fs      :: FS
+                         , now     :: Now
                          , nw      :: NW
                          , process :: Process
                          , spawn   :: Spawn
+                         , st      :: ST h
                          , trace   :: Trace
                          | eff
                          ) (Tuple SlamDataState (Maybe ChildProcess))
-  startSlamEngine win cp = do
+  startSlamEngine win cp e stState = do
     maybe (pure unit) (\(ChildProcess se) -> pure (runFn1 se.kill sigterm) *> pure unit) cp
     java <- javaBinary
-    sdConfigStr <- catchRead "" $ readTextFile UTF8 sdConfigFile
-    seConfigStr <- catchRead "" $ readTextFile UTF8 seConfigFile
+    sdConfigStr <- catchRead "" e stState $ readTextFile UTF8 sdConfigFile
+    seConfigStr <- catchRead "" e stState $ readTextFile UTF8 seConfigFile
     let sdConfig = parseConfig sdConfigStr `getOrElse` defaultSDConfig
     let seConfig = parseConfig seConfigStr `getOrElse` defaultSEConfig
+    modifySTRef stState (_settings.._sdConfig.~sdConfig)
+    modifySTRef stState (_settings.._seConfig.~seConfig)
 
     -- Start up SlamEngine.
     ChildProcess se <- spawn java ["-jar", seJar, seConfigFile] defaultSpawnOptions
     -- Log out things.
-    se.stdout # onData (mkFn1 \msg -> trace $ "stdout: " ++ msg)
-    se.stderr # onData (mkFn1 \msg -> trace $ "stderr: " ++ msg)
+    se.stdout # on (Event "data") (mkFn1 \msg -> do
+      state <- readSTRef stState
+      m <- now
+      let log = LogInfo m $ "" ++ msg
+      e # emit requestEvent (SlamDataEvent {state: state, event: LogMessage log})
+      pure unit)
+    se.stderr # on (Event "data") (mkFn1 \msg -> do
+      state <- readSTRef stState
+      m <- now
+      let log = LogError m $ "" ++ msg
+      e # emit requestEvent (SlamDataEvent {state: state, event: LogMessage log})
+      pure unit)
     -- Cleanup after ourselves.
     win # onClose (mkFn0 \_ -> do
       pure $ runFn1 se.kill sigterm
       closeWindow true win
       pure unit)
-    pure $ Tuple (initialState sdConfig seConfig) (Just $ ChildProcess se)
+    stState' <- readSTRef stState
+    pure $ Tuple stState' (Just $ ChildProcess se)
 
   main :: forall h. Eff ( domain  :: DomainEff
                         , dom     :: DOM
                         , event   :: EventEff
                         , fs      :: FS
+                        , now     :: Now
                         , nw      :: NW
                         , policy  :: WindowPolicyEff
                         , process :: Process
                         , react   :: React
                         , spawn   :: Spawn
-                        , st      :: ST h
                         , timer   :: Timer
                         , trace   :: Trace
                         ) Domain
@@ -227,7 +265,7 @@ module SlamData.NodeWebKit where
     -- but we should actually send these errors somewhere.
     -- Either user facing, or back to us to aggregate/deal with.
     domain # on (Event "error") (\err -> trace $ "Error: " ++ err.message)
-    domain # run do
+    domain # run (runST do
 
       -- Make an emitter.
       e <- emitter
@@ -239,7 +277,8 @@ module SlamData.NodeWebKit where
         ignore policy)
 
       configExists <- (&&) <$> exists sdConfigFile <*> exists seConfigFile
-      Tuple initialState' se <- if configExists then startSlamEngine win Nothing
+      stState <- newSTRef $ initialState defaultSDConfig defaultSEConfig
+      Tuple initialState' se <- if configExists then startSlamEngine win Nothing e stState
         else pure $ Tuple (initialState defaultSDConfig defaultSEConfig){showConfig = true} Nothing
       -- FIXME: It'd be nice to not have to use `ST`.
       -- Might be able to get away from this if we move this blob of stuff out into its own function.
@@ -250,26 +289,29 @@ module SlamData.NodeWebKit where
 
       -- Handle all of the normal events.
       e # on requestEvent (handleRequest e)
-      e # on requestEvent (\{event = event, state = state} -> case event of
-        SaveSDConfig sdC -> do
-          writeTextFile UTF8 sdConfigFile (showConfig sdC)
-          e # emit responseEvent (state#_settings.._sdConfig .~ sdC)
-          -- FIXME: This is not ideal,
-          -- but until we rethink our logic here we'll use `ST`
-          se' <- readSTRef stSE
-          Tuple _ se <- startSlamEngine win se'
-          writeSTRef stSE se
-          pure unit
-        SaveSEConfig seC -> do
-          writeTextFile UTF8 seConfigFile (showConfig seC)
-          e # emit responseEvent (state#_settings.._seConfig .~ seC)
-          -- FIXME: This is not ideal,
-          -- but until we rethink our logic here we'll use `ST`
-          se' <- readSTRef stSE
-          Tuple _ se <- startSlamEngine win se'
-          writeSTRef stSE se
-          pure unit
-        _ -> pure unit)
+      e # on requestEvent (\{event = event, state = state} -> do
+        -- Update the state for anyone that might need it.
+        writeSTRef stState state
+        case event of
+          SaveSDConfig sdC -> do
+            writeTextFile UTF8 sdConfigFile (showConfig sdC)
+            e # emit responseEvent (state#_settings.._sdConfig .~ sdC)
+            -- FIXME: This is not ideal,
+            -- but until we rethink our logic here we'll use `ST`
+            se' <- readSTRef stSE
+            Tuple _ se <- startSlamEngine win se' e stState
+            writeSTRef stSE se
+            pure unit
+          SaveSEConfig seC -> do
+            writeTextFile UTF8 seConfigFile (showConfig seC)
+            e # emit responseEvent (state#_settings.._seConfig .~ seC)
+            -- FIXME: This is not ideal,
+            -- but until we rethink our logic here we'll use `ST`
+            se' <- readSTRef stSE
+            Tuple _ se <- startSlamEngine win se' e stState
+            writeSTRef stSE se
+            pure unit
+          _ -> pure unit)
 
       -- Start up SlamData.
-      slamData e initialState'
+      slamData e initialState')
