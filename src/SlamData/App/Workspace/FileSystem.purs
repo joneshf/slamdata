@@ -84,14 +84,15 @@ module SlamData.App.Workspace.FileSystem
           , D.rawText n
           ]
         ]
-      (FileType {"type" = "directory", name = n}) | n `endsWith` ".nb" -> pure $ D.div {}
-        [D.span {onClick: eventHandler this \this _ ->
-                 this.props.request $ OpenNotebook $ joinPath $ this.props.path `snoc` n
-                }
-          [ notebookIcon
-          , D.rawText $ formatNotebookName n
+      (FileType {"type" = "directory", name = n})
+        | n `endsWith` ".nb" -> pure $ D.div {}
+          [D.span {onClick: eventHandler this \this _ ->
+                   this.props.request $ OpenNotebook $ joinPath $ this.props.path `snoc` n
+                  }
+            [ notebookIcon
+            , D.rawText $ formatNotebookName n
+            ]
           ]
-        ]
       (FileType {"type" = "directory", name = n, children = c}) -> pure $ treeView
         { collapsed: this.state.collapsed
         , defaultCollapsed: true
