@@ -8,6 +8,7 @@ var gulp = require('gulp')
   , es = require('event-stream')
   , fs = require('fs')
   , gutil = require('gulp-util')
+  , install = require('gulp-install')
   , nwBuilder = require('node-webkit-builder')
   , path = require('path')
   , purescript = require('gulp-purescript')
@@ -257,6 +258,14 @@ function jreChmod (platform) {
     }
 }
 
+function npmLib(target) {
+    return function() {
+        var lib = path.join('lib', target, 'package.json')
+        return gulp.src(lib)
+            .pipe(install());
+    }
+};
+
 function sequence () {
     var args = [].slice.call(arguments);
     return function(done) {
@@ -336,6 +345,8 @@ gulp.task('jre-osx', sequence('jre-osx-copy', 'jre-osx-chmod'));
 gulp.task('jre-win', sequence('jre-win-copy', 'jre-win-chmod'));
 gulp.task('jre', ['jre-linux', 'jre-osx', 'jre-win']);
 
+gulp.task('npm-node-webkit', npmLib('node-webkit'));
+
 gulp.task('sass', ['clean-sass'], function() {
     return gulp.src(paths.style)
         .pipe(sass())
@@ -377,6 +388,7 @@ gulp.task('build-browser', sequence( 'bower-browser'
                                      ]
                                    ));
 gulp.task('build-node-webkit', sequence( 'bower-node-webkit'
+                                       , 'npm-node-webkit'
                                        , 'compile-node-webkit'
                                        , [ 'concat-css-node-webkit'
                                          , 'concat-js-node-webkit'
