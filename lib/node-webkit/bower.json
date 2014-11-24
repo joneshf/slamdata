@@ -56,9 +56,8 @@
     "purescript-showdown": "~0.0.1",
     "purescript-strings": "~0.4.0",
     "purescript-strongcheck": "~0.5.0",
-    "purescript-timers": "~0.0.5",
+    "purescript-timers": "0.0.5",
     "purescript-tiny-emitter": "~0.1.0",
-    "purescript-transformers": "~0.2.1",
     "purescript-tuples": "~0.2.2",
     "purescript-validation": "~0.0.3",
     "purescript-webstorage": "~0.2.0",
@@ -67,14 +66,16 @@
     "react-treeview": "joneshf/react-treeview#master",
     "reactable": "f0f3f45959ee2a851322f779658db7608b7b8a1d",
     "showdown": "~0.3.1",
-    "slamengine-jar": "https://github.com/slamdata/slamengine/releases/download/v1.0.2-SNAPSHOT-112/slamengine_2.11-1.0.2-SNAPSHOT-one-jar.jar"
+    "slamengine-jar": "https://github.com/slamdata/slamengine/releases/download/v1.0.2-SNAPSHOT-112/slamengine_2.11-1.0.2-SNAPSHOT-one-jar.jar",
+    "purescript-moment": "~0.0.2",
+    "moment": "~2.8.4",
+    "purescript-transformers": "~0.3.0"
   },
   "devDependencies": {
     "underscore-contrib": "~0.3.0",
     "tiny-emitter": "~1.0.0"
   },
   "resolutions": {
-    "d3": "~3.3.13",
-    "purescript-transformers": "~0.3.0"
+    "d3": "~3.3.13"
   }
 }

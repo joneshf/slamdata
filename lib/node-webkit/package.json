@@ -9,5 +9,8 @@
     "title": "SlamData",
     "toolbar": false,
     "width": 1280
+  },
+  "dependencies": {
+    "moment": "^2.8.4"
   }
 }

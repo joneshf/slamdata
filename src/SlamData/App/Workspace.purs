@@ -9,6 +9,7 @@ module SlamData.App.Workspace (workspace, WorkspaceProps(), WorkspaceState()) wh
   import React (createClass, spec)
   import React.Types (Component(), ComponentClass(), ReactThis())
 
+  import SlamData.App.Workspace.Extra (extra)
   import SlamData.App.Workspace.FileSystem (filesystem)
   import SlamData.App.Workspace.Notebook (notebooks)
   import SlamData.Helpers (defaultMountPath, getOrElse, serverURI)
@@ -43,7 +44,13 @@ module SlamData.App.Workspace (workspace, WorkspaceProps(), WorkspaceState()) wh
       interval 5000 $ this.requestFS -- Don't inline this!
       pure unit
     , render = \this -> pure $ D.div {id: "workspace"}
-      [workspace' {request: this.props.request, state: this.props.state}]
+      [ workspace' {request: this.props.request, state: this.props.state}
+      , extra
+        { request: this.props.request
+        , state: this.props.state
+        }
+        []
+      ]
     }
 
   workspace' :: forall eff

@@ -65,6 +65,7 @@ module SlamData.Helpers where
                       , "type": "directory"
                       , children: []
                       }
+    , logs: []
     , notebooks: []
     , settings: {sdConfig: sdConfig, seConfig: seConfig}
     , showSettings: false

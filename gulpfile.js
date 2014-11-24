@@ -8,6 +8,7 @@ var gulp = require('gulp')
   , es = require('event-stream')
   , fs = require('fs')
   , gutil = require('gulp-util')
+  , install = require('gulp-install')
   , nwBuilder = require('node-webkit-builder')
   , path = require('path')
   , purescript = require('gulp-purescript')
@@ -73,13 +74,15 @@ var paths = {
         js: [ 'bower_components/jquery/dist/jquery.js'
             , 'bower_components/c3/c3.js'
             , 'bower_components/d3/d3.js'
-            , 'bower_components/nv.d3.min.js'
             , 'bower_components/foundation/js/foundation.js'
             , 'bower_components/node-uuid/uuid.js'
+            , 'bower_components/moment/moment.js'
+            , 'bower_components/nv.d3.min.js'
             , 'bower_components/oboe/dist/oboe-browser.js'
+            // N.B. This must be before the other react stuff
             , 'bower_components/react/react-with-addons.js'
-            , 'bower_components/reactable/build/reactable.js'
             , 'bower_components/react-treeview/react-treeview.js'
+            , 'bower_components/reactable/build/reactable.js'
             , 'bower_components/showdown/src/showdown.js'
             , 'bower_components/tiny-emitter/dist/tinyemitter.js'
             , 'js/slamdata.js'
@@ -92,6 +95,7 @@ var paths = {
         'node-webkit': [ 'lib/node-webkit/css/**/*'
                        , 'lib/node-webkit/index.html'
                        , 'lib/node-webkit/js/**/*'
+                       , 'lib/node-webkit/node_modules/**/*'
                        , 'lib/node-webkit/package.json'
                        ]
     },
@@ -254,6 +258,14 @@ function jreChmod (platform) {
     }
 }
 
+function npmLib(target) {
+    return function() {
+        var lib = path.join('lib', target, 'package.json')
+        return gulp.src(lib)
+            .pipe(install());
+    }
+};
+
 function sequence () {
     var args = [].slice.call(arguments);
     return function(done) {
@@ -333,6 +345,8 @@ gulp.task('jre-osx', sequence('jre-osx-copy', 'jre-osx-chmod'));
 gulp.task('jre-win', sequence('jre-win-copy', 'jre-win-chmod'));
 gulp.task('jre', ['jre-linux', 'jre-osx', 'jre-win']);
 
+gulp.task('npm-node-webkit', npmLib('node-webkit'));
+
 gulp.task('sass', ['clean-sass'], function() {
     return gulp.src(paths.style)
         .pipe(sass())
@@ -374,6 +388,7 @@ gulp.task('build-browser', sequence( 'bower-browser'
                                      ]
                                    ));
 gulp.task('build-node-webkit', sequence( 'bower-node-webkit'
+                                       , 'npm-node-webkit'
                                        , 'compile-node-webkit'
                                        , [ 'concat-css-node-webkit'
                                          , 'concat-js-node-webkit'

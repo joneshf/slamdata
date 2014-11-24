@@ -50,13 +50,7 @@
     "purescript-maps": "~0.1.1",
     "purescript-maybe": "~0.2.1",
     "purescript-monoid": "~0.1.4",
-    "purescript-node-child-process": "~0.1.0",
-    "purescript-node-domain": "~0.1.0",
-    "purescript-node-events": "~0.2.0",
-    "purescript-node-fs": "~0.1.2",
-    "purescript-node-path": "~0.2.0",
     "purescript-node-uuid": "~0.4.1",
-    "purescript-node-webkit": "~0.2.2",
     "purescript-oboe": "~0.3.0",
     "purescript-parsing": "~0.1.4",
     "purescript-path": "~0.2.4",
@@ -64,7 +58,7 @@
     "purescript-showdown": "~0.0.1",
     "purescript-strings": "~0.4.0",
     "purescript-strongcheck": "~0.5.0",
-    "purescript-timers": "~0.0.5",
+    "purescript-timers": "0.0.5",
     "purescript-tiny-emitter": "~0.1.0",
     "purescript-transformers": "~0.3.0",
     "purescript-tuples": "~0.2.2",
@@ -75,7 +69,9 @@
     "react-treeview": "joneshf/react-treeview#master",
     "reactable": "joneshf/reactable#master",
     "showdown": "~0.3.1",
-    "slamengine-jar": "https://github.com/slamdata/slamengine/releases/download/v1.0.2-SNAPSHOT-112/slamengine_2.11-1.0.2-SNAPSHOT-one-jar.jar"
+    "slamengine-jar": "https://github.com/slamdata/slamengine/releases/download/v1.0.2-SNAPSHOT-112/slamengine_2.11-1.0.2-SNAPSHOT-one-jar.jar",
+    "purescript-moment": "~0.0.2",
+    "moment": "~2.8.4"
   },
   "devDependencies": {
     "underscore-contrib": "~0.3.0",

@@ -14,6 +14,7 @@ module SlamData.App.Events where
   import Data.Foldable (find)
   import Data.Maybe (Maybe(..))
   import Data.Maybe.Unsafe (fromJust)
+  import Data.Moment (now, Now())
   import Data.Path (FilePath())
   import Data.String (joinWith, replace, split, trim)
   import Data.Tuple (fst)
@@ -21,7 +22,15 @@ module SlamData.App.Events where
   import DOM (DOM())
 
   import Network.HTTP (Verb(..))
-  import Network.Oboe (done, oboe, oboeGet, oboeOptions, JSON(), OboeEff())
+  import Network.Oboe
+    ( done
+    , fail
+    , oboe
+    , oboeGet
+    , oboeOptions
+    , JSON()
+    , OboeEff()
+    )
 
   import Node.UUID (runUUID, v4, UUIDEff())
 
@@ -38,14 +47,18 @@ module SlamData.App.Events where
     )
   import SlamData.Lens
     ( _ident
+    , _logs
     , _notebookRec
     , _numOut
     , _validation
     )
   import SlamData.Types
-    ( responseEvent
+    ( requestEvent
+    , responseEvent
+    , Log(..)
     , SDConfig()
     , SEConfig(..)
+    , SlamDataEvent(..)
     , SlamDataEventRec()
     , SlamDataEventTy(..)
     , SlamDataState()
@@ -82,6 +95,7 @@ module SlamData.App.Events where
                 -> Eff ( ajax   :: XI.Ajax
                        , c3     :: DOM
                        , event  :: EventEff
+                       , now    :: Now
                        , oboe   :: OboeEff
                        , timer  :: Timer
                        , uuid   :: UUIDEff
@@ -101,6 +115,7 @@ module SlamData.App.Events where
         let children = (unsafeCoerceJSON json).children
             files' = insertChildren paths [state.files] children
         in e # emit responseEvent state{files = files'})
+      fail o $ handleOboeFailure e state
       pure unit
     ReadFields paths -> do
       let path = joinPath paths
@@ -110,6 +125,7 @@ module SlamData.App.Events where
         let fields = objectKeys $ unsafeCoerceJSON json
             files' = insertFields paths [state.files] fields
         in e # emit responseEvent state{files = files'})
+      fail o $ handleOboeFailure e state
       pure unit
     CreateNotebook -> do
       ident <- NotebookID <$> v4
@@ -294,7 +310,25 @@ module SlamData.App.Events where
       let nbs = replaceNotebook nb <$> state.notebooks
       e # emit responseEvent state{notebooks = nbs}
       pure unit
+    LogMessage log -> do
+      e # emit responseEvent state{logs = state.logs `snoc` log}
+      pure unit
     _ -> pure unit
+
+  handleOboeFailure :: forall e eff r
+                    .  (EventEmitter e)
+                    => e
+                    -> SlamDataState
+                    -> {body :: String, statusCode :: Number | r}
+                    -> Eff (event :: EventEff, now :: Now | eff) e
+  handleOboeFailure e state {body = body, statusCode = code} = case code of
+    0 -> do
+      let msg = "Could not connect to SlamEngine server"
+      m <- now
+      e # emit requestEvent (SlamDataEvent {state: state, event: LogMessage $ LogError m msg})
+    _ -> do
+      m <- now
+      e # emit requestEvent (SlamDataEvent {state: state, event: LogMessage $ LogError m body})
 
   uniqueNotebooks :: Notebook -> Notebook -> Boolean
   uniqueNotebooks (Notebook nb) (Notebook nb') = nb.ident == nb'.ident
