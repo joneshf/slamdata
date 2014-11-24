@@ -1,6 +1,6 @@
 module SlamData.App.Workspace.Extra.Log where
 
-  import Data.Moment (format)
+  import Data.Moment (format, Moment())
 
   import React (createClass, spec)
   import React.Types (Component(), ComponentClass())
@@ -38,15 +38,12 @@ module SlamData.App.Workspace.Extra.Log where
     ]
 
   reifyLog :: Log -> Component
-  reifyLog (LogError   m msg) = D.li {}
-    [ D.span {} [D.rawText $ "[" ++ format "L LT" m ++ "] - "]
-    , D.span {className: "log-error"} [D.rawText msg]
-    ]
-  reifyLog (LogInfo    m msg) = D.li {}
-    [ D.span {} [D.rawText $ "[" ++ format "L LT" m ++ "] - "]
-    , D.span {className: "log-info"} [D.rawText msg]
-    ]
-  reifyLog (LogWarning m msg) = D.li {}
-    [ D.span {} [D.rawText $ "[" ++ format "L LT" m ++ "] - "]
-    , D.span {className: "log-warning"} [D.rawText msg]
+  reifyLog (LogError   m msg) = reifyLog' {className: "log-error"}   m msg
+  reifyLog (LogInfo    m msg) = reifyLog' {className: "log-info"}    m msg
+  reifyLog (LogWarning m msg) = reifyLog' {className: "log-warning"} m msg
+
+  reifyLog' :: {className :: String} -> Moment -> String -> Component
+  reifyLog' attrs m msg = D.li {}
+    [ D.span {} [D.rawText $ "[" ++ format "L LTS" m ++ "] - "]
+    , D.span attrs [D.rawText msg]
     ]

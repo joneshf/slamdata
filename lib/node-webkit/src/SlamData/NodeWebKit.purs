@@ -259,16 +259,20 @@ module SlamData.NodeWebKit where
                         , timer   :: Timer
                         , trace   :: Trace
                         ) Domain
-  main = do
+  main = runST do
+    e <- emitter
+    stState <- newSTRef $ initialState defaultSDConfig defaultSEConfig
     domain <- create
     -- We're just logging to the console,
     -- but we should actually send these errors somewhere.
     -- Either user facing, or back to us to aggregate/deal with.
-    domain # on (Event "error") (\err -> trace $ "Error: " ++ err.message)
-    domain # run (runST do
+    domain # on (Event "error") (\err -> do
+      state <- readSTRef stState
+      m <- now
+      let log = LogError m $ "Error: " ++ err.message
+      e # emit requestEvent (SlamDataEvent {state: state, event: LogMessage log}))
+    domain # run do
 
-      -- Make an emitter.
-      e <- emitter
       win <- nwWindow >>= get
 
       -- Open links in the user's default method, e.g. in the browser.
@@ -277,7 +281,6 @@ module SlamData.NodeWebKit where
         ignore policy)
 
       configExists <- (&&) <$> exists sdConfigFile <*> exists seConfigFile
-      stState <- newSTRef $ initialState defaultSDConfig defaultSEConfig
       Tuple initialState' se <- if configExists then startSlamEngine win Nothing e stState
         else pure $ Tuple (initialState defaultSDConfig defaultSEConfig){showConfig = true} Nothing
       -- FIXME: It'd be nice to not have to use `ST`.
@@ -314,4 +317,4 @@ module SlamData.NodeWebKit where
           _ -> pure unit)
 
       -- Start up SlamData.
-      slamData e initialState')
+      slamData e initialState'
