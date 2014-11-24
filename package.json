@@ -1,6 +1,6 @@
 {
   "name": "slamdata",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Front end for slamengine",
   "main": "index.js",
   "scripts": {

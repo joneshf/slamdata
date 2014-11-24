@@ -1,6 +1,6 @@
 {
   "name": "slamdata",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "homepage": "https://github.com/slamdata/slamdata",
   "description": "Front end for slamengine",
   "main": "index.js",
@@ -69,7 +69,7 @@
     "react-treeview": "joneshf/react-treeview#master",
     "reactable": "joneshf/reactable#master",
     "showdown": "~0.3.1",
-    "slamengine-jar": "https://github.com/slamdata/slamengine/releases/download/v1.0.2-SNAPSHOT-112/slamengine_2.11-1.0.2-SNAPSHOT-one-jar.jar",
+    "slamengine-jar": "https://github.com/slamdata/slamengine/releases/download/v1.0.2-SNAPSHOT-138/slamengine_2.11-1.0.2-SNAPSHOT-one-jar.jar",
     "purescript-moment": "~0.0.2",
     "moment": "~2.8.4"
   },
