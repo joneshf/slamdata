@@ -243,8 +243,8 @@ module SlamData.NodeWebKit where
       pure $ runFn1 se.kill sigterm
       closeWindow true win
       pure unit)
-    stState' <- readSTRef stState
-    pure $ Tuple stState' (Just $ ChildProcess se)
+    state <- readSTRef stState
+    pure $ Tuple state (Just $ ChildProcess se)
 
   main :: forall h. Eff ( domain  :: DomainEff
                         , dom     :: DOM
@@ -292,29 +292,28 @@ module SlamData.NodeWebKit where
 
       -- Handle all of the normal events.
       e # on requestEvent (handleRequest e)
-      e # on requestEvent (\{event = event, state = state} -> do
-        -- Update the state for anyone that might need it.
-        writeSTRef stState state
-        case event of
-          SaveSDConfig sdC -> do
-            writeTextFile UTF8 sdConfigFile (showConfig sdC)
-            e # emit responseEvent (state#_settings.._sdConfig .~ sdC)
-            -- FIXME: This is not ideal,
-            -- but until we rethink our logic here we'll use `ST`
-            se' <- readSTRef stSE
-            Tuple _ se <- startSlamEngine win se' e stState
-            writeSTRef stSE se
-            pure unit
-          SaveSEConfig seC -> do
-            writeTextFile UTF8 seConfigFile (showConfig seC)
-            e # emit responseEvent (state#_settings.._seConfig .~ seC)
-            -- FIXME: This is not ideal,
-            -- but until we rethink our logic here we'll use `ST`
-            se' <- readSTRef stSE
-            Tuple _ se <- startSlamEngine win se' e stState
-            writeSTRef stSE se
-            pure unit
-          _ -> pure unit)
+      -- Update the state for anyone that might need it.
+      e # on responseEvent (writeSTRef stState)
+      e # on requestEvent \{event = event, state = state} -> case event of
+        SaveSDConfig sdC -> do
+          writeTextFile UTF8 sdConfigFile (showConfig sdC)
+          e # emit responseEvent (state#_settings.._sdConfig .~ sdC)
+          -- FIXME: This is not ideal,
+          -- but until we rethink our logic here we'll use `ST`
+          se' <- readSTRef stSE
+          Tuple _ se <- startSlamEngine win se' e stState
+          writeSTRef stSE se
+          pure unit
+        SaveSEConfig seC -> do
+          writeTextFile UTF8 seConfigFile (showConfig seC)
+          e # emit responseEvent (state#_settings.._seConfig .~ seC)
+          -- FIXME: This is not ideal,
+          -- but until we rethink our logic here we'll use `ST`
+          se' <- readSTRef stSE
+          Tuple _ se <- startSlamEngine win se' e stState
+          writeSTRef stSE se
+          pure unit
+        _ -> pure unit
 
       -- Start up SlamData.
       slamData e initialState'

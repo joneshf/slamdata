@@ -34,6 +34,7 @@ module SlamData.NodeWebKit.Menu where
 
   import SlamData.Types
     ( requestEvent
+    , responseEvent
     , SlamDataEvent(..)
     , SlamDataEventTy(..)
     , SlamDataState()
@@ -61,7 +62,7 @@ module SlamData.NodeWebKit.Menu where
     -- Do not mutate this state anywhere except these two lines.
     -- Only read from it.
     stState <- newSTRef state
-    e # on requestEvent (\o -> writeSTRef stState o.state)
+    e # on responseEvent (writeSTRef stState)
 
     let handleSettings = do
           state <- readSTRef stState
