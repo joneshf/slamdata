@@ -69,7 +69,8 @@
     "slamengine-jar": "https://github.com/slamdata/slamengine/releases/download/v1.0.2-SNAPSHOT-112/slamengine_2.11-1.0.2-SNAPSHOT-one-jar.jar",
     "purescript-moment": "~0.0.2",
     "moment": "~2.8.4",
-    "purescript-transformers": "~0.3.0"
+    "purescript-transformers": "~0.3.0",
+    "purescript-navigator": "~0.1.0"
   },
   "devDependencies": {
     "underscore-contrib": "~0.3.0",
