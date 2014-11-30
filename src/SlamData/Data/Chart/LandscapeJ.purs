@@ -1,17 +1,32 @@
 module SlamData.Data.Chart.LandscapeJ
   ( LandscapeJ(..)
-  ) where 
-
-  import Data.Argonaut.Encode(EncodeJson)
-  import Data.Argonaut.Decode(DecodeJson)
-  import Data.Argonaut.Core(Json())
-  import Data.Argonaut
+  ) where
 
   import Control.Comonad.Cofree (head)
 
+  import Data.Argonaut
+    ( (~>)
+    , (?>>=)
+    , (:=)
+    , (.?)
+    , decodeJson
+    , encodeJson
+    , jsonEmptyObject
+    , toObject
+    )
+  import Data.Argonaut.Core(Json())
+  import Data.Argonaut.Decode(DecodeJson)
+  import Data.Argonaut.Encode(EncodeJson)
+
   import Test.StrongCheck.Gen (GenState(..))
-  import Test.StrongCheck.Perturb (Perturb)
   import Test.StrongCheck.Landscape
+    ( decayHalf
+    , nearby'
+    , Decay()
+    , DriverState(..)
+    , Landscape(..)
+    )
+  import Test.StrongCheck.Perturb (Perturb)
 
   newtype DriverStateJ a = DriverStateJ (DriverState a)
   newtype LandscapeJ a   = LandscapeJ (Landscape a)
@@ -22,8 +37,8 @@ module SlamData.Data.Chart.LandscapeJ
 
   instance encodeJsonDriverStateJ :: (EncodeJson a) => EncodeJson (DriverStateJ a) where
     encodeJson (DriverStateJ (DriverState v)) =
-      ("value"    := v.value)           ~> 
-      ("variance" := v.variance)        ~> 
+      ("value"    := v.value)           ~>
+      ("variance" := v.variance)        ~>
       ("state"    := GenStateJ v.state) ~> jsonEmptyObject
 
   instance decodeJsonDriverStateJ :: (DecodeJson a) => DecodeJson (DriverStateJ a) where
@@ -33,9 +48,9 @@ module SlamData.Data.Chart.LandscapeJ
       state     <- unGenStateJ <$> obj .? "state"
       return $ DriverStateJ $ DriverState { value: value, variance: variance, state: state }
 
-  instance encodeJsonGenStateJ :: EncodeJson GenStateJ where 
-    encodeJson (GenStateJ (GenState v)) = 
-      ("size" := v.size)  ~> 
+  instance encodeJsonGenStateJ :: EncodeJson GenStateJ where
+    encodeJson (GenStateJ (GenState v)) =
+      ("size" := v.size)  ~>
       ("seed" := v.seed)  ~> jsonEmptyObject
 
   instance decodeJsonGenStateJ :: DecodeJson GenStateJ where

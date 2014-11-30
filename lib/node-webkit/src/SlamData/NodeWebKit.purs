@@ -111,7 +111,7 @@ module SlamData.NodeWebKit where
     )
   import SlamData.Types.Workspace.FileSystem (FileType(..))
 
-  import System.Path.Unix ((</>), joinPath, normalize)
+  import System.Path.Unix ((</>), joinPath, normalize, win2Unix)
 
   import qualified Data.Map as M
 
@@ -194,7 +194,7 @@ module SlamData.NodeWebKit where
   javaBinary = do
     ep <- execPath
     pure $ case platform of
-      "win32"  -> normalize $ joinPath [ep, "..", "jre", "bin", "java.exe"]
+      "win32"  -> normalize $ joinPath [win2Unix ep, "..", "jre", "bin", "java.exe"]
       "linux"  -> normalize $ joinPath [ep, "..", "jre", "bin", "java"]
       "darwin" -> normalize $ joinPath [ep, "..", "..", "..", "..", "..", "Resources", "jre", "bin", "java"]
 
