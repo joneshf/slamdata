@@ -4,18 +4,16 @@ node_js:
 notifications:
   email: false
 env:
-  - PATH=$HOME/bin:$PATH DISPLAY=:1
+  - DISPLAY=:1
 services:
   - mongodb
 before_install:
-  - mkdir -p $HOME/bin
   - ./scripts/travis/write_sdConfig.sh
   - ./scripts/travis/write_seConfig.sh
   - Xvfb :1 &
 install:
-  - wget https://github.com/purescript/purescript/releases/download/v0.6.1.1/linux64.tar.gz
-  - tar zxvf linux64.tar.gz
-  - cp purescript/psc{,i,-docs,-make} $HOME/bin
+  - wget https://github.com/joneshf/purescript/releases/download/v0.6.1.2/linux64.tar.gz
+  - sudo tar zxvf linux64.tar.gz -C /usr/local/bin purescript/psc{,i,-docs,-make} --strip-components=1
   - npm install -g bower
   - npm install
   - bower install
