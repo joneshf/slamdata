@@ -176,7 +176,7 @@ module SlamData.App.Workspace.Notebook.Block
           pure $ this.setState this.state{editContent = value e.target}
           let nb = this.props.notebook^._notebookRec
           unless (nb.dirty) (this.props.request $ DirtyNotebook this.props.notebook)
-        , onKeyUp: eventHandler this \this k -> when (evalKey k navigator) do
+        , onKeyDown: eventHandler this \this k -> when (evalKey k navigator) do
           let content = this.state.editContent
           let block' = this.props.block # _blockRec.._editContent .~ content
           this.props.request $ EvalBlock this.props.notebook block'
@@ -197,21 +197,22 @@ module SlamData.App.Workspace.Notebook.Block
         pure $ this.setState this.state{editContent = value e.target}
         let nb = this.props.notebook^._notebookRec
         unless (nb.dirty) (this.props.request $ DirtyNotebook this.props.notebook)
-        , onKeyUp: eventHandler this \this k -> when (evalKey k navigator) do
-          let content = this.state.editContent
-          let block' = this.props.block # _blockRec.._editContent .~ content
-          this.props.request $ EvalBlock this.props.notebook block'
+      , onKeyDown: eventHandler this \this k -> when (evalKey k navigator) do
+        let content = this.state.editContent
+        let block' = this.props.block # _blockRec.._editContent .~ content
+        this.props.request $ EvalBlock this.props.notebook block'
       , value: this.state.editContent
       }
       []
     ]
 
   evalKey :: forall r
-          .  {ctrlKey :: Boolean, key :: String, which :: Number | r}
+          .  {ctrlKey :: Boolean, key :: String, metaKey :: Boolean | r}
           -> Navigator
           -> Boolean
-  evalKey k {platform = p} | isMac p = k.which == 91 || k.which == 93 || k.which == 224
-  evalKey k _                        = k.ctrlKey && k.key == "Enter"
+  evalKey k {platform = p}
+    | isMac p   = k.metaKey && k.key == "Enter"
+    | otherwise = k.ctrlKey && k.key == "Enter"
 
   isMac :: String -> Boolean
   isMac str = toLower str `contains` "mac"
