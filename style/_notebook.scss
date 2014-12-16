@@ -62,6 +62,7 @@
 
 .block-editor, .block-content div {
     min-height: 150px;
+    max-width: 100%;
 }
 
 .block-metadata {
@@ -88,7 +89,6 @@
 }
 
 .block-SQL .SQL-editor {
-    height: 60px;
     min-height: 40px;
     textarea {
         border: none;
