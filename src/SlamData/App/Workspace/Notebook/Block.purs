@@ -147,9 +147,7 @@ module SlamData.App.Workspace.Notebook.Block
         [ D.div {className: "block-label"}
           [formatLabel $ this.props.block^._blockRec.._label]
         , D.div {}
-          [ sqlEditor this
-          , evaluatedBlock' this
-          ]
+          [sqlEditor this]
         ]
     {blockMode = BlockMode "Edit", blockType = BlockType "Visual"} ->
       visualEditor { block: this.props.block
@@ -204,6 +202,7 @@ module SlamData.App.Workspace.Notebook.Block
       , value: this.state.editContent
       }
       []
+    , evaluatedBlock' this
     ]
 
   evalKey :: forall r

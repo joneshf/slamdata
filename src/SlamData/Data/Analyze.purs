@@ -3,7 +3,7 @@ module SlamData.Data.Analyze
   , DimSum(..)
   , DimSumRec(..)
   , AnalysisSum(..)
-  , _dimSum 
+  , _dimSum
   , _total
   , _uniques
   , _semantic
@@ -33,7 +33,7 @@ module SlamData.Data.Analyze
   type Histogram a = M.Map a Sum
 
   hempty :: forall a. Histogram a
-  hempty = M.empty 
+  hempty = M.empty
 
   hinc :: forall a. (Ord a) => a -> Histogram a -> Histogram a
   hinc a = M.alter f a where
@@ -51,7 +51,7 @@ module SlamData.Data.Analyze
     Fractional  |
     Date        |
     DateTime    |
-    Time        | 
+    Time        |
     Interval    |
     Text        |
     Bool        |
@@ -59,7 +59,7 @@ module SlamData.Data.Analyze
     Currency    |
     NA
 
-  newtype DimStats = DimStats DimStatsRec 
+  newtype DimStats = DimStats DimStatsRec
 
   type DimStatsRec = { hist :: Histogram DimSemantic, uniques :: S.Set Json, total :: Number }
 
@@ -70,16 +70,6 @@ module SlamData.Data.Analyze
   newtype Analysis = Analysis (M.Map JCursor DimStats)
 
   newtype AnalysisSum = AnalysisSum (M.Map JCursor DimSum)
-
-  -- TODO: move out of here and into Data.Map
-  instance semigroupMap :: (Ord a, Semigroup b) => Semigroup (M.Map a b) where
-    (<>) a b = foldl f a (M.toList b) where
-      f m (Tuple k v') =  let g Nothing  = Just v'
-                              g (Just v) = Just $ v <> v'
-                          in M.alter g k m
-
-  instance monoidMap :: (Ord a, Semigroup b) => Monoid (M.Map a b) where 
-    mempty = M.empty
 
   -- TODO: move into Data.Set
   instance semigroupSet :: (Ord a) => Semigroup (S.Set a) where
@@ -99,13 +89,13 @@ module SlamData.Data.Analyze
   transformKeys f = transformMap $ Arrow.first f
 
   transformValues :: forall a b. (Ord a) => (b -> b) -> M.Map a b -> M.Map a b
-  transformValues f = transformMap $ Arrow.second f  
+  transformValues f = transformMap $ Arrow.second f
 
   -- TODO: move into Data.Array
   zipWithIndex :: forall a c. (a -> Number -> c) -> [a] -> [c]
   zipWithIndex f a = A.zipWith f a (A.range 0 (A.length a - 1))
 
-  
+
   nestField :: String -> Analysis -> Analysis
   nestField i = (_analysis) `over` (transformKeys (JField i))
 
@@ -131,7 +121,7 @@ module SlamData.Data.Analyze
 
   analyzeStr :: String -> DimSemantic
   analyzeStr s = case Date.fromString s of
-    Nothing   ->  if percentRegex s then Percent 
+    Nothing   ->  if percentRegex s then Percent
                   else if currencyRegex s then Currency
                   else Text
     (Just _)  ->  DateTime
@@ -157,7 +147,7 @@ module SlamData.Data.Analyze
                       (\o -> fold $ (\(Tuple i j) -> nestField i <$> analyze1 j) <$> StrMap.toList o)
 
   summarize1 :: Number -> DimStats -> DimSum
-  summarize1 n (DimStats { hist = h, uniques = u, total = t }) = 
+  summarize1 n (DimStats { hist = h, uniques = u, total = t }) =
     DimSum { semantic: fromMaybe NA $ A.head $ htop 1 h, uniques: (size u) / n, total: t }
 
   -- | Analyzes a sample of JSON.
@@ -178,7 +168,7 @@ module SlamData.Data.Analyze
 
   _uniques :: forall a r. LensP { uniques :: a | r } a
   _uniques f rec = (\v -> rec { uniques = v }) <$> f rec.uniques
-  
+
   _dimSum :: LensP DimSum DimSumRec
   _dimSum f (DimSum rec) = DimSum <$> f rec
 
@@ -192,10 +182,10 @@ module SlamData.Data.Analyze
   _analysisSum f (AnalysisSum rec) = AnalysisSum <$> f rec
 
   -- Instances
-  instance semigroupDimStats :: Semigroup DimStats where 
-    (<>) (DimStats r1) (DimStats r2) = DimStats { 
-      hist:     r1.hist    <> r2.hist, 
-      uniques:  r1.uniques <> r2.uniques, 
+  instance semigroupDimStats :: Semigroup DimStats where
+    (<>) (DimStats r1) (DimStats r2) = DimStats {
+      hist:     r1.hist    <> r2.hist,
+      uniques:  r1.uniques <> r2.uniques,
       total:    r1.total   +  r2.total }
 
   instance monoidDimStats :: Monoid DimStats where
