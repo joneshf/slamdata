@@ -42,7 +42,6 @@ module SlamData.NodeWebKit where
   import Data.Maybe (maybe, Maybe(..))
   import Data.Maybe.Unsafe (fromJust)
   import Data.Moment (now, Now())
-  import Data.Tuple (Tuple(..))
 
   import Debug.Trace (trace, print, Trace())
 
@@ -166,28 +165,24 @@ module SlamData.NodeWebKit where
   showError :: forall eff. Either Error Unit -> Eff (trace :: Trace | eff) Unit
   showError = either print pure
 
-  catchRead :: forall eff h
+  catchRead :: forall eff
             .  String
             -> Emitter
-            -> STRef h SlamDataState
             -> Eff ( err :: Exception
                    , event :: EventEff
                    , fs :: FS
                    , now :: Now
-                   , st :: ST h
                    , trace :: Trace
                    | eff) String
             -> Eff ( event :: EventEff
                    , fs :: FS
                    , now :: Now
-                   , st :: ST h
                    , trace :: Trace
                    | eff) String
-  catchRead def e stState = catchException \err -> do
+  catchRead def e = catchException \err -> do
     m <- now
     let log = LogError m $ "Error reading file\n" ++ message err ++ "\ndefaulting."
-    state <- readSTRef stState
-    e # emit requestEvent (SlamDataEvent {state: state, event: LogMessage log})
+    e # emit requestEvent (SlamDataEvent {event: LogMessage log})
     pure def
 
   javaBinary :: forall eff. Eff (process :: Process | eff) FilePath
@@ -212,39 +207,35 @@ module SlamData.NodeWebKit where
                          , st      :: ST h
                          , trace   :: Trace
                          | eff
-                         ) (Tuple SlamDataState (Maybe ChildProcess))
+                         ) (Maybe ChildProcess)
   startSlamEngine win cp e stState = do
     maybe (pure unit) (\(ChildProcess se) -> pure (runFn1 se.kill sigterm) *> pure unit) cp
     java <- javaBinary
-    sdConfigStr <- catchRead "" e stState $ readTextFile UTF8 sdConfigFile
-    seConfigStr <- catchRead "" e stState $ readTextFile UTF8 seConfigFile
+    sdConfigStr <- catchRead "" e $ readTextFile UTF8 sdConfigFile
+    seConfigStr <- catchRead "" e $ readTextFile UTF8 seConfigFile
     let sdConfig = parseConfig sdConfigStr `getOrElse` defaultSDConfig
     let seConfig = parseConfig seConfigStr `getOrElse` defaultSEConfig
-    modifySTRef stState (_settings.._sdConfig.~sdConfig)
-    modifySTRef stState (_settings.._seConfig.~seConfig)
+    modifySTRef stState $ (_settings.._sdConfig.~sdConfig) .. (_settings.._seConfig.~seConfig)
 
     -- Start up SlamEngine.
     ChildProcess se <- spawn java ["-jar", seJar, seConfigFile] defaultSpawnOptions
     -- Log out things.
     se.stdout # on (Event "data") (mkFn1 \msg -> do
-      state <- readSTRef stState
       m <- now
       let log = LogInfo m $ "" ++ msg
-      e # emit requestEvent (SlamDataEvent {state: state, event: LogMessage log})
+      e # emit requestEvent (SlamDataEvent {event: LogMessage log})
       pure unit)
     se.stderr # on (Event "data") (mkFn1 \msg -> do
-      state <- readSTRef stState
       m <- now
       let log = LogError m $ "" ++ msg
-      e # emit requestEvent (SlamDataEvent {state: state, event: LogMessage log})
+      e # emit requestEvent (SlamDataEvent {event: LogMessage log})
       pure unit)
     -- Cleanup after ourselves.
     win # onClose (mkFn0 \_ -> do
       pure $ runFn1 se.kill sigterm
       closeWindow true win
       pure unit)
-    state <- readSTRef stState
-    pure $ Tuple state (Just $ ChildProcess se)
+    pure $ Just $ ChildProcess se
 
   main :: forall h. Eff ( domain  :: DomainEff
                         , dom     :: DOM
@@ -261,18 +252,16 @@ module SlamData.NodeWebKit where
                         ) Domain
   main = runST do
     e <- emitter
-    stState <- newSTRef $ initialState defaultSDConfig defaultSEConfig
     domain <- create
     -- We're just logging to the console,
     -- but we should actually send these errors somewhere.
     -- Either user facing, or back to us to aggregate/deal with.
     domain # on (Event "error") (\err -> do
-      state <- readSTRef stState
       m <- now
       let log = LogError m $ "Error: " ++ err.message
-      e # emit requestEvent (SlamDataEvent {state: state, event: LogMessage log}))
+      e # emit requestEvent (SlamDataEvent {event: LogMessage log}))
     domain # run do
-
+      stState <- newSTRef $ initialState defaultSDConfig defaultSEConfig
       win <- nwWindow >>= get
 
       -- Open links in the user's default method, e.g. in the browser.
@@ -281,39 +270,38 @@ module SlamData.NodeWebKit where
         ignore policy)
 
       configExists <- (&&) <$> exists sdConfigFile <*> exists seConfigFile
-      Tuple initialState' se <- if configExists then startSlamEngine win Nothing e stState
-        else pure $ Tuple (initialState defaultSDConfig defaultSEConfig){showConfig = true} Nothing
+      se <- if configExists
+        then startSlamEngine win Nothing e stState
+        else pure Nothing
       -- FIXME: It'd be nice to not have to use `ST`.
       -- Might be able to get away from this if we move this blob of stuff out into its own function.
       -- Then we can use `State`, though, does it really make a difference?
       stSE <- newSTRef se
       -- Set the menubar.
-      menu win e initialState' >>= flip setWindowMenu win
+      menu win e >>= flip setWindowMenu win
 
       -- Handle all of the normal events.
-      e # on requestEvent (handleRequest e)
-      -- Update the state for anyone that might need it.
-      e # on responseEvent (writeSTRef stState)
-      e # on requestEvent \{event = event, state = state} -> case event of
+      e # on requestEvent (handleRequest e stState)
+      -- Handle node-webkit specific events.
+      e # on requestEvent \{event = event} -> case event of
         SaveSDConfig sdC -> do
           writeTextFile UTF8 sdConfigFile (showConfig sdC)
-          e # emit responseEvent (state#_settings.._sdConfig .~ sdC)
-          -- FIXME: This is not ideal,
-          -- but until we rethink our logic here we'll use `ST`
-          se' <- readSTRef stSE
-          Tuple _ se <- startSlamEngine win se' e stState
-          writeSTRef stSE se
+          state <- modifySTRef stState $ _settings.._sdConfig .~ sdC
+          se <- readSTRef stSE
+          se' <- startSlamEngine win se e stState
+          writeSTRef stSE se'
+          e # emit responseEvent state
           pure unit
         SaveSEConfig seC -> do
           writeTextFile UTF8 seConfigFile (showConfig seC)
-          e # emit responseEvent (state#_settings.._seConfig .~ seC)
-          -- FIXME: This is not ideal,
-          -- but until we rethink our logic here we'll use `ST`
-          se' <- readSTRef stSE
-          Tuple _ se <- startSlamEngine win se' e stState
-          writeSTRef stSE se
+          state <- modifySTRef stState $ _settings.._seConfig .~ seC
+          se <- readSTRef stSE
+          se' <- startSlamEngine win se e stState
+          writeSTRef stSE se'
+          e # emit responseEvent state
           pure unit
         _ -> pure unit
 
       -- Start up SlamData.
-      slamData e initialState'
+      state <- readSTRef stState
+      slamData e state

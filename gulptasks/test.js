@@ -23,9 +23,6 @@ gulp.task('test-casperjs', function(done) {
 
     process.env.PHANTOMJS_EXECUTABLE = phantomjs;
 
-    gutil.log('Path to phantomjs: ' + phantomjs);
-    gutil.log('process.env.PATH = ' + process.env.PATH);
-
     se.stdout.on('data', function(data) {
         if (!running) {
             running = true;

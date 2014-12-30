@@ -11,6 +11,7 @@ module SlamData.Browser where
 
   import Control.Events.TinyEmitter (emitter, on)
   import Control.Monad.Eff (Eff())
+  import Control.Monad.ST (newSTRef, readSTRef, runST)
 
   import Data.Either (either)
 
@@ -31,16 +32,16 @@ module SlamData.Browser where
   import Text.Parsing.Parser (runParser)
 
   -- main :: Eff (dom :: DOM) Unit
-  main = do
+  main = runST do
     loc <- windowLocation
     let rawQueries = runParser loc.search parseQueryString
     let sdConfig = either (const defaultSDConfig) query2SDConfig rawQueries
     let seConfig = either (const defaultSEConfig) query2SEConfig rawQueries
-    let initialState' = initialState sdConfig seConfig
-    -- TODO: Wrap `tiny-emitter` and use it for the events here.
+    initialState' <- newSTRef $ initialState sdConfig seConfig
     e <- emitter
-    e # on requestEvent (handleRequest e)
-    slamData e initialState'
+    e # on requestEvent (handleRequest e initialState')
+    state <- readSTRef initialState'
+    slamData e state
 
   foreign import windowLocation """
     function windowLocation() {
