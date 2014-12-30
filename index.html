@@ -32,15 +32,17 @@
     <script src="bower_components/tiny-emitter/dist/tinyemitter.js"></script>
     <script src="js/slamdata.js"></script>
     <script type="text/javascript">
+        var st = require('Control.Monad.ST');
         var sd = require('SlamData');
         var events = require('SlamData.App.Events');
         var helpers = require('SlamData.Helpers');
         var types = require('SlamData.Types');
         // Load up slamdata.
         var state = helpers.defaultState;
+        var stState = st.newSTRef(state)();
         // Start up an emitter to pass down to slamdata.
         var emitter = new TinyEmitter();
-        var handler = events.handleRequest({})(emitter);
+        var handler = events.handleRequest({})(emitter)(stState);
         emitter.on(types.requestEvent, function(e) {
             return handler(e)()
         });

@@ -84,34 +84,33 @@ module SlamData.Types where
 
   newtype SlamDataEvent = SlamDataEvent SlamDataEventRec
   type SlamDataEventRec =
-    { state :: SlamDataState
-    , event :: SlamDataEventTy
+    { event :: SlamDataEventTy
     }
 
-  data SlamDataEventTy = SaveSDConfig SDConfig
-                       | SaveSEConfig SEConfig
-                       | HideConfig
-                       | ShowConfig
-                       | ReadFileSystem [FilePath]
-                       | ReadFields [FilePath]
-                       | CreateNotebook
+  data SlamDataEventTy = CleanNotebook Notebook
                        | CloseNotebook NotebookID
-                       | OpenNotebook FilePath
-                       | RenameNotebook Notebook FilePath
-                       | SaveNotebook Notebook
-                       | DirtyNotebook Notebook
-                       | CleanNotebook Notebook
-                       | TogglePublish Notebook
-                       | ShowSettings
-                       | HideSettings
                        | CreateBlock NotebookID BlockType Number
+                       | CreateNotebook
+                       | CreateValidation ValidationTy ValidationVal
                        | DeleteBlock NotebookID BlockID
+                       | DeleteValidation ValidationTy
+                       | DirtyNotebook Notebook
                        | EditBlock Notebook Block
                        | EvalBlock Notebook Block
                        | EvalVisual Notebook Block [VisualData]
-                       | CreateValidation ValidationTy ValidationVal
-                       | DeleteValidation ValidationTy
+                       | HideConfig
+                       | HideSettings
                        | LogMessage Log
+                       | OpenNotebook FilePath
+                       | ReadFields [FilePath]
+                       | ReadFileSystem [FilePath]
+                       | RenameNotebook Notebook FilePath
+                       | SaveNotebook Notebook
+                       | SaveSDConfig SDConfig
+                       | SaveSEConfig SEConfig
+                       | ShowConfig
+                       | ShowSettings
+                       | TogglePublish Notebook
 
   data Log = LogError   Moment String
            | LogInfo    Moment String

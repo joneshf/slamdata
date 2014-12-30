@@ -113,3 +113,12 @@ module SlamData.Lens where
 
   _logs :: forall a r. LensP {logs :: a | r} a
   _logs f o@{logs = i} = (\i' -> o{logs = i'}) <$> f i
+
+  _showConfig :: forall a r. LensP {showConfig :: a | r} a
+  _showConfig f o@{showConfig = i} = (\i' -> o{showConfig = i'}) <$> f i
+
+  _showSettings :: forall a r. LensP {showSettings :: a | r} a
+  _showSettings f o@{showSettings = i} = (\i' -> o{showSettings = i'}) <$> f i
+
+  _notebooks :: forall a r. LensP {notebooks :: a | r} a
+  _notebooks f o@{notebooks = i} = (\i' -> o{notebooks = i'}) <$> f i

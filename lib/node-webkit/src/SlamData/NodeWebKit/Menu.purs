@@ -49,24 +49,12 @@ module SlamData.NodeWebKit.Menu where
       }
     }""" :: forall eff. String -> Eff eff Unit
 
-  menu :: forall eff h
+  menu :: forall eff
        .  NWWindow
        -> Emitter
-       -> SlamDataState
-       -> Eff (event :: EventEff, nw :: NW | eff) NWMenu
-  menu win e state = runST do
-    -- Warning, this can probably lead to a whole slew of bugs.
-    -- We're updating the state each time a `requestEvent` is fired.
-    -- We do this to access the latest state outside the main event handler.
-    -- In particular, we need the state when firing off menu events.
-    -- Do not mutate this state anywhere except these two lines.
-    -- Only read from it.
-    stState <- newSTRef state
-    e # on responseEvent (writeSTRef stState)
-
-    let handleSettings = do
-          state <- readSTRef stState
-          e # emit requestEvent (SlamDataEvent {state: state, event: ShowSettings})
+       -> Eff (event :: EventEff, nw :: NW| eff) NWMenu
+  menu win e = do
+    let handleSettings = e # emit requestEvent (SlamDataEvent {event: ShowSettings})
 
     -- Make the menubar.
     -- We only need to make a File menu for linux/win.
