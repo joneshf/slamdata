@@ -140,8 +140,8 @@ var options =
         { output: 'output/node_modules'
         }
     , connect:
-        { port: 8251
-        , livereload: true
+        { livereload: true
+        , port: 8251
         }
     , copy:
         { browser:

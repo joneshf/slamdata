@@ -41,5 +41,5 @@ module SlamData (slamData) where
           -> SlamDataState
           -> SlamDataRequest eff
   request emitter state ty = do
-    emit requestEvent (SlamDataEvent {state: state, event: ty}) emitter
+    emit requestEvent (SlamDataEvent {event: ty}) emitter
     pure unit
