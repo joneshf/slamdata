@@ -39,6 +39,7 @@
     "gulp-install": "^0.2.0",
     "gulp-purescript": "~0.0.9",
     "gulp-rename": "^1.2.0",
+    "gulp-run": "^1.6.5",
     "gulp-sass": "^0.7.3",
     "gulp-task-listing": "^0.3.0",
     "gulp-util": "^3.0.0",

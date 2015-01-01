@@ -8,6 +8,7 @@ var paths =
         , 'bower_components/purescript-*/src/**/*.purs'
         , 'bower_components/purescript-*/src/**/*.purs.hs'
         ]
+    , test: 'test/Test/**/*.purs'
     , dest: 'js'
     , style: 'style/**/*.scss'
     , css: 'css'
@@ -160,6 +161,11 @@ var options =
             { main: 'SlamData.NodeWebKit'
             , output: 'slamdata-node-webkit.js'
             }
+        }
+    , test:
+        { main: 'Test.Main'
+        , modules: 'Test.Main'
+        , output: 'test-browser.js'
         }
     }
 

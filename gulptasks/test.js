@@ -2,8 +2,12 @@
 var gulp = require('gulp')
   , config = require('./config')
   , paths = config.paths
+  , options = config.options
+
   , gutil = require('gulp-util')
   , path = require('path')
+  , purescript = require('gulp-purescript')
+  , run = require('gulp-run')
   , spawn = require('child_process').spawn
   ;
 
@@ -52,4 +56,10 @@ gulp.task('test-webdriver', function(done) {
            , 'test/webdriver/**/*.js']
          , {stdio: 'inherit'}
          ).on('close', done);
+});
+
+gulp.task('test-strongcheck', function() {
+    return gulp.src(paths.src.concat(paths.test))
+        .pipe(purescript.psc(options.test))
+        .pipe(run('node'));
 });

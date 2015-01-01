@@ -1,8 +1,9 @@
 module Test.Main where
-  import Test.StrongCheck
-  import Test.StrongCheck.Gen
 
-  import Debug.Trace
+  import Debug.Trace (print)
+
+  import Test.SlamData.Helpers (quickCheckHelpers)
 
   main = do
-    trace "Running no test"
+    print "Testing SlamData.Helpers"
+    quickCheckHelpers
