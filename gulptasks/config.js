@@ -8,7 +8,7 @@ var paths =
         , 'bower_components/purescript-*/src/**/*.purs'
         , 'bower_components/purescript-*/src/**/*.purs.hs'
         ]
-    , test: 'test/Test/**/*.purs'
+    , test: 'test/strongcheck/Test/**/*.purs'
     , dest: 'js'
     , style: 'style/**/*.scss'
     , css: 'css'
@@ -165,7 +165,6 @@ var options =
     , test:
         { main: 'Test.Main'
         , modules: 'Test.Main'
-        , output: 'test-browser.js'
         }
     }
 

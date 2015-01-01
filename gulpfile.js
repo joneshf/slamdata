@@ -26,6 +26,7 @@ gulp.task('test', funcs.sequence( 'build'
                                 , 'dist-node-webkit-platform'
                                 , 'jre'
                                 , 'test-casperjs'
+                                , 'test-strongcheck'
                                 , 'test-webdriver'
                                 ));
 gulp.task('watch', function() {
