@@ -2,17 +2,33 @@ module Test.SlamData.Helpers where
 
   import Data.Either (Either(..))
   import Data.Maybe (Maybe(..))
-  import Data.String (length)
   import Data.Tuple (Tuple(..))
 
   import Debug.Trace (trace)
 
   import SlamData.Helpers
+    ( activate
+    , contains
+    , endsWith
+    , formatNotebookName
+    , parseQuery
+    , parseQueryString
+    )
 
   import Test.StrongCheck
-  import Test.StrongCheck.Gen
+    ( Arbitrary
+    , CoArbitrary
+    , AlphaNumString(..)
+    , QC()
+    , Result()
+    , (<?>)
+    , arbitrary
+    , coarbitrary
+    , quickCheck
+    )
+  import Test.StrongCheck.Gen (shuffle, suchThat)
 
-  import Text.Parsing.Parser
+  import Text.Parsing.Parser (ParseError(..), runParser)
 
   import qualified Data.StrMap as SM
 
@@ -53,15 +69,15 @@ module Test.SlamData.Helpers where
     else not (activate x y `contains` "active" )
 
   prop_formatNotebookName :: AlphaNumString -> Boolean
-  prop_formatNotebookName str =
-    runAlphaNumString str == formatNotebookName (runAlphaNumString str ++ ".nb")
+  prop_formatNotebookName (AlphaNumString str) =
+    str == formatNotebookName (str ++ ".nb")
 
   prop_parseQuery :: String -> String -> Result
   prop_parseQuery key val =
     let query = key ++ "=" ++ val
     in case runParser query parseQuery of
       Left  (ParseError e) -> false <?> e.message
-      Right (Tuple k v) -> (k == key && v == val) <?> query
+      Right (Tuple k v) -> k == key && v == val <?> query
 
   prop_parseQueryString :: String -> String -> Result
   prop_parseQueryString key val =
@@ -75,7 +91,7 @@ module Test.SlamData.Helpers where
     let query = "?" ++ k1 ++ "=" ++ v1 ++ "&" ++ k2 ++ "=" ++ v2
     in case runParser query parseQueryString of
       Left  (ParseError e) -> false <?> e.message
-      Right q -> (SM.lookup k1 q == Just v1 && SM.lookup k2 q == Just v2) <?> query
+      Right q -> SM.lookup k1 q == Just v1 && SM.lookup k2 q == Just v2 <?> query
 
   newtype UniqueStrings = UniqueStrings (Tuple String String)
 

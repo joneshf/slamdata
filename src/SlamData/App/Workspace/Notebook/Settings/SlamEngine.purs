@@ -170,8 +170,8 @@ module SlamData.App.Workspace.Notebook.Settings.SlamEngine
   _seMountings :: forall r. LensP {seConfig :: SEConfig | r} (M.StrMap Mounting)
   _seMountings = _seConfig.._seConfigRec.._mountings
 
-  _mountingMongoURI :: forall r. LensP Mounting String
+  _mountingMongoURI :: LensP Mounting String
   _mountingMongoURI = _mountingWrapper.._mountingRec.._connectionUri
 
-  _mountingDatabase :: forall r. LensP Mounting String
+  _mountingDatabase :: LensP Mounting String
   _mountingDatabase = _mountingWrapper.._mountingRec.._database

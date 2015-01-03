@@ -51,7 +51,6 @@
     "purescript-oboe": "~0.3.0",
     "purescript-parsing": "~0.1.4",
     "purescript-path": "~0.2.4",
-    "purescript-react": "joneshf/purescript-react#simplify",
     "purescript-showdown": "~0.0.1",
     "purescript-strings": "~0.4.0",
     "purescript-strongcheck": "~0.5.0",
@@ -74,7 +73,8 @@
     "purescript-lists": "0.3.7",
     "purescript-monoid": "0.1.4",
     "purescript-transformers": "0.3.0",
-    "purescript-unfoldable": "0.1.0"
+    "purescript-unfoldable": "0.1.0",
+    "purescript-react-simple": "~0.1.1"
   },
   "devDependencies": {
     "underscore-contrib": "~0.3.0",

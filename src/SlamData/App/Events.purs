@@ -103,8 +103,6 @@ module SlamData.App.Events where
   import qualified Network.XHR.Internal as XI
   import qualified Network.XHR.Types as XT
 
-  foreign import undefined :: forall a. a
-
   handleRequest :: forall eff e h
                 .  (EventEmitter e)
                 => e
@@ -120,15 +118,10 @@ module SlamData.App.Events where
                        , uuid   :: UUIDEff
                        ) Unit
   handleRequest e stState {event = event} = case event of
-    CleanNotebook (Notebook n) -> do
-      let nb = Notebook n{dirty = false}
-      state <- modifySTRef stState $ _notebooks..mapped %~ replaceNotebook nb
-      e # emit responseEvent state
-      pure unit
-    CloseNotebook ident -> do
-      state <- modifySTRef stState $ _notebooks %~ filter (\(Notebook n) -> n.ident /= ident)
-      e # emit responseEvent state
-      pure unit
+    CleanNotebook (Notebook n) ->
+      go $ _notebooks..mapped %~ replaceNotebook (Notebook n{dirty = false})
+    CloseNotebook ident ->
+      go $ _notebooks %~ filter (\(Notebook n) -> n.ident /= ident)
     CreateBlock ident ty index -> do
       notebooks <- readSTRef stState <#> \state -> state.notebooks
       ident' <- BlockID <$> v4
@@ -145,9 +138,7 @@ module SlamData.App.Events where
       let nb = n #~ do
              when isSQL (_notebookRec.._numOut += 1)
              id %= insertBlock ident block index
-      state <- modifySTRef stState $ _notebooks..mapped %~ replaceNotebook nb
-      e # emit responseEvent state
-      pure unit
+      go $ _notebooks..mapped %~ replaceNotebook nb
     CreateNotebook -> do
       ident <- NotebookID <$> v4
       let name = "Untitled.nb"
@@ -161,38 +152,20 @@ module SlamData.App.Events where
                               , persisted: false
                               , dirty: true
                               }
-      state <- modifySTRef stState $ _notebooks %~ flip snoc notebook
-      e # emit responseEvent state
-      pure unit
-    CreateValidation ty val -> do
-      state <- modifySTRef stState $ _validation %~ at ty ?~ val
-      e # emit responseEvent state
-      pure unit
-    DeleteBlock nID bID -> do
-      state <- modifySTRef stState $ _notebooks..mapped %~ deleteBlock nID bID
-      e # emit responseEvent state
-      pure unit
-    DeleteValidation ty -> do
-      state <- modifySTRef stState $ _validation %~ at ty .~ Nothing
-      e # emit responseEvent state
-      pure unit
-    DirtyNotebook (Notebook n) -> do
-      let nb = Notebook n{dirty = true}
-      state <- modifySTRef stState $ _notebooks..mapped %~ replaceNotebook nb
-      e # emit responseEvent state
-      pure unit
+      go $ _notebooks %~ flip snoc notebook
+    CreateValidation ty val -> go $ _validation %~ at ty ?~ val
+    DeleteBlock nID bID -> go $ _notebooks..mapped %~ deleteBlock nID bID
+    DeleteValidation ty -> go $ _validation %~ at ty .~ Nothing
+    DirtyNotebook (Notebook n) ->
+      go $ _notebooks..mapped %~ replaceNotebook (Notebook n{dirty = true})
     EditBlock (Notebook n) (Block b) -> do
       let block = Block b{blockMode = BlockMode "Edit"}
-      state <- modifySTRef stState $ _notebooks..mapped %~ updateBlock n.ident block
-      e # emit responseEvent state
-      pure unit
+      go $ _notebooks..mapped %~ updateBlock n.ident block
     EvalBlock (Notebook n) (Block b@{blockType = BlockType "Markdown"}) -> do
       let block = Block b{ evalContent = makeHtml b.editContent
                          , blockMode = BlockMode "Eval"
                          }
-      state <- modifySTRef stState $ _notebooks..mapped %~ updateBlock n.ident block
-      e # emit responseEvent state
-      pure unit
+      go $ _notebooks..mapped %~ updateBlock n.ident block
     EvalBlock (Notebook n) (Block b@{blockType = BlockType "SQL"}) -> do
       sdConfig <- readSTRef stState <#> \s -> s.settings.sdConfig
       let queryUrl' = queryUrl sdConfig </> n.path </> n.name </> "/"
@@ -206,9 +179,7 @@ module SlamData.App.Events where
             then do
               error <- jsonParse {error: ""} <$> X.getResponseText res
               let block = Block b{evalContent = error.error}
-              state <- modifySTRef stState $ _notebooks..mapped %~ updateBlock n.ident block
-              e # emit responseEvent state
-              pure unit
+              go $ _notebooks..mapped %~ updateBlock n.ident block
             else do
               out' <- jsonParse {out: ""} <$> X.getResponseText res
               X.get X.defaultAjaxOptions
@@ -219,9 +190,7 @@ module SlamData.App.Events where
                   let block'' = Block b{ blockMode = BlockMode "Eval"
                                        , evalContent = content'
                                        }
-                  state <- modifySTRef stState $ _notebooks..mapped %~ updateBlock n.ident block''
-                  e # emit responseEvent state
-                  pure unit
+                  go $ _notebooks..mapped %~ updateBlock n.ident block''
                 } (dataUrl' ++ out'.out) {limit: 20}
               pure unit
         } queryUrl' {} (XT.Multipart b.editContent)
@@ -232,23 +201,13 @@ module SlamData.App.Events where
       let block = Block b{ blockMode = BlockMode "Eval"
                          , evalContent = selector
                          }
-      state <- modifySTRef stState $ _notebooks..mapped %~ updateBlock n.ident block
-      e # emit responseEvent state
+      go $ _notebooks..mapped %~ updateBlock n.ident block
       -- Give it a small amount of time to create the selector.
       timeout 1000 $ createVisual showVisualType dataUrl' selector ds
       pure unit
-    HideConfig -> do
-      state <- modifySTRef stState $ _showConfig .~ false
-      e # emit responseEvent state
-      pure unit
-    HideSettings -> do
-      state <- modifySTRef stState $ _showSettings .~ false
-      e # emit responseEvent state
-      pure unit
-    LogMessage log -> do
-      state <- modifySTRef stState $ _logs %~ flip snoc log
-      e # emit responseEvent state
-      pure unit
+    HideConfig -> go $ _showConfig .~ false
+    HideSettings -> go $ _showSettings .~ false
+    LogMessage log -> go $ _logs %~ flip snoc log
     OpenNotebook path -> do
       dataUrl' <- readSTRef stState <#> \s -> dataUrl s.settings.sdConfig
       let url = dataUrl' </> path </> "index.nb"
@@ -272,9 +231,7 @@ module SlamData.App.Events where
                             }
               let nb = jsonParse default revision
               let notebook = Notebook nb{name = name}
-              state <- modifySTRef stState $ (_notebooks %~ flip snoc notebook) .. (_notebooks %~ nubBy uniqueNotebooks)
-              e # emit responseEvent state
-              pure unit
+              go $ (_notebooks %~ flip snoc notebook) .. (_notebooks %~ nubBy uniqueNotebooks)
         } url {}
       pure unit
     ReadFields paths -> do
@@ -313,9 +270,7 @@ module SlamData.App.Events where
         , headers = ["Destination" ~ (fs </> path </> "/")]
         , onLoad = \_ -> do
           let nb = Notebook n{name = base, dirty = false}
-          state <- modifySTRef stState $ _notebooks..mapped %~ replaceNotebook nb
-          e # emit responseEvent state
-          pure unit
+          go $ _notebooks..mapped %~ replaceNotebook nb
         } {} XT.NoBody
       pure unit
     SaveNotebook (Notebook n) -> do
@@ -326,28 +281,23 @@ module SlamData.App.Events where
       X.post X.defaultAjaxOptions
         { onReadyStateChange = X.onDone \_ -> do
           let nb = Notebook n''
-          state <- modifySTRef stState $ _notebooks..mapped %~ replaceNotebook nb
-          e # emit responseEvent state
-          pure unit
+          go $ _notebooks..mapped %~ replaceNotebook nb
         } url {} (XT.UrlEncoded $ jsonStringify n'')
       pure unit
-    ShowConfig -> do
-      state <- modifySTRef stState $ _showConfig .~ true
-      e # emit responseEvent state
-      pure unit
-    ShowSettings -> do
-      state <- modifySTRef stState $ _showSettings .~ true
-      e # emit responseEvent state
-      pure unit
+    ShowConfig -> go $ _showConfig .~ true
+    ShowSettings -> go $ _showSettings .~ true
     TogglePublish (Notebook n) -> do
       dataUrl' <- readSTRef stState <#> \s -> dataUrl s.settings.sdConfig
       let url = dataUrl' </> n.path </> n.name </> "index.nb"
       let n' = deleteID n
       let nb = Notebook n'{published = not n.published, dirty = true}
-      state <- modifySTRef stState $ _notebooks..mapped %~ replaceNotebook nb
-      e # emit responseEvent state
-      pure unit
+      go $ _notebooks..mapped %~ replaceNotebook nb
     _ -> pure unit
+    where
+      go setter = do
+        state <- modifySTRef stState setter
+        e # emit responseEvent state
+        pure unit
 
   handleOboeFailure :: forall e eff r
                     .  (EventEmitter e)
