@@ -14,6 +14,10 @@ module Test.SlamData.Helpers where
     trace "Testing `contains`"
     quickCheck prop_containsAppend
     quickCheck prop_containsId
+    trace "Testing `activate`"
+    quickCheck prop_activate
+    trace "Testing `formatNotebookName`"
+    quickCheck prop_formatNotebookName
 
   prop_endsWithAppend :: String -> String -> Boolean
   prop_endsWithAppend s s' = (s ++ s') `endsWith` s'
@@ -26,3 +30,12 @@ module Test.SlamData.Helpers where
 
   prop_containsId :: String -> Boolean
   prop_containsId s = s `contains` s
+
+  prop_activate :: String -> String -> Boolean
+  prop_activate x y = if x == y
+    then activate x y `contains` "active"
+    else not (activate x y `contains` "active" )
+
+  prop_formatNotebookName :: AlphaNumString -> Boolean
+  prop_formatNotebookName str =
+    runAlphaNumString str == formatNotebookName (runAlphaNumString str ++ ".nb")
