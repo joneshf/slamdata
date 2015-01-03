@@ -10,6 +10,7 @@ module Test.SlamData.Helpers where
   import SlamData.Helpers
 
   import Test.StrongCheck
+  import Test.StrongCheck.Gen
 
   import Text.Parsing.Parser
 
@@ -27,8 +28,12 @@ module Test.SlamData.Helpers where
     quickCheck prop_activate
     trace "Testing `formatNotebookName`"
     quickCheck prop_formatNotebookName
-    trace "Testing `prop_parseQuery`"
+    trace "Testing `parseQuery`"
     quickCheck prop_parseQuery
+    trace "Testing `parseQueryString`"
+    quickCheck prop_parseQueryString
+    trace "Testing `parseQueryStringLonger`"
+    quickCheck prop_parseQueryStringLonger
 
   prop_endsWithAppend :: String -> String -> Boolean
   prop_endsWithAppend s s' = (s ++ s') `endsWith` s'
@@ -58,9 +63,27 @@ module Test.SlamData.Helpers where
       Left  (ParseError e) -> false <?> e.message
       Right (Tuple k v) -> (k == key && v == val) <?> query
 
-  -- prop_parseQueryString :: String -> String -> Boolean
-  -- prop_parseQueryString key val =
-  --   let query = "?" ++ key ++ "=" ++ val
-  --   in case runParser query parseQueryString of
-  --     Left  _ -> false
-  --     Right (Tuple k v) -> k == key && v == val
+  prop_parseQueryString :: String -> String -> Result
+  prop_parseQueryString key val =
+    let query = "?" ++ key ++ "=" ++ val
+    in case runParser query parseQueryString of
+      Left  (ParseError e) -> false <?> e.message
+      Right q -> SM.lookup key q == Just val <?> query
+
+  prop_parseQueryStringLonger :: UniqueStrings -> String -> String -> Result
+  prop_parseQueryStringLonger (UniqueStrings (Tuple k1 k2)) v1 v2 =
+    let query = "?" ++ k1 ++ "=" ++ v1 ++ "&" ++ k2 ++ "=" ++ v2
+    in case runParser query parseQueryString of
+      Left  (ParseError e) -> false <?> e.message
+      Right q -> (SM.lookup k1 q == Just v1 && SM.lookup k2 q == Just v2) <?> query
+
+  newtype UniqueStrings = UniqueStrings (Tuple String String)
+
+  instance arbitraryUniqueStrings :: Arbitrary UniqueStrings where
+    arbitrary = do
+      s <- arbitrary
+      s' <- shuffle arbitrary `suchThat` ((/=) s)
+      pure $ UniqueStrings $ Tuple s s'
+
+  instance coArbitraryUniqueStrings :: CoArbitrary UniqueStrings where
+    coarbitrary (UniqueStrings ss) = coarbitrary ss
