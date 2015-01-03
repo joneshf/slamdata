@@ -1,6 +1,6 @@
 module SlamData.Helpers where
 
-  import Control.Alternative (some)
+  import Control.Alternative (many)
 
   import Data.Array (head)
   import Data.Foldable (notElem)
@@ -145,9 +145,9 @@ module SlamData.Helpers where
 
   parseQuery :: Parser String Query
   parseQuery = do
-    key <- (joinWith "" >>> decodeURIComponent) <$> some (try $ noneOf ["="])
+    key <- (joinWith "" >>> decodeURIComponent) <$> many (try $ noneOf ["="])
     string "="
-    val <- (joinWith "" >>> decodeURIComponent) <$> some (try $ noneOf ["&"])
+    val <- (joinWith "" >>> decodeURIComponent) <$> many (try $ noneOf ["&"])
     pure $ Tuple key val
 
   query2SDConfig :: QueryString -> SDConfig

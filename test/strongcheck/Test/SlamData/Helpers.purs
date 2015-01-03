@@ -1,10 +1,19 @@
 module Test.SlamData.Helpers where
 
+  import Data.Either (Either(..))
+  import Data.Maybe (Maybe(..))
+  import Data.String (length)
+  import Data.Tuple (Tuple(..))
+
   import Debug.Trace (trace)
 
   import SlamData.Helpers
 
   import Test.StrongCheck
+
+  import Text.Parsing.Parser
+
+  import qualified Data.StrMap as SM
 
   quickCheck_SlamData_Helpers :: QC Unit
   quickCheck_SlamData_Helpers = do
@@ -18,6 +27,8 @@ module Test.SlamData.Helpers where
     quickCheck prop_activate
     trace "Testing `formatNotebookName`"
     quickCheck prop_formatNotebookName
+    trace "Testing `prop_parseQuery`"
+    quickCheck prop_parseQuery
 
   prop_endsWithAppend :: String -> String -> Boolean
   prop_endsWithAppend s s' = (s ++ s') `endsWith` s'
@@ -39,3 +50,17 @@ module Test.SlamData.Helpers where
   prop_formatNotebookName :: AlphaNumString -> Boolean
   prop_formatNotebookName str =
     runAlphaNumString str == formatNotebookName (runAlphaNumString str ++ ".nb")
+
+  prop_parseQuery :: String -> String -> Result
+  prop_parseQuery key val =
+    let query = key ++ "=" ++ val
+    in case runParser query parseQuery of
+      Left  (ParseError e) -> false <?> e.message
+      Right (Tuple k v) -> (k == key && v == val) <?> query
+
+  -- prop_parseQueryString :: String -> String -> Boolean
+  -- prop_parseQueryString key val =
+  --   let query = "?" ++ key ++ "=" ++ val
+  --   in case runParser query parseQueryString of
+  --     Left  _ -> false
+  --     Right (Tuple k v) -> k == key && v == val
