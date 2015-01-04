@@ -58,8 +58,13 @@ gulp.task('test-webdriver', function(done) {
          ).on('close', done);
 });
 
-gulp.task('test-strongcheck', function() {
-    return gulp.src(paths.src.concat(paths.test))
-        .pipe(purescript.psc(options.test))
+gulp.task('test-strongcheck-compile', function() {
+    return gulp.src(paths.src.concat(paths.test.src))
+        .pipe(purescript.pscMake(options.test));
+});
+
+gulp.task('test-strongcheck', ['test-strongcheck-compile'], function() {
+    process.env.NODE_PATH = path.resolve(options.compile.output);
+    return gulp.src(paths.test.index)
         .pipe(run('node'));
 });

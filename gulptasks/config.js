@@ -8,7 +8,10 @@ var paths =
         , 'bower_components/purescript-*/src/**/*.purs'
         , 'bower_components/purescript-*/src/**/*.purs.hs'
         ]
-    , test: 'test/strongcheck/Test/**/*.purs'
+    , test:
+        { src: 'test/strongcheck/**/*.purs'
+        , index: 'test/strongcheck/test.js'
+        }
     , dest: 'js'
     , style: 'style/**/*.scss'
     , css: 'css'
@@ -163,8 +166,7 @@ var options =
             }
         }
     , test:
-        { main: 'Test.Main'
-        , modules: 'Test.Main'
+        { output: 'output/node_modules'
         }
     }
 
