@@ -18,7 +18,7 @@ gulp.task('build', funcs.sequence( ['clean-build', 'src', 'style']
                                  , ['build-browser', 'build-node-webkit']
                                  ));
 gulp.task('clean', ['clean-build', 'clean-compile', 'clean-dist', 'clean-sass']);
-gulp.task('default', funcs.sequence(['src', 'style']));
+gulp.task('default', ['src', 'style']);
 gulp.task('dist', funcs.sequence(['build', 'clean-dist'], 'dist-node-webkit', 'jre'));
 gulp.task('src', ['browserify']);
 gulp.task('style', funcs.sequence('clean-sass', 'sass'));
@@ -31,7 +31,7 @@ gulp.task('test', funcs.sequence( 'build'
                                 ));
 gulp.task('watch', function() {
     connect.server(options.connect);
-    gulp.watch(paths.src, ['src']);
+    gulp.watch(paths.src, ['watch-src']);
     gulp.watch(paths.style, ['style']);
 });
 gulp.task('help', taskListing);

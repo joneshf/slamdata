@@ -32,14 +32,6 @@ gulp.task('browserify-index', function() {
 });
 
 gulp.task('compile', ['clean-compile'], function() {
-    // We need this hack for now until gulp does something about
-    // https://github.com/gulpjs/gulp/issues/71
-    var pscMake = purescript.pscMake(options.compile);
-    pscMake.on('error', function(e) {
-        gutil.log(e.message);
-        pscMake.end();
-    });
     return gulp.src(paths.src)
-        .pipe(pscMake)
-        .pipe(gulp.dest(paths.dest));
+        .pipe(purescript.pscMake(options.compile))
 });
